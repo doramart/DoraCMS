@@ -164,8 +164,9 @@
 - 在《DoraCMS操作指南》 中有提到插入初始管理数据，因为刚安装的数据是空的，需要插入初始数据来管理后台，这里重新介绍一次：
 - ①、找到Mongodb安装目录(MongoDB\Server\3.0\bin) 执行 mongo.exe
 - ②、输入 use doracms
-- ③、插入用户组数据:
-###
+- ③、插入用户组数据
+
+```
 db.admingroups.insert({
   "_id" : "4yTbsWiI",
   "name" : "超级管理员",
@@ -174,14 +175,16 @@ db.admingroups.insert({
   "__v" : 0
 })
 
+```
 
-- ④、插入用户数据：
-###
+- ④、插入用户数据
+
+```
 db.adminusers.insert({
   "_id" : "E1jNjZi8",
   "name" : "test",
   "username" : "test",
-  "password" : "581fbebb8a5f5827",
+  "password" : "14700a6f381897e0",
   "phoneNum" : 12358563215.0,
   "email" : "doramart@qq.com",
   "group" : "4yTbsWiI",
@@ -191,7 +194,9 @@ db.adminusers.insert({
   "__v" : 0
 })
 
-- ⑤、插入数据如果存在格式问题，需要在记事本里编辑一下。如果上述执行正常，那么默认的登录名和密码为  test / 000000  ,这样，您就可以正常登录后台了。
+```
+
+- ⑤、插入数据如果存在格式问题，需要在记事本里编辑一下。如果上述执行正常，那么默认的登录名和密码为  test / doracms  ,这样，您就可以正常登录后台了。
 
 ### 1.3.3运行DoraCMS
 - 在刚刚svn下载的代码目录下 调出cmd命令窗口，执行npm start 
@@ -213,7 +218,8 @@ db.adminusers.insert({
 
 ## 二、DorCMS 开发
 ###  2.1 配置文件
-- DoraCMS 的主要配置在 settings.js 中设置（/onlineCMS/models/db/settings.js）:
+- DoraCMS 的主要配置在 settings.js 中设置（/onlineCMS/models/db/settings.js）
+
 ```
     COOKIE_SECRET: 'doramart.com',
     URL: 'mongodb://127.0.0.1:27017/doracms',
