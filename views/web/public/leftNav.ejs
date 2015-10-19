@@ -1,0 +1,22 @@
+<!--约定cateTypes为分类集合-->
+<div class="leftNav">
+    <h3>分类目录</h3>
+    <ul>
+    <%for(var i=0;i<currentCateList.length;i++){
+            if(currentCateList[i].parentID === '0'){%>
+    <li>
+        <a data-value="<%=cateTypes[i]._id%>" href="/<%=currentCateList[i].defaultUrl%>___<%=currentCateList[i]._id%>"><%=currentCateList[i].name%></a>
+        <div class="sonNav">
+            <ul>
+                <%currentCateList.forEach(function(item){
+                        if(item.parentID === currentCateList[i]._id){%>
+                <li><a data-value="<%=item._id%>" href="/<%=item.defaultUrl%>___<%=item._id%>"><%=item.name%></a></li>
+                <%}})%>
+            </ul>
+            <div class="clear"></div>
+        </div>
+    </li>
+    <%}}%>
+    </ul>
+</div>
+

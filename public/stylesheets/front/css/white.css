@@ -1,0 +1,289 @@
+/*全局样式*/
+body {
+    background-color: #FFF;
+    color: #444;
+    font-family: "Microsoft Yahei","冬青黑体简体中文 w3";
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+}
+
+.form-control, .btn {
+    border-radius: 0;
+    border: 1px solid #ddd;
+}
+
+ul {
+    margin: 0;
+    padding: 0
+}
+
+ul li {
+    list-style-type: none;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+h1, h2, h3 {
+    font-family: "Microsoft Yahei","冬青黑体简体中文 w3";
+    font-weight: 700;
+}
+
+.min-hight {
+    min-height: 400px !important;
+}
+
+input[type="text"], input[type="email"], input[type="url"], input[type="password"], textarea {
+    padding: 5px;
+    border: 1px solid #ddd;
+    width: 100%;
+    border-radius: 2px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+textarea.form-control {
+    background: #fdfdfd !important;
+    color: #222;
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0;
+    overflow: auto;
+    padding: 10px;
+}
+
+.clear {
+    clear: both;
+}
+
+a {
+    color: #6e7173;
+    text-decoration: none;
+    transition: all 0.1s ease-in 0s;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #6e7173;
+}
+
+/*headr部分*/
+#header .container .col-group {
+    border-bottom: 1px solid #ddd;
+}
+
+#header .container .col-group .site-name {
+    margin: 5px 0 25px;
+}
+
+.topNav ul li {
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 5px;
+}
+
+.site-nav {
+    display: block;
+}
+
+.site-nav ul {
+    margin-bottom: 10px;
+}
+
+.site-nav ul li {
+    margin: 0 30px;
+    display: inline-block;
+    list-style-type: circle;
+    height: 30px;
+    line-height: 30px;
+}
+
+/*文档列表*/
+.post {
+    padding: 0 0 40px;
+}
+
+.post img {
+    max-width: 100%;
+    padding: 3px;
+}
+
+.post .post-title {
+    margin: 0;
+    color: #555;
+    text-align: left;
+}
+
+.post .post-title a {
+    color: #555555
+}
+
+.post .post-meta {
+    color: #999;
+    margin: 9px 0 0;
+    padding: 0;
+    text-align: left;
+}
+
+.post .post-meta li {
+    display: inline-block;
+}
+
+.post .post-content {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.715;
+    padding-top: 10px;
+}
+
+.post .comment-count {
+    float: right;
+    margin-top: -30px;
+}
+
+.archive-title {
+    color: #999;
+    font-size: 1em;
+    margin: 0 0 20px;
+}
+
+/*热门文档*/
+.hotNewsList, .searchBoard, .leftNav, .tagsList, .cateList, .friendLink, .reSetPsdBoard, .newItemList {
+    margin-bottom: 30px;
+}
+
+/*左右框架*/
+.left-frame {
+    padding: 40px 70px 0 0;
+}
+
+.right-frame {
+    border-left: 1px solid #ddd;
+    padding-left: 35px;
+    padding-top: 25px;
+}
+
+.right-frame h3 {
+    border-bottom: 1px solid #ddd;
+    color: #6e7173;
+    font-size: 16px;
+    line-height: 2.7;
+    margin-top: 0;
+
+}
+
+.right-frame ul li {
+    line-height: 1.5;
+    margin: 5px 0;
+}
+
+/*左侧类别*/
+.leftNav > ul > li > a {
+    font-weight: 700;
+}
+
+.leftNav .sonNav {
+    padding-left: 10px;
+}
+
+/*分页*/
+.pagenation {
+    margin-top: 30px;
+}
+
+.pagenation ul li {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.pagenation ul li.active {
+    font-weight: 700;
+}
+
+/*标签 */
+.tagsList {
+}
+
+.tagsList ul li, .friendLink ul li {
+    display: inline-block;
+    margin: 0 5px;
+    line-height: 30px;
+}
+
+/*错误页面*/
+.page-500 .number {
+    float: left;
+    font-size: 100px;
+}
+
+.page-500 .details {
+    margin-left: 190px;
+}
+
+/*留言板*/
+
+.msgBoard .giveMsg h3 {
+    border-bottom: 1px solid #ddd;
+    color: #6e7173;
+    font-size: 16px;
+    line-height: 2.7;
+    margin-top: 0;
+
+}
+
+.msgBoard .txt-area {
+    margin-top: 25px;
+}
+
+.msgBoard .sent-btn {
+    display: block;
+    margin-top: 15px;
+}
+
+.msgBoard .msgList h3 {
+    font-size: 14px;
+    border-top: 1px solid #DDDDDD;
+    padding-top: 20px;
+}
+
+.msgBoard .msgList {
+    margin-bottom: 15px;
+}
+
+/*用户登录*/
+.loginBoard h3, .regBoard h3, .conformBoard h3, .reSetPsdBoard h3, .noticeBoard h3 {
+    color: #6e7173;
+    font-size: 16px;
+}
+
+/*用户中心*/
+.uInfos, .setPsd {
+    margin-top: 30px;
+}
+
+/*搜索*/
+.searchBoard .search-input {
+    width: 100%
+}
+
+/*参与话题*/
+.replyList li h4, .replyList li blockquote {
+    font-size: 13px;
+    font-weight: normal;
+}
+
+/*footer部分*/
+#footer {
+    color: #999;
+    line-height: 1.5;
+    padding: 0.1em 0 3.6em;
+    margin-top: 30px;
+}

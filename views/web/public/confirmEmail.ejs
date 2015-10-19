@@ -1,0 +1,44 @@
+<!--通过邮箱找回密码模块-->
+<div class="conformBoard" ng-controller="confirmEmail">
+    <form name="confirmEmailForm" ng-submit="processConfirmEmailForm(confirmEmailForm.$valid)" novalidate>
+        <div class="alert alert-info">请输入您的用户名或电子邮箱地址。您会收到一封包含创建新密码链接的电子邮件。</div>
+        <h3>找回密码 &nbsp;<small class="text-danger hide" id="errorInfo">邮箱和密码不匹配</small></h3>
+        <div class="form-group">
+            <input type="email" class="form-control" name="email" ng-model="confirmEmailData.email" placeholder="请填写电子邮件地址"  required>
+            <label for="inputError" class="control-label text-danger" ng-show="confirmEmailForm.email.$invalid && !loginForm.email.$pristine"><i class="glyphicon glyphicon-info-sign"></i>请填写正确的邮箱地址</label>
+
+        </div>
+
+        <div id="ul-s5">
+            <button type="submit" class="btn btn-default" ng-disabled="confirmEmailForm.$invalid">发送邮件</button>&nbsp;
+        </div>
+    </form>
+</div>
+
+<script>
+    var doraApp = angular.module("webApp",[]);
+    doraApp.controller("confirmEmail",function($scope,$http) {
+        $scope.processConfirmEmailForm = function(isValid){
+
+            if(isValid){
+                $http({
+                    method  : 'POST',
+                    url     : "/users/sentConfirmEmail",
+                    data    : $.param($scope.confirmEmailData),  // pass in data as strings
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                })
+                .success(function(data) {
+                    if(data === "success"){
+                        alert('邮件发送成功，请查看确认邮件！');
+                        window.location = '/';
+                    }else{
+                        $('#errorInfo').removeClass('hide').html(data);
+                    }
+                });
+            }
+            else{
+                alert("error");
+            }
+        };
+    })
+</script>

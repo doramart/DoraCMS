@@ -1,0 +1,13 @@
+<!--信息提示模块-->
+<div class="noticeBoard" >
+        <%if(infoType == 'info'){%>
+        <div class="alert alert-info"><%-infoContent%></div>
+        <%}else if(infoType == 'success'){%>
+        <div class="alert alert-success"><%-infoContent%></div>
+        <%}else if(infoType == 'danger'){%>
+        <div class="alert alert-danger"><%-infoContent%></div>
+        <%}else if(infoType == 'warning'){%>
+        <div class="alert alert-warning"><%-infoContent%></div>
+        <%}%>
+        <a href="/admin/manage" class="btn btn-default" role="button">返回管理首页</a>
+</div>

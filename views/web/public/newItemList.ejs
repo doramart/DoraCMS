@@ -1,0 +1,16 @@
+<!--近期文章模块-->
+<div class="newItemList">
+    <h3>近期文章</h3>
+    <ul>
+        <%if(newItemListData.length>0){%>
+            <%newItemListData.forEach(function(item){%>
+            <li>
+                <a href="/details/<%=item._id%>.html"><%=item.stitle%></a>
+            </li>
+            <%})%>
+        <%}else{%>
+            <li class="text-center">暂无内容...</li>
+        <%}%>
+
+    </ul>
+</div>

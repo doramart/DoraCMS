@@ -1,0 +1,66 @@
+<!--密码重置模块-->
+<div class="reSetPsdBoard" ng-controller="reSetPsd">
+    <form name="reSetPsdForm" ng-submit="processReSetPsdForm(reSetPsdForm.$valid)" novalidate>
+        <input type="hidden" value="<%=tokenId%>" id="tokenId"/>
+        <h3>重设密码 &nbsp;<small class="text-danger hide" id="errorInfo">邮箱和密码不匹配</small></h3>
+        <div class="form-group">
+
+            <input type="password" class="form-control" id="userPassword" name="password" ng-pattern="/(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/" placeholder="请输入密码" ng-maxlength="12" ng-model="reSetPsdFormData.password" required/>
+            <label for="inputError" class="control-label text-danger" ng-show="reSetPsdForm.password.$invalid && !regForm.password.$pristine"><i class="glyphicon glyphicon-info-sign"></i>6-12位，只能包含字母、数字和下划线</label>
+
+        </div>
+        <div class="form-group">
+
+            <input type="password" class="form-control" pw-check="userPassword" name="confirmPassword" placeholder="请再次输入密码" ng-model="reSetPsdFormData.confirmPassword" ng-pattern="/(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/" ng-maxlength="12" required/>
+            <label for="inputError" class="control-label text-danger" ng-show="reSetPsdForm.confirmPassword.$invalid && !regForm.confirmPassword.$pristine"><i class="glyphicon glyphicon-info-sign"></i>两次输入的密码不匹配</label>
+
+        </div>
+        <div id="ul-s5">
+            <button type="submit" class="btn btn-default" ng-disabled="reSetPsdForm.$invalid">提交</button>&nbsp;
+        </div>
+    </form>
+</div>
+
+<script>
+    var doraApp = angular.module("webApp",[]);
+    doraApp.controller("reSetPsd",function($scope,$http) {
+        $scope.processReSetPsdForm = function(isValid){
+
+            if(isValid){
+
+                $scope.reSetPsdFormData.tokenId = $('#tokenId').val();
+                $http({
+                    method  : 'POST',
+                    url     : "/users/updateNewPsd",
+                    data    : $.param($scope.reSetPsdFormData),  // pass in data as strings
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                })
+                .success(function(data) {
+                    if(data === "success"){
+                        alert('密码重置成功！');
+                        window.location = '/users/login';
+                    }else{
+                        $('#errorInfo').removeClass('hide').text(data);
+                    }
+                });
+            }
+            else{
+                alert("error");
+            }
+        };
+    })
+    .directive('pwCheck', [function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ctrl) {
+                var firstPassword = '#' + attrs.pwCheck;
+                elem.add(firstPassword).on('keyup', function () {
+                    scope.$apply(function () {
+                        var v = elem.val()===$(firstPassword).val();
+                        ctrl.$setValidity('pwmatch', v);
+                    });
+                });
+            }
+        }
+    }]);
+</script>

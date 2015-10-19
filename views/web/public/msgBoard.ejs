@@ -1,0 +1,92 @@
+<!--留言板模块-->
+<script src="/javascripts/angular.min.js"></script>
+<%if(logined){%>
+<input type="hidden" value="<%=userInfo._id%>" id="uid"/>
+<input type="hidden" value="<%=userInfo.userName%>" id="uName"/>
+<input type="hidden" value="<%=userInfo.logo%>" id="ulogo"/>
+<input type="hidden" value="<%=userInfo.email%>" id="uEmail"/>
+<%}%>
+<div class="msgBoard" ng-app="webApp" ng-controller="msgBoard">
+    <div class="row">
+        <%messageList.forEach(function(item){%>
+        <div class="col-md-12 col-sm-12 msgList">
+            <h3 class="media-heading"><a href="###"><%=item.uName%></a> <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item.uName%>','<%=item._id%>','<%=item.uEmail%>')" class="pull-right reply">回复</a></span></h3>
+            <p><%=item.content%></p>
+        </div>
+        <%})%>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 giveMsg">
+            <h3>添加新评论</h3>
+            <div class="txt-area">
+                <form role="form" class="form-horizontal" name="msgForm" ng-submit="sentMsgForm(msgForm.$valid)" novalidate>
+                    <div class="">
+                        <textarea rows="3" class="form-control" name="content" id="msgTextArea" ng-model="msgFormData.content"  ng-minlength="10" ng-maxlength="500" required></textarea>
+                        <label for="inputError" class="control-label text-danger" ng-show="msgForm.content.$invalid && !msgForm.content.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 10-500个非特殊字符</label>
+                    </div>
+                    <p class="sent-btn">
+                        <button class="btn btn-default theme-btn pull-right"  ng-disabled="msgForm.$invalid">发表评论</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var doraApp = angular.module("webApp",[]);
+    doraApp.controller('msgBoard',function($scope,$http){
+
+                $scope.msgFormData = {};
+                var loginState = '<%=logined%>';
+                $scope.msgFormData.contentId = '<%=documentInfo._id%>';
+                $scope.msgFormData.contentTitle = '<%=documentInfo.title%>';
+
+                $scope.sentMsgForm = function(isValid){
+
+                    if(!loginState){
+                        alert('请先登录!');
+                        window.location = '/users/login';
+                    }else{
+
+                        $scope.msgFormData.uName = $('#uName').val();
+                        $scope.msgFormData.uid =  $('#uid').val();
+                        $scope.msgFormData.ulogo = $('#ulogo').val();
+                        $scope.msgFormData.uEmail = $('#uEmail').val();
+
+                        $http({
+                            method  : 'POST',
+                            url     : '/users/message/sent',
+                            data    : $.param($scope.msgFormData),  // pass in data as strings
+                            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                        })
+                        .success(function(data) {
+                            if(data === "success"){
+                                window.location.reload();
+                            }else{
+                                alert("未知异常，请稍后重试");
+                            }
+                        });
+                    }
+
+                };
+
+//                回复留言
+                $scope.replyMsg = function(uName,uid,email){
+
+                    if(!loginState){
+                        alert('请先登录!');
+                        window.location = '/users/login';
+                    }else{
+
+                        $('#msgTextArea').focus();
+                        $scope.msgFormData.content = "@"+uName+" ";
+                        $scope.msgFormData.relationUid = uid;
+                        $scope.msgFormData.relationEmail = email;
+
+                    }
+                }
+     });
+
+</script>

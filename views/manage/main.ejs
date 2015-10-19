@@ -1,0 +1,75 @@
+﻿
+<div class="row" ng-controller="mainPanel">
+    <% include public/modal %>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-fw fa-list"></i>
+                    <h3 class="box-title">概况</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+
+                    <dl class="dl-horizontal sysSurvey">
+                        <dt class="text-info"><i class="fa fa-fw fa-user"></i> 管理员数</dt>
+                        <dd>{{mainData.adminUserCount}}</dd>
+                        <dt class="text-info"><i class="fa fa-fw fa-users"></i> 注册用户</dt>
+                        <dd>{{mainData.regUsersCount}}</dd>
+                        <dt class="text-info"><i class="fa fa-fw fa-file-text-o"></i> 文档总数</dt>
+                        <dd>{{mainData.contentsCount}}</dd>
+                        <dt class="text-info"><i class="fa fa-fw fa-file-text-o"></i> 留言总数</dt>
+                        <dd>{{mainData.msgCount}}</dd>
+                    </dl>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- ./col -->
+        <div class="col-md-6">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-location-arrow"></i>
+                    <h3 class="box-title">快捷操作</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <ul class="list-unstyled">
+                        <li><a href="/admin/manage/adminUsersList"><i class="fa fa-fw fa-user"></i> 添加管理员</a></li>
+                        <li><a href="/admin/manage/content/add/content"><i class="fa fa-fw fa-file-text-o"></i> 创建新文档</a></li>
+                        <li><a href="/admin/manage/content/add/plug"><i class="fa fa-fw fa-file-text-o"></i> 添加Jquery插件</a></li>
+                    </ul>
+
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- ./col -->
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-fw fa-comments-o"></i>
+                    <h3 class="box-title">近期评论</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            <div class="dashboard-comment-wrap" ng-repeat="msg in mainData.msgList">
+                                <small class="pull-right">{{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</small>
+                                <h4 class="comment-meta">
+                                    由 <cite class="comment-author"><a class="url" rel="external nofollow" href="#">{{msg.uName}}</a></cite> 发表在《<a href="/details/{{msg.contentId}}.html" target="_blank">{{msg.contentTitle}}</a>》</h4>
+                                <blockquote><p>{{msg.content}}</p></blockquote>
+                            </div>
+                        </li>
+                    </ul>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- ./col -->
+    </div>
+</div>
+<script>
+
+    doraApp.controller("mainPanel",function($scope,$http){
+
+            $http.get("/admin/manage/getMainInfo").success(function(result){
+                $scope.mainData = result;
+            });
+
+})
+</script>

@@ -1,0 +1,28 @@
+<!--头部模板-->
+<header class="clearfix" id="header">
+    <div class="container">
+        <div class="text-right topNav">
+            <ul>
+            <% if(!logined){ %>
+                <li><a href="/users/login">登录</a></li>
+                <li><a href="/users/reg">注册</a></li>
+            <% }else{ %>
+                <li>您好&nbsp;<a href="/users/userCenter"><%=userInfo.userName%></a></li>
+                <li><a href="#" id="userLoginOut">退出</a></li>
+            <% } %>
+            </ul>
+        </div>
+        <div class="col-group">
+            <div class="site-name ">
+                <a href="/" id="logo"><img src="/stylesheets/front/images/logo.png" width="162" height="40" alt="前端开发俱乐部"/></a></a>
+            </div>
+            <div class="site-nav">
+                <ul>
+                    <%for(var i=0;i<cateTypes.length;i++){%>
+                    <li id="nav_<%=cateTypes[i]._id%>"><a href="/<%=cateTypes[i].defaultUrl%>___<%=cateTypes[i]._id%>"><%=cateTypes[i].name%></a></li>
+                    <%}%>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,13 @@
+<!--友情链接模块-->
+<div class="friendLink">
+    <h3>友情链接</h3>
+    <ul>
+        <%if(friendLinkData.length>0){%>
+            <%for(var i=0;i<friendLinkData.length;i++){var linkObj = friendLinkData[i].content;var link = eval("(" + linkObj + ")");%>
+            <li><a href="<%=link.link%>" target="_blank"><%=link.title%></a></li>
+            <%}%>
+        <%}else{%>
+            <li class="text-center">暂无内容...</li>
+        <%}%>
+    </ul>
+</div>

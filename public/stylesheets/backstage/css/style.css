@@ -1,0 +1,18 @@
+
+.myInfoBox{padding: 15px;}
+.sysSurvey dt{font-weight: normal;}
+
+.thumbnailView .list-group-item{border: none;width: 105px;height: 130px;float: left;}
+.thumbnailView .list-group-item .fileImg{width: 80px;margin: 0 auto;font-size: 60px;color: #F5DA9A;cursor: pointer;}
+.thumbnailView .list-group-item .fileImg img{width: 80px;height: 80px;}
+.thumbnailView .list-group-item .fileName{width: 100%;overflow: hidden;text-align: center;text-overflow: ellipsis;white-space: nowrap;}
+
+/*问候语样式*/
+.helloInfo{ font-size: 60%;font-weight: normal;margin-left: 30px;}
+
+/*后台评论显示样式 */
+.dashboard-comment-wrap .comment-meta{font-size: 13px;}
+.dashboard-comment-wrap blockquote{font-size: 13px;}
+.dashboard-comment-wrap blockquote p {
+    word-break: break-all;
+}

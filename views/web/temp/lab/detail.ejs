@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="lab_container">
+                <h3><%= documentInfo.title%></h3>
+                <p>
+                    <i class="fa fa-github-alt"></i>
+                    <a href="###" target="_blank"><%= documentInfo.keywords%></a>
+                </p>
+                <a class="btn btn-danger" target="_blank" href="<%= documentInfo.previewPath%>">
+                    <i class="fa fa-desktop"></i>&nbsp;查看demo
+                </a>&nbsp;&nbsp;
+                <a class="btn btn-default" href="<%= documentInfo.downPath%>" target="_blank" title="下载压缩包">下载</a>
+            </div>
+            <div class="lab_content min-hight" style="margin-top: 30px;"><%- documentInfo.comments%></div>
+        </div>
+    </div>
+</div>

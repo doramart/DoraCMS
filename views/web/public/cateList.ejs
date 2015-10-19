@@ -1,0 +1,11 @@
+<!--约定cateTypes为分类集合-->
+<div class="cateList">
+    <h3>分类目录</h3>
+    <ul>
+
+        <%for(var i=0;i<cateTypes.length;i++){%>
+            <li id="nav_<%=cateTypes[i]._id%>"><a href="/<%=cateTypes[i].defaultUrl%>___<%=cateTypes[i]._id%>"><%=cateTypes[i].name%></a></li>
+        <%}%>
+
+    </ul>
+</div>

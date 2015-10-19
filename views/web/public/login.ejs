@@ -1,0 +1,48 @@
+<!--用户登录模块-->
+<div class="loginBoard" ng-controller="userlogin">
+    <form name="loginForm" ng-submit="processLogForm(loginForm.$valid)" novalidate>
+        <h3>用户登录 &nbsp;<small class="text-danger hide" id="errorInfo">邮箱和密码不匹配</small></h3>
+        <div class="form-group">
+            <input type="email" class="form-control" name="email" ng-model="logFormData.email" ng-pattern="/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/" placeholder="请填写邮箱"  required>
+            <label for="inputError" class="control-label text-danger" ng-show="loginForm.email.$invalid && !loginForm.email.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 请填写正确的邮箱地址</label>
+
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="password" ng-model="logFormData.password" ng-pattern="/(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/" ng-maxlength="12" placeholder="请输入密码" required>
+            <label for="inputError" class="control-label text-danger" ng-show="loginForm.password.$invalid && !loginForm.password.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 6-12位，只能包含字母、数字和下划线</label>
+
+        </div>
+        <div id="ul-s5">
+            <button type="submit" class="btn btn-default" ng-disabled="loginForm.$invalid">登录</button>&nbsp;
+            <small><a href="/users/lostPassword">忘记密码？</a></small>
+        </div>
+    </form>
+</div>
+
+<script>
+    var doraApp = angular.module("webApp",[]);
+    doraApp.controller("userlogin",function($scope,$http) {
+        $scope.processLogForm = function(isValid){
+
+            if(isValid){
+                $http({
+                    method  : 'POST',
+                    url     : "/users/doLogin",
+                    data    : $.param($scope.logFormData),  // pass in data as strings
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                })
+                .success(function(data) {
+                    if(data === "success"){
+                        alert('登录成功！');
+                        window.location = '/';
+                    }else{
+                        $('#errorInfo').removeClass('hide').text(data);
+                    }
+                });
+            }
+            else{
+                alert("error");
+            }
+        };
+    })
+</script>

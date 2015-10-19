@@ -1,0 +1,125 @@
+<!--用户信息完善-->
+<div class="uInfos" ng-controller="userInfo">
+    <form class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+        <p class="text-danger hide" id="errorInfo">邮箱和密码不匹配</p>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-4">
+                <input type="email" class="form-control"  name="email" ng-model="formData.email" disabled />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">昵称</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="userName" ng-minlength="2" ng-maxlength="12" ng-model="formData.userName"/>
+                <label for="inputError" class="control-label text-danger" ng-show="myForm.userName.$invalid && !myForm.userName.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 2-12个非特殊字符</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">真实姓名</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control"  name="name" ng-minlength="2" ng-maxlength="6" ng-pattern="/[\u4e00-\u9fa5]/" ng-model="formData.name" required />
+                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="glyphicon glyphicon-info-sign"></i>2-6个中文字符</label>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">所在城市</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" ng-model="formData.city" ng-minlength="0" ng-maxlength="12"/>
+                <label for="inputError" class="control-label text-danger" ng-show="myForm.city.$invalid && !myForm.city.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 0-12个非特殊字符</label>
+            </div>
+        </div>
+        <div class="form-group hide">
+            <label class="col-sm-2 control-label">行业</label>
+            <div class="col-sm-4">
+                <!-- Single button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle hy-btn" style="border: 1px solid #dbe2e6;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        网页设计 <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">网页设计</a></li>
+                        <li><a href="#">界面设计</a></li>
+                        <li><a href="#">平面设计</a></li>
+                        <li><a href="#">其它</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">学校</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control"  name="company" ng-minlength="0" ng-maxlength="12" ng-model="formData.company"/>
+                <label for="inputError" class="control-label text-danger" ng-show="myForm.company.$invalid && !myForm.company.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 0-12个非特殊字符</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">QQ号码</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control"  name="qq" ng-minlength="0" ng-model="formData.qq" ng-pattern="/^[1-9][0-9]{4,9}$/"/>
+                <label for="inputError" class="control-label text-danger" ng-show="myForm.qq.$invalid && !myForm.qq.$pristine"><i class="glyphicon glyphicon-info-sign"></i>请填写正确的QQ号码</label>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" name="phoneNum" ng-model="formData.phoneNum" ng-pattern="/^1[3|4|5|8][0-9]\d{4,8}$/" >移动电话</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" />
+                <label for="inputError" class="control-label text-danger" ng-show="myForm.phoneNum.$invalid && !myForm.phoneNum.$pristine"><i class="glyphicon glyphicon-info-sign"></i>请填写正确的手机号码</label>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">关于自己</label>
+            <div class="col-sm-6">
+                <textarea class="col-sm-12" name="" id="" rows="6" style="border: 1px solid #dbe2e6;"  ng-model="formData.comments"></textarea>
+                <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="glyphicon glyphicon-info-sign"></i>请填写正确的介绍</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" ng-disabled="myForm.$invalid">提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    var doraApp = angular.module("webApp",[]);
+    doraApp.controller("userInfo",function($scope,$http) {
+        $scope.targetId = "<%= userInfo._id%>";
+        if($scope.targetId){
+            // 查询用户信息
+            getData($scope,$http);
+        }
+        // 修改用户信息
+        $scope.processForm = function(isValid){
+            if(isValid){
+                $http({
+                    method  : 'POST',
+                    url     : "/users/userInfo/modify?uid="+$scope.targetId,
+                    data    : $.param($scope.formData),  // pass in data as strings
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                })
+                .success(function(data) {
+                    if(data === "success"){
+                        alert('修改信息成功')
+                    }else{
+                        $('#errorInfo').removeClass('hide').text(data);
+                    }
+                });
+            }
+            else{
+                alert("error");
+            }
+        };
+
+    });
+
+    function getData($scope,$http){
+        $http.get("/users/userInfo?uid="+$scope.targetId).success(function(result){
+            $scope.formData = result;
+        })
+    }
+</script>

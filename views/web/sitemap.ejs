@@ -1,0 +1,18 @@
+<!-- BEGIN CONTAINER -->
+<style>
+    .siteMap{padding: 15px;}
+    .siteMap ol li{height: 25px;}
+</style>
+<div class="container min-hight" style="margin-bottom: 20px;background: #FFFFFF">
+
+    <div class="col-md-12 siteMap">
+
+        <ol>
+        <%documentList.forEach(function(item){%>
+            <li><a href="http://<%=myDomain%>/details/<%=item._id%>.html"><%=item.title%></a></li>
+        <%})%>
+        </ol>
+    </div>
+
+</div>
+<!-- END CONTAINER -->

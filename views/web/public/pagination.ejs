@@ -1,0 +1,49 @@
+<!--分页模块-->
+<div class="pagenation text-center">
+    <ul>
+        <%var localUrl;var param ='';%>
+        <%if(pageType == 'index'){
+            localUrl = "/page";
+        }else if(pageType == 'cate'){
+            localUrl = '/'+ cateInfo.defaultUrl + '___' + cateInfo._id;
+        }else if(pageType == 'search'){
+            param = '?searchKey=' + pageInfo.searchKey;
+            localUrl = '/content/searchResult/items';
+        }else if(pageType == 'replies'){
+            localUrl = '/users/userReplies/p';
+        }
+        %>
+
+        <%var totalItems = pageInfo.totalItems;var limit = pageInfo.limit%>
+        <%var totalPage = Math.ceil(totalItems / limit) ;%>
+
+        <%
+        var page_start = pageInfo.currentPage - 2 > 0 ? pageInfo.currentPage - 2 : 1;
+        var page_end = page_start + 4 >= totalPage ? totalPage : page_start + 4;
+        %>
+
+        <%if(pageInfo.currentPage != 1){%>
+        <li><a href="<%=localUrl%>—1.html<%=param%>">«</a></li>
+        <%}%>
+
+        <% if (page_start > 1) { %>
+        <li><a>...</a></li>
+        <% } %>
+
+        <%for(var i=page_start;i<=page_end;i++){%>
+            <%if(i == pageInfo.currentPage){%>
+                 <li class="active"><a><%=i%></a></li>
+            <%}else{%>
+                 <li><a href="<%=localUrl%>—<%=i%>.html<%=param%>"><%=i%></a></li>
+            <%}%>
+        <%}%>
+
+        <% if (page_end < totalPage ) { %>
+        <li><a>...</a></li>
+        <% } %>
+
+        <%if(pageInfo.currentPage != totalPage){%>
+            <li><a href="<%=localUrl%>—<%=totalPage%>.html<%=param%>">»</a></li>
+        <%}%>
+    </ul>
+</div>
