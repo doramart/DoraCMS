@@ -212,7 +212,7 @@ db.adminusers.insert({
 
 
 ###  1.3.4 访问地址
-前台：127.0.0.1 (默认80端口)
+前台：127.0.0.1 (默认81端口)
 后台：127.0.0.1/admin
 
 
@@ -221,29 +221,18 @@ db.adminusers.insert({
 - DoraCMS 的主要配置在 settings.js 中设置（/onlineCMS/models/db/settings.js）
 
 ```
-    COOKIE_SECRET: 'doramart.com',
-    URL: 'mongodb://127.0.0.1:27017/doracms',
-    DB: 'doracms',
-    HOST: '127.0.0.1', // 数据库地址
-    PORT: 27017, // 数据库端口号
-    USERNAME: 'doracms', // 数据库用户名
-    PASSWORD: '000000', // 数据库密码
     SITETITLE : '前端开发俱乐部', // 站点名称
     SITEDOMAIN : 'http://www.html-js.cn', // 站点域名
-    SITEICP : '粤ICP备111111号-2', // 站点备案号
-    SYSTEMMAIL : 'xxxx@163.com', //站点邮箱
+    SITEICP : '粤ICP备15038960号-2', // 站点备案号
+    SITEVERSION : 'd20151012142453', // 静态资源版本戳
+    SYSTEMMAIL : 'doramart@qq.com', // 管理员个人邮箱
     UPDATEFOLDER : process.cwd()+'/public/upload', // 默认上传文件夹本地路径
     TEMPSFOLDER : process.cwd()+'/views/web/temp', // 默认模板文件夹本地路径
     DATAOPERATION : process.cwd()+'/models/db/bat', //数据库操作脚本目录
-    DATABACKFORDER : 'C:/softbak/xxxx/', // 服务端数据库操作脚本目录
+    DATABACKFORDER : 'C:/softbak/mongodbConfig/mongodata/', // 服务端数据库操作脚本目录
     CMSDISCRIPTION : '前端开发俱乐部,分享前端知识,丰富前端技能。汇集国内专业的前端开发文档,为推动业内前端开发水平共同奋斗。html,js,css,nodejs,前端开发,jquery,web前端, web前端开发, 前端开发工程师',
-    SITEKEYWORDS : '前端开发俱乐部,前端俱乐部,DoraCMS内容管理系统, 前端开发, web前端, web前端开发, 前端开发工程师, 设计, 开发, 前端资源, angularjs, JavaScript,js, Ajax, jQuery, html,html5,css3,浏览器兼容, 前端开发工具, nodejs , node , boostrap',
+    SITEKEYWORDS : '前端开发俱乐部,前端俱乐部,DoraCMS,内容管理系统, 前端开发, web前端, 前端开发工程师,前端资源, angularjs, 前端开发工具, nodejs ,boostrap',
     SITEBASICKEYWORDS : '前端开发俱乐部,前端开发,前端俱乐部,DoraCMS', // 基础关键词
-    STATICFILEPATH : '', // 静态文件空间地址
-    UPDATEFILEPATH : '', // 上传文件空间地址
-    QINIUACCESS_KEY : '',  // 七牛秘钥
-    QINIUSECRET_KEY : '',  // 七牛秘钥
-	QINIUCMSBUCKETNAME : '',  // 七牛Bucket_Name
 ```
 - 针对上面这些静态参数都进行了详细的注释，如果你设置了数据库账号密码，则需要在这里做相应的配置，同时需要在 Dbopt.js 中做相应的数据库连接设置。
 
@@ -262,29 +251,25 @@ db.adminusers.insert({
 - 下面的配置都是后台模块的静态参数：
 
 ```
-SYSTEMMANAGE : 'sysTemManage_0',  // 后台模块(系统管理)
-    ADMINUSERLIST : 'sysTemManage_0_1',
-    ADMINGROUPLIST : 'sysTemManage_0_2',
-    EMAILTEMPLIST : 'sysTemManage_0_3',
-    ADSLIST : 'sysTemManage_0_4',
-    FILESLIST : 'sysTemManage_0_5',
-    DATAMANAGE : 'sysTemManage_0_6', // 数据管理
-    BACKUPDATA : 'sysTemManage_0_6_1', // 数据备份
+	SYSTEMMANAGE : new Array('sysTemManage','DoraCMS后台管理'),  // 后台模块(系统管理)
+    ADMINUSERLIST : new Array('sysTemManage_user','系统用户管理'),
+    ADMINGROUPLIST : new Array('sysTemManage_uGroup','系统用户组管理'),
+    ADSLIST : new Array('sysTemManage_ads','广告管理'),
+    FILESLIST : new Array('sysTemManage_files','文件管理'),
+    DATAMANAGE : new Array('sysTemManage_data','数据管理'), // 数据管理
+    BACKUPDATA : new Array('sysTemManage_data_1','数据备份'), // 数据备份
+    SYSTEMLOGS : new Array('sysTemManage_logs','操作日志'), // 系统操作日志
 
 
-    CONTENTMANAGE : 'contentManage_1', // 后台模块(内容管理)
-    CONTENTLIST : 'contentManage_1_1',
-    CONTENTCATEGORYS : 'contentManage_1_2',
-    CONTENTTAGS : 'contentManage_1_3', //标签管理
-    CONTENTTEMPS : 'contentManage_1_4', //模板管理
-    CONTENTTYPES : 'contentManage_1_5',  // 内容属性管理
-    CONTENTFILMTYPES : 'contentManage_1_5_1',  // 内容属性管理
-    CONTENTCOUNTRYTYPES : 'contentManage_1_5_2',  // 内容属性管理
-    CONTENTYEARSTYPES : 'contentManage_1_5_3',  // 内容属性管理
-    MESSAGEMANAGE : 'contentManage_1_6', // 留言管理
+    CONTENTMANAGE : new Array('contentManage','内容管理'), // 后台模块(内容管理)
+    CONTENTLIST : new Array('contentManage_content','文档管理'),
+    CONTENTCATEGORYS : new Array('contentManage_cateGory','文档类别管理'),
+    CONTENTTAGS : new Array('contentManage_tag','文档标签管理'), //标签管理
+    CONTENTTEMPS : new Array('contentManage_temp','文档模板管理'), //模板管理
+    MESSAGEMANAGE : new Array('contentManage_msg','留言管理'), // 留言管理
 
-    USERMANAGE : 'userManage_2', // 后台模块(会员管理)
-	REGUSERSLIST: 'userManage_2_1'
+    USERMANAGE : new Array('userManage','会员管理'), // 后台模块(会员管理)
+    REGUSERSLIST: new Array('userManage_user','注册用户管理')
 ```
 - 改参数对应后台模板文件 adminTemp.ejs 中的模块列表的：
 
