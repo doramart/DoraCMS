@@ -20,8 +20,7 @@
 ## http://www.html-js.cn/details/VkldQTPs.html
 ## 开发文档链接：
 ## http://www.html-js.cn/details/VJpfeMYj.html(不断更新)
-## 开发文档下载
-## http://7xkr1n.com1.z0.glb.clouddn.com/@/cms/DoraCMS开发指南.doc
+
 ## 注意：开源后陆续发现了一些问题，我都提交了，今后也会持续补充，开发文档或遇到问题请直接参考我博客的文章(http://www.html-js.cn/details/VJpfeMYj.html),
 ## 或者在该版块下留言，这里会不断更新，因为精力有限并不保证word版开发指南会保持最新，
 
