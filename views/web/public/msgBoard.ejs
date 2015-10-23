@@ -11,7 +11,12 @@
         <%messageList.forEach(function(item){%>
         <div class="col-md-12 col-sm-12 msgList">
             <h3 class="media-heading"><a href="###"><%=item.uName%></a> <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item.uName%>','<%=item._id%>','<%=item.uEmail%>')" class="pull-right reply">回复</a></span></h3>
-            <p><%=item.content%></p>
+            <%if(item.relationUName){%>
+                <%var beReply = '<span style="color: #0da3e2">@'+item.relationUName+'</span>&nbsp;'%>
+                <p><%-beReply%><%=item.content%></p>
+            <%}else{%>
+                <p><%-item.content%></p>
+            <%}%>
         </div>
         <%})%>
     </div>

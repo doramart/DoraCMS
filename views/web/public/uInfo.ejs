@@ -1,7 +1,13 @@
 <!--用户信息完善-->
 <div class="uInfos" ng-controller="userInfo">
     <form class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
-        <p class="text-danger hide" id="errorInfo">邮箱和密码不匹配</p>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">&nbsp;</label>
+            <div class="col-sm-4">
+                <p class="text-danger hide" id="errorInfo">邮箱和密码不匹配</p>
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">Email</label>
             <div class="col-sm-4">
@@ -9,16 +15,15 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">昵称</label>
+            <label class="col-sm-2 control-label">用户名</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" name="userName" ng-minlength="2" ng-maxlength="12" ng-model="formData.userName"/>
-                <label for="inputError" class="control-label text-danger" ng-show="myForm.userName.$invalid && !myForm.userName.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 2-12个非特殊字符</label>
+                <input type="text" class="form-control" name="userName" disabled ng-model="formData.userName"/>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">真实姓名</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control"  name="name" ng-minlength="2" ng-maxlength="6" ng-pattern="/[\u4e00-\u9fa5]/" ng-model="formData.name" required />
+                <input type="text" class="form-control"  name="name" ng-minlength="2" ng-maxlength="6" ng-pattern="/[\u4e00-\u9fa5]/" ng-model="formData.name" />
                 <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="glyphicon glyphicon-info-sign"></i>2-6个中文字符</label>
 
             </div>

@@ -94,6 +94,10 @@ var siteFunc = {
         return Content.find(q, 'stitle').sort({'date': -1}).skip(0).limit(10);
     },
 
+    getRecommendListData : function(cateQuery,contentCount){
+        return Content.find(cateQuery).sort({'date':-1}).skip(Math.floor(contentCount*Math.random())).limit(4);
+    },
+
     getFriendLink: function () {
         return Ads.find({'category': 'friendlink'});
     },
@@ -107,11 +111,11 @@ var siteFunc = {
         var documentList = DbOpt.getPaginationResult(Content, req, res, q, requireField);
         var tagsData = DbOpt.getDatasByParam(ContentTags, req, res, {});
         return {
-            siteConfig: siteFunc.siteInfos("首页"),
+            siteConfig: this.siteInfos("首页"),
             documentList: documentList.docs,
-            hotItemListData: siteFunc.getHotItemListData({}),
-            friendLinkData: siteFunc.getFriendLink(),
-            cateTypes: siteFunc.getCategoryList(),
+            hotItemListData: this.getHotItemListData({}),
+            friendLinkData: this.getFriendLink(),
+            cateTypes: this.getCategoryList(),
             cateInfo: '',
             tagsData: tagsData,
             pageInfo: documentList.pageInfo,
@@ -127,14 +131,14 @@ var siteFunc = {
         var currentCateList = ContentCategory.find(cq).sort({'sortId': 1});
         var tagsData = DbOpt.getDatasByParam(ContentTags, req, res, {});
         return {
-            siteConfig: siteFunc.siteInfos(cateInfo.name, cateInfo.comments, cateInfo.keywords),
+            siteConfig: this.siteInfos(cateInfo.name, cateInfo.comments, cateInfo.keywords),
             documentList: documentList.docs,
             currentCateList: currentCateList,
-            hotItemListData: siteFunc.getHotItemListData(dq),
-            friendLinkData: siteFunc.getFriendLink(),
+            hotItemListData: this.getHotItemListData(dq),
+            friendLinkData: this.getFriendLink(),
             tagsData: tagsData,
             cateInfo: cateInfo,
-            cateTypes: siteFunc.getCategoryList(),
+            cateTypes: this.getCategoryList(),
             pageInfo: documentList.pageInfo,
             pageType: 'cate',
             logined: isLogined(req),
@@ -142,18 +146,19 @@ var siteFunc = {
         }
     },
 
-    setDetailInfo: function (req, res, cateQuery, doc) {
+    setDetailInfo: function (req, res, cateQuery ,reCount ,doc) {
         var currentCateList = ContentCategory.find(cateQuery).sort({'sortId': 1});
         var tagsData = DbOpt.getDatasByParam(ContentTags, req, res, {});
         return {
-            siteConfig: siteFunc.siteInfos(doc.title, doc.discription, doc.keywords),
-            cateTypes: siteFunc.getCategoryList(),
+            siteConfig: this.siteInfos(doc.title, doc.discription, doc.keywords),
+            cateTypes: this.getCategoryList(),
             currentCateList: currentCateList,
-            hotItemListData: siteFunc.getHotItemListData({}),
-            newItemListData: siteFunc.getNewItemListData({}),
-            friendLinkData: siteFunc.getFriendLink(),
+            hotItemListData: this.getHotItemListData({}),
+            newItemListData: this.getNewItemListData({}),
+            friendLinkData: this.getFriendLink(),
+            reCommendListData : this.getRecommendListData(cateQuery,reCount),
             documentInfo: doc,
-            messageList : siteFunc.getMessageList(doc._id),
+            messageList : this.getMessageList(doc._id),
             pageType: 'detail',
             logined: isLogined(req),
             layout: 'web/public/defaultTemp'
@@ -165,9 +170,9 @@ var siteFunc = {
         var requireField = 'title date commentNum discription clickNum';
         var documentList = DbOpt.getPaginationResult(Content, req, res, q, requireField);
         return {
-            siteConfig: siteFunc.siteInfos("文档搜索"),
+            siteConfig: this.siteInfos("文档搜索"),
             documentList: documentList.docs,
-            cateTypes: siteFunc.getCategoryList(),
+            cateTypes: this.getCategoryList(),
             cateInfo: '',
             pageInfo: documentList.pageInfo,
             pageType: 'search',
@@ -178,8 +183,8 @@ var siteFunc = {
 
     setDataForError: function (req, res, title, errInfo) {
         return {
-            siteConfig: siteFunc.siteInfos(title),
-            cateTypes: siteFunc.getCategoryList(),
+            siteConfig: this.siteInfos(title),
+            cateTypes: this.getCategoryList(),
             errInfo: errInfo,
             pageType: 'error',
             logined: isLogined(req),
@@ -189,8 +194,8 @@ var siteFunc = {
 
     setDataForUser: function (req, res, title ,tokenId) {
         return {
-            siteConfig: siteFunc.siteInfos(title),
-            cateTypes: siteFunc.getCategoryList(),
+            siteConfig: this.siteInfos(title),
+            cateTypes: this.getCategoryList(),
             userInfo: req.session.user,
             tokenId : tokenId,
             layout: 'web/public/defaultTemp'
@@ -201,8 +206,8 @@ var siteFunc = {
         req.query.limit = 5;
         var documentList = DbOpt.getPaginationResult(Message, req, res, {'uid' : req.session.user._id});
         return {
-            siteConfig: siteFunc.siteInfos(title),
-            cateTypes: siteFunc.getCategoryList(),
+            siteConfig: this.siteInfos(title),
+            cateTypes: this.getCategoryList(),
             userInfo: req.session.user,
             replyList : documentList.docs,
             pageInfo: documentList.pageInfo,
@@ -214,8 +219,8 @@ var siteFunc = {
     setDataForInfo : function(infoType,infoContent){
 
         return {
-            siteConfig: siteFunc.siteInfos('操作提示'),
-            cateTypes: siteFunc.getCategoryList(),
+            siteConfig: this.siteInfos('操作提示'),
+            cateTypes: this.getCategoryList(),
             infoType : infoType,
             infoContent : infoContent,
             layout: 'web/public/defaultTemp'
@@ -234,9 +239,9 @@ var siteFunc = {
         xml += '<loc>' + root_path + '</loc>';
         xml += '<changefreq>daily</changefreq>';
         xml += '<lastmod>' + lastMod + '</lastmod>';
-        xml += '<priority>' + 0.8 + '</priority>';
+        xml += '<priority>' + 1 + '</priority>';
         xml += '</url>';
-        cache.get('sitemap', function(siteMapData){
+        cache.get(settings.session_secret + '_sitemap', function(siteMapData){
             if(siteMapData){ // 缓存已建立
                 res.end(siteMapData);
             }else{
@@ -249,7 +254,7 @@ var siteFunc = {
                             xml += '<loc>' + root_path + '/' +cate.defaultUrl + '___' + cate._id + '</loc>';
                             xml += '<changefreq>weekly</changefreq>';
                             xml += '<lastmod>' + lastMod + '</lastmod>';
-                            xml += '<priority>0.5</priority>';
+                            xml += '<priority>0.8</priority>';
                             xml += '</url>';
                         });
 
@@ -260,14 +265,14 @@ var siteFunc = {
                                 contentLists.forEach(function (post) {
                                     xml += '<url>';
                                     xml += '<loc>' + root_path + '/details/' + post._id + '.html</loc>';
-                                    xml += '<changefreq>Monthly</changefreq>';
+                                    xml += '<changefreq>weekly</changefreq>';
                                     xml += '<lastmod>' + lastMod + '</lastmod>';
                                     xml += '<priority>0.5</priority>';
                                     xml += '</url>';
                                 });
                                 xml += '</urlset>';
                                 // 缓存一天
-                                cache.set('sitemap', xml, 1000 * 60 * 60 * 24);
+                                cache.set(settings.session_secret + '_sitemap', xml, 1000 * 60 * 60 * 24);
                                 res.end(xml);
                             }
                         })

@@ -1,4 +1,6 @@
 <!--头部模板-->
+<!-- Place this tag right after the last button or just before your close body tag. -->
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 <header class="clearfix" id="header">
     <div class="container">
         <div class="text-right topNav">
@@ -21,6 +23,10 @@
                     <%for(var i=0;i<cateTypes.length;i++){%>
                     <li id="nav_<%=cateTypes[i]._id%>"><a href="/<%=cateTypes[i].defaultUrl%>___<%=cateTypes[i]._id%>"><%=cateTypes[i].name%></a></li>
                     <%}%>
+                    <li class="pull-right" style="padding-top: 8px">
+                        <!-- Place this tag where you want the button to render. -->
+                        <a aria-label="Star doramart/DoraCMS on GitHub" data-count-aria-label="# stargazers on GitHub" data-count-api="/repos/doramart/DoraCMS#stargazers_count" data-count-href="/doramart/DoraCMS/stargazers" href="https://github.com/doramart/DoraCMS" class="github-button">Star</a>
+                    </li>
                 </ul>
             </div>
         </div>

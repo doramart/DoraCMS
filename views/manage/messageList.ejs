@@ -9,7 +9,8 @@
                         <th>文章标题</th>
                         <th>留言内容</th>
                         <th>留言者</th>
-                        <th>关联ID(回复)</th>
+                        <th>邮箱</th>
+                        <th>关联用户(回复)</th>
                         <th>时间</th>
                         <th>管理</th>
                     </tr>
@@ -19,10 +20,11 @@
                         <td class="  sorting_1"><a href="/details/{{msgs.contentId}}.html" target="_blank">{{msgs.contentTitle | limitTo : 20}}</a></td>
                         <td class=" ">{{msgs.content | limitTo : 50}}</td>
                         <td class=" ">{{msgs.uName}}</td>
-                        <td class=" ">{{msgs.relationUid}}</td>
+                        <td class=" ">{{msgs.uEmail}}</td>
+                        <td class=" ">{{msgs.relationUName}}</td>
                         <td class=" ">{{msgs.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
                         <td class=" ">
-                            <button class="btn btn-primary btn-xs" data-whatever="{{msgs.content}}" data-toggle="modal" data-target="#getMsgDetails"><span class="fa fa-fw fa-comments-o" aria-hidden="true"></span>详情</button>
+                            <button class="btn btn-primary btn-xs" data-whatever="{{msgs}}" data-toggle="modal" data-target="#getMsgDetails"><span class="fa fa-fw fa-mail-reply" aria-hidden="true"></span>回复</button>
                             <button class="btn btn-default btn-xs" ng-click="delMsgsItem(msgs._id)"><span class="fa fa-fw fa-trash-o" aria-hidden="true"></span>删除</button>
                         </td>
                     </tr>
@@ -42,12 +44,27 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">查看留言详情</h4>
+                    <h4 class="modal-title">留言回复</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="" id="showMsgDetail" style="min-height: 60px;padding: 20px;">
+                    <div class="" id="showMsgDetail" style="min-height: 60px;padding: 10px 20px 40px;">
 
                     </div>
+                    <form role="form" class="form-horizontal" name="repForm" ng-submit="repMsgForm(repForm.$valid)" novalidate>
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label class="form-label-stripped">回复</label>
+                        </div>
+                        <div class="col-md-10">
+                            <textarea rows="3" class="form-control" ng-model="repFormData.content" required></textarea>
+                            <label for="inputError" class="control-label text-danger" ng-show="repForm.content.$invalid && !repForm.content.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 请填写正确的邮箱地址</label>
+                        </div>
+                    </div>
+                        <div class="margin-top-10">
+                            <button class="btn btn-primary theme-btn pull-right"  ng-disabled="repForm.$invalid">回复</button>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
@@ -63,6 +80,7 @@
             doraApp.controller("messageList",function($scope,$http){
 //                初始化名称和权限
                 $scope.formData = {};
+                $scope.repFormData = {};
                 //获取留言列表
                 initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
                 //删除留言
@@ -77,14 +95,31 @@
 //                查看留言详情
                 $('#getMsgDetails').on('show.bs.modal', function (event) {
                     var obj = $(event.relatedTarget);
-                    var msgDetails = obj.data('whatever');
+                    var msgObj = obj.data('whatever');
 
-                    $('#showMsgDetail').html(msgDetails);
+                    $('#showMsgDetail').html(msgObj.content);
+                    $scope.repFormData.relationMsgId = msgObj._id;
+                    $scope.repFormData.contentId = msgObj.contentId;
+                    $scope.repFormData.contentTitle = msgObj.contentTitle;
+                    $scope.repFormData.uName = '<%=adminUserInfo.name%>';
+                    $scope.repFormData.relationUid = msgObj.uid;
+                    $scope.repFormData.relationEmail = msgObj.uEmail;
+                    $scope.repFormData.relationUName = msgObj.uName;
 
                 }).on('hidden.bs.modal', function (e) {
                     // 清空数据
                     $('#showMsgDetail').html("");
+                    $scope.repFormData = {};
                 });
+
+//                留言回复
+                $scope.repMsgForm = function(isValid){
+
+                        angularHttp($http,isValid,'POST','/admin/manage/<%=bigCategory%>/addOne',$scope.repFormData,function(data){
+                            initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
+                        });
+
+                }
 
             });
 

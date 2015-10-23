@@ -4,7 +4,7 @@
         <h3>用户注册 &nbsp;<small class="text-danger hide" id="errorInfo">邮箱格式不正确</small></h3>
         <div class="form-group">
             <input type="text" class="form-control"  name="userName" id="userName" ng-minlength="5" ng-maxlength="12" ng-model="regFormData.userName" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{4,11}$/" placeholder="请输入用户名" required/>
-            <label for="inputError" class="control-label text-danger" ng-show="regForm.userName.$invalid && !regForm.userName.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 5-12个非特殊字符</label>
+            <label for="inputError" class="control-label text-danger" ng-show="regForm.userName.$invalid && !regForm.userName.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 用户名5-12个英文数字组合</label>
         </div>
         <div class="form-group">
             <input type="email" class="form-control" name="email" placeholder="请输入邮箱地址" ng-model="regFormData.email" ng-pattern="/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/" required/>

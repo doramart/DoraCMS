@@ -18,7 +18,9 @@ var message = new Schema({
     uid :  String, // 评论者ID
     uEmail : String, // 评论者邮箱
     ulogo : String, // 评论者头像
+    relationMsgId : String, // 关联的留言Id
     relationUid :  String, // 关联用户ID
+    relationUName :  String, // 关联用户名
     relationEmail :  String, // 关联用户邮箱（被评论者）
     date: { type: Date, default: Date.now }, // 留言时间
     praiseNum : {type : Number , default : 0}, // 被赞次数

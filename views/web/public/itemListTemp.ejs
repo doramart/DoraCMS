@@ -4,22 +4,28 @@ item为子元素集合
 -->
 <%if(documentList.length>0){%>
     <%documentList.forEach(function(item){%>
-    <article class="post">
+	<article class="post">
 
-        <h2 class="post-title">
-            <a href="/details/<%=item._id%>.html"><%=item.title%></a>
-            <%if(item.isTop == 1){%>
-            &nbsp;<small class="text-danger" title="推荐"><i class="glyphicon glyphicon-star"></i></small>
-            <%}%>
-        </h2>
-        <ul class="post-meta">
-            <li><%=myDateFormat(item.date)%>&nbsp;/&nbsp;<%=item.clickNum%> 次浏览</li>
-            <li class="comment-count"><a title="<%=item.title%> 上的评论" href="#"><%=item.commentNum%> 条评论</a></li>
-        </ul>
-        <div class="post-content"><%= item.discription%></div>
-
-    </article>
-    <%})%>
+		<div class="row">
+			<div class="col-md-3">
+				<img src="<%=item.sImg%>" class="img-responsive" alt="<%=item.title%>"/>
+			</div>
+			<div class="col-md-9">
+				<h2 class="post-title">
+					<a href="/details/<%=item._id%>.html" target="_blank"><%=item.title%></a>
+					<%if(item.isTop == 1){%>
+					&nbsp;<small class="text-danger" title="推荐"><i class="glyphicon glyphicon-star"></i></small>
+					<%}%>
+				</h2>
+				<ul class="post-meta">
+					<li><%=myDateFormat(item.date)%>&nbsp;/&nbsp;<%=item.clickNum%> 次浏览</li>
+					<li class="comment-count"><a title="<%=item.title%> 上的评论" href="#"><%=item.commentNum%> 条评论</a></li>
+				</ul>
+				<div class="post-content"><%= item.discription%></div>
+			</div>
+		</div>
+	</article>
+	<%})%>
 <%}else{%>
     <p class="text-center">暂无内容...</p>
 <%}%>

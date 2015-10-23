@@ -30,13 +30,18 @@
                         <th>类型</th>
                         <th>推荐</th>
                         <th>点击</th>
-                        <th>权限</th>
+                        <th>显示</th>
                         <th>发布人</th>
                         <th>操作</th>
                     </tr>
                     <tr class="datalist" ng-repeat="content in data">
                         <td><input type="checkbox" name="listItem" class="mini" value="{{content._id}}" ng-click="getNewIds()"/></td>
-                        <td>{{content.title}}</td>
+
+                        <td ng-switch on="content.type">
+                            <span ng-switch-when="content"><a href="/details/{{content._id}}.html" target="_blank">{{content.title}}</a></span>
+                            <span ng-switch-when="plug"><a href="/details/{{content._id}}.html" target="_blank">{{content.title}}</a></span>
+                            <span ng-switch-default>{{content.title}}</span>
+                        </td>
                         <td>{{content.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
                         <td>{{content.category}}</td>
                         <td ng-switch on="content.from">

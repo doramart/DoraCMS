@@ -60,7 +60,7 @@ var adminFunc = {
             regUsersCount : User.count({}),
             contentsCount : Content.count({}),
             msgCount : Message.count({}),
-            msgList : adminFunc.getMessageList()
+            msgList : this.getMessageList()
         })
     },
 
@@ -74,7 +74,7 @@ var adminFunc = {
         }
 
         return {
-            siteInfo : adminFunc.siteInfos(module[1]),
+            siteInfo : this.siteInfos(module[1]),
             bigCategory : module[0],
             searchKey : searchKey,
             currentLink : currentLink,
@@ -86,7 +86,7 @@ var adminFunc = {
     setDataForInfo : function(infoType,infoContent){
 
         return {
-            siteInfo : adminFunc.siteInfos('系统操作提示'),
+            siteInfo : this.siteInfos('系统操作提示'),
             bigCategory : 'noticePage',
             infoType : infoType,
             infoContent : infoContent,
@@ -146,10 +146,10 @@ var adminFunc = {
     },
 
     renderToManagePage : function(req,res,url,pageKey){
-        if(adminFunc.checkAdminPower(req,pageKey[0] + '_view')){
-            res.render(url, adminFunc.setPageInfo(req,res,pageKey,'/admin/'+url));
+        if(this.checkAdminPower(req,pageKey[0] + '_view')){
+            res.render(url, this.setPageInfo(req,res,pageKey,'/admin/'+url));
         }else{
-            res.render("manage/public/notice", adminFunc.setDataForInfo('danger','对不起，您无权操作 <strong>'+pageKey[1]+'</strong> 模块！'));
+            res.render("manage/public/notice", this.setDataForInfo('danger','对不起，您无权操作 <strong>'+pageKey[1]+'</strong> 模块！'));
         }
     }
 

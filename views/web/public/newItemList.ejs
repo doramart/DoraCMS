@@ -5,7 +5,7 @@
         <%if(newItemListData.length>0){%>
             <%newItemListData.forEach(function(item){%>
             <li>
-                <a href="/details/<%=item._id%>.html"><%=item.stitle%></a>
+                <a href="/details/<%=item._id%>.html" target="_blank"><%=item.stitle%></a>
             </li>
             <%})%>
         <%}else{%>

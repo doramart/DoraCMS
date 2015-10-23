@@ -1,18 +1,67 @@
+<style>
+    .lab-post {
+        background: #fff none repeat scroll 0 0;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    }
+
+    .lab-detail {
+        padding: 15px;
+    }
+
+    .lab-detail .title {
+        color: #3a3a3a;
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 240px;
+    }
+
+    .lab-detail .content {
+        color: #999999;
+        font-size: 13px;
+        line-height: 24px;
+        margin-top: 10px;
+        overflow: hidden;
+        height: 91px;
+    }
+
+    .lab-time {
+        color: #a0a0a0;
+        margin-top: 5px;
+    }
+</style>
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
-
-            <div class="col-md-9 left-frame">
-                <h3 class="archive-title">分类 <%=cateInfo.name%> 下的文章</h3>
-                <% include ../../public/itemListTemp %>
-                <% include ../../public/pagination %>
+        <div class="col-md-12" style="padding-top: 20px;">
+            <div class="row">
+                <% if(documentList.length > 0){ %>
+                <% documentList.forEach(function(item){ %>
+                <div class="col-md-3">
+                    <article class="lab-post">
+                        <div class="lab-img">
+                            <a href="/details/<%= item._id %>.html" target="_blank">
+                                <img src="<%= item.sImg %>" class="img-responsive" alt="<%= item.title %>"/>
+                            </a>
+                        </div>
+                        <div class="lab-detail">
+                            <a class="title" href="/details/<%= item._id %>.html" target="_blank"><%= item.title %></a>
+                            <div class="lab-time">
+                                <i class="glyphicon glyphicon-time"></i>&nbsp;<%= myDateFormat(item.date) %></div>
+                            <div class="content"><%= item.discription %></div>
+                        </div>
+                    </article>
+                </div>
+                <% }) %>
+                <% }else{ %>
+                <p class="text-center">暂无内容...</p>
+                <% } %>
             </div>
-            <div class="col-md-3 right-frame">
-                <% include ../../public/searchBoard %>
-                <% include ../../public/leftNav %>
-                <% include ../../public/hotNewsList %>
-                <% include ../../public/tagsList %>
-            </div>
+            <% include ../../public/pagination %>
         </div>
     </div>
 </div>

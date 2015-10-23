@@ -93,6 +93,7 @@
                 iniCateTree($scope,$http);
 //                初始化上传按钮
                 initUploadFyBtn('uploadPlugImg','plugTopImg',function(data){
+					alert('上传成功');
                     $("#myImg").attr("src",data);
                     $scope.formData.sImg = data;
                 });

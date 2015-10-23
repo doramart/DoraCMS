@@ -383,7 +383,6 @@ function initUploadFyBtn(id,key,callBack){
         'multi': true,
         //上传成功
         'onUploadSuccess' : function(file, data, response) {
-            alert('上传成功')
             callBack(data);
         },
         'onComplete': function(event, queueID, fileObj, response, data) {//当单个文件上传完成后触发
@@ -508,7 +507,7 @@ function setAdminPowerTreeData(){
 
         { id:'contentManage_msg', pId:'contentManage', name:"留言管理", open:true},
         { id:'contentManage_msg_view', pId:'contentManage_msg', name:"查看"},
-        { id:'contentManage_msg_modify', pId:'contentManage_msg', name:"修改"},
+        { id:'contentManage_msg_add', pId:'contentManage_msg', name:"回复"},
         { id:'contentManage_msg_del', pId:'contentManage_msg', name:"删除"},
 
         { id:'userManage', pId:0, name:"会员管理", open:true},

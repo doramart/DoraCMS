@@ -36,11 +36,12 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2">打开方式</label>
-                        <div class="col-sm-2">
-                            <select name="" id="" class="form-control" ng-model="formData.contentItem.target" required>
-                                <option value="_blank" selected>_blank</option>
-                                <option value="_self">_self</option>
-                            </select>
+                        <div class="col-sm-3">
+                            <select class="form-control" ng-model="formData.contentItem.target" ng-options="x.name as x.value for x in selectTarget" ng-change="changeOption()"></select>
+                            <!--<select name="" id="" class="form-control" ng-model="formData.contentItem.target" required>-->
+                                <!--<option value="_blank" selected>_blank</option>-->
+                                <!--<option value="_self">_self</option>-->
+                            <!--</select>-->
                         </div>
                     </div>
                     <div class="form-group">
@@ -83,8 +84,8 @@
                     <div class="form-group">
                         <label class="control-label col-sm-3">广告标识</label>
                         <div class="col-sm-2">
-                            <input type="text" class="form-control input-sm" name="mkey" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{3,7}$/" ng-model="formData.mkey" required/>
-                            <label for="inputError" class="control-label text-danger" ng-show="myForm.mkey.$invalid && !myForm.mkey.$pristine"><i class="fa fa-times-circle-o"></i> 4-8个英文字符</label>
+                            <input type="text" class="form-control input-sm" name="mkey" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{3,14}$/" ng-model="formData.mkey" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.mkey.$invalid && !myForm.mkey.$pristine"><i class="fa fa-times-circle-o"></i> 4-15个英文字符</label>
 
                         </div>
                     </div>
@@ -181,10 +182,18 @@
                 $scope.formData.content.link = "http://www.doramart.com";
                 $scope.formData.content.title = "默认链接标题";
                 $scope.formData.contentItem = {};
+
+                $scope.selectTarget = [
+                    {name:'_blank',value : '_blank'},
+                    {name:'_self',value : '_self'}
+                ];
+
+                $scope.formData.contentItem.target = '_blank';
                 var contentArray = [];
                 var editArrImg = [];
 //                初始化上传按钮
                 initUploadFyBtn('uploadAdsImg','',function(data){
+//                    alert('上传成功');
                     $("#myImg").attr("src",data);
                     $scope.formData.contentItem.sImg = data;
                 });
@@ -245,7 +254,7 @@
 //                    获取demo下元素个数
                     var demoLength = $('#imgInfolist').children('.alert').length;
 //                    在demo树下添加元素
-                    var newItem = getImgInfo($scope.formData.contentItem.sImg,$scope.formData.contentItem.link,$scope.formData.contentItem.width,$scope.formData.contentItem.height,$scope.formData.contentItem.discription);
+                    var newItem = getImgInfo($scope.formData.contentItem.sImg,$scope.formData.contentItem.link,$scope.formData.contentItem.width,$scope.formData.contentItem.height,$scope.formData.contentItem.target,$scope.formData.contentItem.discription);
                     $("#imgInfolist").append(newItem);
 //                    添加关闭按钮的监听事件
                     initCloseBtn($scope,contentArray);

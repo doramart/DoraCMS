@@ -71,41 +71,41 @@ router.post('/doLogin', function(req, res, next) {
 
     if(vnum != req.session.vnum){
         res.end('验证码有误！');
-    }
-    if(validator.isUserName(username) && validator.isPsd(password)){
-        AdminUser.findOne({username:username,password:newPsd},function(err,user){
-            if(user){
-
-//            缓存权限
-                AdminGroup.findOne({_id : user.group},function(err,result){
-                    if(err){
-                        console.log(err)
-                    }else{
-                        req.session.adminPower = result.power;
-                        req.session.adminlogined = true;
-                        req.session.adminUserInfo = user;
-//                    存入操作日志
-                        var loginLog = new SystemOptionLog();
-                        loginLog.type = 'login';
-                        loginLog.logs = user.username + ' 登录，IP:' + adminFunc.getClienIp(req);
-                        loginLog.save(function(err){
-                            if(err){
-                                res.end(err);
-                            }
-                        });
-                        res.end("success");
-                    }
-                });
-
-            }
-            else
-            {
-                console.log("登录失败");
-                res.end("用户名或密码错误");
-            }
-        })
     }else{
-        res.end(settings.system_illegal_param)
+        if(validator.isUserName(username) && validator.isPsd(password)){
+            AdminUser.findOne({username:username,password:newPsd},function(err,user){
+                if(user){
+//                  缓存权限
+                    AdminGroup.findOne({_id : user.group},function(err,result){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            req.session.adminPower = result.power;
+                            req.session.adminlogined = true;
+                            req.session.adminUserInfo = user;
+//                    存入操作日志
+                            var loginLog = new SystemOptionLog();
+                            loginLog.type = 'login';
+                            loginLog.logs = user.username + ' 登录，IP:' + adminFunc.getClienIp(req);
+                            loginLog.save(function(err){
+                                if(err){
+                                    res.end(err);
+                                }
+                            });
+                            res.end("success");
+                        }
+                    });
+
+                }
+                else
+                {
+                    console.log("登录失败");
+                    res.end("用户名或密码错误");
+                }
+            })
+        }else{
+            res.end(settings.system_illegal_param)
+        }
     }
 
 });
@@ -277,6 +277,8 @@ router.post('/manage/:defaultUrl/addOne',function(req,res,next){
             addOneContentTags(req,res)
         }else if(targetObj == ContentTemplate){
             addOneContentTemps(req,res)
+        }else if(targetObj == Message){
+            replyMessage(req,res);
         }else{
             DbOpt.addOne(targetObj,req, res,"add one obj");
         }
@@ -305,7 +307,7 @@ function removeMessage(req,res){
                             res.end(err);
                         }else{
                             Message.remove({_id : params.query.uid},function(err){
-                                if(contentObj.commentNum > 0){
+                                if(contentObj && contentObj.commentNum && contentObj.commentNum > 0){
                                     contentObj.commentNum = contentObj.commentNum -1 ;
                                     contentObj.save(function(err){
                                         if(err){
@@ -314,6 +316,8 @@ function removeMessage(req,res){
                                             res.end("success");
                                         }
                                     });
+                                }else{
+                                    res.end("success");
                                 }
                             });
                         }
@@ -751,6 +755,42 @@ function addOneContentTemps(req,res){
     });
 }
 
+
+//管理员回复用户
+function replyMessage(req,res){
+
+    var contentId = req.body.contentId;
+    var relationEmail = req.body.relationEmail;
+    var newMsg = new Message(req.body);
+    newMsg.save(function(){
+
+//        更新评论数
+        Content.findOne({_id : contentId},'commentNum',function(err,result){
+            if(err){
+                res.end(err);
+            }else{
+                result.commentNum = result.commentNum + 1;
+                result.save(function(err){
+                    if(err) throw err;
+
+//                    如果被评论用户存在邮箱，则发送提醒邮件
+                    if(relationEmail){
+                        system.sendEmail(settings.email_notice_user_contentMsg,newMsg,function(err){
+                            if(err){
+                                res.end(err);
+                            }else{
+                                console.log('-----sent user email success--------')
+                            }
+                        });
+                    }
+
+                    res.end("success");
+                });
+            }
+        });
+
+    });
+}
 
 
 

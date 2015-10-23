@@ -2,14 +2,13 @@
 body {
     background-color: #FFF;
     color: #444;
-    font-family: "Microsoft Yahei","冬青黑体简体中文 w3";
+    font-family: "Microsoft Yahei", "冬青黑体简体中文 w3";
     -webkit-font-smoothing: antialiased;
     font-size: 14px;
 }
 
 .form-control, .btn {
     border-radius: 0;
-    border: 1px solid #ddd;
 }
 
 ul {
@@ -26,7 +25,7 @@ h2 {
 }
 
 h1, h2, h3 {
-    font-family: "Microsoft Yahei","冬青黑体简体中文 w3";
+    font-family: "Microsoft Yahei", "冬青黑体简体中文 w3";
     font-weight: 700;
 }
 
@@ -113,7 +112,6 @@ a:hover {
 
 .post img {
     max-width: 100%;
-    padding: 3px;
 }
 
 .post .post-title {
@@ -278,6 +276,52 @@ a:hover {
 .replyList li h4, .replyList li blockquote {
     font-size: 13px;
     font-weight: normal;
+}
+
+/*文档推荐*/
+
+.reCommendList dl dd {
+    margin-top: 10px;
+}
+
+.reCommendList dl dd a {
+    line-height: 25px;
+}
+
+/*实验室*/
+.lab_container {
+    padding: 5rem 6rem;
+}
+
+.lab_container {
+    background-color: #159957;
+    background-image: linear-gradient(120deg, #155799, #159957);
+    color: #fff;
+    text-align: center;
+}
+
+.lab_container .plug-name:link {
+    color: #FFFFFF
+}
+
+.lab_container p {
+    margin: 50px auto;
+}
+
+/*返回顶部*/
+.back-to-top {
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+    color: #333333;
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    font-size: 30px;
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    transition: opacity 0.8s ease 0s;
 }
 
 /*footer部分*/

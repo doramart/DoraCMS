@@ -93,7 +93,7 @@ router.post('/doReg', function(req, res, next) {
     var confirmPsd = req.body.confirmPassword;
 //    数据校验
     if(!validator.isUserName(userName)){
-        errors = "用户名5-12个英文字符";
+        errors = "用户名5-12个英文数字组合";
     }
     if(!validator.isPsd(password) || !validator.isLength(password,6,12)){
         errors = "6-12位，只能包含字母、数字和下划线";
@@ -108,18 +108,20 @@ router.post('/doReg', function(req, res, next) {
     if(errors){
         res.end(errors);
     }else{
-        User.findOne({email : email},function(err,user){
-            if(user){
-                errors = "邮箱重复，请更换后重试"
+//        邮箱和用户名都必须唯一
+        var query=User.find().or([{'email' : email},{userName : userName}]);
+//    标签或别名不允许重复
+        query.exec(function(err,user){
+            if(user.length > 0){
+                errors = "邮箱或用户名已存在！";
                 res.end(errors);
-            }
-            else{
-                //        数据加密
+            }else{
                 var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
                 req.body.password = newPsd;
                 DbOpt.addOne(User,req, res,"add a new user")
             }
-        })
+        });
+
     }
 
 });
@@ -352,7 +354,7 @@ router.post('/userInfo/modify', function(req, res, next) {
         errors = "用户名5-12个英文字符";
     }
 
-    if(!validator.isGBKName(name) || !validator.isLength(name,1,5)){
+    if(name && (!validator.isGBKName(name) || !validator.isLength(name,1,5))){
         errors = "姓名格式不正确";
     }
 
@@ -360,19 +362,19 @@ router.post('/userInfo/modify', function(req, res, next) {
         errors = "请填写正确的邮箱地址";
     }
 
-    if(!validator.isGBKName(city) || !validator.isLength(city,0,12)){
+    if(city && (!validator.isGBKName(city) || !validator.isLength(city,0,12))){
         errors = "请填写正确的城市名称";
     }
 
-    if(!validator.isGBKName(company) || !validator.isLength(company,0,12)){
+    if(company && (!validator.isGBKName(company) || !validator.isLength(company,0,12))){
         errors = "请填写正确的学校中文名称";
     }
 
-    if(!validator.isQQ(qq)){
+    if(qq && !validator.isQQ(qq)){
         errors = "请填写正确的QQ号码";
     }
 
-    if(!validator.isMobilePhone(phoneNum, 'zh-CN')){
+    if(phoneNum && !validator.isMobilePhone(phoneNum, 'zh-CN')){
         errors = "请填写正确的手机号码";
     }
 
@@ -400,6 +402,10 @@ router.post('/resetMyPsd', function(req, res, next) {
     }
     if(!validator.isPsd(userPsd) || !validator.isLength(userPsd,6,12)){
         errors = "6-12位，只能包含字母、数字和下划线";
+    }
+
+    if(userPsd === oldPassword){
+        errors = "新密码和原密码不能相同";
     }
 
     if(errors){

@@ -39,7 +39,7 @@ router.get("/sitemap.html", function (req, res, next) {
         layout: 'web/public/defaultTemp'
     };
 
-    cache.get('siteMapHtml',function(siteMapHtml){
+    cache.get(settings.session_secret + '_siteMapHtml',function(siteMapHtml){
        if(siteMapHtml) {
            siteMapNeedData.documentList = siteMapHtml;
            res.render('web/sitemap', siteMapNeedData);
@@ -49,7 +49,7 @@ router.get("/sitemap.html", function (req, res, next) {
                    res.end(err);
                }else{
                    siteMapNeedData.documentList = docs;
-                   cache.set('siteMapHtml', docs, 1000 * 60 * 60 * 24); // 缓存一天
+                   cache.set(settings.session_secret + '_siteMapHtml', docs, 1000 * 60 * 60 * 24); // 缓存一天
                    res.render('web/sitemap', siteMapNeedData);
                }
            })
@@ -74,7 +74,10 @@ router.get('/details/:url', function (req, res, next) {
                     result.save(function(){
                         var cateParentId = result.sortPath.split(',')[1];
                         var cateQuery = {'sortPath': { $regex: new RegExp(cateParentId, 'i') }};
-                        res.render('web/temp/' + result.contentTemp + '/detail', siteFunc.setDetailInfo(req, res, cateQuery, result));
+//                        var reQuery = {'sortPath': { $regex: new RegExp(cateParentId, 'i') },'isTop' : 1};
+                        Content.count(cateQuery,function(err,reCount){
+                            res.render('web/temp/' + result.contentTemp + '/detail', siteFunc.setDetailInfo(req, res, cateQuery, reCount, result));
+                        })
                     })
                 } else {
                     res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("页面未找到")});

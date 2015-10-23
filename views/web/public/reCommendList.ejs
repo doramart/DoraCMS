@@ -1,0 +1,18 @@
+<!--文章推荐模块-->
+<div class="row reCommendList">
+    <%if(reCommendListData.length>0){%>
+        <%reCommendListData.forEach(function(item){%>
+        <dl class="col-md-3">
+            <dt>
+                <a title="<%=item.title%>" href="/details/<%=item._id%>.html">
+                    <img class="img-responsive" alt="<%=item.title%>" src="<%=item.sImg%>">
+                </a>
+            </dt>
+            <dd><a title="<%=item.title%>" href="/details/<%=item._id%>.html"><%=item.title%></a>
+            </dd>
+        </dl>
+        <%})%>
+    <%}else{%>
+    <li class="text-center">暂无推荐内容...</li>
+    <%}%>
+</div>
