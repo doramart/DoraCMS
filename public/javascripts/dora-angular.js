@@ -42,7 +42,7 @@ function changeToTreeJson(result,key,oldValue){
     var arrTree = [];
     var treeItem;
     for(var i=0;i<result.length;i++){
-        if(key === "tags" || key === "filmTypes"){
+        if(key === "tags"){
             var checkState = false;
             var tagsArr = oldValue.split(",");
             for(var j=0;j<tagsArr.length;j++){
@@ -53,9 +53,9 @@ function changeToTreeJson(result,key,oldValue){
             }
             treeItem = new TagsTree(result[i]._id,result[i].name,checkState);
 
-        }else if(key === "temps"){
+        }else if(key === "tempTree"){
             treeItem = new TempsTree(result[i]._id,result[i].name,result[i].alias);
-        }else if(key === "tempForders"){
+        }else if(key === "tempForderTree"){
             treeItem = new TempsTree(0,result[i].name,"");
         }else{
 //            alert(result[i].name+"--"+result[i].parentID)
@@ -415,7 +415,7 @@ function iniNormalTree($http,treeObjId,url,listId,currentId,onClick){
                 $("#"+listId).html(getCateNameById(result,currentId));
             }
         }
-        var arrTree = changeToTreeJson(result);
+        var arrTree = changeToTreeJson(result,treeObjId);
         var setting = {
             view: {
                 dblClickExpand: false,
