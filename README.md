@@ -88,9 +88,9 @@
 
 ### 1.3.2 插入初始数据
 - 找到routes下的validat.js文件,注释下面的代码
-![qq 20151112111825](https://cloud.githubusercontent.com/assets/11911066/11110215/1c22e118-8934-11e5-8cbf-afcf6dab5d52.jpg)
+- ![qq 20151112111825](https://cloud.githubusercontent.com/assets/11911066/11110215/1c22e118-8934-11e5-8cbf-afcf6dab5d52.jpg)
 - 找到/models/db 下的 adminFunc.js ，注释下面的一段，直接返回true
-![qq 20151112111915](https://cloud.githubusercontent.com/assets/11911066/11110264/91f7dcf4-8934-11e5-8ac8-a463c12450ff.jpg)
+- ![qq 20151112111915](https://cloud.githubusercontent.com/assets/11911066/11110264/91f7dcf4-8934-11e5-8ac8-a463c12450ff.jpg)
 
 至此，访问后台页面就不需要登录了，开启服务后，你可以直接访问地址：
 管理员添加 ： http://127.0.0.1:81/admin/manage/adminUsersList
