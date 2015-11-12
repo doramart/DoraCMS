@@ -89,7 +89,7 @@
 ### 1.3.2 插入初始数据
 - 找到routes下的validat.js文件,注释下面的代码
 ![DoraCMS](http://www.html-js.cn/blogpicture/2015_11_12_11_18_13_476_1000.jpg "DoraCMS")
-- 找到/models/db 下的 adminFunc.js ，注释下面的一段，直接返回true
+- 找到/models/db 下的 adminFunc.js ，注释下面的一段，直接返回真
 ![DoraCMS](http://www.html-js.cn/blogpicture/2015_11_12_11_19_18_815_1001.jpg "DoraCMS")
 
 至此，访问后台页面就不需要登录了，开启服务后，你可以直接访问地址：
