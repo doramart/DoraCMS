@@ -7,7 +7,7 @@ var shortid = require('shortid');
 var Schema = mongoose.Schema;
 
 
-var contentTags = new Schema({
+var ContentTagsSchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -19,7 +19,8 @@ var contentTags = new Schema({
     comments : String
 });
 
-var ContentTags = mongoose.model("ContentTags",contentTags);
+
+var ContentTags = mongoose.model("ContentTags",ContentTagsSchema);
 
 module.exports = ContentTags;
 

@@ -164,9 +164,9 @@
         getFolderList($scope,$http,"");
 
 //                监听确认删除弹窗，传递参数
-        $scope.delFilesItem = function(path){
+        $scope.delFilesItem = function(filePath){
             initCheckIfDo($scope,'','您确认要删除该文件吗？',function(path){
-                angularHttpGet($http,"/admin/manage/filesList/fileDel?filePath="+path,function(){
+                angularHttpGet($http,"/admin/manage/filesList/fileDel?filePath="+filePath,function(){
                     getFolderList($scope,$http,$scope.rootPath +$scope.currentPath);
                 });
             });

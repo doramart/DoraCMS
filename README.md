@@ -4,7 +4,7 @@
 - 2、failed to load c++ bson extension 这个问题不用管,node自己的问题,不影响程序运行
 - 3、今天正式去掉了node_modules，运行前需要在代码根目录下执行 npm install 来安装，不然会导致不同node或系统兼容性问题（感谢[@faceair](https://cnodejs.org/user/faceair)的建议）
 - 4、testuser 用户只有后台查看的权限，作为前端博客还在维护，目的是让用户了解后台结构和相关功能，不允许普通用户有数据库相关操作，请知悉
-
+- 5、后台数据初始化的方式已变更，不用那么麻烦了，具体参考[DoraCMSV1.0.7升级指南](http://www.html-js.cn/details/VymuSlpGg.html)
 ###-------------------------------------------------------------------------------
        
 ![DoraCMS](http://git.oschina.net/uploads/images/2015/0930/174726_d78c4a23_352304.jpeg "DoraCMS")
@@ -26,119 +26,26 @@
 
 ###-------------------------------------------------------------------------------
 
-###版本更新 2015年10月23日11:27:01
-###版本号v1.0.6
+###版本更新 2015年11月12日11:04:04
+###版本号v1.0.7
 ###更新内容：
 
-- 1、修改了实验室模块模板
-- 2、文档列表加入了首图显示
-- 3、文档详情页和关于我去掉了左侧没必要显示的列表
-- 4、文档详情页底部增加了随机记录显示
-- 5、个人中心信息管理优化（用户名和邮箱禁止修改，注册用户名唯一性校验）
-- 6、优化文档列表打开方式（参考各类大型网站，列表新窗口打开）
-- 7、优化留言模块，新增管理员后台回复功能，并邮件提醒对方
-- 8、添加返回到顶部小按钮
-- 9、优化了广告模块（支持单图显示和多图轮播，可配置）
-- 10、优化了站点地图的缓存关键字，避免同一服务器多站点缓存混淆
-- 11、修复了管理员登录记录缓存的一个bug
-- 11、修复了一些很明显的小bug
+- 1、优化了相关字体图标
+- 2、优化了文档列表的展示
+- 3、优化的留言模块的类结构（留言模块引入了对象关联，删掉了一些没必要的属性）
+- 4、优化了管理员用户的类结构（同样是对象关联）
+- 5、通过虚拟属性显示文档类别 (之前只能显示ID号)
+- 6、优化了首页首图展示（更大压缩以减少访问时间）
+- 7、所有的实体对象规范了写法
+- 8、优化了需要展示类别文本的地方却显示ID的问题
+- 9、修改了文件管理器删除文件出错的bug
+- 10、优化了添加分类或添加管理用户需要选择分类或用户组不选也可以保存的问题（会直接导致前台访问报错）
+- 11、广告模块添加了显示或隐藏
+- 12、修复了点击tags标签搜索结果图片不显示的问题
+- 13、修复了一些小bug
 
-
-###-------------------------------------------------------------------------------
-
-###版本更新 2015年10月15日11:27:01
-###版本号v1.0.5
-###更新内容：
-
-- 1、列表显示（热门新闻、tags、列表等）加入了记录为0的显示情况
-- 2、后台登录加入了验证码功能
-- 3、后台图片上传组件优化(传入上传文件类型参数)
-- 4、后台添加文章默认去管理员姓名为author
-- 5、修复了用户中心留言翻页的bug
-- 6、对大部分前台传入后台的参数进行校验
-- 7、缓存站点地图的路径问题
-- 8、加入了静态资源版本戳
-- 9、修复了一些小bug。
-
-
-###-------------------------------------------------------------------------------
-
-###版本更新 2015年9月30日18:21:58
-###版本号v1.0.4
-###更新内容：
-
-- 1、抽取出了后台的搜索模块
-- 2、加入了批量删除功能
-- 3、标签模块修复了搜索bug
-- 4、修复前台icon图标不显示的问题
-- 5、后台添加了登录日志管理
-- 6、后台数据加载加入了loading
-- 7、统一了后台数据显示表格样式
-- 8、修复了时间格式化问题（上午和下午显示的小时数一致）
-- 9、修复了管理首页留言记录样式问题
-- 10、删除单条记录和批量删除提取为公共js
-- 11、修复了一个兄弟提到的保存记录没有容错处理的问题
-- 12、修复了一些小bug。
-
-###-------------------------------------------------------------------------------
-
-###版本更新 2015年9月23日16:44:43
-###版本号v1.0.3
-###更新内容：
-
-- 1、用户中心添加‘参与话题’模块
-- 2、取消了后台鉴权的多层嵌套
-- 3、增加了系统操作提示
-- 4、完善了后台权限管理机制
-- 5、抽取了后台公共弹窗提示和信息提示
-- 6、抽取出后台公用js（ztree,uploadify,angularjs的get、post方法等）后台重复使用的方法，减少冗余代码
-- 7、彻底去掉了邮件模板设置模块
-- 8、重写了前台分页，去掉了最初的angularJS分页，使用原生js展现
-- 9、修复了一个查询的bug
-- 10、计划近期开放后台查看功能，敬请期待。
-
-###-------------------------------------------------------------------------------
-
-###版本更新 2015年9月11日20:32:05
-###版本号v1.0.2
-###修复内容：
-- 1、整理了相关方法类文件，归档到util下
-- 2、站点地图自动生成，后面不用自己传了
-- 3、加入了缓存机制，目前对用户登录加入了缓存控制，站点地图也缓存了
-- 4、添加了用户找回密码的功能，这个功能DoraCMS以前去掉了，现在重新整理代码后加上
-- 5、合代码的时候发现部分文件漏掉了，十分抱歉，这次补上，如果本地调试发现问题，可以随时issue me
-
-###-------------------------------------------------------------------------------
-
-
-###版本更新 2015年9月5日22:16:46
-###版本号v1.0.1
-###修复内容：
-- 1、整理了admin.js的部分代码，主要针对列表请求、增、删、改、查的优化，并减少了冗余代码
-- 2、针对接口重新整理了后台界面的angularjs的调用
-- 3、去掉了“文档属性管理” ，栏目，就目前看，这个栏目基本没用
-
-### 后台的相关功能将继续完善，如果您有任何问题，请在issue中提出，我会尽快解答
-
-###-------------------------------------------------------------------------------
-
-###版本更新 2015年8月30日18:39:01
-###版本号v1.0.0
-###修复内容：
-- 1、重构了前端界面，模块化CMS基础部分
-- 2、删掉了冗余的js和css，力求通过最简单的方式表达界面
-- 3、前台尽量减少ajax请求
-- 4、后台整理了返回数据的接口
-- 5、干掉了七牛云存储和QQ登录等需要借助第三方才能正常使用的东东
-- 6、恢复了原生态的注册、登录
-- 7、源代码比以前减少30%
-- 8、演示地址：http://www.html-js.cn
-
-###参考了一些优秀的框架，个人有时候很避讳框架类型的东西，只有了解清楚本质在用才有意义，所以架构方面的框架先学习学习再说吧，暂时不引用到DoraCMS中
-###接下来计划对后台代码进行整理
-
-###注意：本次更新变化很大，如果您在之前基础上开发，请先备份。
-
+## 注意：- 1、本次改动比较大，本地mongodb有数据的需要处理一下，具体操作参考文档 [DoraCMSV1.0.7升级指南](http://www.html-js.cn/details/VymuSlpGg.html)
+	     - 2、很多童鞋对于进入后台很苦恼，现在不用手动插入数据了，你可以自己录入，具体也可以参考上面的指南。
 ###-------------------------------------------------------------------------------
 
 #DoraCMS开发指南
@@ -180,42 +87,15 @@
 
 
 ### 1.3.2 插入初始数据
-- 在《DoraCMS操作指南》 中有提到插入初始管理数据，因为刚安装的数据是空的，需要插入初始数据来管理后台，这里重新介绍一次：
-- ①、找到Mongodb安装目录(MongoDB\Server\3.0\bin) 执行 mongo.exe
-- ②、输入 use doracms
-- ③、插入用户组数据
+找到routes下的validat.js文件,注释下面的代码：
+![DoraCMS](http://www.html-js.cn/blogpicture/2015_11_12_11_18_13_476_1000.jpg "DoraCMS")
+找到/models/db 下的 adminFunc.js ，注释下面的一段，直接返回true
+![DoraCMS](http://www.html-js.cn/blogpicture/2015_11_12_11_19_18_815_1001.jpg "DoraCMS")
 
-```
-db.admingroups.insert({
-  "_id" : "4yTbsWiI",
-  "name" : "超级管理员",
-  "power" : "[\"sysTemManage:true\",\"sysTemManage_user:true\",\"sysTemManage_user_add:true\",\"sysTemManage_user_view:true\",\"sysTemManage_user_modify:true\",\"sysTemManage_user_del:true\",\"sysTemManage_uGroup:true\",\"sysTemManage_uGroup_add:true\",\"sysTemManage_uGroup_view:true\",\"sysTemManage_uGroup_modify:true\",\"sysTemManage_uGroup_del:true\",\"sysTemManage_ads:true\",\"sysTemManage_ads_add:true\",\"sysTemManage_ads_view:true\",\"sysTemManage_ads_modify:true\",\"sysTemManage_ads_del:true\",\"sysTemManage_files:true\",\"sysTemManage_files_view:true\",\"sysTemManage_data:true\",\"sysTemManage_data_1:true\",\"sysTemManage_data_1_view:true\",\"sysTemManage_data_1_backup:true\",\"sysTemManage_data_1_del:true\",\"contentManage:true\",\"contentManage_content:true\",\"contentManage_content_add:true\",\"contentManage_content_view:true\",\"contentManage_content_top:true\",\"contentManage_content_modify:true\",\"contentManage_content_del:true\",\"contentManage_cateGory:true\",\"contentManage_cateGory_add:true\",\"contentManage_cateGory_view:true\",\"contentManage_cateGory_modify:true\",\"contentManage_cateGory_del:true\",\"contentManage_tag:true\",\"contentManage_tag_add:true\",\"contentManage_tag_view:true\",\"contentManage_tag_modify:true\",\"contentManage_tag_del:true\",\"contentManage_temp:true\",\"contentManage_temp_add:true\",\"contentManage_temp_view:true\",\"contentManage_temp_modify:true\",\"contentManage_temp_del:true\",\"contentManage_msg:true\",\"contentManage_msg_view:true\",\"contentManage_msg_modify:true\",\"contentManage_msg_del:true\",\"userManage:true\",\"userManage_user:true\",\"userManage_user_view:true\",\"userManage_user_modify:true\",\"userManage_user_del:true\"]",
-  "date" : ISODate("2015-06-30T08:04:46.092Z"),
-  "__v" : 0
-})
-
-```
-
-- ④、插入用户数据
-
-```
-db.adminusers.insert({
-  "_id" : "E1jNjZi8",
-  "name" : "test",
-  "username" : "test",
-  "password" : "14700a6f381897e0",
-  "phoneNum" : 12358563215.0,
-  "email" : "doramart@qq.com",
-  "group" : "4yTbsWiI",
-  "comments" : "doramart",
-  "logo" : "/upload/images/defaultlogo.png",
-  "date" : ISODate("2015-06-18T01:17:15.007Z"),
-  "__v" : 0
-})
-
-```
-
-- ⑤、插入数据如果存在格式问题，需要在记事本里编辑一下。如果上述执行正常，那么默认的登录名和密码为  test / doracms  ,这样，您就可以正常登录后台了。
+至此，访问后台页面就不需要登录了，开启服务后，你可以直接访问地址：
+管理员添加 ： http://127.0.0.1:81/admin/manage/adminUsersList
+用户组管理 ：http://127.0.0.1:81/admin/manage/adminGroupList
+注意：先添加用户组，在添加管理员，完成上面的操作，把代码还原回去，并重启服务。用刚才设置的管理员信息登录后台。
 
 ### 1.3.3运行DoraCMS
 - 在刚刚svn下载的代码目录下 调出cmd命令窗口，执行npm start 

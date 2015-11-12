@@ -1,5 +1,16 @@
 <div class="container">
 	<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"right","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+    <script>
+        (function(){
+
+            var bp = document.createElement('script');
+            bp.src = '//push.zhanzhang.baidu.com/push.js';
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+
+        })();
+    </script>
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-9 left-frame">
@@ -10,8 +21,10 @@
                         <%}%>
                     </h2>
                     <ul class="post-meta">
-                        <li><%=myDateFormat(documentInfo.date)%>&nbsp;/&nbsp;<%=documentInfo.clickNum%> 次浏览</li>
-                        <li class="comment-count"><a title="<%=documentInfo.title%> 上的评论" href="#"><%=documentInfo.commentNum%> 条评论</a></li>
+                        <li><i class="fa fa-user" aria-hidden="true"></i>&nbsp;<%=documentInfo.author%></li>
+                        <li><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;<%=myDateFormat(documentInfo.date)%></li>
+                        <li> <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;阅读(<%=documentInfo.clickNum%>)</li>
+                        <li> <i class="fa fa-comments-o" aria-hidden="true"></i>&nbsp;评论(<%=documentInfo.commentNum%>)</li>
                     </ul>
                     <div class="post-content"><%- documentInfo.comments%></div>
                 </article>

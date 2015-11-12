@@ -7,7 +7,7 @@ var shortid = require('shortid');
 var Schema = mongoose.Schema;
 
 
-var dataOptionLog = new Schema({
+var DataOptionLogSchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -19,7 +19,7 @@ var dataOptionLog = new Schema({
     logs : String
 });
 
-var DataOptionLog = mongoose.model("DataOptionLog",dataOptionLog);
+var DataOptionLog = mongoose.model("DataOptionLog",DataOptionLogSchema);
 
 module.exports = DataOptionLog;
 

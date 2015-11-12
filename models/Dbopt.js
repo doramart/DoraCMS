@@ -7,6 +7,8 @@ var url = require('url');
 var crypto = require("crypto");
 var mongoose = require('mongoose');
 var shortid = require('shortid');
+var Message = require('./Message');
+var AdminUser = require("./AdminUser");
 //站点配置
 var settings = require("../models/db/settings");
 var db = mongoose.connect('mongodb://localhost/doracms');
@@ -30,7 +32,7 @@ var DbOpt = {
                 }
             })
         }else{
-            res.end("参数非法");
+            res.end(settings.system_illegal_param);
         }
 
     },
@@ -44,7 +46,7 @@ var DbOpt = {
             }
         })
     },
-    findOne : function(obj,req,res,logMsg,key){ //根据ID查找单条记录
+    findOne : function(obj,req,res,logMsg){ //根据ID查找单条记录
         var params = url.parse(req.url,true);
         var targetId = params.query.uid;
         if(shortid.isValid(targetId)){
@@ -57,13 +59,14 @@ var DbOpt = {
                 }
             })
         }else{
-            res.end("参数非法");
+            res.end(settings.system_illegal_param);
         }
 
     },
     updateOneByID : function(obj,req,res,logMsg){
         var params = url.parse(req.url,true);
         var targetId = params.query.uid;
+
         if(shortid.isValid(targetId)){
             var conditions = {_id : targetId};
             req.body.updateDate = new Date();
@@ -77,17 +80,16 @@ var DbOpt = {
                 }
             })
         }else{
-            res.end("参数非法");
+            res.end(settings.system_illegal_param);
         }
 
     },
-    addOne : function(obj,req,res,logMsg){
+    addOne : function(obj,req,res){
         var newObj = new obj(req.body);
         newObj.save(function(err){
             if(err){
                 res.end(err);
             }else{
-                console.log(logMsg+" success!");
                 res.end("success");
             }
         });
@@ -112,8 +114,14 @@ var DbOpt = {
         else{
             query=obj.find({});
         }
-
         query.sort({'date': -1});
+
+        if(obj === Message){
+            query.populate('author').populate('replyAuthor').populate('adminAuthor');
+        }else if(obj === AdminUser){
+            query.populate('group');
+        }
+
         query.exec(function(err,docs){
             if(err){
                 console.log(err)

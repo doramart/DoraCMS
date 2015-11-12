@@ -21,8 +21,8 @@
                     </tr>
                     <tr class="datalist" ng-repeat="user in data">
                         <td><input type="checkbox" name="listItem" class="mini" value="{{user._id}}" ng-click="getNewIds()"/></td>
-                        <td class="  sorting_1">{{user.username}}</td>
-                        <td class=" ">{{user.group}}</td>
+                        <td class="  sorting_1">{{user.userName}}</td>
+                        <td class=" ">{{user.group.name}}</td>
                         <td class=" ">{{user.name}}</td>
                         <td class=" ">{{user.phoneNum}}</td>
                         <td class=" ">{{user.email}}</td>
@@ -52,8 +52,8 @@
                         <div class="form-group">
                             <label class="control-label col-sm-4">用户名</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="username" ng-model="formData.username" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{4,11}$/" required/>
-                                <label for="inputError" class="control-label text-danger" ng-show="myForm.username.$invalid && !myForm.username.$pristine"><i class="fa fa-times-circle-o"></i> 5-12个英文字符</label>
+                                <input type="text" class="form-control" name="userName" ng-model="formData.userName" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{4,11}$/" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.userName.$invalid && !myForm.userName.$pristine"><i class="fa fa-times-circle-o"></i> 5-12个英文字符</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -170,6 +170,11 @@
                         url = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
                     }
 
+                    if(!$scope.formData.group){
+                        alert('请选择用户组!');
+                        return false;
+                    }
+
                     angularHttp($http,isValid,'POST',url,$scope.formData,function(data){
                         initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
                     });
@@ -198,8 +203,8 @@
     function getAdminGroup($scope,$http){
 
         var currentCate = '';
-        if($scope.formData){
-            currentCate = $scope.formData.group;
+        if($scope.formData && $scope.formData.group){
+            currentCate = $scope.formData.group._id;
         }
 
         iniNormalTree($http,'groupTree',"/admin/manage/adminGroupList/list",'categoryName',currentCate,function(e, treeId, treeNode){

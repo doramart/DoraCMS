@@ -41,7 +41,7 @@ var system = {
         }else if(key == settings.email_notice_user_contentMsg){
             emailSubject = emailTitle = '['+settings.SITETITLE +'] 有人给您留言啦';
             emailContent = siteFunc.setNoticeToUserEmailTemp(obj);
-            toEmail = obj.relationEmail;
+            toEmail = obj.replyAuthor.email;
         }else if(key == settings.email_notice_contentBug){
             emailSubject = emailTitle = '['+settings.SITETITLE +'] 有人给您提bug啦';
             emailContent = siteFunc.setBugToAdminEmailTemp(obj);
@@ -128,7 +128,7 @@ var system = {
                             "path" : tmpPath,
                             "size" : stats.size,
                             "date" : stats.mtime
-                        }
+                        };
                         filesList.push(fileInfo);
 
                     }

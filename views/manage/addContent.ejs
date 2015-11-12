@@ -145,6 +145,11 @@
                         url = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
                     }
 
+                    if(!$scope.formData.category){
+                        alert('请选择文档类别');
+                        return false;
+                    }
+
                     angularHttp($http,isValid,'POST',url,$scope.formData,function(data){
                         window.location = "/admin/manage/contentList";
                     });

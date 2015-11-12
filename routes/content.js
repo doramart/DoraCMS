@@ -91,7 +91,19 @@ router.get('/qrImg/show', function(req, res, next) {
 
 //查找指定广告
 router.get('/requestAds/ads/item', function(req, res, next) {
-    DbOpt.findOne(Ads,req, res,"find one Adds")
+    var params = url.parse(req.url,true);
+    var targetId = params.query.uid;
+    if(shortid.isValid(targetId)){
+        Ads.findOne({'_id' : targetId , 'state': '1'}, function (err,result) {
+            if(err){
+                res.next(err);
+            }else{
+                return res.json(result);
+            }
+        })
+    }else{
+        res.end(settings.system_illegal_param);
+    }
 });
 
 

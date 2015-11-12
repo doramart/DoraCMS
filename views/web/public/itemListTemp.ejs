@@ -7,19 +7,21 @@ item为子元素集合
 	<article class="post">
 
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-xs-3 col-md-3">
+                <%if(item.isTop == 1){%>
+                    <span class="span-mark">荐</span>
+                <%}%>
 				<img src="<%=item.sImg%>" class="img-responsive" alt="<%=item.title%>"/>
 			</div>
-			<div class="col-md-9">
+			<div class="col-xs-9 col-md-9">
 				<h2 class="post-title">
 					<a href="/details/<%=item._id%>.html" target="_blank"><%=item.title%></a>
-					<%if(item.isTop == 1){%>
-					&nbsp;<small class="text-danger" title="推荐"><i class="glyphicon glyphicon-star"></i></small>
-					<%}%>
+
 				</h2>
 				<ul class="post-meta">
-					<li><%=myDateFormat(item.date)%>&nbsp;/&nbsp;<%=item.clickNum%> 次浏览</li>
-					<li class="comment-count"><a title="<%=item.title%> 上的评论" href="#"><%=item.commentNum%> 条评论</a></li>
+                    <li><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;<%=myDateFormat(item.date)%></li>
+                    <li> <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;阅读(<%=item.clickNum%>)</li>
+                    <li> <i class="fa fa-comments-o" aria-hidden="true"></i>&nbsp;评论(<%=item.commentNum%>)</li>
 				</ul>
 				<div class="post-content"><%= item.discription%></div>
 			</div>

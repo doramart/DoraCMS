@@ -54,7 +54,7 @@ router.post('/upload', function(req, res, next) {
 
                 if(fileType == 'images'){
                     if(fileKey == 'ctTopImg'){
-                        gm(input).resize(500,300,'!').autoOrient().write(out, function (err) {
+                        gm(input).resize(270,162,'!').autoOrient().write(out, function (err) {
                             if (err) {
                                 console.log(err);
                             } else {
@@ -62,7 +62,7 @@ router.post('/upload', function(req, res, next) {
                             }
                         });
                     }else if(fileKey == 'plugTopImg'){ // 插件主题图片
-                        gm(input).resize(500,300,'!').autoOrient().write(out, function (err) {
+                        gm(input).resize(270,162,'!').autoOrient().write(out, function (err) {
                             if (err) {
                                 console.log(err);
                             } else {

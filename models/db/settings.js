@@ -24,7 +24,7 @@ module.exports = {
     SITETITLE : '前端开发俱乐部', // 站点名称
     SITEDOMAIN : 'http://www.html-js.cn', // 站点域名
     SITEICP : '粤ICP备15038960号-2', // 站点备案号
-    SITEVERSION : 'v1.0.6', // 静态资源版本戳
+    SITEVERSION : 'v1.0.7', // 静态资源版本戳
     SYSTEMMAIL : 'doramart@qq.com', // 管理员个人邮箱
     UPDATEFOLDER : process.cwd()+'/public/upload', // 默认上传文件夹本地路径
     TEMPSFOLDER : process.cwd()+'/views/web/temp', // 默认模板文件夹本地路径

@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
 
 //mongoose.connect("mongodb://localhost/doracms")
 
-var adminGroup = new Schema({
+var AdminGroupSchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -20,7 +20,8 @@ var adminGroup = new Schema({
     comments : String
 });
 
-var AdminGroup = mongoose.model("AdminGroup",adminGroup);
+
+var AdminGroup = mongoose.model("AdminGroup",AdminGroupSchema);
 
 module.exports = AdminGroup;
 

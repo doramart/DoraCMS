@@ -19,9 +19,15 @@
                         <td><input type="checkbox" class="mini"/></td>
                         <td class="  sorting_1"><a href="/details/{{msgs.contentId}}.html" target="_blank">{{msgs.contentTitle | limitTo : 20}}</a></td>
                         <td class=" ">{{msgs.content | limitTo : 50}}</td>
-                        <td class=" ">{{msgs.uName}}</td>
-                        <td class=" ">{{msgs.uEmail}}</td>
-                        <td class=" ">{{msgs.relationUName}}</td>
+                        <td ng-switch on="msgs.utype">
+                            <span ng-switch-when="0">{{msgs.author.userName}}</span>
+                            <span ng-switch-when="1">{{msgs.adminAuthor.userName}}</span>
+                        </td>
+                        <td ng-switch on="msgs.utype">
+                            <span ng-switch-when="0">{{msgs.author.email}}</span>
+                            <span ng-switch-when="1">{{msgs.adminAuthor.email}}</span>
+                        </td>
+                        <td class=" ">{{msgs.replyAuthor.userName}}</td>
                         <td class=" ">{{msgs.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
                         <td class=" ">
                             <button class="btn btn-primary btn-xs" data-whatever="{{msgs}}" data-toggle="modal" data-target="#getMsgDetails"><span class="fa fa-fw fa-mail-reply" aria-hidden="true"></span>回复</button>
@@ -101,10 +107,12 @@
                     $scope.repFormData.relationMsgId = msgObj._id;
                     $scope.repFormData.contentId = msgObj.contentId;
                     $scope.repFormData.contentTitle = msgObj.contentTitle;
-                    $scope.repFormData.uName = '<%=adminUserInfo.name%>';
-                    $scope.repFormData.relationUid = msgObj.uid;
-                    $scope.repFormData.relationEmail = msgObj.uEmail;
-                    $scope.repFormData.relationUName = msgObj.uName;
+                    $scope.repFormData.utype = '1';
+
+                    if(msgObj.author){
+                        $scope.repFormData.replyId = msgObj.author._id;
+                        $scope.repFormData.replyEmail = msgObj.author.email;
+                    }
 
                 }).on('hidden.bs.modal', function (e) {
                     // 清空数据

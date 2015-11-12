@@ -98,6 +98,17 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="control-label col-sm-3">显示</label>
+                        <div class="radio col-sm-4">
+                            <label>
+                                <input type="radio" checked class="mini" value="1" name="state" ng-model="formData.state"/>是&nbsp;
+                            </label>
+                            <label>
+                                <input type="radio" class="mini" name="state" value="2" ng-model="formData.state"/>否
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label col-sm-3">广告类别</label>
                         <div class="col-sm-2">
                             <select name="" id="" class="form-control" ng-model="formData.category" required>
@@ -277,7 +288,8 @@
                         title : $scope.formData.title,
                         category : $scope.formData.category,
                         type : $scope.formData.type,
-                        content : currentContent
+                        content : currentContent,
+                        state : $scope.formData.state
                     };
 
                     angularHttp($http,isValid,'POST',url,groupData,function(data){

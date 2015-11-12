@@ -7,7 +7,7 @@ var shortid = require('shortid');
 var Schema = mongoose.Schema;
 
 
-var contentTemplate = new Schema({
+var ContentTemplateSchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -22,7 +22,7 @@ var contentTemplate = new Schema({
     comments : String
 });
 
-var ContentTemplate = mongoose.model("ContentTemplate",contentTemplate);
+var ContentTemplate = mongoose.model("ContentTemplate",ContentTemplateSchema);
 
 module.exports = ContentTemplate;
 

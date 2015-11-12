@@ -44,7 +44,6 @@
                         <div class="form-group">
                             <label class="control-label col-sm-4">父类别</label>
                             <div class="col-sm-4">
-                                <!--<input type="text" class="form-control" name="name" ng-model="formData.parentID" disabled/>-->
                                 <p class="form-control-static text-primary">{{formData.parentID}}</p>
                             </div>
                         </div>
@@ -202,7 +201,7 @@
             }else{
                 $("#setCateTemp").removeClass("hide");
                 $("#defaultUrl").removeClass("hide");
-                $("#setCateSort").removeClass("hide")
+
                 modalTitle.text("添加文档类别");
                 $scope.formData = {};
                 $scope.formData.parentID = "0";
@@ -220,6 +219,11 @@
             if($scope.targetID)
             {
                 curentUrl = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
+            }
+
+            if(!$scope.formData.contentTemp){
+                alert('请选择文档类别!');
+                return false;
             }
 
             angularHttp($http,isValid,'POST',curentUrl,$scope.formData,function(data){

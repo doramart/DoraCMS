@@ -64,7 +64,7 @@ router.get('/vnum',function(req, res){
 
 // 管理员登录提交请求
 router.post('/doLogin', function(req, res, next) {
-    var username = req.body.username;
+    var userName = req.body.userName;
     var password = req.body.password;
     var vnum = req.body.vnum;
     var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
@@ -72,37 +72,34 @@ router.post('/doLogin', function(req, res, next) {
     if(vnum != req.session.vnum){
         res.end('验证码有误！');
     }else{
-        if(validator.isUserName(username) && validator.isPsd(password)){
-            AdminUser.findOne({username:username,password:newPsd},function(err,user){
-                if(user){
-//                  缓存权限
-                    AdminGroup.findOne({_id : user.group},function(err,result){
-                        if(err){
-                            console.log(err)
-                        }else{
-                            req.session.adminPower = result.power;
-                            req.session.adminlogined = true;
-                            req.session.adminUserInfo = user;
+        if(validator.isUserName(userName) && validator.isPsd(password)){
+
+            AdminUser.findOne({'userName':userName,'password':newPsd}).populate('group').exec(function(err,user){
+                if(err){
+                    res.end(err);
+                }
+
+                if(user) {
+                    req.session.adminPower = user.group.power;
+                    req.session.adminlogined = true;
+                    req.session.adminUserInfo = user;
 //                    存入操作日志
-                            var loginLog = new SystemOptionLog();
-                            loginLog.type = 'login';
-                            loginLog.logs = user.username + ' 登录，IP:' + adminFunc.getClienIp(req);
-                            loginLog.save(function(err){
-                                if(err){
-                                    res.end(err);
-                                }
-                            });
-                            res.end("success");
+                    var loginLog = new SystemOptionLog();
+                    loginLog.type = 'login';
+                    loginLog.logs = user.userName + ' 登录，IP:' + adminFunc.getClienIp(req);
+                    loginLog.save(function (err) {
+                        if (err) {
+                            res.end(err);
                         }
                     });
-
-                }
-                else
+                    res.end("success");
+                }else
                 {
                     console.log("登录失败");
                     res.end("用户名或密码错误");
                 }
-            })
+            });
+
         }else{
             res.end(settings.system_illegal_param)
         }
@@ -142,7 +139,7 @@ router.get('/manage/getDocumentList/:defaultUrl',function(req,res,next){
                 keyPr.push({'comments' : { $regex: reKey } });
                 keyPr.push({'title' : { $regex: reKey } });
             }else if(targetObj == AdminUser){
-                keyPr = {'username' : { $regex: reKey} };
+                keyPr = {'userName' : { $regex: reKey} };
             }else if(targetObj == User){
                 keyPr.push({'userName' : { $regex: reKey } });
                 keyPr.push({'name' : { $regex: reKey } });
@@ -155,7 +152,8 @@ router.get('/manage/getDocumentList/:defaultUrl',function(req,res,next){
             }
         }
 
-        DbOpt.pagination(targetObj,req, res,keyPr)
+        DbOpt.pagination(targetObj,req, res,keyPr);
+
     }else{
         return res.json({});
     }
@@ -173,7 +171,7 @@ router.get('/manage/:defaultUrl/del',function(req,res,next){
         if(targetObj == Message){
             removeMessage(req,res)
         }else if(targetObj == AdminGroup){
-            if(params.query.uid == req.session.adminUserInfo.group){
+            if(params.query.uid == req.session.adminUserInfo.group._id){
                 res.end('当前用户拥有的权限信息不能删除！');
             }else{
                 DbOpt.del(targetObj,req,res,"del one obj success");
@@ -182,7 +180,17 @@ router.get('/manage/:defaultUrl/del',function(req,res,next){
             if(params.query.uid == req.session.adminUserInfo._id){
                 res.end('不能删除当前登录的管理员！');
             }else{
-                DbOpt.del(targetObj,req,res,"del one obj success");
+                Message.find({'adminAuthor' : params.query.uid},function(err,docs){
+                    if(err){
+                        res.end(err)
+                    }
+                    if(docs && docs.length>0){
+                        res.end('请清理您的评论后再删除该用户！');
+                    }else{
+                        DbOpt.del(targetObj,req,res,"del one obj success");
+                    }
+                });
+
             }
         }else{
             DbOpt.del(targetObj,req,res,"del one obj success");
@@ -231,7 +239,26 @@ router.get('/manage/:defaultUrl/item',function(req,res,next){
     var currentPage = req.params.defaultUrl;
     var targetObj = adminFunc.getTargetObj(currentPage);
     if(adminFunc.checkAdminPower(req,currentPage + '_view')){
-        DbOpt.findOne(targetObj,req, res,"find one obj success");
+        if(targetObj == AdminUser){
+            var params = url.parse(req.url,true);
+            var targetId = params.query.uid;
+            if(shortid.isValid(targetId)){
+                AdminUser.findOne({'_id' : targetId}).populate('group').exec(function(err,user){
+                    if(err){
+                        res.end(err);
+                    }
+                    if(user){
+                        return res.json(user);
+                    }
+                })
+            }else{
+                res.end(settings.system_illegal_param);
+            }
+
+        }else{
+            DbOpt.findOne(targetObj,req, res,"find one obj success");
+        }
+
     }else{
         return res.json({});
     }
@@ -247,11 +274,9 @@ router.post('/manage/:defaultUrl/modify',function(req,res,next){
     var params = url.parse(req.url,true);
     if(adminFunc.checkAdminPower(req,currentPage + '_modify')){
         if(targetObj == AdminUser || targetObj == User){
-            var password = req.body.password;
-            var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
-            req.body.password = newPsd;
+            req.body.password = DbOpt.encrypt(req.body.password,settings.encrypt_key);
         }else if(targetObj == AdminGroup){
-            if(params.query.uid == req.session.adminUserInfo.group){
+            if(params.query.uid == req.session.adminUserInfo.group._id){
                 req.session.adminPower = req.body.power;
             }
         }
@@ -280,7 +305,7 @@ router.post('/manage/:defaultUrl/addOne',function(req,res,next){
         }else if(targetObj == Message){
             replyMessage(req,res);
         }else{
-            DbOpt.addOne(targetObj,req, res,"add one obj");
+            DbOpt.addOne(targetObj,req, res);
         }
     }else{
         res.end('对不起，您无权执行该操作！');
@@ -346,19 +371,23 @@ router.get('/manage/adminUsersList', function(req, res, next) {
 
 function addOneAdminUser(req,res){
     var errors;
-    var username = req.body.username;
-    if(validator.isUserName(username)){
-        AdminUser.findOne({username:req.body.username},function(err,user){
+    var userName = req.body.userName;
+    if(validator.isUserName(userName)){
+        AdminUser.findOne({userName:req.body.userName},function(err,user){
             if(user){
                 errors = "该用户名已存在！";
                 res.end(errors);
             }else{
+                if(!req.body.group){
+                    errors = "请选择用户组！";
+                }
                 if(errors){
                     res.end(errors)
                 }else{
                     //    密码加密
                     req.body.password = DbOpt.encrypt(req.body.password,settings.encrypt_key);
-                    DbOpt.addOne(AdminUser,req, res,"add new adminUser");
+                    req.body.group = new AdminGroup({_id : req.body.group});
+                    DbOpt.addOne(AdminUser,req, res);
                 }
             }
         })
@@ -652,26 +681,38 @@ router.get('/manage/contentCategorys/list', function(req, res, next) {
 
 //添加新类别
 function addOneCategory(req,res){
-    var newObj = new ContentCategory(req.body);
-    newObj.save(function(err){
-        if(err){
-            console.log(err);
-        }else{
-//            组合类别路径
-            if(newObj.parentID == "0"){
-                newObj.defaultUrl = newObj.homePage;
-            }else{
-                newObj.defaultUrl = newObj.defaultUrl + "/" +newObj.homePage;
-            }
-//            保存完毕存储父类别结构
-            newObj.sortPath = newObj.sortPath + "," +newObj._id.toString();
-            newObj.save(function(err){
-                console.log('save new type ok!');
-                res.end("success");
-            });
+    var errors;
+    var contentTemp = req.body.contentTemp;
 
-        }
-    });
+    if(!contentTemp){
+        errors = '请选择文档类别!';
+    }
+    var newObj = new ContentCategory(req.body);
+
+    if(errors){
+        res.end(errors);
+    }else{
+        newObj.save(function(err){
+            if(err){
+                console.log(err);
+            }else{
+//            组合类别路径
+                if(newObj.parentID == "0"){
+                    newObj.defaultUrl = newObj.homePage;
+                }else{
+                    newObj.defaultUrl = newObj.defaultUrl + "/" +newObj.homePage;
+                }
+//            保存完毕存储父类别结构
+                newObj.sortPath = newObj.sortPath + "," +newObj._id.toString();
+                newObj.save(function(err){
+                    console.log('save new type ok!');
+                    res.end("success");
+                });
+
+            }
+        });
+    }
+
 }
 
 
@@ -709,7 +750,7 @@ function addOneContentTags(req,res){
             errors = "名称或者别名已存在！";
             res.end(errors);
         }else{
-            DbOpt.addOne(ContentTags,req, res,"add new contentTags");
+            DbOpt.addOne(ContentTags,req, res);
         }
     });
 }
@@ -749,7 +790,7 @@ function addOneContentTemps(req,res){
             if(temp && temp.length > 0){
                 res.end("名称不可重复！");
             }else{
-                DbOpt.addOne(ContentTemplate,req, res,"add new contentTemps");
+                DbOpt.addOne(ContentTemplate,req, res);
             }
         }
     });
@@ -759,37 +800,51 @@ function addOneContentTemps(req,res){
 //管理员回复用户
 function replyMessage(req,res){
 
+    var errors;
     var contentId = req.body.contentId;
-    var relationEmail = req.body.relationEmail;
-    var newMsg = new Message(req.body);
-    newMsg.save(function(){
+    var contentTitle = req.body.contentTitle;
+    var adminAuthorId = req.session.adminUserInfo._id;
+    var replyId = req.body.replyId;
+    var replyEmail = req.body.replyEmail;
+    var content = req.body.content;
+    var utype = req.body.utype;
+    var relationMsgId = req.body.relationMsgId;
 
-//        更新评论数
-        Content.findOne({_id : contentId},'commentNum',function(err,result){
-            if(err){
-                res.end(err);
-            }else{
-                result.commentNum = result.commentNum + 1;
-                result.save(function(err){
-                    if(err) throw err;
+    if(!shortid.isValid(contentId) || !contentTitle){
+        errors = settings.system_illegal_param;
+    }
+    if(!adminAuthorId || !replyId){
+        errors = settings.system_illegal_param;
+    }
+    if(replyEmail && !validator.isEmail(replyEmail)){
+        errors = settings.system_illegal_param;
+    }
 
-//                    如果被评论用户存在邮箱，则发送提醒邮件
-                    if(relationEmail){
-                        system.sendEmail(settings.email_notice_user_contentMsg,newMsg,function(err){
-                            if(err){
-                                res.end(err);
-                            }else{
-                                console.log('-----sent user email success--------')
-                            }
-                        });
+
+    if(errors){
+        res.end(errors);
+    }else{
+
+        req.body.adminAuthor = new AdminUser({_id : adminAuthorId , userName : req.session.adminUserInfo.userName});
+        req.body.replyAuthor = new User({_id : replyId , email : replyEmail});
+        var newMsg = new Message(req.body);
+        newMsg.save(function(){
+
+//              更新评论数
+            Content.updateCommentNum(contentId,'add',function(){
+//                给用户发送提醒邮件
+                system.sendEmail(settings.email_notice_user_contentMsg,newMsg,function(err){
+                    if(err){
+                        res.end(err);
                     }
-
-                    res.end("success");
                 });
-            }
+
+                res.end("success");
+            });
+
         });
 
-    });
+    }
 }
 
 

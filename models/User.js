@@ -2,9 +2,10 @@
  * Created by Administrator on 2015/4/11.
  */
 var mongoose = require('mongoose');
-//var db = mongoose.connect('mongodb://localhost/doracms');
+var Schema = mongoose.Schema;
 var shortid = require('shortid');
-var User = mongoose.model('User', {
+
+var UserSchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -31,5 +32,7 @@ var User = mongoose.model('User', {
     retrieve_time : {type: Number} // 用户发送激活请求的时间
 
 });
+
+var User = mongoose.model("User",UserSchema);
 
 module.exports = User;

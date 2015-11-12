@@ -107,7 +107,8 @@ a:hover {
 
 /*文档列表*/
 .post {
-    padding: 0 0 40px;
+    padding: 20px 0 20px;
+    border-bottom: 1px dashed #f0f0f0;
 }
 
 .post img {
@@ -133,6 +134,12 @@ a:hover {
 
 .post .post-meta li {
     display: inline-block;
+    margin-right: 10px;
+    font-size: 12px;
+}
+
+.post .post-meta li i {
+    font-size: 14px;
 }
 
 .post .post-content {
@@ -160,7 +167,7 @@ a:hover {
 
 /*左右框架*/
 .left-frame {
-    padding: 40px 70px 0 0;
+    padding: 20px 70px 0 0;
 }
 
 .right-frame {
@@ -322,6 +329,40 @@ a:hover {
     cursor: pointer;
     text-align: center;
     transition: opacity 0.8s ease 0s;
+}
+
+/*推荐部分样式*/
+.span-mark {
+    background-color: #d9534f;
+    color: #fff;
+    display: inline-block;
+    font-size: 12px;
+    height: 20px;
+    left: -10px;
+    line-height: 20px;
+    padding: 0 9px;
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    left: 5px;
+}
+
+.span-mark::after {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: transparent #d41b1b transparent transparent;
+    border-image: none;
+    border-style: solid;
+    border-width: 10px;
+    bottom: -10px;
+    clip: rect(10px, 20px, 20px, 0px);
+    content: "";
+    display: inline-block;
+    left: -10px;
+    position: absolute;
+    z-index: 0;
 }
 
 /*footer部分*/

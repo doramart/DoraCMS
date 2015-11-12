@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
 
 //mongoose.connect("mongodb://localhost/doracms")
 
-var contentCategory = new Schema({
+var ContentCategorySchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -28,7 +28,8 @@ var contentCategory = new Schema({
     comments : String
 });
 
-var ContentCategory = mongoose.model("ContentCategory",contentCategory);
+
+var ContentCategory = mongoose.model("ContentCategory",ContentCategorySchema);
 
 module.exports = ContentCategory;
 

@@ -24,7 +24,10 @@
                     <tr class="datalist" ng-repeat="user in data">
                         <td><input type="checkbox" name="listItem" class="mini" value="{{user._id}}" ng-click="getNewIds()"/></td>
                         <td class="  sorting_1">{{user.userName}}</td>
-                        <td class=" ">{{user.group}}</td>
+                        <td ng-switch on="user.group">
+                            <span ng-switch-when="0">普通用户</span>
+                            <span ng-switch-when="1">会员</span>
+                        </td>
                         <td class=" ">{{user.name}}</td>
                         <td class=" ">{{user.phoneNum}}</td>
                         <td class=" ">{{user.email}}</td>

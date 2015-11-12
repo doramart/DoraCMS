@@ -12,6 +12,7 @@ var Ads = require("../Ads");
 //留言对象
 var Message = require("../Message");
 var settings = require("./settings");
+
 //数据库操作对象
 var DbOpt = require("../Dbopt");
 //时间格式化
@@ -64,14 +65,20 @@ var siteFunc = {
     setNoticeToAdminEmailTemp : function(obj){
         var msgDate = moment(obj.date).format('YYYY-MM-DD HH:mm:ss');
         var html ='';
-        html += '主人您好，'+obj.uName+'于 '+msgDate +' 在 <strong>' + settings.SITETITLE + '</strong> 的文章 <a href="' + settings.SITEDOMAIN + '/details/'+obj.contentId+'.html">'+obj.contentTitle+'</a> 中留言了';
+        html += '主人您好，<strong>'+obj.author.userName+'</strong> 于 '+msgDate +' 在 <strong>' + settings.SITETITLE + '</strong> 的文章 <a href="' + settings.SITEDOMAIN + '/details/'+obj.contentId+'.html">'+obj.contentTitle+'</a> 中留言了';
         return html;
     },
 
     setNoticeToUserEmailTemp : function(obj){
         var msgDate = moment(obj.date).format('YYYY-MM-DD HH:mm:ss');
         var html ='';
-        html += '主人您好，'+obj.uName+'于 '+msgDate +' 在 <strong>' + settings.SITETITLE + '</strong> 的文章 <a href="' + settings.SITEDOMAIN + '/details/'+obj.contentId+'.html">'+obj.contentTitle+'</a> 中回复了您';
+        var targetEmail;
+        if(obj.author){
+            targetEmail = obj.author.userName;
+        }else if(obj.adminAuthor){
+            targetEmail = obj.adminAuthor.userName;
+        }
+        html += '主人您好，<strong>'+targetEmail+'</strong> 于 '+msgDate +' 在 <strong>' + settings.SITETITLE + '</strong> 的文章 <a href="' + settings.SITEDOMAIN + '/details/'+obj.contentId+'.html">'+obj.contentTitle+'</a> 中回复了您';
         return html;
     },
 
@@ -103,7 +110,7 @@ var siteFunc = {
     },
 
     getMessageList : function(contentId){
-        return Message.find({'contentId' : contentId})
+        return Message.find({'contentId' : contentId}).populate('author').populate('replyAuthor').populate('adminAuthor').exec();
     },
 
     setDataForIndex: function (req, res, q, title) {
@@ -167,7 +174,7 @@ var siteFunc = {
 
     setDataForSearch: function (req, res, q, searchKey) {
         req.query.searchKey = searchKey;
-        var requireField = 'title date commentNum discription clickNum';
+        var requireField = 'title date commentNum discription clickNum sImg';
         var documentList = DbOpt.getPaginationResult(Content, req, res, q, requireField);
         return {
             siteConfig: this.siteInfos("文档搜索"),
@@ -204,7 +211,7 @@ var siteFunc = {
 
     setDataForUserReply: function (req, res, title) {
         req.query.limit = 5;
-        var documentList = DbOpt.getPaginationResult(Message, req, res, {'uid' : req.session.user._id});
+        var documentList = DbOpt.getPaginationResult(Message, req, res, {'author' :  req.session.user._id});
         return {
             siteConfig: this.siteInfos(title),
             cateTypes: this.getCategoryList(),

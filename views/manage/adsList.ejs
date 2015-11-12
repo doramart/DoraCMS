@@ -20,6 +20,7 @@
                         <th>标识</th>
                         <th>分类</th>
                         <th>广告名称</th>
+                        <th>状态</th>
                         <th>展示方式</th>
                         <th>key</th>
                         <th>更新时间</th>
@@ -28,8 +29,15 @@
                     <tr class="datalist" ng-repeat="content in data">
                         <td><input type="checkbox" name="listItem" class="mini" value="{{content._id}}" ng-click="getNewIds()"/></td>
                         <td>{{content.mkey}}</td>
-                        <td>{{content.category}}</td>
+                        <td ng-switch on="content.category">
+                            <span ng-switch-when="default">默认</span>
+                            <span ng-switch-when="friendlink">友情链接</span>
+                        </td>
                         <td>{{content.title}}</td>
+                        <td ng-switch on="content.state">
+                            <span ng-switch-when="1">显示</span>
+                            <span ng-switch-when="2">隐藏</span>
+                        </td>
                         <td ng-switch on="content.type">
                             <span ng-switch-when="0">文字</span>
                             <span ng-switch-when="1">图片</span>

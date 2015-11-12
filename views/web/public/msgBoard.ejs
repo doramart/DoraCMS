@@ -2,17 +2,23 @@
 <script src="/javascripts/angular.min.js"></script>
 <%if(logined){%>
 <input type="hidden" value="<%=userInfo._id%>" id="uid"/>
-<input type="hidden" value="<%=userInfo.userName%>" id="uName"/>
-<input type="hidden" value="<%=userInfo.logo%>" id="ulogo"/>
-<input type="hidden" value="<%=userInfo.email%>" id="uEmail"/>
+
 <%}%>
 <div class="msgBoard" ng-app="webApp" ng-controller="msgBoard">
     <div class="row">
         <%messageList.forEach(function(item){%>
         <div class="col-md-12 col-sm-12 msgList">
-            <h3 class="media-heading"><a href="###"><%=item.uName%></a> <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item.uName%>','<%=item._id%>','<%=item.uEmail%>')" class="pull-right reply">回复</a></span></h3>
-            <%if(item.relationUName){%>
-                <%var beReply = '<span style="color: #0da3e2">@'+item.relationUName+'</span>&nbsp;'%>
+            <h3 class="media-heading">
+            <%if(item.utype && item.utype == '1'){%>
+                <a href="###"><%=item.adminAuthor.userName%></a>
+                <span title="管理员" style="color: #0da3e2;font-size: 12px;">[<i class="fa fa-user"></i>&nbsp;管理员]</span>
+                <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item._id%>','<%=item.adminAuthor._id%>','<%=item.adminAuthor.userName%>','<%=item.adminAuthor.email%>')" class="pull-right reply">回复</a></span></h3>
+            <%}else{%>
+                <a href="###"><%=item.author.userName%></a>
+                <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item._id%>','<%=item.author._id%>','<%=item.author.userName%>','<%=item.author.email%>')" class="pull-right reply">回复</a></span></h3>
+            <%}%>
+            <%if(item.replyAuthor){%>
+                <%var beReply = '<span style="color: #0da3e2">@'+item.replyAuthor.userName+'</span>&nbsp;'%>
                 <p><%-beReply%><%=item.content%></p>
             <%}else{%>
                 <p><%-item.content%></p>
@@ -55,10 +61,11 @@
                         window.location = '/users/login';
                     }else{
 
-                        $scope.msgFormData.uName = $('#uName').val();
-                        $scope.msgFormData.uid =  $('#uid').val();
-                        $scope.msgFormData.ulogo = $('#ulogo').val();
-                        $scope.msgFormData.uEmail = $('#uEmail').val();
+                        $scope.msgFormData.utype = '0';
+                        var oldContent = $scope.msgFormData.content;
+						if($scope.msgFormData.replyUserName){
+							$scope.msgFormData.content = oldContent.substring($scope.msgFormData.replyUserName.length+1,oldContent.length);
+						}
 
                         $http({
                             method  : 'POST',
@@ -70,7 +77,7 @@
                             if(data === "success"){
                                 window.location.reload();
                             }else{
-                                alert("未知异常，请稍后重试");
+                                alert(data);
                             }
                         });
                     }
@@ -78,7 +85,7 @@
                 };
 
 //                回复留言
-                $scope.replyMsg = function(uName,uid,email){
+                $scope.replyMsg = function(msgId,authorId,authorName,authorEmail){
 
                     if(!loginState){
                         alert('请先登录!');
@@ -86,9 +93,11 @@
                     }else{
 
                         $('#msgTextArea').focus();
-                        $scope.msgFormData.content = "@"+uName+" ";
-                        $scope.msgFormData.relationUid = uid;
-                        $scope.msgFormData.relationEmail = email;
+                        $scope.msgFormData.content = "@"+authorName+" ";
+                        $scope.msgFormData.replyUserName = authorName;
+                        $scope.msgFormData.replyEmail = authorEmail;
+                        $scope.msgFormData.replyId = authorId;
+                        $scope.msgFormData.relationMsgId = msgId;
 
                     }
                 }

@@ -7,7 +7,7 @@ var shortid = require('shortid');
 var Schema = mongoose.Schema;
 
 
-var files = new Schema({
+var FilesSchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -19,7 +19,7 @@ var files = new Schema({
     comments : String
 });
 
-var Files = mongoose.model("Files",files);
+var Files = mongoose.model("Files",FilesSchema);
 
 module.exports = Files;
 

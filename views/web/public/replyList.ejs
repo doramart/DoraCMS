@@ -8,7 +8,7 @@ item为子元素集合
     <ul class="replyList">
         <li>
             <small class="pull-right"><%=myDateFormat(item.date)%></small>
-            <h4><a href="#"><%=item.uName%></a>&nbsp;发表在&nbsp;<a href="/details/<%=item.contentId%>.html" target="_blank"><%=item.contentTitle%></a>&nbsp;</h4>
+            <h4><a href="#"><%= userInfo.userName%></a>&nbsp;发表在&nbsp;<a href="/details/<%=item.contentId%>.html" target="_blank"><%=item.contentTitle%></a>&nbsp;</h4>
             <blockquote><p><%=item.content%></p></blockquote>
         </li>
     </ul>

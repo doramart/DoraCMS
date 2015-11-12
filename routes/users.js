@@ -118,7 +118,7 @@ router.post('/doReg', function(req, res, next) {
             }else{
                 var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
                 req.body.password = newPsd;
-                DbOpt.addOne(User,req, res,"add a new user")
+                DbOpt.addOne(User,req, res)
             }
         });
 
@@ -456,57 +456,59 @@ router.post('/message/sent', function(req, res, next) {
     var errors;
     var contentId = req.body.contentId;
     var contentTitle = req.body.contentTitle;
-    var relationEmail = req.body.relationEmail;
-    var newObj = new Message(req.body);
+    var authorId = req.session.user._id;
+    var replyId = req.body.replyId;
+    var replyEmail = req.body.replyEmail;
+    var relationMsgId = req.body.relationMsgId;
 
-    if(!shortid.isValid(contentId)){
+    if(!shortid.isValid(contentId) || !contentTitle){
         errors = settings.system_illegal_param;
     }
-
-    if(relationEmail && !validator.isEmail(relationEmail)){
-        errors = "请填写正确的邮箱地址";
+    if(!authorId){
+        errors = settings.system_illegal_param;
+    }
+    if(replyEmail && !validator.isEmail(replyEmail)){
+        errors = settings.system_illegal_param;
     }
 
     if(errors){
         res.end(errors);
     }else{
-        newObj.save(function(){
 
-//        更新评论数
-            Content.findOne({_id : contentId},'commentNum',function(err,result){
-                if(err){
-                    res.end(err);
-                }else{
-                    result.commentNum = result.commentNum + 1;
-                    result.save(function(err){
-                        if(err) throw err;
 
-//                    如果被评论用户存在邮箱，则发送提醒邮件
-                        if(relationEmail){
-                            system.sendEmail(settings.email_notice_user_contentMsg,newObj,function(err){
-                                if(err){
-                                    res.end(err);
-                                }else{
-                                    console.log('-----sent user email success--------')
-                                }
-                            });
-                        }else{
-//                    给管理员发送消息,这里异步就可以，不用等到邮件发送成功再返回结果
-                            system.sendEmail(settings.email_notice_contentMsg,newObj,function(err){
-                                if(err){
-                                    res.end(err);
-                                }else{
-                                    console.log('-----sent email success--------')
-                                }
-                            });
+        if(replyId){
+            req.body.replyAuthor = new User({_id : replyId,email : replyEmail});
+            req.body.relationMsgId = relationMsgId;
+        }
+
+        req.body.author = new User({_id : authorId,userName : req.session.user.userName});
+        var newMsg = new Message(req.body);
+        newMsg.save(function(){
+//              更新评论数
+            Content.updateCommentNum(contentId,'add',function(){
+//              如果被评论用户存在邮箱，则发送提醒邮件
+                if(newMsg.replyAuthor && newMsg.replyAuthor.email){
+                    system.sendEmail(settings.email_notice_user_contentMsg,newMsg,function(err){
+                        if(err){
+                            res.end(err);
                         }
-
-                        res.end("success");
+                        console.log('-----sent user email success--------')
+                    });
+                }else{
+//                    给管理员发送消息,这里异步就可以，不用等到邮件发送成功再返回结果
+                    system.sendEmail(settings.email_notice_contentMsg,newMsg,function(err){
+                        if(err){
+                            res.end(err);
+                        }
+                        console.log('-----sent notice admin email success--------')
                     });
                 }
+
+                res.end("success");
             });
 
         });
+
     }
 
 });

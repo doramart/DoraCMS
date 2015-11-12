@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var shortid = require('shortid');
 var Schema = mongoose.Schema;
 
-var ads = new Schema({
+var AdsSchema = new Schema({
     _id: {
         type: String,
         unique: true,
@@ -15,13 +15,13 @@ var ads = new Schema({
     mkey : String, //广告位标识
     title:  String,
     category:  String, // friendlink表示友情链接，默认default为广告
-    state : {type : Boolean , default :true},
+    state : { type: String, default: "1" }, // 广告状态，是否显示
     type: { type: String, default: "0" }, // 展示形式 0文字 1图片
     date: { type: Date, default: Date.now },
     content: String // 内容
 });
 
-var Ads = mongoose.model("Ads",ads);
+var Ads = mongoose.model("Ads",AdsSchema);
 
 module.exports = Ads;
 
