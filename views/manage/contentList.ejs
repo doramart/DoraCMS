@@ -55,7 +55,10 @@
                         </td>
                         <td ng-class="{true:'text-danger'}[content.isTop==1]"><i class="fa fa-fw fa-flag"></i></td>
                         <td>{{content.clickNum}}</td>
-                        <td><span class="label label-success">{{content.state}}</span></td>
+                        <td ng-switch on="content.state">
+                            <span ng-switch-when="true"><a href="" class="label label-success">true</a></span>
+                            <span ng-switch-when="false"><a href="" class="label label-danger">false</a></span>
+                        </td>
                         <td>{{content.author}}</td>
                         <td>
                             <a href="/admin/manage/content/edit/{{content.type}}/{{content._id}}" role="button"  title="编辑" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>

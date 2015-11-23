@@ -1,0 +1,87 @@
+<!--系统消息模块-->
+<script src="/javascripts/angular.min.js"></script>
+<div class="notifyList" ng-app="webApp" ng-controller="notifyBoard">
+    <% include modal %>
+    <h3>我的消息</h3>
+    <ul>
+        <div class="toolbar">
+            <input type="hidden" id="targetIds"/>
+            <input type="checkbox" class="mini" id="selectAll"/>&nbsp;
+            <button class="btn btn-default btn-xs" ng-click="batchIsRead()" role="button">标记所选为已读</button>&nbsp;
+            <button class="btn btn-danger btn-xs"  ng-click="batchDel()">删除所选</button>
+        </div>
+        <div class="datalist">
+        <%if(userNotifyListData.length>0){%>
+            <%userNotifyListData.forEach(function(item){%>
+            <%var msgClass;if(!item.isRead){msgClass = 'noRead'}%>
+            <li class="<%=msgClass%>">
+                <input type="checkbox" class="mini" value="<%=item._id%>" name="listItem" ng-click="getNewIds()"/>&nbsp;
+                <div class="title" id="<%=item._id%>">
+                    <i class="fa fa-envelope-o"></i>&nbsp;&nbsp;<a href="#"><%=item.notify.title%></a>
+                    <small class="pull-right" style="font-weight: normal;"><%=myDateFormat(item.notify.date)%></small>
+                </div>
+                <span class="more"><%-item.notify.content%></span>
+            </li>
+            <%})%>
+        <%}else{%>
+            <li class="text-center">暂无消息...</li>
+        <%}%>
+        </div>
+    </ul>
+</div>
+
+<script>
+
+    var doraApp = angular.module("webApp",[]);
+    doraApp.controller('notifyBoard',function($scope,$http){
+        var _msgBar = $('.notifyList').find('li .title');
+        $(_msgBar).click(function(){
+            var _targetBar = $(this);
+            if($(_targetBar).closest('li').hasClass('noRead')){
+                $http.get('/users/userNotify/setHasRead?msgId='+$(this).attr('id')).success(function(result){
+                    if(result == 'success'){
+                        seeNoticeDetails(_targetBar)
+                    }else{
+                        alert('未知错误');
+                    }
+                });
+            }else{
+                seeNoticeDetails(_targetBar)
+            }
+        });
+
+        initDelOption($scope,$http,'userNotify','您确定要删除选中的消息吗？');
+
+        $scope.batchIsRead = function(){
+            var targetIds = $('#targetIds').val();
+            if(targetIds && targetIds.split(',').length > 0){
+                $http.get("/users/userNotify/setHasRead?msgId="+targetIds).success(function(result){
+                    if(result == 'success'){
+                        setNoticesRead(targetIds);
+                    }else{
+                        alert(result);
+                    }
+                });
+            }else{
+                alert('请至少选择一项')
+            }
+        };
+
+    });
+
+    function seeNoticeDetails(obj){
+        $(obj).closest('li').removeClass('noRead');
+        $('.notifyList').find('li span.more').removeClass('show').addClass('hide');
+        $(obj).next('.more').toggleClass('show');
+    }
+
+    function setNoticesRead(ids){
+        var idsObj = ids.split(',');
+        if(idsObj.length>0){
+            for(var i=0;i<idsObj.length;i++){
+                var targetId = idsObj[i];
+                $('#'+targetId).closest('li').removeClass('noRead');
+            }
+        }
+    }
+</script>

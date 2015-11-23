@@ -1,16 +1,39 @@
 <!--头部模板-->
 <!-- Place this tag right after the last button or just before your close body tag. -->
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    $(function(){
+//        初始化事件监听
+        var socket = io.connect('http://<%=myDomain%>/');
+        socket.on('notifyNum', function (data) {
+            console.log(data);
+            var _badgeObj = $('#u_notify_num');
+            var _badgeContainer = $(_badgeObj).parent('a');
+            if(data.msg_count == 0){
+                $(_badgeContainer).addClass('hide');
+            }else{
+                $(_badgeContainer).removeClass('hide');
+            }
+            $('#u_notify_num').text(data.msg_count);
+        });
+    })
+</script>
 <header class="clearfix" id="header">
     <div class="container">
         <div class="text-right topNav">
             <ul>
             <% if(!logined){ %>
-                <li><a href="/users/login">登录</a></li>
-                <li><a href="/users/reg">注册</a></li>
+                <li><a rel="nofollow" href="/users/login">登录</a></li>
+                <li><a rel="nofollow" href="/users/reg">注册</a></li>
             <% }else{ %>
-                <li>您好&nbsp;<a href="/users/userCenter"><%=userInfo.userName%></a></li>
-                <li><a href="#" id="userLoginOut">退出</a></li>
+
+                <li>您好&nbsp;<a href="/users/userCenter"><%=userInfo.userName%></a>
+                    <%if(userInfo.msg_count && userInfo.msg_count>0){%>
+                    <a href="/users/userMessage"><span class="badge" id="u_notify_num"><%=userInfo.msg_count%></span></a>
+                    <%}%>
+                </li>
+                <li><a rel="nofollow" href="#" id="userLoginOut">退出</a></li>
             <% } %>
             </ul>
         </div>

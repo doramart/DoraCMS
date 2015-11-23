@@ -4,6 +4,8 @@
 var mongoose = require('mongoose');
 var UserModel = mongoose.model('User');
 var settings = require('../models/db/settings');
+var siteFunc = require('../models/db/siteFunc');
+var UserNotify = require('../models/UserNotify');
 //用户实体类
 var User = require("../models/User");
 
@@ -24,8 +26,12 @@ exports.authUser = function (req, res, next) {
     }
 
     if (req.session.user) {
-        req.session.logined = true;
-        return next();
+        UserNotify.getNoReadNotifyCountByUserId(req.session.user._id,function(err,count){
+            req.session.user.msg_count = count;
+            req.session.logined = true;
+            return next();
+        })
+
     } else {
         var auth_token = req.signedCookies[settings.auth_cookie_name];
         if (!auth_token) {
@@ -38,9 +44,15 @@ exports.authUser = function (req, res, next) {
                 if(err){
                     console.log(err)
                 }else{
-                    req.session.user = user;
-                    req.session.logined = true;
-                    return next();
+                    if(!user){
+                        return next();
+                    }
+                    UserNotify.getNoReadNotifyCountByUserId(user_id,function(err,count){
+                        user.msg_count = count;
+                        req.session.user = user;
+                        req.session.logined = true;
+                        return next();
+                    })
                 }
             })
 

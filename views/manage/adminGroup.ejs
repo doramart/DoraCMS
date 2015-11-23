@@ -123,21 +123,14 @@
 
 //                添加新用户组
                 $scope.processForm = function(isValid){
-                    var curentUrl = "/admin/manage/<%=bigCategory%>/addOne";
-
-                    if($scope.targetID)
-                    {
-                        curentUrl = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
-                    }
                     var groupData = {
                         name : $scope.formData.name,
                         power : JSON.stringify($scope.formData.power)
                     };
 
-                    angularHttp($http,isValid,'POST',curentUrl,groupData,function(data){
+                    angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),groupData,function(data){
                         initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
                     });
-
 
                 }
             });

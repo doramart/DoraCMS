@@ -88,3 +88,6 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+var io = app.io;
+io.attach( server );

@@ -2,10 +2,10 @@
 约定documentList为文档列表数据集合
 item为子元素集合
 -->
+<div class="post-list">
 <%if(documentList.length>0){%>
     <%documentList.forEach(function(item){%>
 	<article class="post">
-
 		<div class="row">
 			<div class="col-xs-3 col-md-3">
                 <%if(item.isTop == 1){%>
@@ -31,3 +31,4 @@ item为子元素集合
 <%}else{%>
     <p class="text-center">暂无内容...</p>
 <%}%>
+</div>

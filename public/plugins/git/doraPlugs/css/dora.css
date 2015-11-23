@@ -1,0 +1,167 @@
+/*全局*/
+body {
+    font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+/*字体图标*/
+@font-face {
+    font-family: "iconfont";
+    src: url('fonts/iconfont.eot'); /* IE9*/
+    src: url('fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('fonts/iconfont.woff') format('woff'), /* chrome、firefox */ url('fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('fonts/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont, [class*=icon-], [class^=icon-] {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-check-right:before {
+    content: "\e605";
+}
+
+.icon-notice-triangle:before {
+    content: "\e600";
+}
+
+.icon-notice-down:before {
+    content: "\e601";
+}
+
+.icon-notice-up:before {
+    content: "\e603";
+}
+
+/*按钮*/
+.dora-btn {
+    -moz-user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.btn-default {
+    background-color: #fff;
+    border-color: #ccc;
+    color: #333;
+}
+
+.btn-default:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.btn-primary {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
+
+/*遮罩*/
+.doraui_mask {
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/*弹窗容器*/
+.block {
+    width: 90%;
+    margin: 0 auto;
+    position: fixed;
+}
+
+.block-content {
+    width: 88%;
+    display: none;
+    padding: 6%;
+    text-align: center;
+    background: #fff;
+    border-radius: 0.5em;
+}
+
+.block-content h3 {
+    font-size: 1.2em;
+    color: #3d3d3d;
+    line-height: 1.4em;
+    text-align: center;
+    width: 100%;
+    font-weight: normal;
+    margin-bottom: 1em;
+}
+
+.block-content p {
+    color: #7e7e7e;
+    line-height: 1.4em;
+    text-align: left;
+    width: 100%;
+    margin: 1em 0;
+}
+
+.block-footer {
+    margin-top: 1em;
+}
+
+/*tips操作提示*/
+.tips {
+    background: #4c4c4c;
+    opacity: 0.7;
+    color: #FFFFFF;
+    width: 23%;
+    margin: 0 auto;
+    position: fixed;
+}
+
+.tips .tips-content {
+    padding: 1.8em 1em;
+    text-align: center;
+}
+
+.tips-content .icon-check-right {
+    color: #5cb85c;
+}
+
+.tips-content .icon-notice-down {
+    color: #eea236;
+}
+
+.tips-content .icon-notice-up {
+    color: #5bc0de;
+}
+
+.tips-content .icon-notice-triangle {
+    color: #ff0000;
+}
+
+.tips-content i {
+    color: #FFFFFF;
+    font-size: 1.2em;
+}
+
+.tips .tips-content .tips-info {
+    font-size: 1em;
+}

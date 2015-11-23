@@ -1,7 +1,17 @@
 <!--用户信息完善-->
+<!--uploadify-->
+<link href="/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css" />
+<script src="/plugins/uploadify/jquery.uploadify.min.js"></script>
+<style>
+    #uploadULogoImg{margin: 5px auto;}
+</style>
 <div class="uInfos" ng-controller="userInfo">
+    <h3>用户信息</h3>
     <form class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
-
+        <div class="col-md-2 clearfix" style="position: absolute;right:80px;top: 90px;">
+            <img src="{{formData.logo}}" alt="{{formData.userName}}" class="img-thumbnail" id="userLogo"/>
+            <p class="text-center" id="uploadULogoImg"><a href="#">修改</a></p>
+        </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">&nbsp;</label>
             <div class="col-sm-4">
@@ -98,9 +108,18 @@
             // 查询用户信息
             getData($scope,$http);
         }
+
+        initUploadFyBtn('uploadULogoImg',"userlogo",function(data){
+            alert('上传成功');
+            $("#userLogo").attr("src",data);
+            $scope.formData.logo = data;
+        });
+
         // 修改用户信息
         $scope.processForm = function(isValid){
+
             if(isValid){
+
                 $http({
                     method  : 'POST',
                     url     : "/users/userInfo/modify?uid="+$scope.targetId,

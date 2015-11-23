@@ -15,10 +15,13 @@ var settings = require("./settings");
 
 //数据库操作对象
 var DbOpt = require("../Dbopt");
+//消息对象
+var UserNotify = require("../UserNotify");
 //时间格式化
 var moment = require('moment');
 //缓存
 var cache = require('../../util/cache');
+
 function isLogined(req) {
     return req.session.logined;
 }
@@ -219,6 +222,20 @@ var siteFunc = {
             replyList : documentList.docs,
             pageInfo: documentList.pageInfo,
             pageType: 'replies',
+            layout: 'web/public/defaultTemp'
+        }
+    },
+
+    setDataForUserNotice: function (req, res, title) {
+        req.query.limit = 10;
+        var documentList = UserNotify.getNotifyPaginationResult(req, res, req.session.user._id);
+        return {
+            siteConfig: this.siteInfos(title),
+            cateTypes: this.getCategoryList(),
+            userInfo: req.session.user,
+            userNotifyListData : documentList.docs,
+            pageInfo: documentList.pageInfo,
+            pageType: 'notifies',
             layout: 'web/public/defaultTemp'
         }
     },

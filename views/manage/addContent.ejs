@@ -21,8 +21,8 @@
                     <div class="form-group">
                         <label class="control-label col-sm-3">简短标题</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" name="stitle" ng-minlength="5" ng-maxlength="20" ng-model="formData.stitle" required/>
-                            <label for="inputError" class="control-label text-danger" ng-show="myForm.stitle.$invalid && !myForm.stitle.$pristine"><i class="fa fa-times-circle-o"></i> 5-20个非特殊字符</label>
+                            <input type="text" class="form-control input-sm" name="stitle" ng-minlength="5" ng-maxlength="40" ng-model="formData.stitle" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.stitle.$invalid && !myForm.stitle.$pristine"><i class="fa fa-times-circle-o"></i> 5-40个非特殊字符</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -104,7 +104,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                        <button type="button" class="btn btn-default" ng-show="getContentState()" ng-click="saveAsDraft()">存为草稿</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">发布</button>
                     </div>
                 </form>
 
@@ -118,6 +119,7 @@
             doraApp.controller("addContent",function($scope,$http){
                 $scope.formData = {};
                 $scope.formData.author = '<%=adminUserInfo.name%>';
+
 //                初始化文章分类
                 iniTreeData($scope,$http);
 //                初始化文章标签
@@ -140,19 +142,39 @@
                 }
                 // 添加或修改文章
                 $scope.processForm = function(isValid){
-                    var url = "/admin/manage/<%=bigCategory%>/addOne";
-                    if($scope.targetID){
-                        url = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
-                    }
-
+                    $scope.formData.state = true;
                     if(!$scope.formData.category){
                         alert('请选择文档类别');
                         return false;
                     }
-
-                    angularHttp($http,isValid,'POST',url,$scope.formData,function(data){
+                    angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
                         window.location = "/admin/manage/contentList";
                     });
+                };
+//                存草稿
+                $scope.saveAsDraft = function(){
+                    $scope.formData.state = false;
+                    if(!$scope.formData.title){
+                        alert('文档标题必须填写');
+                        return false;
+                    }
+                    if(!$scope.formData.category){
+                        alert('文档类别必须选择');
+                        return false;
+                    }
+                    angularHttp($http,true,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
+                        window.location = "/admin/manage/contentList";
+                    });
+                };
+
+                $scope.getContentState = function(){
+                    if(!$scope.formData.state && $scope.targetID){
+                        return true;
+                    }else if($scope.targetID == undefined){
+                        return true;
+                    }else{
+                        return false;
+                    }
                 }
             })
             .directive('ueditor', function ($timeout) { //angular绑定ueditor

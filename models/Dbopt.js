@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var shortid = require('shortid');
 var Message = require('./Message');
 var AdminUser = require("./AdminUser");
+var UserNotify = require("../models/UserNotify");
 //站点配置
 var settings = require("../models/db/settings");
 var db = mongoose.connect('mongodb://localhost/doracms');
@@ -120,6 +121,8 @@ var DbOpt = {
             query.populate('author').populate('replyAuthor').populate('adminAuthor');
         }else if(obj === AdminUser){
             query.populate('group');
+        }else if(obj === UserNotify){
+            query.populate('user').populate('notify')
         }
 
         query.exec(function(err,docs){

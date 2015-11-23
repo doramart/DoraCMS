@@ -24,7 +24,7 @@ var cache = require('../util/cache');
 /* GET home page. */
 router.get('/', function (req, res, next) {
 
-    res.render('web/index', siteFunc.setDataForIndex(req, res, {'type': 'content'}, '首页'));
+    res.render('web/index', siteFunc.setDataForIndex(req, res, {'type': 'content','state' : true}, '首页'));
 
 });
 
@@ -64,7 +64,7 @@ router.get('/details/:url', function (req, res, next) {
     var url = req.params.url;
     var currentId = url.split('.')[0];
     if(shortid.isValid(currentId)){
-        Content.findOne({ '_id': currentId }, function (err, result) {
+        Content.findOne({ '_id': currentId , 'state' : true}, function (err, result) {
             if (err) {
                 console.log(err)
             } else {
@@ -104,7 +104,7 @@ router.get('/:defaultUrl', function (req, res, next) {
         if(indexPage && validator.isNumeric(indexPage)){
             req.query.page = indexPage;
         }
-        res.render('web/index', siteFunc.setDataForIndex(req, res, {'type': 'content'}, '首页'));
+        res.render('web/index', siteFunc.setDataForIndex(req, res, {'type': 'content','state' : true}, '首页'));
     } else {
         var currentUrl = url;
         if (url.indexOf("—") >= 0) {
@@ -147,11 +147,10 @@ function queryCatePage(req, res, cateId) {
                 res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("操作失败")});
             } else {
                 if (result) {
-                    var contentQuery = {'sortPath': { $regex: new RegExp(result._id, 'i') }};
+                    var contentQuery = {'sortPath': { $regex: new RegExp(result._id, 'i') },'state' : true};
                     var cateParentId = result.sortPath.split(',')[1];
                     var cateQuery = {'sortPath': { $regex: new RegExp(cateParentId, 'i') }};
                     res.render('web/temp/' + result.contentTemp + '/contentList', siteFunc.setDataForCate(req, res, contentQuery, cateQuery ,result));
-
                 }
                 else {
                     res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("操作失败") });

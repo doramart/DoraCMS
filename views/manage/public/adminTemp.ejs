@@ -40,11 +40,16 @@ Contact: cms@doramart.com
     <link href="/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css" />
     <script src="/plugins/uploadify/jquery.uploadify.min.js"></script>
 
+    <!--doraPlugs-->
+    <link rel="stylesheet" href="/plugins/git/doraPlugs/css/dora.css"/>
+    <script src="/plugins/git/doraPlugs/js/dora.js"></script>
+
     <!--幻灯片插件开始-->
     <script type="text/javascript" src="/plugins/fancybox/source/jquery.fancybox.js?v=2.1.5"></script>
     <link rel="stylesheet" type="text/css" href="/plugins/fancybox/source/jquery.fancybox.css?v=2.1.5" media="screen" />
 
-    <script src="/javascripts/dora-angular.js"></script>
+    <script src="/javascripts/dora.public.js"></script>
+    <script src="/javascripts/dora.backstage.js"></script>
     <link rel="stylesheet" href="/stylesheets/backstage/css/style.css"/>
 
 </head>
@@ -140,6 +145,15 @@ Contact: cms@doramart.com
                         <li cid="contentManage_tag"><a href="/admin/manage/contentTags"><i class="fa fa-tags"></i> 文档标签管理</a></li>
                         <li cid="contentManage_temp"><a href="/admin/manage/contentTemps"><i class="fa fa-dashboard"></i> 文档模板配置</a></li>
                         <li cid="contentManage_msg"><a href="/admin/manage/contentMsgs"><i class="fa fa-comments"></i> 留言管理</a></li>
+                        <li cid="contentManage_notice">
+                            <a href="#"><i class="fa fa-bullhorn"></i> 消息管理<i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li cid="contentManage_notice_1"><a href="/admin/manage/noticeManage/m/adminNotice"><i class="fa fa-dashboard"></i> 公告管理</a></li>
+                            </ul>
+                            <ul class="treeview-menu hide">
+                                <li cid="contentManage_notice_2"><a href="/admin/manage/noticeManage/m/userNotice"><i class="fa fa-male"></i> 用户消息</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li class="treeview" cid="userManage">
@@ -162,9 +176,10 @@ Contact: cms@doramart.com
                 <%= siteInfo.title%>
                 <small><%= siteInfo.description%></small>
                 &nbsp;<a href="#addMsgBox" role="button" data-whatever="<%= siteInfo.description%>" class="btn btn-danger btn-sm" data-toggle="modal"><span class="fa fa-fw fa-smile-o" aria-hidden="true">&nbsp;</span>客官，给点意见吧</a>
-                <p class="text-danger pull-right" style="font-size: 13px;"><span id="error-info"></span></p>
             </h1>
-
+            <ol class="breadcrumb">
+                <li class="active"><a href="http://<%=myDomain%>" target="_blank"><i class="fa fa-home"></i> 前台首页</a></li>
+            </ol>
         </section>
 
         <!-- Main content -->
@@ -178,7 +193,7 @@ Contact: cms@doramart.com
     <!-- Main Footer -->
     <footer class="main-footer">
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2015 <a href="http://www.html-js.cn" target="_blank">DoraCMS</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2015 <a href="https://github.com/doramart/DoraCMS" target="_blank">DoraCMS <%=siteInfo.version%></a>.</strong> All rights reserved.
     </footer>
 
 </div><!-- ./wrapper -->
@@ -206,6 +221,8 @@ Contact: cms@doramart.com
             var obj = $(cateList[i]);
             if(obj.attr("cid") === curerntCate){
                 obj.addClass("active");
+                obj.closest('.treeview-menu').addClass('menu-open').css('display','block');
+                obj.closest('.treeview-menu').parent().addClass('active');
                 for(var j=0;j<pCateList.length;j++){
                     var pobj = $(pCateList[j]);
                     if(pobj.attr("cid").split("_")[0] === obj.attr("cid").split("_")[0]){

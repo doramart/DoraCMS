@@ -2,30 +2,29 @@ $(function(){
 //    全选
    $(':checkbox').prop('checked',false);
    $('#targetIds').val('');
-   $('#selectAll').click(function(){
-       if($(this).prop('checked')){
-           $('.datalist > td > input[name=listItem]').prop('checked',true);
-       }else{
-           $('.datalist > td > input[name=listItem]').prop('checked',false);
-       }
-       getSelectIds();
-   });
 
 });
 
-function getSelectIds(){
-    var checkBoxList = $(".datalist td input[name='listItem']:checkbox");
-    var ids = '';
-    if(checkBoxList.length>0){
-        $(checkBoxList).each(function(i){
-            if (true == $(this).prop("checked")) {
-                ids += $(this).prop('value') + ',';
-            }
-        });
 
-        $('#targetIds').val(ids.substring(0,ids.length - 1));
+//初始化alert,dialog等容器位置
+function setContainerPosition(obj){
+
+    var uitype = $(obj).attr('ui-type');
+    if(uitype == 'alert' || uitype == 'tips' || uitype == 'block'){
+        var $clone = $(obj).clone().css('display', 'block').appendTo('body');
+        var top = Math.round((document.documentElement.clientHeight - $clone.height()) / 2);
+        var left = Math.round((document.documentElement.clientWidth - $clone.width()) / 2);
+        top = top > 0 ? top : 0;
+        left = left > 0 ? left : 0;
+        $clone.remove();
+        $(obj).css({
+            "top" : top,
+            "left" : left
+        });
     }
+
 }
+
 
 //字符串转换函数
 //adminUser=true&adminGroup=true 转json对象
@@ -254,32 +253,6 @@ function getImgInfo(imgUrl,link,width,height,target,details){
 }
 
 
-//angularJs https Post方法封装
-function angularHttp($http,isValid,method,url,formData,callBack){
-    if(isValid){
-        $http({
-            method  : method,
-            url     : url,
-            data    : $.param(formData),  // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-        })
-        .success(function(data) {
-//                关闭所有模态窗口
-                $('.modal').each(function(i){
-                    $(this).modal("hide");
-                });
-                if(data == 'success'){
-                    callBack(data);
-                }else{
-                    showErrorInfo(data);
-                }
-        });
-    }
-    else{
-        alert("参数校验不通过");
-    }
-}
-
 //主要针对删除操作
 function angularHttpGet($http,url,callBack){
     $http.get(url).success(function(result){
@@ -289,7 +262,7 @@ function angularHttpGet($http,url,callBack){
         if(result == 'success'){
             callBack(result);
         }else{
-            showErrorInfo(result);
+            $.tipsShow({ message : result, type : 'warning' });
         }
     })
 }
@@ -355,53 +328,6 @@ function initDelOption($scope,$http,currentPage,searchKey,info){
 
 }
 
-
-//初始化上传图片按钮
-function initUploadFyBtn(id,key,callBack){
-    $("#"+id).uploadify({
-        //指定swf文件
-        'swf': '/plugins/uploadify/uploadify.swf',
-        //后台处理的页面
-        'uploader': '/system/upload?type=images&key='+key,
-        //按钮显示的文字
-        'buttonText': '上传图片',
-        //显示的高度和宽度，默认 height 30；width 120
-        //'height': 15,
-        //'width': 80,
-        //上传文件的类型  默认为所有文件    'All Files'  ;  '*.*'
-        //在浏览窗口底部的文件类型下拉菜单中显示的文本
-        'fileTypeDesc': 'Image Files',
-        //允许上传的文件后缀
-        'fileTypeExts': '*.gif; *.jpg; *.png',
-        //发送给后台的其他参数通过formData指定
-//                    'formData': { 'type': 'images', 'key': 'ctTopImg' },
-        //上传文件页面中，你想要用来作为文件队列的元素的id, 默认为false  自动生成,  不带#
-        //'queueID': 'fileQueue',
-        //选择文件后自动上传
-        'auto': true,
-        //设置为true将允许多文件上传
-        'multi': true,
-        //上传成功
-        'onUploadSuccess' : function(file, data, response) {
-            callBack(data);
-        },
-        'onComplete': function(event, queueID, fileObj, response, data) {//当单个文件上传完成后触发
-            //event:事件对象(the event object)
-            //ID:该文件在文件队列中的唯一表示
-            //fileObj:选中文件的对象，他包含的属性列表
-            //response:服务器端返回的Response文本，我这里返回的是处理过的文件名称
-            //data：文件队列详细信息和文件上传的一般数据
-            alert("文件:" + fileObj.name + " 上传成功！");
-        },
-        //上传错误
-        'onUploadError' : function(file, errorCode, errorMsg, errorString) {
-            alert('The file ' + file.name + ' could not be uploaded: ' + errorString);
-        },
-        'onError': function(event, queueID, fileObj) {//当单个文件上传出错时触发
-            alert("文件:" + fileObj.name + " 上传失败！");
-        }
-    });
-}
 
 //普通下拉菜单
 function iniNormalTree($http,treeObjId,url,listId,currentId,onClick){
@@ -510,6 +436,17 @@ function setAdminPowerTreeData(){
         { id:'contentManage_msg_add', pId:'contentManage_msg', name:"回复"},
         { id:'contentManage_msg_del', pId:'contentManage_msg', name:"删除"},
 
+        { id:'contentManage_notice', pId:'contentManage', name:"消息管理", open:true},
+        { id:'contentManage_notice_1', pId:'contentManage_notice', name:"公告管理", open:true},
+        { id:'contentManage_notice_1_add', pId:'contentManage_notice_1', name:"新增"},
+        { id:'contentManage_notice_1_view', pId:'contentManage_notice_1', name:"查看"},
+        { id:'contentManage_notice_1_modify', pId:'contentManage_notice_1', name:"修改"},
+        { id:'contentManage_notice_1_del', pId:'contentManage_notice_1', name:"删除"},
+
+        { id:'contentManage_notice_2', pId:'contentManage_notice', name:"用户消息", open:true},
+        { id:'contentManage_notice_2_view', pId:'contentManage_notice_2', name:"查看"},
+        { id:'contentManage_notice_2_del', pId:'contentManage_notice_2', name:"删除"},
+
         { id:'userManage', pId:0, name:"会员管理", open:true},
         { id:'userManage_user', pId:'userManage', name:"注册用户管理", open:true},
         { id:'userManage_user_view', pId:'userManage_user', name:"查看"},
@@ -520,3 +457,11 @@ function setAdminPowerTreeData(){
 }
 
 
+//获取添加或修改链接
+function getTargetPostUrl($scope,bigCategory){
+    var url = "/admin/manage/"+bigCategory+"/addOne";
+    if($scope.targetID){
+        url = "/admin/manage/"+bigCategory+"/modify?uid="+$scope.targetID;
+    }
+    return url;
+}

@@ -38,7 +38,9 @@
         </div><!-- /.box -->
 
     </div><!-- /.col -->
-
+    <style>
+        #uploadULogoImg{float: right;}
+    </style>
     <!--添加新用户模态窗口-->
     <div class="modal fade" id="addNewAdminUser">
         <div class="modal-dialog">
@@ -61,6 +63,13 @@
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" name="name" ng-minlength="2" ng-maxlength="6" ng-pattern="/[\u4e00-\u9fa5]/" ng-model="formData.name" required/>
                                 <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 2-6个中文字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">头像</label>
+                            <div class="col-sm-6">
+                                <img src="{{formData.logo}}" alt="{{formData.userName}}" class="img-circle col-sm-4" id="userLogo"/>
+                                <p class="text-center" id="uploadULogoImg"><a href="#">修改</a></p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -139,6 +148,12 @@
                 //删除用户
                 initDelOption($scope,$http,"<%=bigCategory%>","<%=searchKey%>",'您确认要删除选中的管理员吗？');
 
+                initUploadFyBtn('uploadULogoImg',"userlogo",function(data){
+                    alert('上传成功');
+                    $("#userLogo").attr("src",data);
+                    $scope.formData.logo = data;
+                });
+
 //                修改用户
                 $('#addNewAdminUser').on('show.bs.modal', function (event) {
                     var obj = $(event.relatedTarget);
@@ -165,17 +180,12 @@
 
 //                添加新用户或修改用户
                 $scope.processForm = function(isValid){
-                    var url = "/admin/manage/<%=bigCategory%>/addOne";
-                    if($scope.targetID){
-                        url = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
-                    }
 
                     if(!$scope.formData.group){
                         alert('请选择用户组!');
                         return false;
                     }
-
-                    angularHttp($http,isValid,'POST',url,$scope.formData,function(data){
+                    angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
                         initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
                     });
 

@@ -10,9 +10,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var routes = require('./routes/index');
+var io = require('socket.io')();
 //用户相关功能
-var users = require('./routes/users');
-var admin = require('./routes/admin');
+var users = require('./routes/users')(io);
+var admin = require('./routes/admin')(io);
 var content = require('./routes/content');
 //验证器
 var validat = require('./routes/validat');
@@ -29,7 +30,6 @@ var filter = require('./util/filter');
 
 /*模板引擎*/
 var partials = require('express-partials');
-
 
 /*实例化express对象*/
 var app = express();
@@ -103,6 +103,14 @@ app.get('/robots.txt',function(req, res, next) {
     stream.pipe(res);
 });
 
+//事件监听
+app.io = io;
+io.on('connection', function (socket) {
+//    socket.emit('news', { hello: 'world' });
+//    socket.on('my other event', function (data) {
+//        console.log(data);
+//    });
+});
 
 //数据格式化
 app.locals.myDateFormat = function(date){
@@ -147,10 +155,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('web/public/do500', siteFunc.setDataForError(req, res, '出错啦！' , err.message));
 });
-
-
-
-
 
 
 module.exports = app;

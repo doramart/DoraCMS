@@ -221,7 +221,6 @@
                 $scope.formData.newPath = $scope.rootPath +$scope.currentPath +"/"+ $scope.formData.newName;
                 curentUrl = "/admin/manage/filesList/fileReName";
             }
-
             angularHttp($http,isValid,'POST',curentUrl,$scope.formData,function(data){
                 getFolderList($scope,$http,$scope.rootPath +$scope.currentPath);
             });

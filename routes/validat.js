@@ -20,7 +20,7 @@ router.get("/manage",function(req,res,next){
     }
 });
 
-router.get("/manage/:defaultUrl",function(req,res,next){
+router.get("/manage/*",function(req,res,next){
 
     if(isAdminLogined(req)){
         next();

@@ -30,6 +30,9 @@ var Ads = require("../Ads");
 var Files = require("../Files");
 //系统日志对象
 var SystemOptionLog = require("../SystemOptionLog");
+//消息对象
+var Notify = require("../Notify");
+var UserNotify = require("../UserNotify");
 
 var adminFunc = {
 
@@ -37,12 +40,13 @@ var adminFunc = {
 
         return {
             title : settings.SITETITLE,
-            description : description
+            description : description,
+            version : settings.SITEVERSION
         }
     },
 
     getMessageList : function(){
-        return Message.find({}).limit(5).sort({'date' : -1});
+        return Message.find({}).limit(10).sort({'date' : -1}).populate('author').populate('replyAuthor').populate('adminAuthor').exec();
     },
 
     getClienIp : function(req){
@@ -60,7 +64,8 @@ var adminFunc = {
             regUsersCount : User.count({}),
             contentsCount : Content.count({}),
             msgCount : Message.count({}),
-            msgList : this.getMessageList()
+            msgList : this.getMessageList(),
+            regUsers : User.find({}).limit(15).sort({'date' : -1})
         })
     },
 
@@ -120,6 +125,10 @@ var adminFunc = {
             targetObj = Message;
         }else if(currentPage.indexOf(settings.REGUSERSLIST[0]) >=0 ){
             targetObj = User;
+        }else if(currentPage.indexOf(settings.SYSTEMNOTICE[0]) >=0 ){
+            targetObj = Notify;
+        }else if(currentPage.indexOf(settings.USERNOTICE[0]) >=0 ){
+            targetObj = UserNotify;
         }else{
             targetObj = Content;
         }

@@ -110,12 +110,9 @@
                 // 添加或修改插件
                 $scope.processForm = function(isValid){
                     $scope.formData.type = "plug";
-                    var url = "/admin/manage/<%=bigCategory%>/addOne";
-                    if($scope.targetID){
-                        url = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
-                    }
+                    $scope.formData.author = '<%=adminUserInfo.name%>';
 
-                    angularHttp($http,isValid,'POST',url,$scope.formData,function(data){
+                    angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
                         window.location = "/admin/manage/contentList";
                     });
 

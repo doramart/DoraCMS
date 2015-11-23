@@ -6,23 +6,29 @@
 <%}%>
 <div class="msgBoard" ng-app="webApp" ng-controller="msgBoard">
     <div class="row">
+
         <%messageList.forEach(function(item){%>
+        <%var targetAuthor;if(item.utype && item.utype == '1'){targetAuthor = item.adminAuthor}else{targetAuthor = item.author}%>
+
         <div class="col-md-12 col-sm-12 msgList">
-            <h3 class="media-heading">
-            <%if(item.utype && item.utype == '1'){%>
-                <a href="###"><%=item.adminAuthor.userName%></a>
-                <span title="管理员" style="color: #0da3e2;font-size: 12px;">[<i class="fa fa-user"></i>&nbsp;管理员]</span>
-                <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item._id%>','<%=item.adminAuthor._id%>','<%=item.adminAuthor.userName%>','<%=item.adminAuthor.email%>')" class="pull-right reply">回复</a></span></h3>
-            <%}else{%>
-                <a href="###"><%=item.author.userName%></a>
-                <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item._id%>','<%=item.author._id%>','<%=item.author.userName%>','<%=item.author.email%>')" class="pull-right reply">回复</a></span></h3>
-            <%}%>
-            <%if(item.replyAuthor){%>
+            <div class="col-md-1 media-logo">
+                <img src="<%=targetAuthor.logo%>" class="img-responsive" alt="<%=targetAuthor.comments%>"/>
+            </div>
+            <div class="col-md-11">
+                <h3 class="media-heading">
+                    <a href="###" class="uName"><%=targetAuthor.userName%></a>
+                    <%if(item.utype && item.utype == '1'){%>
+                    <span title="管理员" style="color: #0da3e2;font-size: 12px;">[<i class="fa fa-user"></i>&nbsp;管理员]</span>
+                    <%}%>
+                    <span><small><%=myDateFormat(item.date)%></small><a href="###" ng-click="replyMsg('<%=item._id%>','<%=targetAuthor._id%>','<%=targetAuthor.userName%>','<%=targetAuthor.email%>')" class="pull-right reply">回复</a></span>
+                </h3>
+                <%if(item.replyAuthor){%>
                 <%var beReply = '<span style="color: #0da3e2">@'+item.replyAuthor.userName+'</span>&nbsp;'%>
                 <p><%-beReply%><%=item.content%></p>
-            <%}else{%>
+                <%}else{%>
                 <p><%-item.content%></p>
-            <%}%>
+                <%}%>
+            </div>
         </div>
         <%})%>
     </div>

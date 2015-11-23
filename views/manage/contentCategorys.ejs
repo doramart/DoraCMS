@@ -50,8 +50,8 @@
                         <div class="form-group">
                             <label class="control-label col-sm-4">类别名称</label>
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="name" ng-model="formData.name" ng-minlength="2" ng-maxlength="12" required/>
-                                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 2-12个非特殊字符</label>
+                                <input type="text" class="form-control" name="name" ng-model="formData.name" ng-minlength="2" ng-maxlength="20" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 2-20个非特殊字符</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -105,8 +105,8 @@
                         <div class="form-group">
                             <label class="control-label col-sm-4">描述</label>
                             <div class="col-sm-7">
-                                <textarea name="comments" id="" cols="30" class="form-control" rows="8"  ng-model="formData.comments" ng-minlength="2" ng-maxlength="100" required></textarea>
-                                <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i> 2-100个非特殊字符</label>
+                                <textarea name="comments" id="" cols="30" class="form-control" rows="8"  ng-model="formData.comments" ng-minlength="2" ng-maxlength="300" required></textarea>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i> 2-300个非特殊字符</label>
 
                             </div>
                         </div>
@@ -215,18 +215,13 @@
         });
 //                添加类别
         $scope.processForm = function(isValid){
-            var curentUrl = "/admin/manage/<%=bigCategory%>/addOne";
-            if($scope.targetID)
-            {
-                curentUrl = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
-            }
 
             if(!$scope.formData.contentTemp){
                 alert('请选择文档类别!');
                 return false;
             }
 
-            angularHttp($http,isValid,'POST',curentUrl,$scope.formData,function(data){
+            angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
                 getData($scope,$http);
             });
 

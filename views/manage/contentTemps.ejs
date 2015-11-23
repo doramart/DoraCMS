@@ -125,13 +125,8 @@
 
 //                添加新模板
         $scope.processForm = function(isValid){
-            var curentUrl = "/admin/manage/<%=bigCategory%>/addOne";
-            if($scope.targetID)
-            {
-                curentUrl = "/admin/manage/<%=bigCategory%>/modify?uid="+$scope.targetID;
-            }
 
-            angularHttp($http,isValid,'POST',curentUrl,$scope.formData,function(data){
+            angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
                 initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
             });
 
