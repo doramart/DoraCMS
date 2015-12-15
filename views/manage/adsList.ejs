@@ -58,15 +58,3 @@
 
 </div>
 
-<script>
-
-            doraApp.controller("adsList",function($scope,$http){
-                $scope.formData = {};
-                //获取邮件模板列表信息
-                initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-//                删除广告
-                initDelOption($scope,$http,"<%=bigCategory%>","<%=searchKey%>",'您确认要删除选中的广告吗？');
-
-            });
-
-</script>

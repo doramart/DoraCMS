@@ -7,6 +7,7 @@ var validator = require("validator");
 var ContentCategory = require("../models/ContentCategory");
 //用户实体类
 var User = require("../models/User");
+var AdminUser = require("../models/AdminUser");
 //留言实体类
 var Message = require("../models/Message");
 // 文档对象
@@ -27,6 +28,7 @@ var shortid = require('shortid');
 var filter = require('../util/filter');
 //系统消息
 var UserNotify = require("../models/UserNotify");
+var Notify = require("../models/Notify");
 
 
 var returnUsersRouter = function(io) {
@@ -42,9 +44,9 @@ var returnUsersRouter = function(io) {
     router.get('/login', function(req, res, next) {
 
         if(isLogined(req)){
-            res.render('web/index', siteFunc.setDataForIndex(req, res, {'type': 'content'}, '首页'))
+            siteFunc.renderToTargetPageByType(req,res,'index');
         }else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
 
     });
@@ -82,7 +84,7 @@ var returnUsersRouter = function(io) {
 //用户注册
     router.get('/reg', function(req, res, next) {
 
-        res.render('web/users/userReg', siteFunc.setDataForUser(req, res, '用户注册'))
+        siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户注册',page : 'userReg'});
 
     });
 
@@ -111,28 +113,39 @@ var returnUsersRouter = function(io) {
         if(errors){
             res.end(errors);
         }else{
-//        邮箱和用户名都必须唯一
-            var query=User.find().or([{'email' : email},{userName : userName}]);
-//    标签或别名不允许重复
-            query.exec(function(err,user){
-                if(user.length > 0){
-                    errors = "邮箱或用户名已存在！";
-                    res.end(errors);
+            var regMsg = {
+                email : email,
+                userName : userName
+            };
+            system.sendEmail(settings.email_notice_user_reg,regMsg,function(err){
+                if(err && err == 'notCurrentEmail'){
+                    res.end('乱写邮箱被我发现了吧！');
                 }else{
-                    var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
-                    req.body.password = newPsd;
-                    DbOpt.addOne(User,req, res)
+                    //        邮箱和用户名都必须唯一
+                    var query=User.find().or([{'email' : email},{userName : userName}]);
+                    query.exec(function(err,user){
+                        if(user.length > 0){
+                            errors = "邮箱或用户名已存在！";
+                            res.end(errors);
+                        }else{
+                            var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
+                            req.body.password = newPsd;
+                            //发送系统消息给管理员
+                            siteFunc.sendSystemNoticeByType(req,res,'reg',userName);
+
+                            DbOpt.addOne(User,req, res)
+                        }
+                    });
                 }
+
             });
-
         }
-
     });
 
 //忘记密码页面
     router.get('/lostPassword', function(req, res, next) {
 
-        res.render('web/users/userConfirmEmail', siteFunc.setDataForUser(req, res, '确认邮箱'))
+        siteFunc.renderToTargetPageByType(req,res,'user',{title : '确认邮箱',page : 'userConfirmEmail'});
 
     });
 
@@ -193,12 +206,11 @@ var returnUsersRouter = function(io) {
                             var now = new Date().getTime();
                             var oneDay = 1000 * 60 * 60 * 24;
                             if (!user.retrieve_time || now - user.retrieve_time > oneDay) {
-//                        res.status(403);
-                                res.render('web/users/userNotice', siteFunc.setDataForInfo('warning','链接超时，密码无法重置。'));
+                                siteFunc.renderToTargetPageByType(req,res,'userInfo',{key : 'warning' ,value : '链接超时，密码无法重置。',page : 'userNotice'});
                             }
-                            res.render('web/users/userResetPsd', siteFunc.setDataForUser(req, res, '重设密码',tokenId))
+                            siteFunc.renderToTargetPageByType(req,res,'user',{title : '重设密码',page : 'userResetPsd',tokenId : tokenId});
                         }else{
-                            res.render('web/users/userNotice', siteFunc.setDataForInfo('warning','信息有误，密码无法重置。'));
+                            siteFunc.renderToTargetPageByType(req,res,'userInfo',{key : 'warning' ,value : '信息有误，密码无法重置。',page : 'userNotice'});
                         }
                     }
                 }
@@ -248,10 +260,10 @@ var returnUsersRouter = function(io) {
 //用户中心
     router.get('/userCenter', function(req, res, next) {
         if(isLogined(req)){
-            res.render('web/users/userCenter', siteFunc.setDataForUser(req, res, '用户中心'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户中心',page : 'userCenter'});
         }
         else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
 
     });
@@ -259,10 +271,10 @@ var returnUsersRouter = function(io) {
 //用户消息
     router.get('/userMessage', function(req, res, next) {
         if(isLogined(req)){
-            res.render('web/users/userMessage', siteFunc.setDataForUserNotice(req, res, '我的消息'));
+            siteFunc.renderToTargetPageByType(req,res,'userNotice',{title : '我的消息',page : 'userMessage'});
         }
         else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
 
     });
@@ -271,10 +283,10 @@ var returnUsersRouter = function(io) {
 // 修改用户密码页面
     router.get('/setUserPsd', function(req, res, next) {
         if(isLogined(req)){
-            res.render('web/users/userSetPsd', siteFunc.setDataForUser(req, res, '密码重置'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '密码重置',page : 'userSetPsd'});
         }
         else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
 
     });
@@ -283,10 +295,10 @@ var returnUsersRouter = function(io) {
 //用户参与话题
     router.get('/userReplies', function(req, res, next) {
         if(isLogined(req)){
-            res.render('web/users/userReplies', siteFunc.setDataForUserReply(req, res, '参与话题'));
+            siteFunc.renderToTargetPageByType(req,res,'userReply',{title : '参与话题',page : 'userReplies'});
         }
         else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
 
     });
@@ -298,17 +310,19 @@ var returnUsersRouter = function(io) {
             var replyUrl = defaultUrl.split('—')[0];
             var replyPage = defaultUrl.split('—')[1];
             if (replyUrl == 'p') {
-                replyPage = defaultUrl.split('—')[1].split(".")[0]
+                replyPage = defaultUrl.split('—')[1].split(".")[0];
                 if(replyPage && validator.isNumeric(replyPage)){
                     req.query.page = replyPage;
                 }
-                res.render('web/users/userReplies', siteFunc.setDataForUserReply(req, res, '参与话题'));
+
+                siteFunc.renderToTargetPageByType(req,res,'userReply',{title : '参与话题',page : 'userReplies'});
+
             }else{
-                res.render('web/public/do404', { siteConfig : siteFunc.siteInfos("操作失败") });
+                siteFunc.renderToTargetPageByType(req,res,'error',{info : '非法操作!',message :settings.system_illegal_param, page : 'do500'});
             }
         }
         else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
     });
 
@@ -510,12 +524,13 @@ var returnUsersRouter = function(io) {
                         });
                     }else{
 //                    给管理员发送消息,这里异步就可以，不用等到邮件发送成功再返回结果
-                        system.sendEmail(settings.email_notice_contentMsg,newMsg,function(err){
-                            if(err){
-                                res.end(err);
-                            }
-                            console.log('-----sent notice admin email success--------')
-                        });
+//                        system.sendEmail(settings.email_notice_contentMsg,newMsg,function(err){
+//                            if(err){
+//                                res.end(err);
+//                            }
+//                            console.log('-----sent notice admin email success--------')
+//                        });
+                        siteFunc.sendSystemNoticeByType(req,res,'msg',newMsg);
                     }
 
                     res.end("success");
@@ -541,7 +556,7 @@ var returnUsersRouter = function(io) {
                     if(err){
                         res.end(err);
                     }else{
-                        UserNotify.getNoReadNotifyCountByUserId(req.session.user._id,function(err,count){
+                        UserNotify.getNoReadNotifyCountByUserId(req.session.user._id,'user',function(err,count){
                             req.session.user.msg_count = count;
                             io.sockets.emit('notifyNum', {msg_count: count });
                             res.end('success');
@@ -549,7 +564,7 @@ var returnUsersRouter = function(io) {
                     }
                 });
             }else{
-                res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+                siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
             }
         }else{
             res.end(settings.system_illegal_param);
@@ -575,7 +590,7 @@ var returnUsersRouter = function(io) {
             }
 
         }else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
 
     });
@@ -593,13 +608,13 @@ var returnUsersRouter = function(io) {
                 if(replyPage && validator.isNumeric(replyPage)){
                     req.query.page = replyPage;
                 }
-                res.render('web/users/userMessage', siteFunc.setDataForUserNotice(req, res, '我的消息'));
+                siteFunc.renderToTargetPageByType(req,res,'userNotice',{title : '我的消息',page : 'userMessage'});
             }else{
-                res.render('web/public/do404', { siteConfig : siteFunc.siteInfos("操作失败") });
+                siteFunc.renderToTargetPageByType(req,res,'error',{info : '非法操作!',message :settings.system_illegal_param, page : 'do500'});
             }
         }
         else{
-            res.render('web/users/userLogin', siteFunc.setDataForUser(req, res, '用户登录'));
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
         }
     });
 

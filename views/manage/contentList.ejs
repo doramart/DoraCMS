@@ -43,7 +43,7 @@
                             <span ng-switch-default>{{content.title}}</span>
                         </td>
                         <td>{{content.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
-                        <td>{{content.categoryInfo.name}}</td>
+                        <td>{{content.category.name}}</td>
                         <td ng-switch on="content.from">
                             <span ng-switch-when="1">原创</span>
                             <span ng-switch-when="2">转载</span>
@@ -75,28 +75,3 @@
 
 
 </div>
-
-<script>
-
-            doraApp.controller("contentList",function($scope,$http){
-                $scope.formData = {};
-
-                //获取文档列表信息
-                initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                //删除文档
-                initDelOption($scope,$http,"<%=bigCategory%>","<%=searchKey%>",'您确认要删除选中的文档吗？');
-
-//                文章推荐
-                $scope.topContent = function(id,m){
-
-                    angularHttpGet($http,"/admin/manage/ContentList/topContent?uid="+id+"&isTop="+m,function(){
-                        initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                    });
-
-                };
-
-            });
-
-
-
-</script>

@@ -26,7 +26,7 @@ exports.authUser = function (req, res, next) {
     }
 
     if (req.session.user) {
-        UserNotify.getNoReadNotifyCountByUserId(req.session.user._id,function(err,count){
+        UserNotify.getNoReadNotifyCountByUserId(req.session.user._id,'user',function(err,count){
             req.session.user.msg_count = count;
             req.session.logined = true;
             return next();
@@ -47,7 +47,7 @@ exports.authUser = function (req, res, next) {
                     if(!user){
                         return next();
                     }
-                    UserNotify.getNoReadNotifyCountByUserId(user_id,function(err,count){
+                    UserNotify.getNoReadNotifyCountByUserId(user_id,'user',function(err,count){
                         user.msg_count = count;
                         req.session.user = user;
                         req.session.logined = true;

@@ -1,11 +1,11 @@
 /**
  * Created by Administrator on 2015/4/15.
- * 文章标签对象
+ * 系统模板对象
  */
 var mongoose = require('mongoose');
 var shortid = require('shortid');
 var Schema = mongoose.Schema;
-
+var TemplateItems = require('./TemplateItems');
 
 var ContentTemplateSchema = new Schema({
     _id: {
@@ -15,12 +15,46 @@ var ContentTemplateSchema = new Schema({
     },
     name:  String,
     alias : { type: String , default: "defaultTemp" }, //别名 指向模板文件夹
-    indexName: { type: String , default: "index" }, // 模板类型 大类首页
-    cateName: { type: String , default: "contentList" }, // 模板类型 大类列表
-    detailName: { type: String , default: "detail" }, // 模板类型 内容详情
+    version : String,
+    items : [{ type: String , ref: 'TemplateItems' }],
+    sImg: { type: String, default: '/stylesheets/backstage/img/screenshot.png' },
+    author: { type: String , default: "doramart" }, // 主题作者
+    using : { type : Boolean , default : false }, // 是否被启用
     date: { type: Date, default: Date.now },
-    comments : String
+    comment : String // 主题描述
 });
+
+ContentTemplateSchema.statics = {
+
+
+    setTempState : function(tempId,state,callBack){
+
+        if(state){
+            ContentTemplate.findOneAndUpdate({'_id':tempId},{$set : {'using' :　true}},callBack)
+        }else{
+            ContentTemplate.update({},{$set : {'using' :　false}},{multi : true},callBack)
+        }
+
+    },
+
+    getDefaultTemp : function(callBack){
+
+        ContentTemplate.findOne({'using':true}).populate('items').exec(function(err,doc){
+            if(err){
+                res.end(err);
+            }else{
+
+                callBack(doc);
+            }
+
+        });
+    }
+
+
+
+};
+
+
 
 var ContentTemplate = mongoose.model("ContentTemplate",ContentTemplateSchema);
 

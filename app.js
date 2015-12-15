@@ -84,9 +84,9 @@ app.use(function(req, res, next){
 //    针对管理员
     res.locals.adminlogined = req.session.adminlogined;
     res.locals.adminUserInfo = req.session.adminUserInfo;
+    res.locals.adminNotices = req.session.adminNotices;
 //    指定站点域名
     res.locals.myDomain = req.headers.host;
-
     next();
 });
 
@@ -135,7 +135,7 @@ app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
     console.log(err);
-    res.render('web/public/do404', siteFunc.setDataForError(req, res, '找不到页面' ,err.message));
+    siteFunc.renderToTargetPageByType(req,res,'error',{info : '找不到页面',message : settings.system_illegal_param, page : 'do404'});
 });
 
 // error handlers
@@ -145,7 +145,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('web/public/do500', siteFunc.setDataForError(req, res, '出错啦！' ,err.message));
+    siteFunc.renderToTargetPageByType(req,res,'error',{info : '出错啦！',message : err.message, page : 'do500'});
   });
 }
 
@@ -153,7 +153,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('web/public/do500', siteFunc.setDataForError(req, res, '出错啦！' , err.message));
+  siteFunc.renderToTargetPageByType(req,res,'error',{info : '出错啦！',message : err.message, page : 'do500'});
 });
 
 

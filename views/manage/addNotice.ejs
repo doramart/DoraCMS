@@ -35,48 +35,6 @@
 
 <script>
 
-            doraApp.controller("addNotice",function($scope,$http){
-                $scope.formData = {};
-
-//                通过访问地址获取文章id
-                $scope.targetID = window.location.href.split("/")[7];
-                if($scope.targetID){
-                    $http.get("/admin/manage/<%=bigCategory%>/item?uid="+$scope.targetID).success(function(result){
-                        $scope.formData = result;
-                    })
-                }
- //                添加新公告
-                $scope.processForm = function(isValid){
-
-                    angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
-                        window.location = "/admin/manage/noticeManage/m/adminNotice";
-                    });
-
-                }
-            })
-            .directive('ueditor', function ($timeout) { //angular绑定ueditor
-                return {
-                    restrict: 'A',
-                    require: 'ngModel',
-                    link: function (scope, element, attrs, ctrl) {
-                        var id = 'ueditor_' + Date.now();
-                        element[0].id = id;
-                        var ue = UE.getEditor(id, {
-                            initialFrameWidth: '100%',
-                            initialFrameHeight: '300',
-                            autoHeightEnabled: true
-                        });
-                        ue.ready(function () {
-                            ue.addListener('contentChange', function () {
-                                ctrl.$setViewValue(ue.getContent());
-                                if (!scope.$$phase) {
-                                    scope.$apply();
-                                }
-                            });
-                        });
-                    }
-                };
-            });
 
 
 </script>

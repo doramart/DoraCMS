@@ -1,12 +1,11 @@
-﻿
-<div class="row" ng-controller="mainPanel">
+﻿<div class="row" ng-controller="mainPanel">
     <% include public/modal %>
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-6">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">概况</h3>
+                        <h5 class="box-title">概况</h5>
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <ul class="row text-info main-statistics">
@@ -27,7 +26,7 @@
                 <div class="box box-solid">
                     <div class="box-header with-border">
                         <!--<i class="fa fa-location-arrow"></i>-->
-                        <h3 class="box-title">快捷操作</h3>
+                        <h5 class="box-title">快捷操作</h5>
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <a class="btn btn-app" href="/admin/manage/adminUsersList">
@@ -52,7 +51,7 @@
             <div class="col-md-6">
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">近期评论</h3>
+                        <h5 class="box-title">近期评论</h5>
                     </div><!-- /.box-header -->
                     <div class="box-body chat" id="chat-box">
                         <div class="direct-chat-messages" style="height: auto;max-height: 500px;">
@@ -64,7 +63,7 @@
                                                  <a href="#">{{msg.author.userName}}</a>
                                                 在 《<a href="/details/{{msg.contentId}}.html" target="_blank">{{msg.contentTitle}}</a>》 中说
                                             </span>
-                                            <span class="direct-chat-timestamp pull-right">{{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
+                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> {{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
                                         </div><!-- /.direct-chat-info -->
                                         <img alt="message user image" src="{{msg.author.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
                                         <div class="direct-chat-text">
@@ -77,7 +76,7 @@
                                                  <a href="#">{{msg.adminAuthor.userName}}</a>
                                                 在 《<a href="/details/{{msg.contentId}}.html" target="_blank">{{msg.contentTitle}}</a>》 中回复 <a href="#">{{msg.replyAuthor.userName}}</a>
                                             </span>
-                                            <span class="direct-chat-timestamp pull-right">{{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
+                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> {{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
                                         </div><!-- /.direct-chat-info -->
                                         <img alt="message user image" src="{{msg.adminAuthor.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
                                         <div class="direct-chat-text">
@@ -95,7 +94,7 @@
                 <!-- USERS LIST -->
                 <div class="box box-solid">
                     <div class="box-header with-border">
-                        <h3 class="box-title">新注册用户</h3>
+                        <h5 class="box-title">新注册用户</h5>
                         <div class="box-tools pull-right">
                             <span class="label label-danger">注册用户 {{mainData.regUsersCount}}</span>
                         </div>
@@ -116,13 +115,3 @@
         </div>
     </div>
 </div>
-<script>
-
-    doraApp.controller("mainPanel",function($scope,$http){
-
-            $http.get("/admin/manage/getMainInfo").success(function(result){
-                $scope.mainData = result;
-            });
-
-})
-</script>

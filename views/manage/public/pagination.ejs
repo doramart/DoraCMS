@@ -5,7 +5,7 @@
     </div>
     <div class="col-xs-6">
         <div class="dataTables_paginate paging_bootstrap">
-            <ul class="pagination">
+            <ul class="pagination pagination-sm ">
                 <li ng-class="{true:'disabled'}[currentPage==1]"><a href="javascript:void(0);" ng-click="prevPage()">← 上一页</a></li>
                 <li ng-repeat="page in pages" ng-class="{true:'active'}[currentPage==page]"><a href="javascript:void(0);" ng-click="loadPage(page)">{{ page }}</a></li>
                 <li ng-class="{true:'disabled'}[currentPage==totalPage]"><a href="javascript:void(0);" ng-click="nextPage()">下一页 → </a></li>

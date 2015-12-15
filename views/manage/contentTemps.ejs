@@ -1,159 +1,199 @@
-<div class="row" ng-controller="contentTemps">
-    <% include public/modal %>
-    <div class="col-xs-12">
-        <p class="myInfoBox bg-warning text-warning"><i class="icon fa fa-warning"></i> 注意：一个模板组合包含三部分：模板首页，分类列表，文档详情；选择一个模板组合相当于定义了一套模板</p>
-        <div class="panel">
-            <a href="#addContentTemps" role="button" class="btn btn-primary btn-sm" data-toggle="modal"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>增加一个新模板</a>
-        </div>
-        <div class="box">
-            <div class="box-body table-responsive no-padding" >
-                <table class="table table-hover">
-                    <tr>
-                        <th><input type="checkbox" class="mini" id="selectAll"/></th>
-                        <th>模板名称</th>
-                        <th>模板组合名称</th>
-                        <th>管理</th>
-                    </tr>
-                    <tr class="datalist" ng-repeat="temp in data">
-                        <td><input type="checkbox" name="listItem" class="mini" value="{{temp._id}}" ng-click="getNewIds()"/></td>
-                        <td class="  sorting_1">{{temp.name}}</td>
-                        <td class=" ">{{temp.alias}}</td>
-                        <td class=" ">{{temp.comments}}</td>
-                        <td class=" ">
-                            <button class="btn btn-primary btn-xs" data-whatever="{{temp._id}}" data-toggle="modal" data-target="#addContentTemps"><span class="fa fa-fw fa-edit" aria-hidden="true"></span>编辑</button>&nbsp;
-                            <button class="btn btn-default btn-xs" ng-click="delOneItem(temp._id)"><span class="fa fa-fw fa-trash-o" aria-hidden="true"></span>删除</button>
-                        </td>
-                    </tr>
-                </table>
+<div class="row">
 
-            </div><!-- /.box-body -->
-            <% include public/tableFooter %>
-        </div><!-- /.box -->
+    <div class="col-md-12">
+        <!-- START CUSTOM TABS -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Custom Tabs -->
+                <div class="nav-tabs-custom theme-panel">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_1" data-toggle="tab">管理主题</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">安装主题</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab_1" ng-controller="contentTemps">
+                            <% include public/modal %>
+                            <div class="row" ng-repeat="temp in data">
+                                <div ng-switch on="temp.using">
+                                    <div ng-switch-when="true">
+                                        <div class="col-md-2">
+                                            <img class="img-thumbnail" src="{{temp.sImg}}" alt="">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <p><span><labe>名称：</labe>{{temp.name}}</span>&nbsp;&nbsp;<a class="label label-success" href="#">当前主题</a></p>
+                                            <p><span><labe>作者：</labe>{{temp.author}}</span></p>
+                                            <p><span><labe>版本号：</labe>{{temp.version}}</span></p>
+                                            <p>{{temp.comment}}</p>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="box">
+                                                <div class="box-header">
+                                                    <h3 class="box-title">模板配置</h3>
+                                                </div><!-- /.box-header -->
+                                                <div class="box-body no-padding">
+                                                    <table class="table table-condensed">
+                                                        <tr>
+                                                            <th style="width: 10px">&nbsp;</th>
+                                                            <th>标题</th>
+                                                            <th>key</th>
+                                                            <th>备注</th>
+                                                            <th>操作</th>
+                                                        </tr>
+                                                        <tr ng-repeat="item in temp.items">
+                                                            <td><i class="fa fa-fw fa-tachometer"></i></td>
+                                                            <td>{{item.name}}</td>
+                                                            <td>{{item.forder}}</td>
+                                                            <td>{{item.comment}}</td>
+                                                            <td>
+                                                                <div ng-switch="item.isDefault">
+                                                                    <div ng-switch-when="false">
+                                                                        <button type="button" class="btn btn-default btn-xs" ng-click="delTempItem(item._id)"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
 
-    </div><!-- /.col -->
+                                                    </table>
+                                                </div><!-- /.box-body -->
+                                                <div class="box-footer clearfix">
+                                                    <a href="#addContentTemps" role="button" class="btn btn-primary btn-xs" data-defaulttemp="{{temp.alias}}" data-toggle="modal"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>添加模板单元</a>
+                                                </div>
+                                            </div><!-- /.box -->
+                                        </div><!-- /.col -->
 
+                                    </div>
 
-    <!--添加用户组模态窗口-->
-    <div class="modal fade" id="addContentTemps">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">添加文章模板</h4>
-                </div>
-                <div class="modal-body">
-                    <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
-                        <div class="form-group">
-                            <label class="control-label col-sm-4">模板名称</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="name" ng-model="formData.name" ng-minlength="1" ng-maxlength="12" required/>
-                                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 1-12个非特殊字符</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-4">模板组合</label>
-                            <div class="col-sm-5">
-                                <div class="dropdown">
-                                    <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i id="tempForderName">请选择模板组合</i>
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="tempForderTree" class="ztree">
-                                        <li role="presentation"><a href="#">test</a></li>
-                                    </ul>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-4">备注</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" name="comments" ng-model="formData.comments" ng-minlength="1" ng-maxlength="30" placeholder="暂时填写备注" required/>
-                                <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i> 备注不能为空</label>
+
+                            <hr>
+                            <h5>可用主题</h5>
+                            <div class="row">
+                                <div class="col-md-12 min-hight">
+                                    <div class="col-md-2"  ng-repeat="temp in data">
+                                        <img class="img-thumbnail" src="{{temp.sImg}}" alt="{{temp.comment}}">
+                                        <h5>{{temp.name}}</h5>
+                                        <p><span><labe>作者：</labe>{{temp.author}}</span>&nbsp;&nbsp;<span><labe>版本号：</labe>{{temp.version}}</span></p>
+                                        <p>
+                                            <span>
+                                                <div ng-switch on="temp.using">
+                                                    <div ng-switch-when="true">
+                                                        <button role="button" class="btn btn-default btn-xs" disabled>启用</button>
+                                                    </div>
+                                                    <div ng-switch-when="false">
+                                                        <button role="button" class="btn btn-default btn-xs" ng-click="enableThisTemp(temp._id,temp.alias)">启用</button>
+                                                        <button role="button" class="btn btn-danger btn-xs" ng-click="delOneItem(temp._id)">卸载</button>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
-                        </div>
-                    </form>
+                            <!--添加用户组模态窗口-->
+                            <div class="modal fade" id="addContentTemps">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">添加模板单元</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-4">模板名称</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" name="name" ng-model="formData.name" ng-minlength="1" ng-maxlength="12" required/>
+                                                        <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 1-12个非特殊字符</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-4">模板组合</label>
+                                                    <div class="col-sm-5">
+                                                        <div class="dropdown">
+                                                            <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i id="tempForderName">请选择模板组合</i>
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="tempForderTree" class="ztree">
+                                                                <li role="presentation"><a href="#">test</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-4">备注</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" name="comment" ng-model="formData.comment" ng-minlength="1" ng-maxlength="30" placeholder="暂时填写备注" required/>
+                                                        <label for="inputError" class="control-label text-danger" ng-show="myForm.comment.$invalid && !myForm.comment.$pristine"><i class="fa fa-times-circle-o"></i> 备注不能为空</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                                                </div>
+                                            </form>
 
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
 
-    </div><!-- /.row -->
+                            </div><!-- /.row -->
+                        </div><!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_2" ng-controller="systemTemps">
+                            <!--进度条-->
+                            <div id="sys-progress-bar" class="system-progress" style="display: none;">
+                                <div class="progress progress-sm active">
+                                    <div class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                        <span class="sr-only">20% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hide">
+                                <form action="">
+                                    <div class="form-group">
+                                        <div class="col-sm-5">
+                                            <div class="input-group margin">
+                                                <input type="text" class="form-control" disabled>
+                                                <span class="input-group-btn">
+                                                  <button type="button" class="btn btn-primary btn-flat">选择主题文件</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <hr>
+                            <h5>主题市场</h5>
+                            <div class="row">
+                                <div class="col-md-12 min-hight">
+                                    <div class="col-md-2"  ng-repeat="temp in themeShop">
+                                        <img class="img-thumbnail" src="{{temp.sImg}}" alt="{{temp.comment}}">
+                                        <h5>{{temp.name}}</h5>
+                                        <p><span><labe>作者：</labe>{{temp.author}}</span>&nbsp;&nbsp;<span><labe>版本号：</labe>{{temp.version}}</span></p>
+                                        <p>
+                                            <span><button role="button" class="btn btn-default btn-xs" ng-click="installTheme(temp._id)">安装</button></span>
+                                            <span><a href="{{temp.sImg}}" role="button" class="btn btn-warning btn-xs fancybox" data-fancybox-group="gallery">预览</a></span>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <% include public/tableFooter %>
+                        </div><!-- /.tab-pane -->
+                    </div><!-- /.tab-content -->
+                </div><!-- nav-tabs-custom -->
+            </div><!-- /.col -->
+
+        </div> <!-- /.row -->
+        <!-- END CUSTOM TABS -->
+    </div>
+
+
 
 </div>
-
-
 <script>
-    /*targetID:全局对应指定记录的标记，在修改和删除时使用*/
-
-    doraApp.controller("contentTemps",function($scope,$http){
-//                读取模板文件夹列表
-        getTempFolderList($scope,$http)
-//                初始化名称和权限
-        $scope.formData = {};
-        //获取模板列表
-        initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-        //删除模板
-        initDelOption($scope,$http,"<%=bigCategory%>","<%=searchKey%>",'您确认要删除选中的模板吗？');
-
-
-//      修改模板
-        $('#addContentTemps').on('show.bs.modal', function (event) {
-            var obj = $(event.relatedTarget);
-            var editId = obj.data('whatever');
-            var modalTitle = $(this).find('.modal-title');
-//                    如果不为空则为编辑状态
-            if(editId){
-                modalTitle.text("编辑文章模板");
-                $http.get("/admin/manage/<%=bigCategory%>/item?uid="+editId).success(function(result){
-                    $scope.formData = result;
-                    $scope.targetID = editId;
-                    getTempFolderList($scope,$http)
-                })
-            }else{
-                modalTitle.text("添加新模板");
-                $scope.formData = {};
-            }
-        }).on('hidden.bs.modal', function (e) {
-            // 清空数据
-            $scope.formData = {};
-            $scope.targetID ="";
-            $(this).find("input").val("");
-        });
-
-//                添加新模板
-        $scope.processForm = function(isValid){
-
-            angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
-                initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-            });
-
-        }
-    });
-
-
-
-    function getTempFolderList($scope,$http){
-
-        var currentCate = '';
-        if($scope.formData){
-            currentCate = $scope.formData.alias;
-        }
-
-        iniNormalTree($http,'tempForderTree',"/admin/manage/contentTemps/forderList",'tempForderName',currentCate,function(e, treeId, treeNode){
-            var zTree = $.fn.zTree.getZTreeObj("tempForderTree"),
-                    nodes = zTree.getSelectedNodes(),
-                    v = "";
-
-            nodes.sort(function compare(a,b){return a.id-b.id;});
-            for (var i=0, l=nodes.length; i<l; i++) {
-                v += nodes[i].name ;
-            }
-            $('#tempForderName').html(v);
-            $scope.formData.alias = v;
-        });
-
-    }
+    $(function(){
+        $('.fancybox').fancybox();
+    })
 </script>

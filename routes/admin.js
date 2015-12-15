@@ -16,6 +16,7 @@ var ContentCategory = require("../models/ContentCategory");
 var ContentTags = require("../models/ContentTags");
 //文章模板对象
 var ContentTemplate = require("../models/ContentTemplate");
+var TemplateItems = require("../models/TemplateItems");
 //文章留言对象
 var Message = require("../models/Message");
 //注册用户对象
@@ -28,6 +29,8 @@ var validator = require('validator');
 var shortid = require('shortid');
 //系统操作
 var system = require("../util/system");
+//系统缓存
+var cache = require("../util/cache");
 //站点配置
 var settings = require("../models/db/settings");
 var adminFunc = require("../models/db/adminFunc");
@@ -40,6 +43,11 @@ var SystemOptionLog = require("../models/SystemOptionLog");
 //消息对象
 var Notify = require("../models/Notify");
 var UserNotify = require("../models/UserNotify");
+//文件操作
+var unzip = require('unzip');
+var fs = require('fs');
+var http = require('http');
+var request = require('request');
 /* GET home page. */
 
 var PW = require('png-word');
@@ -88,18 +96,14 @@ var returnAdminRouter = function(io) {
                         req.session.adminPower = user.group.power;
                         req.session.adminlogined = true;
                         req.session.adminUserInfo = user;
-//                    存入操作日志
-                        var loginLog = new SystemOptionLog();
-                        loginLog.type = 'login';
-                        loginLog.logs = user.userName + ' 登录，IP:' + adminFunc.getClienIp(req);
-                        loginLog.save(function (err) {
-                            if (err) {
-                                res.end(err);
-                            }
+                        //获取管理员通知信息
+                        adminFunc.getAdminNotices(req,res,function(noticeObj){
+                            req.session.adminNotices = noticeObj;
+                            // 存入操作日志
+                            SystemOptionLog.addUserLoginLogs(req,res,adminFunc.getClienIp(req));
+                            res.end("success");
                         });
-                        res.end("success");
-                    }else
-                    {
+                    }else{
                         console.log("登录失败");
                         res.end("用户名或密码错误");
                     }
@@ -136,6 +140,7 @@ var returnAdminRouter = function(io) {
             var targetObj = adminFunc.getTargetObj(currentPage);
             var params = url.parse(req.url,true);
             var keywords = params.query.searchKey;
+            var area = params.query.area;
             var keyPr = [];
 
             if(keywords){
@@ -157,6 +162,8 @@ var returnAdminRouter = function(io) {
                 }
             }
 
+            keyPr = adminFunc.setQueryByArea(req,keyPr,targetObj,area);
+
             DbOpt.pagination(targetObj,req, res,keyPr);
 
         }else{
@@ -176,16 +183,13 @@ var returnAdminRouter = function(io) {
             if(targetObj == Message){
                 removeMessage(req,res)
             }else if(targetObj == Notify){
-                Notify.delOneNotify(res,params.query.uid,function(){
-                    var notifyQuery = {'notify': { $regex: new RegExp(params.query.uid, 'i') }};
-                    UserNotify.remove(notifyQuery,function(err){
-                        if(err){
-                            res.end(err);
-                        }else{
-                            res.end("success");
-                        }
-                    });
-                });
+                adminFunc.delNotifiesById(req,res,params.query.uid);
+                res.end("success");
+            }else if(targetObj == UserNotify){
+                //管理员删除系统消息
+                if(currentPage == settings.SYSTEMBACKSTAGENOTICE[0]){
+
+                }
             }else if(targetObj == AdminGroup){
                 if(params.query.uid == req.session.adminUserInfo.group._id){
                     res.end('当前用户拥有的权限信息不能删除！');
@@ -208,6 +212,10 @@ var returnAdminRouter = function(io) {
                     });
 
                 }
+            }else if(targetObj == ContentTemplate){
+                removeTemplate(req,res);
+            }else if(targetObj == TemplateItems){
+                removeTemplateItem(req,res);
             }else{
                 DbOpt.del(targetObj,req,res,"del one obj success");
             }
@@ -229,6 +237,22 @@ var returnAdminRouter = function(io) {
 
                 if(targetObj == Message || targetObj == AdminGroup || targetObj == AdminUser || targetObj == Notify){
                     res.end('对不起，该模块不允许批量删除！');
+                }else if(targetObj == UserNotify){
+                    //管理员删除系统消息
+                    if(currentPage == settings.SYSTEMBACKSTAGENOTICE[0]){
+                        var nids = params.query.expandIds;
+                        var nidsArr = nids.split(',');
+                        if(nidsArr.length > 0){
+                            for(var i=0;i<nidsArr.length;i++){
+                                adminFunc.delNotifiesById(req,res,nidsArr[i]);
+                            }
+                            //更新消息数
+                            adminFunc.getAdminNotices(req,res,function(noticeObj){
+                                req.session.adminNotices = noticeObj;
+                                res.end('success');
+                            });
+                        }
+                    }
                 }else{
 
                     targetObj.remove({'_id':{$in: idsArr}},function(err){
@@ -295,6 +319,8 @@ var returnAdminRouter = function(io) {
                 if(params.query.uid == req.session.adminUserInfo.group._id){
                     req.session.adminPower = req.body.power;
                 }
+            }else if(targetObj == ContentCategory){
+                ContentCategory.updateCategoryTemps(req,res,params.query.uid);
             }
             DbOpt.updateOneByID(targetObj,req, res,"update one obj success")
         }else{
@@ -315,6 +341,9 @@ var returnAdminRouter = function(io) {
                 addOneAdminUser(req,res);
             }else if(targetObj == ContentCategory){
                 addOneCategory(req,res)
+            }else if(targetObj == Content){
+                req.body.author = req.session.adminUserInfo.name;
+                DbOpt.addOne(targetObj,req, res);
             }else if(targetObj == ContentTags){
                 addOneContentTags(req,res)
             }else if(targetObj == ContentTemplate){
@@ -485,7 +514,10 @@ var returnAdminRouter = function(io) {
         var path = params.query.filePath;
         if(adminFunc.checkAdminPower(req,settings.FILESLIST[0] + '_del')){
             if(path){
-                system.deleteFolder(req, res, path);
+                system.deleteFolder(req, res, path,function(){
+                    res.end('success');
+                });
+
             }else{
                 res.end('您的请求不正确，请稍后再试');
             }
@@ -580,7 +612,9 @@ var returnAdminRouter = function(io) {
                         res.end(err);
                     }else{
                         if(forderPath){
-                            system.deleteFolder(req, res,forderPath);
+                            system.deleteFolder(req, res,forderPath,function(){
+                                res.end('success');
+                            });
                         }else{
                             res.end("删除出错");
                         }
@@ -701,11 +735,6 @@ var returnAdminRouter = function(io) {
 //添加新类别
     function addOneCategory(req,res){
         var errors;
-        var contentTemp = req.body.contentTemp;
-
-        if(!contentTemp){
-            errors = '请选择文档类别!';
-        }
         var newObj = new ContentCategory(req.body);
 
         if(errors){
@@ -787,10 +816,19 @@ var returnAdminRouter = function(io) {
 
     });
 
-//所有模板列表
+//所有默认模板列表
     router.get('/manage/contentTemps/list', function(req, res, next) {
+
         if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPS[0] + '_view')){
-            DbOpt.findAll(ContentTemplate,req, res,"request ContentTemps List");
+            ContentTemplate.getDefaultTemp(function(doc){
+                if(doc){
+                    return res.json(doc.items);
+                }else{
+                    return res.json({});
+                }
+
+            });
+
         }else{
             return res.json({});
         }
@@ -815,6 +853,328 @@ var returnAdminRouter = function(io) {
         });
     }
 
+
+
+//读取模板文件夹信息
+    router.get('/manage/contentTemps/forderList', function(req, res, next) {
+
+        var params = url.parse(req.url,true);
+        var targetForder = params.query.defaultTemp;
+        var filePath = system.scanJustFolder(settings.SYSTEMTEMPFORDER + targetForder);
+        var newFilePath = [];
+        for(var i=0;i<filePath.length;i++){
+            var fileObj = filePath[i];
+            if(fileObj.name.split('-')[1] == 'stage'){
+                newFilePath.push(fileObj);
+            }
+        }
+//    对返回结果做初步排序
+        newFilePath.sort(function(a,b){return a.type == "folder" ||  b.type == "folder"});
+
+        return res.json(newFilePath);
+
+    });
+
+
+
+    //安装模板 包含1、从服务器下载安装包 2、解压缩到本地目录 3、入库
+    router.get('/manage/installTemp',function(req,res,next){
+
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPS[0] + '_add')){
+            // App variables
+            var params = url.parse(req.url,true);
+            var tempId = params.query.tempId;
+
+            request(settings.DORACMSAPI + '/system/template/getItem?tempId=' + tempId, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    var tempObj = JSON.parse(body);
+
+                    var file_url = tempObj.filePath;
+                    var file_targetForlder = tempObj.alias;
+                    var DOWNLOAD_DIR = settings.SYSTEMTEMPFORDER + file_targetForlder.trim()+'/';
+                    var target_path = DOWNLOAD_DIR + url.parse(file_url).pathname.split('/').pop();
+
+                    if( fs.existsSync(DOWNLOAD_DIR) ) {
+                        res.end('您已安装该模板');
+                    }
+
+                    fs.mkdir(DOWNLOAD_DIR,0777,function(err){
+                        if(err){
+                            console.log(err);
+                        }
+                        else {
+                            download_file_httpget(file_url,function(){
+
+                                //下载完成后解压缩
+                                var extract = unzip.Extract({ path:  DOWNLOAD_DIR });
+                                extract.on('error', function(err) {
+                                    console.log(err);
+                                    //解压异常处理
+                                });
+                                extract.on('finish', function() {
+                                    console.log("解压完成!!");
+                                    //解压完成处理入库操作
+                                    var tempItem = new TemplateItems();
+                                    tempItem.forder = "2-stage-default";
+                                    tempItem.name = '默认模板';
+                                    tempItem.isDefault = true;
+                                    tempItem.save(function(err){
+                                        if(err){
+                                            res.end(err);
+                                        }else{
+                                            var newTemp = new ContentTemplate(tempObj);
+                                            newTemp.using = false;
+                                            newTemp.items.push(tempItem);
+                                            newTemp.save(function(err1){
+                                                if(err1){
+                                                    res.end(err1);
+                                                }else{
+                                                    res.end('success');
+                                                }
+                                            });
+
+                                        }
+                                    });
+
+                                });
+                                fs.createReadStream(target_path).pipe(extract);
+
+                            });
+                        }
+
+                    });
+
+                    var download_file_httpget = function(file_url,callBack) {
+                        var options = {
+                            host: url.parse(file_url).host,
+                            port: 80,
+                            path: url.parse(file_url).pathname
+                        };
+
+                        var file_name = url.parse(file_url).pathname.split('/').pop();
+                        var file = fs.createWriteStream(DOWNLOAD_DIR + file_name);
+
+                        http.get(options, function(res) {
+                            res.on('data', function(data) {
+                                file.write(data);
+                            }).on('end', function() {
+                                file.end();
+                                callBack(DOWNLOAD_DIR);
+                            });
+                        });
+                    };
+                }
+            });
+
+        }else{
+            res.end('对不起，您无权执行该操作！');
+        }
+
+    });
+
+
+
+    //启用模板
+    router.get('/manage/enableTemp',function(req,res){
+        var params = url.parse(req.url,true);
+        var tempId = params.query.tempId;
+        var alias = params.query.alias;
+
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPS[0] + '_modify')){
+
+            var tempPath = system.scanJustFolder(settings.SYSTEMTEMPFORDER + alias);
+            var distPath = false;
+            for(var i=0;i<tempPath.length;i++){
+                var fileObj = tempPath[i];
+                if(fileObj.name == 'dist'){
+                    distPath = true;
+                    break;
+                }
+            }
+            //服务器配置不同解压缩时间有所差异，暂时用该办法控制
+            if(!distPath){
+                res.end('服务器正在解压缩，请10s后重试！')
+            }else{
+                ContentTemplate.setTempState('',false,function(err){
+                    if(err){
+                        res.end(err);
+                    }else{
+                        ContentTemplate.setTempState(tempId,true,function(err1,doc){
+                            if(err1){
+                                res.end(err1);
+                            }else{
+                                //复制静态文件到公共目录
+                                var fromPath = settings.SYSTEMTEMPFORDER + doc.alias + '/dist/';
+                                var targetPath = settings.TEMPSTATICFOLDER + doc.alias;
+                                system.copyForder(fromPath,targetPath);
+                                ContentTemplate.getDefaultTemp(function(temp){
+                                    if(temp){
+                                        cache.set(settings.session_secret + '_siteTemplate', temp , 1000 * 60 * 60 * 24); // 修改默认模板缓存
+                                    }
+                                    //重置类别模板
+                                    ContentCategory.update({},{$set:{contentTemp:''}},{multi : true},function(err2){
+                                        if(err2){
+                                            res.end(err2);
+                                        }else{
+                                            res.end('success');
+                                        }
+                                    });
+
+                                });
+                            }
+                        })
+                    }
+                })
+            }
+
+        }else{
+            res.end('对不起，您无权执行该操作！');
+        }
+
+    });
+
+    //添加模板单元
+    router.post('/manage/templateItem/addNew',function(req,res){
+        var params = url.parse(req.url,true);
+        var defaultTemp = params.query.defaultTemp;
+
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPITEMS[0] + '_add')){
+            var tempItem = new TemplateItems(req.body);
+            tempItem.save(function(err){
+                if(err){
+                    res.end(err);
+                }else{
+                    ContentTemplate.findOne({'alias' : defaultTemp},function(err,doc){
+                        if(err){
+                            res.end(err);
+                        }else{
+                            if(doc){
+                                doc.items.push(tempItem);
+                                doc.save(function(err1){
+                                    if(err1){
+                                        res.end(err1);
+                                    }else{
+                                        cache.set(settings.session_secret + '_siteTemplate', doc , 1000 * 60 * 60 * 24); // 修改默认模板缓存
+                                        res.end('success');
+                                    }
+                                });
+                            }
+                        }
+                    })
+                }
+            });
+        }else{
+            res.end('对不起，您无权执行该操作！');
+        }
+
+    });
+
+
+    //删除模板单元
+    function removeTemplateItem(req,res){
+
+        var params = url.parse(req.url,true);
+        var targetId = params.query.uid;
+        if(shortid.isValid(targetId)){
+            TemplateItems.remove({_id : params.query.uid},function(err,result){
+                if(err){
+                    res.end(err);
+                }else{
+
+                    ContentTemplate.findOne({'using':true},function(err,doc){
+                        if(doc){
+                            var items = doc.items;
+                            for(var i=0;i<items.length;i++){
+                                if(items[i] == targetId){
+                                    items.splice(i,1);
+                                    break;
+                                }
+                            }
+                            doc.items = items;
+                            doc.save(function(err){
+                                if(err){
+                                    res.end(err);
+                                }
+                            });
+                        }
+                        //更新缓存
+                        cache.set(settings.session_secret + '_siteTemplate', doc , 1000 * 60 * 60 * 24); // 修改默认模板缓存
+                        res.end("success");
+                    });
+
+                }
+            })
+        }else{
+            res.end(settings.system_illegal_param);
+        }
+
+    }
+
+
+    //删除指定模板
+    function removeTemplate(req,res){
+        var params = url.parse(req.url,true);
+        var targetId = params.query.uid;
+
+        if(shortid.isValid(targetId)){
+            ContentTemplate.findOne({'_id':targetId},function(err,doc){
+                if(err){
+                    res.end(err);
+                }else{
+                    if(doc){
+
+                        var items = doc.items;
+                        TemplateItems.remove({'_id':{$in: items}},function(err){
+                            if(err){
+                                res.end(err);
+                            }else{
+                                //删除模板文件夹
+                                var tempPath = settings.SYSTEMTEMPFORDER + doc.alias;
+                                var tempStaticPath = settings.TEMPSTATICFOLDER + doc.alias;
+
+                                ContentTemplate.remove({'_id':targetId},function(err){
+                                    if(err){
+                                        res.end(err);
+                                    }else{
+
+                                        system.deleteFolder(req, res,tempPath,function(){
+                                            system.deleteFolder(req, res,tempStaticPath,function(){
+                                                res.end('success');
+                                            });
+                                        });
+
+                                    }
+                                })
+                            }
+                        });
+
+                    }else{
+                        res.end(settings.system_illegal_param);
+                    }
+                }
+            })
+
+        }else{
+            res.end(settings.system_illegal_param);
+        }
+
+    }
+
+
+//------------------------------------------文档模板结束
+
+
+
+
+
+//------------------------------------------文档留言开始
+
+//文档留言管理（list）
+    router.get('/manage/contentMsgs', function(req, res, next) {
+
+        adminFunc.renderToManagePage(req, res,'manage/messageList',settings.MESSAGEMANAGE);
+
+    });
 
 //管理员回复用户
     function replyMessage(req,res){
@@ -865,35 +1225,6 @@ var returnAdminRouter = function(io) {
 
         }
     }
-
-
-
-//读取模板文件夹信息
-    router.get('/manage/contentTemps/forderList', function(req, res, next) {
-
-        var filePath = system.scanJustFolder(settings.TEMPSFOLDER);
-//    对返回结果做初步排序
-        filePath.sort(function(a,b){return a.type == "folder" ||  b.type == "folder"});
-
-        return res.json(filePath);
-
-    });
-//------------------------------------------文档模板结束
-
-
-
-
-
-//------------------------------------------文档留言开始
-
-//文档留言管理（list）
-    router.get('/manage/contentMsgs', function(req, res, next) {
-
-        adminFunc.renderToManagePage(req, res,'manage/messageList',settings.MESSAGEMANAGE);
-
-    });
-
-
 //------------------------------------------文档留言结束
 
 
@@ -938,7 +1269,7 @@ var returnAdminRouter = function(io) {
 //--------------------消息管理开始---------------------------
 //管理员公告列表页面
     router.get('/manage/noticeManage/m/adminNotice', function(req, res, next) {
-
+        req.query.area = 'announce';
         adminFunc.renderToManagePage(req, res,'manage/adminNotice',settings.SYSTEMNOTICE);
 
     });
@@ -980,8 +1311,6 @@ var returnAdminRouter = function(io) {
                     }else{
                         if(users.length > 0){
                             for(var i=0;i<users.length;i++){
-                                var targetUserId = users[i]._id;
-                                var targetNo = i;
                                 var userNotify = new UserNotify();
                                 userNotify.user = users[i]._id;
                                 userNotify.notify = notify;
@@ -998,6 +1327,40 @@ var returnAdminRouter = function(io) {
             }
         });
     }
+
+    //系统消息列表
+    router.get('/manage/noticeManage/m/systemNotice', function(req, res, next) {
+        req.query.area = 'systemNotice';
+        adminFunc.renderToManagePage(req, res,'manage/systemNotice',settings.SYSTEMBACKSTAGENOTICE);
+
+    });
+
+    //设置为已读消息
+    router.get('/userNotify/setHasRead',function(req,res){
+        var params = url.parse(req.url,true);
+        var currentId = params.query.msgId;
+
+        if(adminFunc.checkAdminPower(req,settings.SYSTEMBACKSTAGENOTICE[0] + '_modify')){
+            if(currentId){
+                UserNotify.setHasRead(currentId,function(err){
+                    if(err){
+                        res.end(err);
+                    }else{
+                        adminFunc.getAdminNotices(req,res,function(noticeObj){
+                            req.session.adminNotices = noticeObj;
+                            res.end('success');
+                        });
+
+                    }
+                });
+            }else{
+                res.end(settings.system_illegal_param);
+            }
+        }else{
+            res.end('对不起，您无权执行该操作！');
+        }
+
+    });
 
 
 //--------------------系统管理首页开始---------------------------

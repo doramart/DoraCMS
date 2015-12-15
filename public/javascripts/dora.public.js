@@ -17,38 +17,44 @@ $(function(){
 function getSelectIds(){
     var checkBoxList = $(".datalist input[name='listItem']:checkbox");
     var ids = '';
+    var nids = '';
     if(checkBoxList.length>0){
         $(checkBoxList).each(function(i){
             if (true == $(this).prop("checked")) {
                 ids += $(this).prop('value') + ',';
+                if($(this).attr('nid')){
+                    nids += $(this).attr('nid') + ',';
+                }
+
             }
         });
         $('#targetIds').val(ids.substring(0,ids.length - 1));
+        $('#expandIds').val(nids.substring(0,nids.length - 1));
     }
 }
 
 
 //angularJs https Post方法封装
-function angularHttp($http,isValid,method,url,formData,callBack){
+function angularHttpPost($http,isValid,url,formData,callBack){
     if(isValid){
         $http({
-            method  : method,
+            method  : 'POST',
             url     : url,
             data    : $.param(formData),  // pass in data as strings
             headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
         })
-            .success(function(data) {
-//                关闭所有模态窗口
-                $('.modal').each(function(i){
-                    $(this).modal("hide");
-                });
-
-                if(data == 'success'){
-                    callBack(data);
-                }else{
-                    $.tipsShow({ message : data, type : 'warning' });
-                }
+        .success(function(data) {
+            //  关闭所有模态窗口
+            $('.modal').each(function(i){
+                $(this).modal("hide");
             });
+
+            if(data == 'success'){
+                callBack(data);
+            }else{
+                $.tipsShow({ message : data, type : 'warning' });
+            }
+        });
     }
     else{
         alert("参数校验不通过");
@@ -56,7 +62,10 @@ function angularHttp($http,isValid,method,url,formData,callBack){
 }
 
 
-//初始化上传图片按钮
+/*初始化上传图片按钮
+* id 初始化上传按钮
+* key 上传对象是所属 管理员头像、用户头像、文档首图等，后台根据key来进行不同规格的图片压缩
+* */
 function initUploadFyBtn(id,key,callBack){
     $("#"+id).uploadify({
         //指定swf文件

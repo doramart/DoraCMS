@@ -24,33 +24,25 @@ var cache = require('../util/cache');
 /* GET home page. */
 router.get('/', function (req, res, next) {
 
-    res.render('web/index', siteFunc.setDataForIndex(req, res, {'type': 'content','state' : true}, '首页'));
+    siteFunc.renderToTargetPageByType(req,res,'index');
 
 });
 
 //缓存站点地图
 router.get("/sitemap.html", function (req, res, next) {
-    var siteMapData;
-    var siteMapNeedData = {
-        siteConfig: siteFunc.siteInfos("网站地图"),
-        documentList: siteMapData,
-        cateTypes: siteFunc.getCategoryList(),
-        logined: req.session.logined,
-        layout: 'web/public/defaultTemp'
-    };
-
+    var siteMapNeedData;
     cache.get(settings.session_secret + '_siteMapHtml',function(siteMapHtml){
        if(siteMapHtml) {
-           siteMapNeedData.documentList = siteMapHtml;
-           res.render('web/sitemap', siteMapNeedData);
+           siteMapNeedData = siteMapHtml;
+           siteFunc.renderToTargetPageByType(req,res,'sitemap',{docs : siteMapNeedData});
        }else{
-           Content.find({},'title',function(err,docs){
+           Content.find({'type': 'content','state' : true},'title',function(err,docs){
                if(err){
                    res.end(err);
                }else{
-                   siteMapNeedData.documentList = docs;
+                   siteMapNeedData = docs;
                    cache.set(settings.session_secret + '_siteMapHtml', docs, 1000 * 60 * 60 * 24); // 缓存一天
-                   res.render('web/sitemap', siteMapNeedData);
+                   siteFunc.renderToTargetPageByType(req,res,'sitemap',{docs : siteMapNeedData});
                }
            })
        }
@@ -64,7 +56,7 @@ router.get('/details/:url', function (req, res, next) {
     var url = req.params.url;
     var currentId = url.split('.')[0];
     if(shortid.isValid(currentId)){
-        Content.findOne({ '_id': currentId , 'state' : true}, function (err, result) {
+        Content.findOne({ '_id': currentId , 'state' : true}).populate('category').exec(function(err,result){
             if (err) {
                 console.log(err)
             } else {
@@ -74,18 +66,19 @@ router.get('/details/:url', function (req, res, next) {
                     result.save(function(){
                         var cateParentId = result.sortPath.split(',')[1];
                         var cateQuery = {'sortPath': { $regex: new RegExp(cateParentId, 'i') }};
-//                        var reQuery = {'sortPath': { $regex: new RegExp(cateParentId, 'i') },'isTop' : 1};
-                        Content.count(cateQuery,function(err,reCount){
-                            res.render('web/temp/' + result.contentTemp + '/detail', siteFunc.setDetailInfo(req, res, cateQuery, reCount, result));
-                        })
+
+                        siteFunc.getContentsCount(req,res,cateParentId,cateQuery,function(count){
+                            siteFunc.renderToTargetPageByType(req,res,'detail',{count : count, cateQuery : cateQuery, detail : result});
+                        });
+
                     })
                 } else {
-                    res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("页面未找到")});
+                    siteFunc.renderToTargetPageByType(req,res,'error',{info : '非法操作!',message : settings.system_illegal_param, page : 'do404'});
                 }
             }
         });
     }else{
-        res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("页面未找到")});
+        siteFunc.renderToTargetPageByType(req,res,'error',{info : '非法操作!',message : settings.system_illegal_param , page : 'do500'});
     }
 
 });
@@ -104,7 +97,7 @@ router.get('/:defaultUrl', function (req, res, next) {
         if(indexPage && validator.isNumeric(indexPage)){
             req.query.page = indexPage;
         }
-        res.render('web/index', siteFunc.setDataForIndex(req, res, {'type': 'content','state' : true}, '首页'));
+        siteFunc.renderToTargetPageByType(req,res,'index');
     } else {
         var currentUrl = url;
         if (url.indexOf("—") >= 0) {
@@ -128,7 +121,7 @@ router.get('/:forder/:defaultUrl', function (req, res, next) {
     var currentUrl = url;
     if (url.indexOf("—") >= 0) {
         currentUrl = url.split("—")[0];
-        var catePageNo = (url.split("—")[1]).split(".")[0]
+        var catePageNo = (url.split("—")[1]).split(".")[0];
         if(catePageNo && validator.isNumeric(catePageNo)){
             req.query.page = catePageNo;
         }
@@ -142,23 +135,24 @@ router.get('/:forder/:defaultUrl', function (req, res, next) {
 function queryCatePage(req, res, cateId) {
 
     if(shortid.isValid(cateId)){
-        ContentCategory.findOne({"_id": cateId}, function (err, result) {
+        ContentCategory.findOne({"_id": cateId}).populate('contentTemp').exec(function(err,result){
             if (err) {
-                res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("操作失败")});
+                siteFunc.renderToTargetPageByType(req,res,'error',{info : '页面未找到!',message : err.message, page : 'do500'});
             } else {
                 if (result) {
                     var contentQuery = {'sortPath': { $regex: new RegExp(result._id, 'i') },'state' : true};
                     var cateParentId = result.sortPath.split(',')[1];
                     var cateQuery = {'sortPath': { $regex: new RegExp(cateParentId, 'i') }};
-                    res.render('web/temp/' + result.contentTemp + '/contentList', siteFunc.setDataForCate(req, res, contentQuery, cateQuery ,result));
+
+                    siteFunc.renderToTargetPageByType(req,res,'contentList',{contentQuery : contentQuery,cateQuery : cateQuery,result : result});
                 }
                 else {
-                    res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("操作失败") });
+                    siteFunc.renderToTargetPageByType(req,res,'error',{info : '非法操作!',message : settings.system_illegal_param, page : 'do500'});
                 }
             }
-        })
+        });
     }else{
-        res.render('web/public/do404', { siteConfig: siteFunc.siteInfos("页面未找到") });
+        siteFunc.renderToTargetPageByType(req,res,'error',{info : '非法操作!',message : settings.system_illegal_param, page : 'do500'});
     }
 
 }

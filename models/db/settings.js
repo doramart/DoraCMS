@@ -24,12 +24,14 @@ module.exports = {
     SITETITLE : '前端开发俱乐部', // 站点名称
     SITEDOMAIN : 'http://www.html-js.cn', // 站点域名
     SITEICP : '粤ICP备15038960号-2', // 站点备案号
-    SITEVERSION : 'v1.0.8', // 静态资源版本戳
+    SITEVERSION : 'v1.0.9', // 静态资源版本戳
     SYSTEMMAIL : 'doramart@qq.com', // 管理员个人邮箱
     UPDATEFOLDER : process.cwd()+'/public/upload', // 默认上传文件夹本地路径
-    TEMPSFOLDER : process.cwd()+'/views/web/temp', // 默认模板文件夹本地路径
+    TEMPSTATICFOLDER : process.cwd()+'/public/themes/', // 模板静态文件路径
     DATAOPERATION : process.cwd()+'/models/db/bat', //数据库操作脚本目录
     DATABACKFORDER : 'C:/softbak/mongodbConfig/mongodata/', // 服务端数据库操作脚本目录
+    SYSTEMTEMPFORDER : process.cwd()+'/views/web/temp/', // 系统模板安装目录
+    DORACMSAPI : 'http://api.html-js.cn', // 系统服务提供商
     CMSDISCRIPTION : '前端开发俱乐部,分享前端知识,丰富前端技能。汇集国内专业的前端开发文档,为推动业内前端开发水平共同奋斗。html,js,css,nodejs,前端开发,jquery,web前端, web前端开发, 前端开发工程师',
     SITEKEYWORDS : '前端开发俱乐部,前端俱乐部,DoraCMS,Nodejs内容管理系统, 前端开发, web前端, 前端开发工程师,前端资源, angularjs, 前端开发工具, nodejs ,boostrap',
     SITEBASICKEYWORDS : '前端开发俱乐部,前端开发,前端俱乐部,DoraCMS', // 基础关键词
@@ -50,10 +52,12 @@ module.exports = {
     CONTENTCATEGORYS : new Array('contentManage_cateGory','文档类别管理'),
     CONTENTTAGS : new Array('contentManage_tag','文档标签管理'), //标签管理
     CONTENTTEMPS : new Array('contentManage_temp','文档模板管理'), //模板管理
+    CONTENTTEMPITEMS : new Array('contentManage_tpItem','文档模板单元管理'), //模板单元管理
     MESSAGEMANAGE : new Array('contentManage_msg','留言管理'), // 留言管理
     NOTICEMANAGE : new Array('contentManage_notice','消息管理'), // 消息管理
     SYSTEMNOTICE : new Array('contentManage_notice_1','公告管理'), // 公告管理
     USERNOTICE : new Array('contentManage_notice_2','用户消息'), // 用户消息
+    SYSTEMBACKSTAGENOTICE : new Array('contentManage_notice_3','系统消息'), // 系统消息
 
     USERMANAGE : new Array('userManage','会员管理'), // 后台模块(会员管理)
     REGUSERSLIST: new Array('userManage_user','注册用户管理'),
@@ -72,6 +76,7 @@ module.exports = {
     email_notice_contentMsg : 'notice_contentMsg',
     email_notice_contentBug : 'notice_contentBug',
     email_notice_user_contentMsg : 'notice_user_contentMsg',
+    email_notice_user_reg : 'notice_user_reg',
 
 
 //    信息提示相关

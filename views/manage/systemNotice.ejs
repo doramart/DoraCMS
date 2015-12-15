@@ -1,0 +1,35 @@
+<div class="row" ng-controller="contentnotices">
+    <% include public/modal %>
+    <div class="col-xs-12">
+        <div class="panel">
+            <a ng-click="batchIsRead()" role="button" class="btn btn-primary btn-sm"><span class="fa fa-fw fa-cloud" aria-hidden="true">&nbsp;</span>标记选中为已读</a>
+            <% include public/tableTool %>
+            <div class="pull-right">
+                <% include public/searchBox %>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body table-responsive no-padding" >
+                <table class="table table-hover">
+                    <tr>
+                        <th><input type="checkbox" class="mini" id="selectAll"/></th>
+                        <th>标题</th>
+                        <th>内容</th>
+                        <th>发布时间</th>
+                    </tr>
+
+                    <tr class="datalist" id="{{notice._id}}" ng-class="{true:'noRead'}[!notice.isRead]" ng-repeat="notice in data">
+                        <td><input type="checkbox" name="listItem" class="mini" value="{{notice._id}}" nid="{{notice.notify._id}}" ng-click="getNewIds()"/></td>
+                        <td class=" " >{{notice.notify.title}}</td>
+                        <td class=" " ng-bind-html="notice.notify.content | trustHtml"></td>
+                        <td class=" ">{{notice.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                    </tr>
+                </table>
+
+            </div><!-- /.box-body -->
+            <% include public/tableFooter %>
+        </div><!-- /.box -->
+
+    </div><!-- /.col -->
+
+</div>

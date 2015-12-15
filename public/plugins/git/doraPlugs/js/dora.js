@@ -58,7 +58,7 @@ var blockObj = function (jsonData) {
     jsonData = jsonData || {};
     jsonData.message = jsonData.message || '<p>请稍后...</p>';
     jsonData.overClass = jsonData.overClass || 'block-a';
-
+    jsonData.mask = jsonData.mask || false;
     this.html = blockHtml(objId, jsonData);
     this.init(objId, jsonData);
 };
@@ -90,7 +90,11 @@ blockObj.prototype = {
             'margin-top' : - $(_this.obj).height()/2 + 'px'
         });
 
-        $("<div class='doraui_mask' style='z-index: 10'></div>").insertBefore(_this.obj);
+        var maskOpacity = 1;
+        if(!jsonData.mask){
+            maskOpacity = 0;
+        }
+        $("<div class='doraui_mask' style='z-index: 10;opacity:"+maskOpacity+" '></div>").insertBefore(_this.obj);
         $(_this.obj).css('z-index', 11);
 //        禁止背景拖动
         document.body.addEventListener('touchmove', stopScroll , false);

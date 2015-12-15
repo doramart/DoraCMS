@@ -16,6 +16,7 @@ var UserNotifySchema = new Schema({
     },
     isRead : {type: Boolean, default: false},
     user   : {type: String, ref: 'User'},  // 用户消息所属者
+    systemUser   : { type: String, ref: 'AdminUser' },  // 用户消息所属者
     notify : {type: String, ref : 'Notify'},   // 关联的Notify
     date   : { type: Date, default: Date.now }
 });
@@ -23,6 +24,21 @@ var UserNotifySchema = new Schema({
 UserNotifySchema.index({date: -1});
 
 UserNotifySchema.statics = {
+
+    addNotifyByUsers : function(res,users,notify){
+        if(users.length > 0){
+            for(var i=0;i<users.length;i++){
+                var userNotify = new UserNotify();
+                userNotify.systemUser = users[i]._id;
+                userNotify.notify = notify;
+                userNotify.save(function(err){
+                    if(err){
+                        res.end(err);
+                    }
+                });
+            }
+        }
+    },
 
     setHasRead : function(msgId,callback){
         var idObj = msgId.split(',');
@@ -35,9 +51,14 @@ UserNotifySchema.statics = {
         UserNotify.update(query,{$set:{'isRead':true}},{ multi: true },callback);
     },
 
-    getNoReadNotifyCountByUserId : function(userId,callBack){
+    getNoReadNotifyCountByUserId : function(userId,type,callBack){
         if(userId){
-            var msgQuery = {'user': userId , 'isRead' : false};
+            var msgQuery = {};
+            if(type == 'user'){
+                msgQuery = {'user': userId , 'isRead' : false};
+            }else if(type == 'adminUser'){
+                msgQuery = {'systemUser': userId , 'isRead' : false};
+            }
             UserNotify.count(msgQuery,callBack);
         }else{
             callBack(0);

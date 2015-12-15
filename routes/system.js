@@ -7,10 +7,10 @@ var router = express.Router();
 //文件上传类
 var formidable = require('formidable'),
     util = require('util'),fs=require('fs');
-//系统相关操作
-var system = require("../util/system");
+
 var gm = require('gm');
 var url = require('url');
+
 /* GET users listing. */
 router.post('/upload', function(req, res, next) {
 
@@ -110,5 +110,6 @@ router.post('/upload', function(req, res, next) {
         console.log('parsing done');
     });
 });
+
 
 module.exports = router;

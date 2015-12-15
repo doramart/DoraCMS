@@ -34,24 +34,3 @@
     </div><!-- /.col -->
 
 </div>
-
-
-<script>
-    /*targetID:全局对应指定记录的标记，在修改和删除时使用*/
-
-    doraApp.controller("usernotices",function($scope,$http){
-//                初始化名称和权限
-        $scope.formData = {};
-        //获取公告列表
-        initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-        //删除公告
-        initDelOption($scope,$http,"<%=bigCategory%>","<%=searchKey%>",'您确认要删除选中的消息吗？');
-
-    })
-    .filter('trustHtml', function ($sce) {
-        return function (input) {
-            return $sce.trustAsHtml(input);
-        }
-    });
-
-</script>

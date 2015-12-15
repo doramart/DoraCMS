@@ -10,6 +10,10 @@ var shortid = require('shortid');
 var Message = require('./Message');
 var AdminUser = require("./AdminUser");
 var UserNotify = require("../models/UserNotify");
+var Content = require("../models/Content");
+var ContentCategory = require("../models/ContentCategory");
+var ContentTemplate = require("../models/ContentTemplate");
+
 //站点配置
 var settings = require("../models/db/settings");
 var db = mongoose.connect('mongodb://localhost/doracms');
@@ -122,7 +126,13 @@ var DbOpt = {
         }else if(obj === AdminUser){
             query.populate('group');
         }else if(obj === UserNotify){
-            query.populate('user').populate('notify')
+            query.populate('user').populate('notify');
+        }else if(obj === Content){
+            query.populate('category');
+        }else if(obj === ContentCategory){
+            query.populate('contentTemp');
+        }else if(obj === ContentTemplate){
+            query.populate('items');
         }
 
         query.exec(function(err,docs){

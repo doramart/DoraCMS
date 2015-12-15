@@ -69,7 +69,9 @@ function querySearchResult(req, res){
         keyPr.push({'tags' : { $regex: reKey } });
         keyPr.push({'title' : { $regex: reKey } })
     }
-    res.render('web/searchTemp', siteFunc.setDataForSearch(req, res, keyPr ,searchKey));
+
+    siteFunc.renderToTargetPageByType(req,res,'search',{query : keyPr , searchKey : searchKey , page : 'searchTemp'});
+
 }
 
 

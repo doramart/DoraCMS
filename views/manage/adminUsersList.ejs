@@ -1,4 +1,4 @@
-﻿<div class="row" ng-controller="adminUserlist">
+﻿<div class="row" ng-controller="adminUserList">
     <% include public/modal %>
     <div class="col-xs-12">
         <div class="panel">
@@ -91,10 +91,10 @@
                             <div class="col-sm-6">
                                 <div class="dropdown">
                                     <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i id="categoryName">请选择用户组</i>
+                                        <i id="groupName">请选择用户组</i>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="groupTree" class="ztree">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="adminGroupTree" class="ztree" ng-model="formData.group" tree>
                                         <li role="presentation"><a href="#">test</a></li>
                                     </ul>
                                 </div>
@@ -112,7 +112,6 @@
                             <div class="col-sm-6">
                                 <input type="email" class="form-control" name="email" ng-model="formData.email" ng-pattern="/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/" required/>
                                 <label for="inputError" class="control-label text-danger" ng-show="myForm.email.$invalid && !myForm.email.$pristine"><i class="fa fa-times-circle-o"></i> 请填写正确的邮箱地址</label>
-
                             </div>
                         </div>
                         <div class="form-group">
@@ -120,7 +119,6 @@
                             <div class="col-sm-6">
                                 <textarea name="comments" ng-model="formData.comments" ng-minlength="5" ng-maxlength="30" id="" cols="30" rows="2" class="form-control" required></textarea>
                                 <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i> 请输入5-30个字符</label>
-
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -131,109 +129,6 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-
 </div><!-- /.row -->
 
 </div>
-
-
-
-<script>
-            doraApp.controller("adminUserlist",function($scope,$http){
-                $scope.formData = {};
-
-                //获取管理员列表信息
-                initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-
-                //删除用户
-                initDelOption($scope,$http,"<%=bigCategory%>","<%=searchKey%>",'您确认要删除选中的管理员吗？');
-
-                initUploadFyBtn('uploadULogoImg',"userlogo",function(data){
-                    alert('上传成功');
-                    $("#userLogo").attr("src",data);
-                    $scope.formData.logo = data;
-                });
-
-//                修改用户
-                $('#addNewAdminUser').on('show.bs.modal', function (event) {
-                    var obj = $(event.relatedTarget);
-                    var editId = obj.data('whatever');
-//                    如果不为空则为编辑状态
-                    if(editId){
-                        $http.get("/admin/manage/<%=bigCategory%>/item?uid="+editId).success(function(result){
-                            $scope.formData = result;
-                            $scope.targetID = editId;
-                            getAdminGroup($scope,$http);
-                        })
-                    }else{
-                        $scope.formData = {};
-                        getAdminGroup($scope,$http);
-                    }
-
-                }).on('hidden.bs.modal', function (e) {
-                    // 清空数据
-                    $scope.formData = {};
-                    $scope.targetID = "";
-                    $(this).find(".form-control").val("");
-                    $("#adminUserInfo").addClass("hide");
-                });
-
-//                添加新用户或修改用户
-                $scope.processForm = function(isValid){
-
-                    if(!$scope.formData.group){
-                        alert('请选择用户组!');
-                        return false;
-                    }
-                    angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
-                        initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                    });
-
-                };
-            })
-//            确认密码校验
-            .directive('pwCheck', [function () {
-                return {
-                    require: 'ngModel',
-                    link: function (scope, elem, attrs, ctrl) {
-                        var firstPassword = '#' + attrs.pwCheck;
-                        elem.add(firstPassword).on('keyup', function () {
-                            scope.$apply(function () {
-                                var v = elem.val()===$(firstPassword).val();
-                                ctrl.$setValidity('pwmatch', v);
-                            });
-                        });
-                    }
-                }
-            }]);
-
-
-
-//    获取用户组信息
-    function getAdminGroup($scope,$http){
-
-        var currentCate = '';
-        if($scope.formData && $scope.formData.group){
-            currentCate = $scope.formData.group._id;
-        }
-
-        iniNormalTree($http,'groupTree',"/admin/manage/adminGroupList/list",'categoryName',currentCate,function(e, treeId, treeNode){
-            var zTree = $.fn.zTree.getZTreeObj("groupTree"),
-                    nodes = zTree.getSelectedNodes(),
-                    v = "",
-                    vid = "";
-
-            nodes.sort(function compare(a,b){return a.id-b.id;});
-            for (var i=0, l=nodes.length; i<l; i++) {
-                v += nodes[i].name ;
-                vid += nodes[i].id ;
-            }
-
-            $('#categoryName').html(v);
-            $scope.formData.group = vid;
-        });
-
-    }
-
-
-</script>

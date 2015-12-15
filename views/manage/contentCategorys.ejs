@@ -14,7 +14,7 @@
 
     </div><!-- /.col -->
     <!--信息提示模态窗口-->
-    <div class="modal fade" id="checkIfDel">
+    <div class="modal fade bs-example-modal-sm" id="checkIfDel">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -25,8 +25,8 @@
                     <div class="text-danger"><i class="icon fa fa-warning"></i> 确认删除该条记录？</div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" ng-click="delCategoryItem()">删除</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger btn-xs" ng-click="delCategoryItem()">删除</button>
+                    <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -126,185 +126,3 @@
 </div>
 
 
-<script>
-
-    doraApp.controller('contentCategorys', function ($scope,$http) {
-//                初始化模板分类
-        iniTempData($scope,$http);
-//        数据初始化
-        $scope.warningInfo = {};
-        $scope.formData = {};
-        $scope.formData.parentID = "0";
-//        $scope.formData.defaultUrl = "";
-
-        getData($scope,$http);
-        //删除用户
-        $('#checkIfDel').on('show.bs.modal', function (event) {
-            var obj = $(event.relatedTarget);
-            $scope.targetID = obj.data('whatever');
-        }).on('hide.bs.modal', function (event) {
-            $scope.targetID ="";
-        });
-        //确认执行删除
-        $scope.delCategoryItem = function () {
-
-            if(checkIfParent())
-            {
-                $('#checkIfDel').modal("hide");
-                $scope.warningInfo.title = "警告";
-                $scope.warningInfo.message = "失败！没有选中节点或该节点下有子节点！"
-                $('#askifdo').modal("show");
-            }else{
-                var currentID =  $scope.targetID;
-                angularHttpGet($http,"/admin/manage/<%=bigCategory%>/del?uid="+currentID,function(){
-                    getData($scope,$http);
-                });
-            }
-        };
-
-//                修改类别
-        $('#addContentCategory').on('show.bs.modal', function (event) {
-            var obj = $(event.relatedTarget);
-            var editId = obj.data('whatever');
-            var sortPath = obj.data('array');
-            // 继承父类的文件路径
-            var homePage = obj.data('homepage');
-//            继承父类内容模板
-            var contentTemp = obj.data('contenttemp');
-            var modalTitle = $(this).find('.modal-title');
-//          如果不为空则为编辑状态
-            if(editId){
-//                子类不用设置模板，继承父类大类模板
-                $("#setCateTemp").addClass("hide");
-                $("#defaultUrl").addClass("hide");
-
-                var opt = editId.substring(0,6);
-                var currentID = editId.substring(7,editId.length);
-//                判断是编辑还是添加子类
-                if(opt === "addSub"){
-                    $("#defaultUrl").removeClass("hide");
-                    modalTitle.text("添加子类");
-                    $scope.formData.parentID = currentID;
-                    $scope.formData.sortPath = sortPath;
-                    $scope.formData.defaultUrl = homePage;
-                    $scope.formData.contentTemp = contentTemp;
-                    $scope.targetID = "";
-
-                }
-                else if(opt === "editNc"){
-                    modalTitle.text("编辑分类");
-                    $http.get("/admin/manage/<%=bigCategory%>/item?uid="+currentID).success(function(result){
-                        $scope.formData = result;
-                        $scope.targetID = currentID;
-                    })
-                }
-            }else{
-                $("#setCateTemp").removeClass("hide");
-                $("#defaultUrl").removeClass("hide");
-
-                modalTitle.text("添加文档类别");
-                $scope.formData = {};
-                $scope.formData.parentID = "0";
-                $scope.formData.sortPath = "0";
-            }
-        }).on('hidden.bs.modal', function (e) {
-            // 清空数据
-            $scope.formData = {};
-            $scope.targetID ="";
-            $(this).find("input").val("");
-        });
-//                添加类别
-        $scope.processForm = function(isValid){
-
-            if(!$scope.formData.contentTemp){
-                alert('请选择文档类别!');
-                return false;
-            }
-
-            angularHttp($http,isValid,'POST',getTargetPostUrl($scope,'<%=bigCategory%>'),$scope.formData,function(data){
-                getData($scope,$http);
-            });
-
-        }
-
-
-    });
-
-
-    function getData($scope,$http){
-        $http.get("/admin/manage/contentCategorys/list").success(function(result){
-
-            var arrTree = changeToTreeJson(result);
-
-//            ztree 相关参数设置
-            var IDMark_A = "_a";
-            var setting = {
-                view: {
-                    addDiyDom: addDiyDom
-                },
-                data: {
-                    simpleData: {
-                        enable: true
-                    }
-                }
-            };
-
-            function addDiyDom(treeId, treeNode) {
-                if (treeNode.parentNode && treeNode.parentNode.id != 2) return;
-                var aObj = $("#" + treeNode.tId + IDMark_A);
-                var editStr = "";
-                editStr += "&nbsp;<span id='diyBtn_" +treeNode.id+ "'><a href='#' data-whatever='editNc_" +treeNode.id+ "' class='text-primary' role='button' data-toggle='modal' data-target='#addContentCategory'>编辑</a></span>";
-                editStr += "&nbsp;<span id='diyBtn_" +treeNode.id+ "'><a href='#' data-whatever='" +treeNode.id+ "' class='text-primary' role='button' data-toggle='modal' data-target='#checkIfDel'>删除</a></span>";
-                editStr += "&nbsp;<span id='diyBtn_" +treeNode.id+ "'><a href='#' data-contenttemp='" +treeNode.contentTemp+ "' data-homepage='" +treeNode.homePage+ "' data-array='" +treeNode.sortPath+ "' data-whatever='addSub_" +treeNode.id+ "' class='text-primary' role='button' data-toggle='modal' data-target='#addContentCategory'>添加子类</a></span>";
-                aObj.after(editStr);
-            }
-
-            $.fn.zTree.init($("#categoryTree"), setting, arrTree);
-
-        })
-    }
-
-//    判断需要删除的节点是否被选中或者是否有子节点
-    function checkIfParent(){
-        var treeObj = $.fn.zTree.getZTreeObj("categoryTree");
-        var sNodes = treeObj.getSelectedNodes();
-        if (sNodes.length > 0) {
-            var isParent = sNodes[0].isParent;
-            if(isParent){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }else{
-            return true;
-        }
-    }
-
-
-    function iniTempData($scope,$http){
-        var currentCate = '';
-        if($scope.formData){
-            currentCate = $scope.formData.contentTemp;
-        }
-
-        iniNormalTree($http,'tempTree',"/admin/manage/contentTemps/list",'tempsName',currentCate,function(e, treeId, treeNode){
-
-            var zTree = $.fn.zTree.getZTreeObj("tempTree"),
-                    nodes = zTree.getSelectedNodes(),
-                    v = "",
-                    vid = "";
-
-            nodes.sort(function compare(a,b){return a.id-b.id;});
-            for (var i=0, l=nodes.length; i<l; i++) {
-                v += nodes[i].name ;
-                vid += nodes[i].alias ;
-            }
-
-            $('#tempsName').html(v);
-            $scope.formData.contentTemp = vid;
-        });
-
-    }
-
-</script>

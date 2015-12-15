@@ -36,16 +36,3 @@
 </div>
 
 
-<script>
-
-            doraApp.controller("systemLogs",function($scope,$http){
-//                初始化名称和权限
-                $scope.formData = {};
-                //获取日志数据列表
-                initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                //删除日志数据
-                initDelOption($scope,$http,"<%=bigCategory%>","<%=searchKey%>",'您确认要删除选中的日志吗？');
-
-            });
-
-</script>

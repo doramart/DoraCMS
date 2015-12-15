@@ -47,3 +47,20 @@
 .main-statistics li {
     list-style-type: none;
 }
+
+.datalist.noRead {
+    font-weight: 700;
+    color: #000;
+}
+
+/*进度条*/
+.system-progress {
+    background: #fff;
+    border-radius: 5px;
+    height: 14px;
+    margin: 0 auto;
+    padding: 2px 3px;
+    width: 300px;
+}
+
+.modal-msg{font-size: 14px;}

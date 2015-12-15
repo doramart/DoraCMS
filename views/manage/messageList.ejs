@@ -83,52 +83,6 @@
 <script>
     /*targetID:全局对应指定记录的标记，在修改和删除时使用*/
 
-            doraApp.controller("messageList",function($scope,$http){
-//                初始化名称和权限
-                $scope.formData = {};
-                $scope.repFormData = {};
-                //获取留言列表
-                initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                //删除留言
-                $scope.delMsgsItem = function(id){
-                    initCheckIfDo($scope,id,'您确认要删除该条留言吗？',function(currentID){
-                        angularHttpGet($http,"/admin/manage/<%=bigCategory%>/del?uid="+currentID,function(){
-                            initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                        });
-                    });
-                };
 
-//                查看留言详情
-                $('#getMsgDetails').on('show.bs.modal', function (event) {
-                    var obj = $(event.relatedTarget);
-                    var msgObj = obj.data('whatever');
-
-                    $('#showMsgDetail').html(msgObj.content);
-                    $scope.repFormData.relationMsgId = msgObj._id;
-                    $scope.repFormData.contentId = msgObj.contentId;
-                    $scope.repFormData.contentTitle = msgObj.contentTitle;
-                    $scope.repFormData.utype = '1';
-
-                    if(msgObj.author){
-                        $scope.repFormData.replyId = msgObj.author._id;
-                        $scope.repFormData.replyEmail = msgObj.author.email;
-                    }
-
-                }).on('hidden.bs.modal', function (e) {
-                    // 清空数据
-                    $('#showMsgDetail').html("");
-                    $scope.repFormData = {};
-                });
-
-//                留言回复
-                $scope.repMsgForm = function(isValid){
-
-                        angularHttp($http,isValid,'POST','/admin/manage/<%=bigCategory%>/addOne',$scope.repFormData,function(data){
-                            initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                        });
-
-                }
-
-            });
 
 </script>

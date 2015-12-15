@@ -30,12 +30,6 @@ var AdminUserSchema = new Schema({
 });
 
 
-AdminUserSchema.statics = {
-
-
-};
-
-
 var AdminUser = mongoose.model("AdminUser",AdminUserSchema);
 
 module.exports = AdminUser;

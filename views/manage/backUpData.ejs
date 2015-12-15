@@ -52,34 +52,3 @@
     </div><!-- /.modal -->
 
 </div>
-
-
-<script>
-
-            doraApp.controller("backUpData",function($scope,$http){
-//                初始化名称和权限
-                $scope.formData = {};
-                //获取备份数据列表
-                initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                //删除备份数据
-                $scope.delDataItem = function(id,path){
-                    initCheckIfDo($scope,id,'您确认要删除该条备份数据吗？',function(currentID){
-                        angularHttpGet($http,"/admin/manage/backupDataManage/delItem?uid="+currentID+"&filePath="+path,function(){
-                            initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                        });
-                    });
-                };
-
-                $scope.backUpData = function(){
-
-                    initCheckIfDo($scope,'','确认执行备份操作？数据库操作请谨慎处理',function(currentID){
-                        angularHttpGet($http,"/admin/manage/backupDataManage/backUp",function(){
-                            alert('数据备份成功！');
-                            initPagination($scope,$http,"<%=bigCategory%>","<%=searchKey%>");
-                        });
-                    });
-
-                };
-            });
-
-</script>

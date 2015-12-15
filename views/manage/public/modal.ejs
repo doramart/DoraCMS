@@ -1,93 +1,37 @@
 
 <!--信息提示模态窗口-->
-<div class="modal fade" id="askifdo">
+<div class="modal fade bs-example-modal-sm" id="askifdo">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{warningInfo.title}}</h4>
+                <h5 class="modal-title">{{warningInfo.title}}</h5>
             </div>
             <div class="modal-body">
                 <div class="text-warning"><i class="icon fa fa-warning"></i>&nbsp;{{warningInfo.message}}</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">取消</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 <!--提示确认模态窗口-->
-<div class="modal fade" id="checkIfDo">
+<div class="modal fade bs-example-modal-sm" id="checkIfDo">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">提示</h4>
+                <h5 class="modal-title">提示</h5>
             </div>
             <div class="modal-body">
                 <h4><i class="icon fa fa-warning"></i>&nbsp;<span class="modal-msg"></span></h4>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" ng-click="confirmDo(targetID)">确认</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger btn-xs" ng-click="confirmDo(targetID)">确认</button>
+                <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">取消</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<!--用户提交反馈窗口-->
-<div class="modal fade" id="addMsgBox" ng-controller="addMsg">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">您的宝贵建议是开源存在的意义^_^...</h4>
-            </div>
-            <form role="form" class="form-horizontal" name="myBugForm" ng-submit="sentMsgForm(myBugForm.$valid)" novalidate>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <input type="email" class="form-control" name="email" ng-model="formData.email" required placeholder="请填写您的邮箱"/>
-                            <label for="inputError" class="control-label text-danger" ng-show="myBugForm.email.$invalid && !myBugForm.email.$pristine"><i class="fa fa-times-circle-o"></i>请填写正确的邮箱地址</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <textarea name="content" ng-model="formData.content" ng-minlength="5" ng-maxlength="400" id="" cols="30" rows="4" class="form-control" placeholder="请简要输入建议内容" required></textarea>
-                            <label for="inputError" class="control-label text-danger" ng-show="myBugForm.content.$invalid && !myBugForm.content.$pristine"><i class="fa fa-times-circle-o"></i>请输入5-400个字符</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" ng-disabled="myBugForm.$invalid">提交</button>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<script>
-    doraApp.controller("addMsg",function($scope,$http) {
-        $scope.formData = {};
-        $('#addMsgBox').on('show.bs.modal', function (event) {
-            var obj = $(event.relatedTarget);
-            var editId = obj.data('whatever');
-            $scope.formData.contentFrom = editId;
-
-        }).on('hidden.bs.modal', function (e) {
-            // 清空数据
-            $scope.formData = {};
-        });
-
-        $scope.sentMsgForm = function(isValid){
-
-            if(isValid){
-                angularHttp($http,isValid,'POST','/admin/message/sent',$scope.formData,function(data){
-                    alert('感谢亲的反馈！');
-                });
-            }
-
-        };
-    })
-</script>

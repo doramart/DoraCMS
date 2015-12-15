@@ -23,6 +23,7 @@ var NotifySchema = new Schema({
     action      : {type: String },    // 提醒信息的动作类型
     sender      : {type: String , ref : 'User'},    // 发送者的ID
     adminSender : {type: String , ref : 'AdminUser'},    // 发送者的ID
+    systemSender : {type: String }, // 系统消息发送者
     date   : { type: Date, default: Date.now }
 });
 
@@ -41,6 +42,23 @@ NotifySchema.statics = {
         }else{
             res.end('参数非法');
         }
+    },
+    //发送系统消息给管理后台
+    sendSystemNotice : function(res,noticeObj,callBack){
+        var notify = new Notify(noticeObj);
+        notify.save(function(err){
+            if(err){
+                res.end(err);
+            }else{
+                AdminUser.find({},'_id',function (err,users) {
+                    if(err){
+                        res.end(err);
+                    }else{
+                        callBack(users,notify);
+                    }
+                });
+            }
+        });
     }
 
 };

@@ -1,6 +1,6 @@
 {
   "name": "doracms",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -27,10 +27,12 @@
     "png-word": "0.0.7",
     "qr-image": "^3.1.0",
     "redis": "^0.12.1",
+    "request": "^2.67.0",
     "serve-favicon": "~2.2.0",
     "shortid": "^2.2.2",
     "socket.io": "^1.3.7",
     "ueditor-nodejs": "^0.1.0",
+    "unzip": "^0.1.11",
     "validator": "^3.37.0"
   }
 }

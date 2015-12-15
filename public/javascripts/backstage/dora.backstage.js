@@ -1,5 +1,5 @@
 $(function(){
-//    全选
+    //全局初始化
    $(':checkbox').prop('checked',false);
    $('#targetIds').val('');
 
@@ -26,15 +26,6 @@ function setContainerPosition(obj){
 }
 
 
-//字符串转换函数
-//adminUser=true&adminGroup=true 转json对象
-function changeDataTOJson(obj){
-    var oldVal = obj.toString();
-    var cg1 = oldVal.replace(/=/g, "':");
-    var changeObj = "{'"+cg1 .replace(/&/g, ",'")+"}";
-    return eval("(" + changeObj + ")");
-}
-
 
 //将后台获取的list解析为tree对象所需的json数据
 function changeToTreeJson(result,key,oldValue){
@@ -53,11 +44,10 @@ function changeToTreeJson(result,key,oldValue){
             treeItem = new TagsTree(result[i]._id,result[i].name,checkState);
 
         }else if(key === "tempTree"){
-            treeItem = new TempsTree(result[i]._id,result[i].name,result[i].alias);
+            treeItem = new TempsTree(result[i]._id,result[i].name,result[i].forder);
         }else if(key === "tempForderTree"){
             treeItem = new TempsTree(0,result[i].name,"");
         }else{
-//            alert(result[i].name+"--"+result[i].parentID)
             treeItem = new TreeInfo(result[i]._id,result[i].parentID,result[i].name,result[i].sortPath,result[i].homePage,result[i].contentTemp,true,false);
         }
         arrTree.push(treeItem);
@@ -79,17 +69,6 @@ function getCateNameById(result,id){
     return "请选择类别";
 }
 
-
-function getCateNameByAlias(result,id){
-
-    for(var i=0;i<result.length;i++){
-
-        if(result[i].name === id){
-            return result[i].name;
-        }
-    }
-    return "请选择类别";
-}
 
 
 //    创建树对象结构
@@ -129,16 +108,26 @@ function cancelTreeCheckBoxSelect(id){
 }
 
 
-//初始化分页
-function initPagination($scope,$http,currentPage,searchKey){
+//初始化普通列表分页
+function initPagination($scope,$http){
+    initPageInfo($scope);
+    getPageInfos($scope,$http,"/admin/manage/getDocumentList/"+$('#currentCate').val(),'normalList');
+}
 
+
+//初始化模板商店接口分页
+function initApiPagination($scope,$http){
+    initPageInfo($scope);
+    getPageInfos($scope,$http,"http://api.html-js.cn/system/template",'themeShop');
+}
+
+function initPageInfo($scope){
     $("#dataLoading").removeClass("hide");
     $scope.selectPage = [
         {name:'10',value : '10'},
         {name:'20',value : '20'},
         {name:'30',value : '30'}
     ];
-
     $scope.limitNum = '10';
     $scope.currentPage = 1;
     $scope.totalPage = 1;
@@ -146,15 +135,15 @@ function initPagination($scope,$http,currentPage,searchKey){
     $scope.limit = 10;
     $scope.pages = [];
     $scope.startNum = 1;
-    $scope.keywords = searchKey;
-    getPageInfos($scope,$http,"/admin/manage/getDocumentList/"+currentPage);
+    $scope.keywords = $('#searchInput').val();
+    $scope.area = $('#pageArea').val();
 }
 
 
 //翻页组件
-function getPageInfos($scope,$http,url){
+function getPageInfos($scope,$http,url,reqType){
 
-//        定义翻页动作
+    // 定义翻页动作
     $scope.loadPage = function(page){
         $scope.currentPage = page;
         getPageInfos($scope,$http,url)
@@ -175,14 +164,19 @@ function getPageInfos($scope,$http,url){
     };
 
     $scope.changeOption = function(){
-
         $scope.limit = Number($scope.limitNum);
         getPageInfos($scope,$http,url);
     };
 
-    $http.get(url+"?limit="+$scope.limit+"&currentPage="+$scope.currentPage+"&searchKey="+$scope.keywords).success(function(result){
+    $http.get(url+"?limit="+$scope.limit+"&currentPage="+$scope.currentPage+"&searchKey="+$scope.keywords+"&area="+$scope.area).success(function(result){
         console.log("getData success!");
-        $scope.data = result.docs;
+        if(reqType == 'normalList'){
+            $scope.data = result.docs;
+        }else if(reqType == 'themeShop'){
+            $scope.themeShop = result.docs;
+        }else{
+            $scope.data = result.docs;
+        }
         if(result.pageInfo){
             $scope.totalItems = result.pageInfo.totalItems;
             $scope.currentPage = result.pageInfo.currentPage;
@@ -202,7 +196,6 @@ function getPageInfos($scope,$http,url){
             else if ($scope.currentPage == 1 && $scope.totalPage == 1) {
                     $scope.pages = [
                     $scope.currentPage
-
                 ];
             }
             else if ($scope.currentPage == 1 && $scope.totalPage > 1) {
@@ -225,6 +218,8 @@ function getPageInfos($scope,$http,url){
     })
 }
 
+
+
 //新增广告中的图片信息模型
 
 function getImgInfo(imgUrl,link,width,height,target,details){
@@ -235,7 +230,6 @@ function getImgInfo(imgUrl,link,width,height,target,details){
     html += "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>";
     html += "<div class='col-sm-3'>";
     html += "<img src='"+imgUrl+"' alt='' class='img-thumbnail'/><br/><br/>";
-//    html += "<button class='btn btn-primary btn-xs hide'><span class='fa fa-fw fa-edit' aria-hidden='true'></span></button>";
     html += "<a href='#' role='button' class='btn btn-primary hide' data-whatever='"+imgUrl+"' data-toggle='modal' data-target='#addNewAdImg'><span class='fa fa-fw fa-edit' aria-hidden='true'></span></a>"
     html += "</div>";
     html += "<div class='col-sm-8'><div class='form-group'>";
@@ -248,7 +242,6 @@ function getImgInfo(imgUrl,link,width,height,target,details){
     html += "</div></div>";
     html += "<div class='clearfix'></div>";
     html += "</div>";
-
     return html;
 }
 
@@ -267,17 +260,6 @@ function angularHttpGet($http,url,callBack){
     })
 }
 
-
-function showErrorInfo(info){
-    $('#error-info').removeClass('hide').css('opacity',1).html("<i class='icon fa fa-warning'></i>&nbsp"+info);
-    setTimeout(function () {
-        $('#error-info').animate({
-            'opacity': 0
-        }, 1000, function () {
-            $('#error-info').addClass('hide');
-        });
-    }, 5000);
-}
 
 //提示用户操作窗口
 function initCheckIfDo($scope,targetId,msg,callBack){
@@ -298,12 +280,13 @@ function initCheckIfDo($scope,targetId,msg,callBack){
 
 
 //初始化删除操作
-function initDelOption($scope,$http,currentPage,searchKey,info){
-//    单条记录删除
+function initDelOption($scope,$http,info){
+
+    // 单条记录删除
     $scope.delOneItem = function(id){
         initCheckIfDo($scope,id,info,function(currentID){
-            angularHttpGet($http,"/admin/manage/"+currentPage+"/del?uid="+currentID,function(){
-                initPagination($scope,$http,currentPage,searchKey);
+            angularHttpGet($http,"/admin/manage/"+$('#currentCate').val()+"/del?uid="+currentID,function(){
+                initPagination($scope,$http);
             });
         });
     };
@@ -312,13 +295,13 @@ function initDelOption($scope,$http,currentPage,searchKey,info){
         getSelectIds();
     };
 
-//    批量删除
+    // 批量删除
     $scope.batchDel = function(){
         var targetIds = $('#targetIds').val();
         if(targetIds && targetIds.split(',').length > 0){
             initCheckIfDo($scope,$('#targetIds').val(),info,function(currentID){
-                angularHttpGet($http,"/admin/manage/"+currentPage+"/batchDel?ids="+currentID,function(){
-                    initPagination($scope,$http,currentPage,searchKey);
+                angularHttpGet($http,"/admin/manage/"+$('#currentCate').val()+"/batchDel?ids="+currentID+"&expandIds="+$('#expandIds').val(),function(){
+                    initPagination($scope,$http);
                 });
             });
         }else{
@@ -328,45 +311,6 @@ function initDelOption($scope,$http,currentPage,searchKey,info){
 
 }
 
-
-//普通下拉菜单
-function iniNormalTree($http,treeObjId,url,listId,currentId,onClick){
-
-    $http.get(url).success(function(result){
-
-        if(currentId){
-            if(url.indexOf('contentTemps') >0 ){
-                $("#"+listId).html(getCateNameByAlias(result,currentId));
-            }else{
-                $("#"+listId).html(getCateNameById(result,currentId));
-            }
-        }
-        var arrTree = changeToTreeJson(result,treeObjId);
-        var setting = {
-            view: {
-                dblClickExpand: false,
-                selectedMulti: false
-            },
-            data: {
-                simpleData: {
-                    enable: true
-                }
-            },
-            callback: {
-                beforeClick: beforeClick,
-                onClick: onClick
-            }
-        };
-
-        function beforeClick(treeId, treeNode) {
-            var check = (treeNode && !treeNode.isParent);
-            if (!check) alert("不能选择顶级分类");
-            return check;
-        }
-
-        $.fn.zTree.init($("#"+treeObjId), setting, arrTree);
-    })
-}
 
 //权限管理数据初始化
 function setAdminPowerTreeData(){
@@ -426,10 +370,12 @@ function setAdminPowerTreeData(){
         { id:'contentManage_tag_del', pId:'contentManage_tag', name:"删除"},
 
         { id:'contentManage_temp', pId:'contentManage', name:"文档模板管理", open:true},
-        { id:'contentManage_temp_add', pId:'contentManage_temp', name:"新增"},
+        { id:'contentManage_temp_add', pId:'contentManage_temp', name:"模板安装"},
         { id:'contentManage_temp_view', pId:'contentManage_temp', name:"查看"},
-        { id:'contentManage_temp_modify', pId:'contentManage_temp', name:"修改"},
-        { id:'contentManage_temp_del', pId:'contentManage_temp', name:"删除"},
+        { id:'contentManage_temp_modify', pId:'contentManage_temp', name:"模板启动"},
+        { id:'contentManage_temp_del', pId:'contentManage_temp', name:"模板卸载"},
+        { id:'contentManage_tpItem_add', pId:'contentManage_temp', name:"添加模板单元"},
+        { id:'contentManage_tpItem_del', pId:'contentManage_temp', name:"删除模板单元"},
 
         { id:'contentManage_msg', pId:'contentManage', name:"留言管理", open:true},
         { id:'contentManage_msg_view', pId:'contentManage_msg', name:"查看"},
@@ -446,6 +392,11 @@ function setAdminPowerTreeData(){
         { id:'contentManage_notice_2', pId:'contentManage_notice', name:"用户消息", open:true},
         { id:'contentManage_notice_2_view', pId:'contentManage_notice_2', name:"查看"},
         { id:'contentManage_notice_2_del', pId:'contentManage_notice_2', name:"删除"},
+
+        { id:'contentManage_notice_3', pId:'contentManage_notice', name:"系统消息", open:true},
+        { id:'contentManage_notice_3_view', pId:'contentManage_notice_3', name:"查看"},
+        { id:'contentManage_notice_3_modify', pId:'contentManage_notice_3', name:"标记已读"},
+        { id:'contentManage_notice_3_del', pId:'contentManage_notice_3', name:"删除"},
 
         { id:'userManage', pId:0, name:"会员管理", open:true},
         { id:'userManage_user', pId:'userManage', name:"注册用户管理", open:true},
@@ -464,4 +415,364 @@ function getTargetPostUrl($scope,bigCategory){
         url = "/admin/manage/"+bigCategory+"/modify?uid="+$scope.targetID;
     }
     return url;
+}
+
+//普通下拉菜单
+/*
+ treeObjId 放置树的容器ID
+ url 请求树的数据接口
+ listId 显示当前选中项的容器ID
+ currentId 需要回选的对象ID
+ */
+function initTreeDataByType($scope,$http,type){
+
+    var params = getTreeParams($scope,type);
+    $http.get(params.url).success(function(result){
+        //回选指定值
+        if(params.currentId){
+            $("#"+params.listId).html(getCateNameById(result,params.currentId));
+        }
+        var arrTree = changeToTreeJson(result,params.treeObjId);
+        var setting = {
+            view: {
+                dblClickExpand: false,
+                selectedMulti: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                beforeClick: beforeClick,
+                onClick: afterClick
+            }
+        };
+        function beforeClick(treeId, treeNode) {
+            var check = (treeNode && !treeNode.isParent);
+            if (!check) alert("不能选择顶级分类");
+            return check;
+        }
+        function afterClick(e, treeId, treeNode){
+            var zTree = $.fn.zTree.getZTreeObj(params.treeObjId),
+                nodes = zTree.getSelectedNodes(),
+                v = "",
+                vid = "",
+                sortPath = "";
+
+            nodes.sort(function compare(a,b){return a.id-b.id;});
+            for (var i=0, l=nodes.length; i<l; i++) {
+                v += nodes[i].name ;
+                vid += nodes[i].id ;
+                sortPath += nodes[i].sortPath ;
+            }
+            if(type == "adminGroup"){
+                $scope.formData.group = vid;
+            }else if(type == "contentCategories"){
+                $scope.formData.category = vid;
+                $scope.formData.sortPath = sortPath;
+                // 针对顶级类别的文章做标记
+                if(sortPath.split(',').length == 2){
+                    $scope.formData.type = "singer";
+                }else if(sortPath.split(',').length == 3){
+                    $scope.formData.type = "content";
+                }
+            }else if(type == "tempForderTree"){
+                $scope.formData.forder = v;
+            }else if(type == "tempTree"){
+                $scope.formData.contentTemp = vid;
+            }
+
+            $('#'+params.listId).html(v);
+        }
+
+        $.fn.zTree.init($("#"+params.treeObjId), setting, arrTree);
+    })
+}
+
+/*根据不同树类型获取建立树所需参数
+* adminGroupTree 管理员组
+* contentCategories 文档分类树
+* tempForderTree 本地模板文件夹树
+* tempTree 数据表中可用模板树
+* */
+function getTreeParams($scope,type){
+    var currentCate = '';
+    var treeParams = {};
+    var treeObjId = '';
+    var url = '';
+    var listId = '';
+    var defaultForder = '';
+    if(type == 'adminGroup'){
+        if($scope.formData && $scope.formData.group){
+            currentCate = $scope.formData.group._id;
+        }
+        treeObjId = 'adminGroupTree';
+        url = "/admin/manage/adminGroupList/list";
+        listId = 'groupName';
+    }else if(type == 'contentCategories'){
+        if($scope.formData){
+            currentCate = $scope.formData.category;
+        }
+        treeObjId = 'cateTree';
+        url = "/admin/manage/contentCategorys/list";
+        listId = 'categoryName';
+    }else if(type == 'tempForderTree'){ // 模板文件夹树
+        if($scope.formData){
+            currentCate = $scope.formData.forder;
+            defaultForder = $scope.formData.defaultTemp;
+        }
+        treeObjId = 'tempForderTree';
+        url = "/admin/manage/contentTemps/forderList?defaultTemp="+defaultForder;
+        listId = 'tempForderName';
+    }else if(type == 'tempTree'){ // 可用模板树
+        if($scope.formData){
+            currentCate = $scope.formData.contentTemp;
+        }
+        treeObjId = 'tempTree';
+        url = "/admin/manage/contentTemps/list";
+        listId = 'tempsName';
+    }
+
+    return {
+        treeObjId : treeObjId,
+        url : url,
+        listId : listId,
+        currentId : currentCate
+    }
+}
+
+//初始化文档标签tags
+function initContentTags($scope,$http){
+    $http.get("/admin/manage/contentTags/list").success(function(result){
+        var oldTags = $scope.formData.tags;
+        if(!oldTags){
+            oldTags = "0";
+        }
+        var tagsTree = changeToTreeJson(result,"tags",oldTags);
+        var setting = {
+            check: {
+                enable: true,
+                chkboxType: {"Y":"", "N":""}
+            },
+            view: {
+                dblClickExpand: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                beforeClick: beforeTagsClick,
+                onCheck: onTagsCheck
+            }
+        };
+        var zNodes = tagsTree;
+        $.fn.zTree.init($("#tagsTree"), setting, zNodes);
+
+        function beforeTagsClick(treeId, treeNode) {
+            var zTree = $.fn.zTree.getZTreeObj("tagsTree");
+            zTree.checkNode(treeNode, !treeNode.checked, null, true);
+            return false;
+        }
+
+        function onTagsCheck(e, treeId, treeNode) {
+            var zTree = $.fn.zTree.getZTreeObj("tagsTree"),
+                nodes = zTree.getCheckedNodes(true),
+                v = "";
+            for (var i=0, l=nodes.length; i<l; i++) {
+                if(i > 3){
+                    return;
+                }
+                v += nodes[i].name + ",";
+            }
+            if (v.length > 0 ) {
+                v = v.substring(0, v.length-1);
+            }
+            var tagObj = $("#tagSel");
+            tagObj.val("");
+            tagObj.val(v);
+            tagObj.attr("value", v);
+            $scope.formData.tags = v;
+        }
+    })
+}
+
+function showTagsMenu() {
+    var cityObj = $("#tagSel");
+    var cityOffset = $("#tagSel").offset();
+    $("#menuContent").slideDown("fast");
+
+    $("body").bind("mousedown", onBodyDown);
+}
+function hideTagsMenu() {
+    $("#menuContent").fadeOut("fast");
+    $("body").unbind("mousedown", onBodyDown);
+}
+function onBodyDown(event) {
+    if (!(event.target.id == "menuBtn" || event.target.id == "tagSel" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+        hideTagsMenu();
+    }
+}
+
+
+//文档模板管理
+function showMessage($scope,$http,result,msg){
+    if(result == 'success'){
+        $.tipsShow({
+            message : msg ,
+            type : 'success',
+            callBack : function(){
+                initPagination($scope,$http);
+            }
+        });
+    }else{
+        $.tipsShow({ message : result, type : 'warning' });
+    }
+}
+
+//初始化管理员权限列表
+function initPowerList($scope){
+
+    var setting = {
+        view: {
+            selectedMulti: false
+        },
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            beforeCheck: beforeCheck,
+            onCheck: onCheck
+        }
+    };
+
+    var zNodes = setAdminPowerTreeData();
+    var code, log, className = "dark";
+    function beforeCheck(treeId, treeNode) {
+        className = (className === "dark" ? "":"dark");
+        return (treeNode.doCheck !== false);
+    }
+    function onCheck(e, treeId, treeNode) {
+        var zTree = $.fn.zTree.getZTreeObj("groupPowerTree"),
+            checkedNodes = zTree.getCheckedNodes(true);
+        var nodesArr = [];
+        for(var i=0;i<checkedNodes.length;i++){
+            var currentNode = checkedNodes[i];
+            nodesArr.push(currentNode.id + ':' + true);
+        }
+        $scope.formData.power = nodesArr;
+    }
+    $.fn.zTree.init($("#groupPowerTree"), setting, zNodes);
+}
+
+
+//文档类别管理
+function getCategoryData($scope,$http){
+    $http.get("/admin/manage/contentCategorys/list").success(function(result){
+
+        var arrTree = changeToTreeJson(result);
+        //  ztree 相关参数设置
+        var IDMark_A = "_a";
+        var setting = {
+            view: {
+                addDiyDom: addDiyDom
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            }
+        };
+
+        function addDiyDom(treeId, treeNode) {
+            if (treeNode.parentNode && treeNode.parentNode.id != 2) return;
+            var aObj = $("#" + treeNode.tId + IDMark_A);
+            var editStr = "";
+            editStr += "&nbsp;<span id='diyBtn_" +treeNode.id+ "'><a href='#' data-whatever='editNc_" +treeNode.id+ "' class='text-primary' role='button' data-toggle='modal' data-target='#addContentCategory'>编辑</a></span>";
+            editStr += "&nbsp;<span id='diyBtn_" +treeNode.id+ "'><a href='#' data-whatever='" +treeNode.id+ "' class='text-primary' role='button' data-toggle='modal' data-target='#checkIfDel'>删除</a></span>";
+            editStr += "&nbsp;<span id='diyBtn_" +treeNode.id+ "'><a href='#' data-contenttemp='" +treeNode.contentTemp+ "' data-homepage='" +treeNode.homePage+ "' data-array='" +treeNode.sortPath+ "' data-whatever='addSub_" +treeNode.id+ "' class='text-primary' role='button' data-toggle='modal' data-target='#addContentCategory'>添加子类</a></span>";
+            aObj.after(editStr);
+        }
+
+        $.fn.zTree.init($("#categoryTree"), setting, arrTree);
+
+    })
+}
+
+// 判断需要删除的节点是否被选中或者是否有子节点
+function checkIfParent(){
+    var treeObj = $.fn.zTree.getZTreeObj("categoryTree");
+    var sNodes = treeObj.getSelectedNodes();
+    if (sNodes.length > 0) {
+        var isParent = sNodes[0].isParent;
+        if(isParent){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }else{
+        return true;
+    }
+}
+
+//系统公告模块设为已读
+function setNoticesRead(ids){
+    var idsObj = ids.split(',');
+    if(idsObj.length>0){
+        for(var i=0;i<idsObj.length;i++){
+            var targetId = idsObj[i];
+            $('#'+targetId).removeClass('noRead');
+        }
+    }
+}
+
+//关闭模态窗口初始化数据
+function clearModalData($scope,modalObj){
+    $scope.formData = {};
+    $scope.targetID = "";
+    modalObj.find(".form-control").val("");
+}
+
+//文件管理器
+function getFolderList($scope,$http,path){
+    $("#dataLoading").removeClass("hide");
+    $http.get("/admin/manage/filesList/list?filePath="+path).success(function(result){
+        $scope.fileData = result.pathsInfo;
+        $scope.rootPath = result.rootPath;
+        $scope.currentPath =  getCurrentPath($scope,path);
+        $("#dataLoading").addClass("hide");
+
+    })
+}
+
+// 获取当前文件目录
+function getCurrentPath($scope,path){
+    if(path){
+        var cutLength = ($scope.rootPath).length;
+        var currentPath  = path.substring(cutLength,path.length);
+        return currentPath;
+    }else{
+        return "";
+    }
+}
+
+//广告模块 初始化关闭按钮监听
+function initCloseBtn($scope,contentArray){
+    $('#imgInfolist > .alert').on('closed.bs.alert', function () {
+        // 删除数组中的元素同时删除绑定数据
+        for(var m=0;m<contentArray.length;m++){
+            if(JSON.parse(contentArray[m]).sImg === $(this).find("img").attr("src")){
+                contentArray.splice(m,1);
+                $scope.formData.content = contentArray.join();
+            }
+        }
+    })
 }

@@ -17,7 +17,7 @@ var ContentSchema = new Schema({
     title:  String,
     stitle : String,
     type: { type: String, default: "content" }, // 发布形式 默认为普通文档,约定 singer 为单页面文档
-    category : { type : String }, //文章类别
+    category : { type : String , ref : 'ContentCategory'}, //文章类别
     sortPath : String, //存储所有父节点结构
     tags : String, // 标签
     keywords : String,
@@ -25,7 +25,6 @@ var ContentSchema = new Schema({
     discription : String,
     date: { type: Date, default: Date.now },
     updateDate: { type: Date, default: Date.now }, // 更新时间
-    contentTemp : { type: String, default: "defaultTemp" }, // 内容模板
     author : { type: String },
     state : { type: Boolean, default: true },  // 是否在前台显示，默认显示
     isTop : { type: Number, default: 0 },  // 是否推荐，默认不推荐 0为不推荐，1为推荐
@@ -42,19 +41,6 @@ var ContentSchema = new Schema({
     downPath : String, // git 项目下载地址
     previewPath : String // 插件预览地址
 });
-
-
-ContentSchema.virtual('categoryInfo').get(function () {
-
-    if(this.category){
-        return ContentCategory.findOne({'_id' : this.category});
-    }else{
-        return '';
-    }
-
-});
-
-ContentSchema.set('toJSON',{virtuals:true});
 
 
 

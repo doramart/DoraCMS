@@ -11,6 +11,13 @@ function isAdminLogined(req){
     return req.session.adminlogined;
 }
 
+router.get("/",function(req,res,next){
+    if(isAdminLogined(req)){
+        res.redirect("/admin/manage");
+    }else{
+        next();
+    }
+});
 
 router.get("/manage",function(req,res,next){
     if(isAdminLogined(req)){
