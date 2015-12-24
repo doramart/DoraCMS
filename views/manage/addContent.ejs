@@ -52,7 +52,7 @@
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"  id="menuBtn" onclick="showTagsMenu(); return false;">选择 <span class="fa fa-caret-down"></span></button>
-                                    <div id="menuContent" class="menuContent" style="display:none; position: absolute;border: 1px solid #ccc;border-radius: 5px;left: -14px;top: 43px;z-index: 999">
+                                    <div id="menuContent" class="menuContent dropdown-menu" style="display:none; position: absolute;z-index: 999">
                                         <ul class="ztree" id="tagsTree" style="margin-top: 0;width: 180px;max-height: 200px;overflow-y: auto;padding: 10px;background: #fff;"></ul>
                                     </div>
                                 </div><!-- /btn-group -->
@@ -71,7 +71,7 @@
                         <label class="control-label col-sm-3">文章类别</label>
                         <div class="col-sm-2">
                             <div class="dropdown">
-                                <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button id="dLabel" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i id="categoryName">请选择文章类别</i>
                                     <span class="caret"></span>
                                 </button>
