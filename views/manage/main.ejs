@@ -65,7 +65,7 @@
                                             </span>
                                             <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> {{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
                                         </div><!-- /.direct-chat-info -->
-                                        <img alt="message user image" src="{{msg.author.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
+                                        <img alt="message user image" ng-src="{{msg.author.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
                                         <div class="direct-chat-text">
                                             {{msg.content}}
                                         </div><!-- /.direct-chat-text -->
@@ -78,7 +78,7 @@
                                             </span>
                                             <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> {{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
                                         </div><!-- /.direct-chat-info -->
-                                        <img alt="message user image" src="{{msg.adminAuthor.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
+                                        <img alt="message user image" ng-src="{{msg.adminAuthor.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
                                         <div class="direct-chat-text">
                                             {{msg.content}}
                                         </div><!-- /.direct-chat-text -->
@@ -102,7 +102,7 @@
                     <div class="box-body no-padding">
                         <ul class="users-list clearfix">
                             <li ng-repeat="user in mainData.regUsers">
-                                <img src="{{user.logo}}" alt="User Image"/>
+                                <img ng-src="{{user.logo}}" alt="User Image"/>
                                 <a class="users-list-name" href="#" title="{{user.userName}}">{{user.userName}}</a>
                             </li>
                         </ul><!-- /.users-list -->
