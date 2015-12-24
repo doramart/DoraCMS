@@ -255,22 +255,11 @@ Contact: cms@doramart.com
 <script>
     $(function(){
         var curerntCate = $("#currentCate").val();
-        var cateList = $(".sidebar-menu").find("li");
-        var pCateList = $(".sidebar-menu").find(".treeview");
-        for(var i=0;i<cateList.length;i++){
-            var obj = $(cateList[i]);
-            if(obj.attr("cid") === curerntCate){
-                obj.addClass("active");
-                obj.closest('.treeview-menu').addClass('menu-open').css('display','block');
-                obj.closest('.treeview-menu').parent().addClass('active');
-                for(var j=0;j<pCateList.length;j++){
-                    var pobj = $(pCateList[j]);
-                    if(pobj.attr("cid").split("_")[0] === obj.attr("cid").split("_")[0]){
-                        pobj.addClass("active").siblings().removeClass("active");
-                    }
-                }
-            }
-        }
+        var sv = $('li[cid="'+curerntCate+'"]');
+        $('.treeview-menu').removeClass('open-menu');
+        $(".sidebar-menu").find("li").removeClass('active');
+        sv.parents('li').addClass('active');
+        sv.addClass('active').parents('.treeview-menu').addClass('open-menu');
     })
 </script>
 
