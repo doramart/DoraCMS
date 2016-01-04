@@ -130,23 +130,24 @@ var tipsObj = function (jsonData) {
     var objId = "tips_" + Math.round(Math.random() * 100);
     jsonData = jsonData || {};
     jsonData.type = jsonData.type || 'success';
+    jsonData.delay = jsonData.delay || 1500;
     jsonData.message = jsonData.message || '操作成功！';
     jsonData.overClass = jsonData.overClass || 'tips-a';
     jsonData.callBack = jsonData.callBack || '';
     this.html = tipsHtml(objId, jsonData);
-    this.init(objId,jsonData.callBack);
+    this.init(objId,jsonData.delay,jsonData.callBack);
 };
 
 tipsObj.prototype = {
-//    tips初始化
-    init: function (objId,callBack) {
+    // tips初始化
+    init: function (objId,delay,callBack) {
         var _this = this;
 
         $('body').prepend(this.html);
         _this.obj = $('#' + objId);
         var closeBtn = $(_this.obj).find('.close');
         var confirmBtn = $(_this.obj).find('.confirm');
-//        设置容器的居中显示
+        // 设置容器的居中显示
         setContainerPosition(_this.obj);
         $(_this.obj).css('z-index', 99999);
         document.body.addEventListener('touchmove', stopScroll , false);
@@ -160,7 +161,7 @@ tipsObj.prototype = {
                     callBack();
                 }
             });
-        }, 3000);
+        }, delay);
     }
 };
 

@@ -1,0 +1,57 @@
+<div class="row" ng-controller="contentTempEdit">
+    <% include public/modal %>
+    <div class="col-xs-12">
+
+        <div class="box">
+            <div class="box-body table-responsive">
+                <div class="col-md-9">
+                    <form role="form" class="form-horizontal" name="mdForm" ng-submit="processMdForm(mdForm.$valid)" novalidate>
+                        <div class="form-group" style="margin:5px 0;">
+                            <p class=" pull-left">文件名称:</p>
+                            <div class="col-sm-10">
+                                <p class="badge" ng-bind="formData.name"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <textarea name="code"  class="form-control" id="" cols="100" rows="30" ng-model="formData.code" required></textarea>
+                                <label for="inputError" class="control-label text-danger" ng-show="mdForm.code.$invalid && !mdForm.code.$pristine"><i class="fa fa-times-circle-o"></i>请正确加入代码，注意格式</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary pull-right " ng-disabled="mdForm.$invalid">更新</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-sm-7">选择要编辑的模板</label>
+                        <div class="dropdown">
+                            <button id="dLabel" class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i id="themeName">请选择模板</i>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="allThemeFolderTree" class="ztree">
+                                <li role="presentation"><a href="#">test</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <ul class="ztree" id="sysTemTempTree" ></ul>
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+            <div class="overlay hide" id="dataLoading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div><!-- /.box -->
+    </div>
+
+
+
+</div>
+<script>
+    $(function(){
+        $('.fancybox').fancybox();
+    })
+</script>

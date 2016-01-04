@@ -5,6 +5,7 @@
 var nodemailer  = require("nodemailer");
 //文件操作对象
 var fs = require('fs');
+var url = require('url');
 var stat = fs.stat;
 //数据库操作对象
 var DbOpt = require("../models/Dbopt");
@@ -15,10 +16,14 @@ var moment = require('moment');
 //站点配置
 var settings = require("../models/db/settings");
 var siteFunc = require("../models/db/siteFunc");
+var adminFunc = require("../models/db/adminFunc");
 //文件压缩
 var fs = require('fs');
 var child = require('child_process');
 var archiver = require('archiver');
+var formidable = require('formidable')
+var mime = require('../util/mime').types;
+var iconv = require('iconv-lite');
 var system = {
 
     sendEmail : function(key,obj,callBack){
@@ -97,7 +102,6 @@ var system = {
 
                     var tmpPath = path + '/' + item,
                         stats = fs.statSync(tmpPath);
-//                console.log("--state---"+stats.size)
                     var typeKey = "folder";
                     if(oldPath === path){
                         if (stats.isDirectory()) {
@@ -114,10 +118,14 @@ var system = {
                                     typeKey = "image";
                                 }else if(ltype.indexOf("htm")>=0){
                                     typeKey = "html";
-                                }else if(ltype.indexOf("js")>=0){
+                                }else if(ltype.indexOf("js") == 0){
                                     typeKey = "js";
+                                }else if(ltype.indexOf("ejs") == 0){
+                                    typeKey = "ejs";
                                 }else if(ltype.indexOf("css")>=0){
                                     typeKey = "css";
+                                }else if(ltype.indexOf("txt")>=0){
+                                    typeKey = "txt";
                                 }else if(ltype.indexOf("mp4")>=0
                                     || ltype.indexOf("mp3")>=0){
                                     typeKey = "video";
@@ -193,7 +201,7 @@ var system = {
                         console.log(err)
                     }else{
                         console.log('del file success') ;
-                        res.end("success");
+                        callBack();
                     }
                 }) ;
             }
@@ -220,21 +228,27 @@ var system = {
     },
     readFile : function(req,res,path){ // 文件读取
         if( fs.existsSync(path) ) {
-            fs.readFile(path,"utf8",function (error,data){
+            fs.readFile(path,"binary",function (error,data){
                 if(error){
                     console.log(err)
                 }else{
+                    //处理中文乱码问题
+                    var buf = new Buffer(data, 'binary');
+                    var newData = iconv.decode(buf, 'utf-8');
                     return res.json({
-                        fileData : data
+                        fileData : newData
                     })
                 }
             }) ;
+        }else{
+            res.end(settings.system_illegal_param);
         }
     },
     writeFile : function(req,res,path,content){
         if( fs.existsSync(path) ) {
             //写入文件
-            fs.writeFile(path,content,function (err) {
+            var newContent = iconv.encode(content, 'utf-8');
+            fs.writeFile(path,newContent,function (err) {
                 if(err){
                     console.log(err)
                 }else{
@@ -247,13 +261,12 @@ var system = {
     },
     backUpData : function(res,req){  // 数据备份
         var date = new Date();
-//        var ms = Date.parse(date);
         var ms = moment(date).format('YYYYMMDDHHmmss').toString();
         var dataPath = settings.DATABACKFORDER + ms;
 //        var cmdstr = 'mongodump -o "'+dataPath+'"';
-        var cmdstr = 'mongodump -u '+settings.USERNAME+' -p '+settings.PASSWORD+' -d '+settings.DB+' -o "'+dataPath+'"';
+        var cmdstr = settings.MONGODBEVNPATH + 'mongodump -u '+settings.USERNAME+' -p '+settings.PASSWORD+' -d '+settings.DB+' -o "'+dataPath+'"';
 
-        var batPath = settings.DATAOPERATION + '/backupData.bat';
+        var batPath = settings.DATAOPERATION + '/backupData.sh';
         if(!fs.existsSync(settings.DATABACKFORDER)){
             fs.mkdirSync(settings.DATABACKFORDER);
         }
@@ -265,56 +278,40 @@ var system = {
 
             fs.mkdir(dataPath,0777,function(err1){
                 if (err1) throw err1;
-                if( fs.existsSync(batPath) ) {
-                    //写入文件
-                    fs.writeFile(batPath,cmdstr,function (err2) {
-                        if(err2){
-                            console.log(err2)
-                        }
-                        else{
-                            console.log("----文件写入成功-----")
-                            var exec = child.exec;
-                            exec('call "'+batPath,
-                                function (error, stdout, stderr) {
-                                    if (error !== null) {
-                                        //console.log('exec error: ' + error);
-                                    }else{
-                                        console.log('备份成功');
-//                                    生成压缩文件
-                                     var output = fs.createWriteStream(settings.DATABACKFORDER + ms +'.zip');
-                                     var archive = archiver('zip');
 
-                                     archive.on('error', function(err){
-                                         throw err;
-                                     });
+                child.exec(cmdstr,function (error, stdout, stderr) {
+                    if (error !== null) {
+                        console.log('exec error: ' + error);
+                    }else{
+                        console.log('数据备份成功');
+                        //生成压缩文件
+                        var output = fs.createWriteStream(settings.DATABACKFORDER + ms +'.zip');
+                        var archive = archiver('zip');
 
-                                     archive.pipe(output);
-                                     archive.bulk([
-                                         { src: [dataPath+'/**']}
-                                     ]);
-                                     archive.finalize();
+                        archive.on('error', function(err){
+                            throw err;
+                        });
 
+                        archive.pipe(output);
+                        archive.bulk([
+                            { src: [dataPath+'/**']}
+                        ]);
+                        archive.finalize();
 
-//                                     操作记录入库
-                                        var optLog = new DataOptionLog();
-                                        optLog.logs = "数据备份";
-                                        optLog.path = dataPath;
-                                        optLog.fileName = ms +'.zip';
-                                        optLog.save(function(err3){
-                                            if (err3) throw err3;
-                                            res.end("success");
-                                        })
-                                    }
+                        // 操作记录入库
+                        var optLog = new DataOptionLog();
+                        optLog.logs = "数据备份";
+                        optLog.path = dataPath;
+                        optLog.fileName = ms +'.zip';
+                        optLog.save(function(err3){
+                            if (err3) throw err3;
+                            res.end("success");
+                        })
+                    }
+                });
 
-                                });
-                        }
-
-                    }) ;
-                }
             })
         }
-
-
 
     },
     //文件夹复制
@@ -377,8 +374,96 @@ var system = {
 
         // 复制目录
         exists(fromPath,toPath,copy );
-    }
+    },
 
+    //获取文件真实类型
+    getFileMimeType : function(filePath){
+        var buffer = new Buffer(8);
+        var fd = fs.openSync(filePath, 'r');
+        fs.readSync(fd, buffer, 0, 8, 0);
+        var newBuf = buffer.slice(0, 4);
+        var head_1 = newBuf[0].toString(16);
+        var head_2 = newBuf[1].toString(16);
+        var head_3 = newBuf[2].toString(16);
+        var head_4 = newBuf[3].toString(16);
+        var typeCode = head_1 + head_2 + head_3 + head_4;
+        var filetype = '';
+        var mimetype;
+        switch (typeCode){
+            case 'ffd8ffe1':
+                filetype = 'jpg';
+                mimetype = ['image/jpeg', 'image/pjpeg'];
+                break;
+            case 'ffd8ffe0':
+                filetype = 'jpg';
+                mimetype = ['image/jpeg', 'image/pjpeg'];
+                break;
+            case '47494638':
+                filetype = 'gif';
+                mimetype = 'image/gif';
+                break;
+            case '89504e47':
+                filetype = 'png';
+                mimetype = ['image/png', 'image/x-png'];
+                break;
+            case '504b34':
+                filetype = 'zip';
+                mimetype = ['application/x-zip', 'application/zip', 'application/x-zip-compressed'];
+                break;
+            case '2f2aae5':
+                filetype = 'js';
+                mimetype = 'application/x-javascript';
+                break;
+            case '2f2ae585':
+                filetype = 'css';
+                mimetype = 'text/css';
+                break;
+            case '5b7bda':
+                filetype = 'json';
+                mimetype = ['application/json', 'text/json'];
+                break;
+            case '3c212d2d':
+                filetype = 'ejs';
+                mimetype = 'text/html';
+                break;
+            default:
+                filetype = 'unknown';
+                break;
+        }
+
+        fs.closeSync(fd);
+
+        return   {
+            fileType : filetype,
+            mimeType : mimetype
+        };
+
+    },
+
+    uploadTemp : function(req,res,callBack){
+        var form = new formidable.IncomingForm(),files=[],fields=[],docs=[];
+        //存放目录
+        var forderName;
+        form.uploadDir = 'views/web/temp/';
+
+        form.parse(req, function(err, fields, files) {
+            if(err){
+                res.end(err);
+            }else{
+                fs.rename(files.Filedata.path, 'views/web/temp/' + files.Filedata.name,function(err1){
+                    if(err1){
+                        res.end(err1);
+                    }else{
+
+                        forderName = files.Filedata.name.split('.')[0];
+                        console.log('parsing done');
+                        callBack(forderName);
+                    }
+                });
+            }
+
+        });
+    }
 };
 
 

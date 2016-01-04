@@ -10,10 +10,10 @@
                     <div class="box-body">
                         <ul class="row text-info main-statistics">
                             <div class="col-md-6">
-                                <li><i class="fa fa-fw fa-user"></i> 管理员 {{mainData.adminUserCount}}</li>
-                                <li><i class="fa fa-fw fa-users"></i> 用户 {{mainData.regUsersCount}}</li>
-                                <li><i class="fa fa-fw fa-file-text-o"></i> 文档 {{mainData.contentsCount}}</li>
-                                <li><i class="fa fa-fw fa-comments-o"></i> 留言 {{mainData.msgCount}}</li>
+                                <li><i class="fa fa-fw fa-user"></i> 管理员 <span ng-bind="mainData.adminUserCount"></span></li>
+                                <li><i class="fa fa-fw fa-users"></i> 用户 <span ng-bind="mainData.regUsersCount"></span></li>
+                                <li><i class="fa fa-fw fa-file-text-o"></i> 文档 <span ng-bind="mainData.contentsCount"></span></li>
+                                <li><i class="fa fa-fw fa-comments-o"></i> 留言 <span ng-bind="mainData.msgCount"></span></li>
                             </div>
                             <div class="col-md-6">
                                 <!--<li><i class="fa fa-fw fa-comments-o"></i> 留言 {{mainData.msgCount}}</li>-->
@@ -61,27 +61,23 @@
                                         <div class="direct-chat-info clearfix" >
                                             <span class="direct-chat-name pull-left">
                                                  <a href="#">{{msg.author.userName}}</a>
-                                                在 《<a href="/details/{{msg.contentId}}.html" target="_blank">{{msg.contentTitle}}</a>》 中说
+                                                在 《<a href="/details/{{msg.contentId}}.html" target="_blank" ng-bind="msg.contentTitle"></a>》 中说
                                             </span>
-                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> {{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
+                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> <span ng-bind="msg.date | date : 'yyyy-MM-dd HH:mm:ss'"></span></span>
                                         </div><!-- /.direct-chat-info -->
                                         <img alt="message user image" ng-src="{{msg.author.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
-                                        <div class="direct-chat-text">
-                                            {{msg.content}}
-                                        </div><!-- /.direct-chat-text -->
+                                        <div class="direct-chat-text" ng-bind="msg.content"></div><!-- /.direct-chat-text -->
                                     </span>
                                     <span ng-switch-when="1">
                                         <div class="direct-chat-info clearfix" >
                                             <span class="direct-chat-name pull-left">
                                                  <a href="#">{{msg.adminAuthor.userName}}</a>
-                                                在 《<a href="/details/{{msg.contentId}}.html" target="_blank">{{msg.contentTitle}}</a>》 中回复 <a href="#">{{msg.replyAuthor.userName}}</a>
+                                                在 《<a href="/details/{{msg.contentId}}.html" target="_blank" ng-bind="msg.contentTitle"></a>》 中回复 <a href="#" ng-bind="msg.replyAuthor.userName"></a>
                                             </span>
-                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> {{msg.date | date : "yyyy-MM-dd HH:mm:ss"}}</span>
+                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> <span ng-bind="msg.date | date : 'yyyy-MM-dd HH:mm:ss'"></span></span>
                                         </div><!-- /.direct-chat-info -->
                                         <img alt="message user image" ng-src="{{msg.adminAuthor.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
-                                        <div class="direct-chat-text">
-                                            {{msg.content}}
-                                        </div><!-- /.direct-chat-text -->
+                                        <div class="direct-chat-text" ng-bind="msg.content"></div><!-- /.direct-chat-text -->
                                     </span>
                                 </div>
                             </div>
@@ -96,14 +92,14 @@
                     <div class="box-header with-border">
                         <h5 class="box-title">新注册用户</h5>
                         <div class="box-tools pull-right">
-                            <span class="label label-danger">注册用户 {{mainData.regUsersCount}}</span>
+                            <span class="label label-danger">注册用户 <span ng-bind="mainData.regUsersCount"></span></span>
                         </div>
                     </div><!-- /.box-header -->
                     <div class="box-body no-padding">
                         <ul class="users-list clearfix">
                             <li ng-repeat="user in mainData.regUsers">
                                 <img ng-src="{{user.logo}}" alt="User Image"/>
-                                <a class="users-list-name" href="#" title="{{user.userName}}">{{user.userName}}</a>
+                                <a class="users-list-name" href="#" title="{{user.userName}}" ng-bind="user.userName"></a>
                             </li>
                         </ul><!-- /.users-list -->
                     </div><!-- /.box-body -->

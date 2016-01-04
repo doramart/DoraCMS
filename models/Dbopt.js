@@ -128,7 +128,7 @@ var DbOpt = {
         }else if(obj === UserNotify){
             query.populate('user').populate('notify');
         }else if(obj === Content){
-            query.populate('category');
+            query.populate('category').populate('author');
         }else if(obj === ContentCategory){
             query.populate('contentTemp');
         }else if(obj === ContentTemplate){

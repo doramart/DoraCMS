@@ -8,6 +8,7 @@ var Schema = mongoose.Schema;
 
 var shortid = require('shortid');
 var ContentCategory = require('./ContentCategory');
+var AdminUser = require('./AdminUser');
 var ContentSchema = new Schema({
     _id: {
         type: String,
@@ -25,7 +26,7 @@ var ContentSchema = new Schema({
     discription : String,
     date: { type: Date, default: Date.now },
     updateDate: { type: Date, default: Date.now }, // 更新时间
-    author : { type: String },
+    author : { type: String , ref : 'AdminUser'}, // 文档作者
     state : { type: Boolean, default: true },  // 是否在前台显示，默认显示
     isTop : { type: Number, default: 0 },  // 是否推荐，默认不推荐 0为不推荐，1为推荐
     clickNum : { type: Number, default: 1 },

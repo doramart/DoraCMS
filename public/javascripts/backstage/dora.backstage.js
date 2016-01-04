@@ -47,6 +47,8 @@ function changeToTreeJson(result,key,oldValue){
             treeItem = new TempsTree(result[i]._id,result[i].name,result[i].forder);
         }else if(key === "tempForderTree"){
             treeItem = new TempsTree(0,result[i].name,"");
+        }else if(key === "allThemeFolderTree"){
+            treeItem = new TempsTree(result[i]._id,result[i].name,result[i].alias);
         }else{
             treeItem = new TreeInfo(result[i]._id,result[i].parentID,result[i].name,result[i].sortPath,result[i].homePage,result[i].contentTemp,true,false);
         }
@@ -163,6 +165,20 @@ function getPageInfos($scope,$http,url,reqType){
         }
     };
 
+    $scope.firstPage = function () {
+        if ($scope.currentPage > 1) {
+            $scope.currentPage = 1;
+            getPageInfos($scope,$http,url);
+        }
+    };
+
+    $scope.lastPage = function () {
+        if ($scope.currentPage < $scope.totalPage) {
+            $scope.currentPage = $scope.totalPage;
+            getPageInfos($scope,$http,url);
+        }
+    };
+
     $scope.changeOption = function(){
         $scope.limit = Number($scope.limitNum);
         getPageInfos($scope,$http,url);
@@ -184,31 +200,15 @@ function getPageInfos($scope,$http,url,reqType){
             $scope.startNum = result.pageInfo.startNum;
             //获取总页数
             $scope.totalPage = Math.ceil($scope.totalItems / $scope.limit);
-            //生成数字链接
-            var pageNum =  Number($scope.currentPage);
-            if ($scope.currentPage > 1 && $scope.currentPage < $scope.totalPage) {
-                $scope.pages = [
-                    $scope.currentPage - 1,
-                    $scope.currentPage,
-                    $scope.currentPage + 1
-                ];
+
+            var pageArr = [];
+            var page_start = $scope.currentPage - 2 > 0 ? $scope.currentPage - 2 : 1;
+            var page_end = page_start + 4 >= $scope.totalPage ? $scope.totalPage : page_start + 4;
+            for(var i=page_start;i<=page_end;i++){
+                pageArr.push(i);
             }
-            else if ($scope.currentPage == 1 && $scope.totalPage == 1) {
-                    $scope.pages = [
-                    $scope.currentPage
-                ];
-            }
-            else if ($scope.currentPage == 1 && $scope.totalPage > 1) {
-                $scope.pages = [
-                    $scope.currentPage,
-                    $scope.currentPage + 1
-                ];
-            } else if ($scope.currentPage == $scope.totalPage && $scope.totalPage > 1) {
-                $scope.pages = [
-                    $scope.currentPage - 1,
-                    $scope.currentPage
-                ];
-            }
+            $scope.pages = pageArr;
+
         }else{
             console.log("获取分页信息失败")
         }
@@ -370,12 +370,18 @@ function setAdminPowerTreeData(){
         { id:'contentManage_tag_del', pId:'contentManage_tag', name:"删除"},
 
         { id:'contentManage_temp', pId:'contentManage', name:"文档模板管理", open:true},
-        { id:'contentManage_temp_add', pId:'contentManage_temp', name:"模板安装"},
-        { id:'contentManage_temp_view', pId:'contentManage_temp', name:"查看"},
-        { id:'contentManage_temp_modify', pId:'contentManage_temp', name:"模板启动"},
-        { id:'contentManage_temp_del', pId:'contentManage_temp', name:"模板卸载"},
-        { id:'contentManage_tpItem_add', pId:'contentManage_temp', name:"添加模板单元"},
-        { id:'contentManage_tpItem_del', pId:'contentManage_temp', name:"删除模板单元"},
+        { id:'contentManage_temp_1', pId:'contentManage_temp', name:"模板配置", open:true},
+        { id:'contentManage_temp_1_add', pId:'contentManage_temp_1', name:"模板安装"},
+        { id:'contentManage_temp_1_import', pId:'contentManage_temp_1', name:"安装本地模板"},
+        { id:'contentManage_temp_1_view', pId:'contentManage_temp_1', name:"查看"},
+        { id:'contentManage_temp_1_modify', pId:'contentManage_temp_1', name:"模板启动"},
+        { id:'contentManage_temp_1_del', pId:'contentManage_temp_1', name:"模板卸载"},
+        { id:'contentManage_tpItem_add', pId:'contentManage_temp_1', name:"添加模板单元"},
+        { id:'contentManage_tpItem_del', pId:'contentManage_temp_1', name:"删除模板单元"},
+
+        { id:'contentManage_temp_2', pId:'contentManage_temp', name:"模板编辑", open:true},
+        { id:'contentManage_temp_2_view', pId:'contentManage_temp_2', name:"查看"},
+        { id:'contentManage_temp_2_modify', pId:'contentManage_temp_2', name:"修改"},
 
         { id:'contentManage_msg', pId:'contentManage', name:"留言管理", open:true},
         { id:'contentManage_msg_view', pId:'contentManage_msg', name:"查看"},
@@ -429,6 +435,9 @@ function initTreeDataByType($scope,$http,type){
     var params = getTreeParams($scope,type);
     $http.get(params.url).success(function(result){
         //回选指定值
+        if(type == 'allThemeFolderTree'){
+            params.currentId = result[0]._id;
+        }
         if(params.currentId){
             $("#"+params.listId).html(getCateNameById(result,params.currentId));
         }
@@ -458,13 +467,15 @@ function initTreeDataByType($scope,$http,type){
                 nodes = zTree.getSelectedNodes(),
                 v = "",
                 vid = "",
-                sortPath = "";
+                sortPath = "",
+                alias = "";
 
             nodes.sort(function compare(a,b){return a.id-b.id;});
             for (var i=0, l=nodes.length; i<l; i++) {
                 v += nodes[i].name ;
                 vid += nodes[i].id ;
                 sortPath += nodes[i].sortPath ;
+                alias += nodes[i].alias ;
             }
             if(type == "adminGroup"){
                 $scope.formData.group = vid;
@@ -481,6 +492,9 @@ function initTreeDataByType($scope,$http,type){
                 $scope.formData.forder = v;
             }else if(type == "tempTree"){
                 $scope.formData.contentTemp = vid;
+            }else if(type == "allThemeFolderTree"){
+                $scope.formData.targetTemp = alias ;
+                initSystemTempData($scope,$http)
             }
 
             $('#'+params.listId).html(v);
@@ -523,7 +537,7 @@ function getTreeParams($scope,type){
             defaultForder = $scope.formData.defaultTemp;
         }
         treeObjId = 'tempForderTree';
-        url = "/admin/manage/contentTemps/forderList?defaultTemp="+defaultForder;
+        url = "/admin/manage/contentTemps/folderList?defaultTemp="+defaultForder;
         listId = 'tempForderName';
     }else if(type == 'tempTree'){ // 可用模板树
         if($scope.formData){
@@ -532,6 +546,10 @@ function getTreeParams($scope,type){
         treeObjId = 'tempTree';
         url = "/admin/manage/contentTemps/list";
         listId = 'tempsName';
+    }else if(type == "allThemeFolderTree"){ // 当前站点下安装的所有主题
+        treeObjId = 'allThemeFolderTree';
+        url = "/admin/manage/contentTemps/tempFolderList";
+        listId = 'themeName';
     }
 
     return {
@@ -721,6 +739,77 @@ function checkIfParent(){
     }else{
         return true;
     }
+}
+
+
+//系统模板树
+function initSystemTempData($scope,$http){
+    var targetTemp;
+    if($scope.formData){
+        targetTemp = $scope.formData.targetTemp;
+    }
+    $http.get("/admin/manage/contentTemps/tempListByFolder?targetTemp="+targetTemp).success(function(result){
+
+        var arrTree = result;
+        var initTreeData = result[0];
+        if(initTreeData){
+            $http.get("/admin/manage/contentTemps/getFileInfo?filePath="+initTreeData.path).success(function(result){
+                $scope.formData.code = result.fileData;
+                $scope.formData.name = initTreeData.name;
+                $scope.formData.path = initTreeData.path;
+            })
+        }
+        //  ztree 相关参数设置
+        var setting = {
+            view: {
+                dblClickExpand: false,
+                selectedMulti: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                beforeClick: beforeClick,
+                onClick: afterClick
+            }
+        };
+
+        function beforeClick(treeId, treeNode) {
+            var check = (treeNode && !treeNode.isParent);
+            if (!check) alert("不能选择顶级分类");
+            return check;
+        }
+
+        function afterClick(e, treeId, treeNode){
+            var zTree = $.fn.zTree.getZTreeObj('sysTemTempTree'),
+                nodes = zTree.getSelectedNodes(),
+                v = "",
+                vid = "",
+                filePath = "";
+
+            nodes.sort(function compare(a,b){return a.id-b.id;});
+            for (var i=0, l=nodes.length; i<l; i++) {
+                v += nodes[i].name ;
+                vid += nodes[i].id ;
+                filePath += nodes[i].path ;
+
+            }
+
+            if(filePath){
+                $http.get("/admin/manage/contentTemps/getFileInfo?filePath="+filePath).success(function(result){
+                    $scope.formData.code = result.fileData;
+                    $scope.formData.name = v;
+                    $scope.formData.path = filePath;
+                })
+            }
+
+        }
+
+        $.fn.zTree.init($("#sysTemTempTree"), setting, arrTree);
+
+    })
 }
 
 //系统公告模块设为已读

@@ -46,6 +46,7 @@ var UserNotify = require("../models/UserNotify");
 //文件操作
 var unzip = require('unzip');
 var fs = require('fs');
+var iconv = require('iconv-lite');
 var http = require('http');
 var request = require('request');
 /* GET home page. */
@@ -67,10 +68,11 @@ var returnAdminRouter = function(io) {
 
 //管理员登录验证码
     router.get('/vnum',function(req, res){
-
         var word = rw.random(4);
         req.session.vnum = word;
-        pngword.createReadStream(word).pipe(res);
+        pngword.createPNG(word,function(word){
+            res.send(word);
+        })
     });
 
 
@@ -342,7 +344,7 @@ var returnAdminRouter = function(io) {
             }else if(targetObj == ContentCategory){
                 addOneCategory(req,res)
             }else if(targetObj == Content){
-                req.body.author = req.session.adminUserInfo.name;
+                req.body.author = req.session.adminUserInfo._id;
                 DbOpt.addOne(targetObj,req, res);
             }else if(targetObj == ContentTags){
                 addOneContentTags(req,res)
@@ -810,16 +812,18 @@ var returnAdminRouter = function(io) {
 //------------------------------------------文档模板开始
 
 //文档模板管理（list）
-    router.get('/manage/contentTemps', function(req, res, next) {
 
-        adminFunc.renderToManagePage(req, res,'manage/contentTemps',settings.CONTENTTEMPS);
+    //模板配置
+    router.get('/manage/contentTemps/m/config', function(req, res, next) {
+
+        adminFunc.renderToManagePage(req, res,'manage/contentTemps',settings.CONTENTTEMPSCONFIG);
 
     });
 
 //所有默认模板列表
     router.get('/manage/contentTemps/list', function(req, res, next) {
 
-        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPS[0] + '_view')){
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSCONFIG[0] + '_view')){
             ContentTemplate.getDefaultTemp(function(doc){
                 if(doc){
                     return res.json(doc.items);
@@ -856,7 +860,7 @@ var returnAdminRouter = function(io) {
 
 
 //读取模板文件夹信息
-    router.get('/manage/contentTemps/forderList', function(req, res, next) {
+    router.get('/manage/contentTemps/folderList', function(req, res, next) {
 
         var params = url.parse(req.url,true);
         var targetForder = params.query.defaultTemp;
@@ -880,7 +884,7 @@ var returnAdminRouter = function(io) {
     //安装模板 包含1、从服务器下载安装包 2、解压缩到本地目录 3、入库
     router.get('/manage/installTemp',function(req,res,next){
 
-        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPS[0] + '_add')){
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSCONFIG[0] + '_add')){
             // App variables
             var params = url.parse(req.url,true);
             var tempId = params.query.tempId;
@@ -973,6 +977,215 @@ var returnAdminRouter = function(io) {
     });
 
 
+    //上传自定义模板
+    router.post('/manage/updateCMSTemplate',function(req,res,next){
+
+        var adminId = req.query.adminId;
+        if(!shortid.isValid(adminId)){
+            res.end(settings.system_illegal_param);
+        }
+        //uploadify上传session丢失，暂时在第一道用原始方式鉴权，第一道并不安全，第二道会继续校验(安全)
+        AdminUser.findOne({'_id':adminId}).populate('group').exec(function(err,doc){
+            if(err){
+                res.end(err);
+            }else{
+                var power = false;
+                var uPower = doc.group.power;
+                if(uPower){
+                    var newPowers = eval(uPower);
+                    var key = settings.CONTENTTEMPSCONFIG[0] + '_import';
+                    for(var i=0;i<newPowers.length;i++) {
+                        var checkedId = newPowers[i].split(':')[0];
+                        if(checkedId == key && newPowers[i].split(':')[1]){
+                            power = true;
+                            break;
+                        }
+                    }
+                }
+                if(power){
+
+                    system.uploadTemp(req,res,function(fname){
+                        var target_path = settings.SYSTEMTEMPFORDER + fname +'.zip';
+                        var DOWNLOAD_DIR = settings.SYSTEMTEMPFORDER + fname +'/';
+                        if( fs.existsSync(DOWNLOAD_DIR) ) {
+                            res.end('您已安装该模板');
+                            return;
+                        }
+
+                        var realType = system.getFileMimeType(target_path);
+                        if(realType.fileType != 'zip'){
+                            fs.unlinkSync(target_path);
+                            res.end('类型不正确');
+                            return;
+                        }
+
+                        fs.mkdir(DOWNLOAD_DIR,0777,function(err1) {
+                            if (err1) {
+                                console.log(err1);
+                            }
+                            else {
+                                //下载完成后解压缩
+                                var extract = unzip.Extract({ path:  DOWNLOAD_DIR });
+                                extract.on('error', function(err) {
+                                    console.log(err);
+                                    //解压异常处理
+                                    res.end(err);
+                                });
+                                extract.on('finish', function() {
+                                    console.log("解压完成!!");
+                                    //解压完成处理入库操作
+                                    res.end('success&'+fname);
+
+                                });
+                                fs.createReadStream(target_path).pipe(extract);
+                            }
+                        });
+                    })
+                }else{
+                    res.end('对不起，您无权执行该操作！');
+                }
+
+            }
+
+        });
+
+    });
+
+
+    //校验是否已经解压完成
+    router.get('/manage/chekcIfUnzipSuccess',function(req,res){
+        var params = url.parse(req.url,true);
+        var targetForder = params.query.tempId;
+
+
+
+        var tempForder = settings.SYSTEMTEMPFORDER + targetForder;
+        var DOWNLOAD_DIR = settings.SYSTEMTEMPFORDER + targetForder  + '/tempconfig.json';
+        var DIST_DIR = settings.SYSTEMTEMPFORDER + targetForder  + '/dist';
+        var PUBLIC_DIR = settings.SYSTEMTEMPFORDER + targetForder  + '/public';
+        var USERS_DIR = settings.SYSTEMTEMPFORDER + targetForder  + '/users';
+        var TWOSTAGEDEFAULT_DIR = settings.SYSTEMTEMPFORDER + targetForder  + '/2-stage-default';
+        //权限校验
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSCONFIG[0] + '_import')){
+            req.session.checkTempCount = 0;
+            var tempTask = setInterval(function(){
+
+                if( fs.existsSync(DOWNLOAD_DIR) && fs.existsSync(DIST_DIR)  && fs.existsSync(PUBLIC_DIR)
+                    && fs.existsSync(USERS_DIR) && fs.existsSync(TWOSTAGEDEFAULT_DIR)) {
+                    clearInterval(tempTask);
+                    res.end('has');
+                }else{
+                    req.session.checkTempCount = req.session.checkTempCount + 1;
+                    //请求超时，文件不完整
+                    if(req.session.checkTempCount > 10){
+                        system.deleteFolder(req, res,tempForder,function(){
+                            system.deleteFolder(req, res,tempForder + '.zip',function(){
+                                clearInterval(tempTask);
+                                res.end('imperfect');
+                            });
+                        });
+                    }
+                }
+
+            },3000);
+
+        }else{
+            system.deleteFolder(req, res,tempForder,function(){
+                system.deleteFolder(req, res,tempForder + '.zip',function(){
+                    res.end('nopower');
+                });
+            });
+        }
+
+    });
+
+
+
+    //初始化导入模板的数据
+    router.get('/manage/initTempData',function(req,res){
+        var params = url.parse(req.url,true);
+        var targetForder = params.query.tempId;
+        var tempForder = settings.SYSTEMTEMPFORDER + targetForder;
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSCONFIG[0] + '_import')){
+            if(targetForder){
+                var jsonPath = tempForder + '/tempconfig.json';
+                fs.readFile(jsonPath,"binary",function (error,data) {
+                    if (error) {
+                        res.end(error)
+                    } else {
+                        //处理中文乱码问题
+                        var buf = new Buffer(data, 'binary');
+                        var newData = iconv.decode(buf, 'utf-8');
+
+                        var tempInfoData = eval("("+newData+")")[0];
+                        if(tempInfoData && tempInfoData.name && tempInfoData.alias && tempInfoData.version && tempInfoData.sImg && tempInfoData.author && tempInfoData.comment){
+                            adminFunc.checkTempInfo(tempInfoData,targetForder,function(data){
+                                if(data != 'success'){
+                                    system.deleteFolder(req, res,tempForder,function(){
+                                        system.deleteFolder(req, res,tempForder + '.zip',function(){
+                                            res.end(data);
+                                        });
+                                    });
+
+                                }else{
+                                    //复制静态文件到公共目录
+                                    var fromPath = settings.SYSTEMTEMPFORDER + targetForder + '/dist/';
+                                    var targetPath = settings.TEMPSTATICFOLDER + targetForder;
+                                    system.copyForder(fromPath,targetPath);
+
+                                    var tempItem = new TemplateItems();
+                                    tempItem.forder = "2-stage-default";
+                                    tempItem.name = '默认模板';
+                                    tempItem.isDefault = true;
+                                    tempItem.save(function(err){
+                                        if(err){
+                                            res.end(err);
+                                        }else{
+                                            var tempObj = {
+                                                name:  tempInfoData.name,
+                                                alias : tempInfoData.alias,
+                                                version : tempInfoData.version,
+                                                sImg: '/themes/' + targetForder + tempInfoData.sImg,
+                                                author: tempInfoData.author,
+                                                comment : tempInfoData.comment
+                                            };
+                                            var newTemp = new ContentTemplate(tempObj);
+                                            newTemp.using = false;
+                                            newTemp.items.push(tempItem);
+                                            newTemp.save(function(err1){
+                                                if(err1){
+                                                    res.end(err1);
+                                                }else{
+                                                    system.deleteFolder(req, res,tempForder + '.zip',function(){
+                                                        res.end('success');
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+
+                        }else{
+                            system.deleteFolder(req, res,tempForder,function(){
+                                system.deleteFolder(req, res,tempForder + '.zip',function(){
+                                    res.end('请正确填写配置文件');
+                                });
+                            });
+                        }
+
+                    }
+                });
+
+            }else{
+                res.end('文件不完整，请稍后重试！');
+            }
+        }else{
+            res.end('对不起，您无权执行该操作！');
+        }
+
+    });
+
 
     //启用模板
     router.get('/manage/enableTemp',function(req,res){
@@ -980,7 +1193,7 @@ var returnAdminRouter = function(io) {
         var tempId = params.query.tempId;
         var alias = params.query.alias;
 
-        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPS[0] + '_modify')){
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSCONFIG[0] + '_modify')){
 
             var tempPath = system.scanJustFolder(settings.SYSTEMTEMPFORDER + alias);
             var distPath = false;
@@ -1044,23 +1257,21 @@ var returnAdminRouter = function(io) {
                 if(err){
                     res.end(err);
                 }else{
-                    ContentTemplate.findOne({'alias' : defaultTemp},function(err,doc){
-                        if(err){
-                            res.end(err);
+                    ContentTemplate.getDefaultTemp(function(doc){
+                        if(doc){
+                            doc.items.push(tempItem);
+                            doc.save(function(err1){
+                                if(err1){
+                                    res.end(err1);
+                                }else{
+                                    cache.set(settings.session_secret + '_siteTemplate', doc , 1000 * 60 * 60 * 24); // 修改默认模板缓存
+                                    res.end('success');
+                                }
+                            });
                         }else{
-                            if(doc){
-                                doc.items.push(tempItem);
-                                doc.save(function(err1){
-                                    if(err1){
-                                        res.end(err1);
-                                    }else{
-                                        cache.set(settings.session_secret + '_siteTemplate', doc , 1000 * 60 * 60 * 24); // 修改默认模板缓存
-                                        res.end('success');
-                                    }
-                                });
-                            }
+                            res.end(settings.system_illegal_param);
                         }
-                    })
+                    });
                 }
             });
         }else{
@@ -1080,8 +1291,7 @@ var returnAdminRouter = function(io) {
                 if(err){
                     res.end(err);
                 }else{
-
-                    ContentTemplate.findOne({'using':true},function(err,doc){
+                    ContentTemplate.getDefaultTemp(function(doc){
                         if(doc){
                             var items = doc.items;
                             for(var i=0;i<items.length;i++){
@@ -1094,12 +1304,15 @@ var returnAdminRouter = function(io) {
                             doc.save(function(err){
                                 if(err){
                                     res.end(err);
+                                }else{
+                                    //更新缓存
+                                    cache.set(settings.session_secret + '_siteTemplate', doc , 1000 * 60 * 60 * 24); // 修改默认模板缓存
+                                    res.end("success");
                                 }
                             });
+                        }else{
+                            res.end(settings.system_illegal_param);
                         }
-                        //更新缓存
-                        cache.set(settings.session_secret + '_siteTemplate', doc , 1000 * 60 * 60 * 24); // 修改默认模板缓存
-                        res.end("success");
                     });
 
                 }
@@ -1161,6 +1374,177 @@ var returnAdminRouter = function(io) {
     }
 
 
+
+
+    //模板编辑
+    router.get('/manage/contentTemps/m/edit', function(req, res, next) {
+
+        adminFunc.renderToManagePage(req, res,'manage/contentTempsEdit',settings.CONTENTTEMPSEDIT);
+
+    });
+
+
+    router.get('/manage/contentTemps/tempListByFolder', function(req, res, next) {
+        var params = url.parse(req.url,true);
+        var targetTemp = params.query.targetTemp;
+
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSEDIT[0] + '_view')){
+            if(targetTemp == 'undefined'){
+                ContentTemplate.getDefaultTemp(function(temp){
+                    if(temp){
+                        var tempTree = setTempData(temp.alias);
+                        return res.json(tempTree);
+                    }else{
+                        return res.json({});
+                    }
+                });
+            }else{
+                var tempTree = setTempData(targetTemp);
+                return res.json(tempTree);
+            }
+
+        }else{
+            return res.json({});
+        }
+
+    });
+
+    function setTempData(targetTemp){
+        var tempTree = [];
+        tempTree.push({
+            id : 'public',
+            pId:0,
+            name:"公用模块",
+            open:false
+        });
+        tempTree.push({
+            id : 'users',
+            pId:0,
+            name:"用户模块",
+            open:true
+        });
+        tempTree.push({
+            id : 'styles',
+            pId:0,
+            name:"模板样式",
+            open:true
+        });
+        tempTree.push({
+            id : 'js',
+            pId:0,
+            name:"模板js",
+            open:true
+        });
+        //读取ejs模板
+        var defaultForlder = settings.SYSTEMTEMPFORDER + targetTemp;
+        var newPubPath = adminFunc.setTempParentId(system.scanFolder(defaultForlder + "/public"),'public');
+        var newUserPath = adminFunc.setTempParentId(system.scanFolder(defaultForlder + "/users"),'users');
+        newPubPath = newPubPath.concat(newUserPath);
+        //读取静态文件
+        if( fs.existsSync(settings.TEMPSTATICFOLDER + targetTemp) ) {
+            var newStylePath = adminFunc.setTempParentId(system.scanFolder(settings.TEMPSTATICFOLDER + targetTemp + "/css"),'styles');
+            var newJsPath = adminFunc.setTempParentId(system.scanFolder(settings.TEMPSTATICFOLDER + targetTemp + "/js"),'js');
+            newPubPath = newPubPath.concat(newStylePath).concat(newJsPath)
+        }
+        //读取模板单元
+        var filePath = system.scanJustFolder(settings.SYSTEMTEMPFORDER + targetTemp);
+        var tempUnit = [];
+        tempUnit.push({
+            id : 'tempUnit',
+            pId:0,
+            name : '模板单元',
+            open:true
+        });
+        for(var i=0;i<filePath.length;i++){
+            var fileObj = filePath[i];
+            if(fileObj.name.split('-')[1] == 'stage'){
+                tempUnit.push({
+                    id : fileObj.name,
+                    pId: 'tempUnit',
+                    name : fileObj.name,
+                    open:true
+                });
+                var unitArr = system.scanFolder(settings.SYSTEMTEMPFORDER + targetTemp + '/' + fileObj.name);
+                var newUnitArr = adminFunc.setTempParentId(unitArr,fileObj.name);
+                tempUnit = tempUnit.concat(newUnitArr);
+            }
+        }
+        if(tempUnit.length > 0){
+            newPubPath = newPubPath.concat(tempUnit);
+        }
+
+        //读取根目录下的所有文件
+        var rootArr = system.scanFolder(settings.SYSTEMTEMPFORDER + targetTemp);
+        var newRootArr = [];
+        for(var j=0;j<rootArr.length;j++){
+            var rootObj = rootArr[j];
+            if(rootObj.type == 'ejs'){
+                var rootFile = adminFunc.setTempParentId(rootObj,0);
+                newRootArr.push(rootFile);
+            }
+        }
+        if(newRootArr.length > 0) {
+            newPubPath = newPubPath.concat(newRootArr);
+        }
+
+        tempTree = tempTree.concat(newPubPath);
+        tempTree.sort();
+        return tempTree;
+    }
+
+
+//修改文件内容读取文件信息
+    router.get('/manage/contentTemps/getFileInfo', function(req, res, next) {
+
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSEDIT[0] + '_view')){
+            var params = url.parse(req.url,true);
+            var path = params.query.filePath;
+            if(path){
+                system.readFile(req,res,path);
+            }else{
+                res.end('您的请求不正确，请稍后再试');
+            }
+        }else{
+            return res.json({
+                fileData : {}
+            })
+        }
+    });
+
+//修改文件内容更新文件信息
+    router.post('/manage/contentTemps/updateFileInfo', function(req, res, next) {
+
+        var fileContent = req.body.code;
+        var path = req.body.path;
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSEDIT[0] + '_modify')){
+            if(path){
+                system.writeFile(req,res,path,fileContent);
+            }else{
+                res.end('您的请求不正确，请稍后再试');
+            }
+        }else{
+            res.end('对不起，您无权执行该操作！');
+        }
+    });
+
+
+    //获取已安装的所有模板
+    router.get('/manage/contentTemps/tempFolderList', function(req, res, next) {
+
+        if(adminFunc.checkAdminPower(req,settings.CONTENTTEMPSEDIT[0] + '_view')){
+            ContentTemplate.find({}).sort({using : -1}).populate('items').exec(function(err,docs){
+                if(err){
+                    res.end(err);
+                }else{
+                    return res.json(docs);
+                }
+            });
+
+        }else{
+            return res.json({});
+        }
+
+    });
 //------------------------------------------文档模板结束
 
 

@@ -56,7 +56,7 @@ router.get('/details/:url', function (req, res, next) {
     var url = req.params.url;
     var currentId = url.split('.')[0];
     if(shortid.isValid(currentId)){
-        Content.findOne({ '_id': currentId , 'state' : true}).populate('category').exec(function(err,result){
+        Content.findOne({ '_id': currentId , 'state' : true}).populate('category').populate('author').exec(function(err,result){
             if (err) {
                 console.log(err)
             } else {
@@ -89,9 +89,7 @@ router.get('/:defaultUrl', function (req, res, next) {
 
     var defaultUrl = req.params.defaultUrl;
     var url = defaultUrl.split('___')[1];
-
     var indexUrl = defaultUrl.split('—')[0];
-
     if (indexUrl == 'page') { // 首页的分页
         var indexPage = defaultUrl.split('—')[1].split(".")[0];
         if(indexPage && validator.isNumeric(indexPage)){
@@ -100,14 +98,18 @@ router.get('/:defaultUrl', function (req, res, next) {
         siteFunc.renderToTargetPageByType(req,res,'index');
     } else {
         var currentUrl = url;
-        if (url.indexOf("—") >= 0) {
-            currentUrl = url.split("—")[0];
-            var catePageNo = (url.split("—")[1]).split(".")[0];
-            if(catePageNo && validator.isNumeric(catePageNo)){
-                req.query.page = catePageNo;
+        if (url) {
+            if(url.indexOf("—") >= 0){
+                currentUrl = url.split("—")[0];
+                var catePageNo = (url.split("—")[1]).split(".")[0];
+                if(catePageNo && validator.isNumeric(catePageNo)){
+                    req.query.page = catePageNo;
+                }
             }
+            queryCatePage(req, res, currentUrl);
+        }else{
+            next();
         }
-        queryCatePage(req, res, currentUrl);
     }
 
 });
@@ -117,17 +119,20 @@ router.get('/:forder/:defaultUrl', function (req, res, next) {
 
     var defaultUrl = req.params.defaultUrl;
     var url = defaultUrl.split('___')[1];
-
     var currentUrl = url;
-    if (url.indexOf("—") >= 0) {
-        currentUrl = url.split("—")[0];
-        var catePageNo = (url.split("—")[1]).split(".")[0];
-        if(catePageNo && validator.isNumeric(catePageNo)){
-            req.query.page = catePageNo;
+    if (url) {
+        if(url.indexOf("—") >= 0){
+            currentUrl = url.split("—")[0];
+            var catePageNo = (url.split("—")[1]).split(".")[0];
+            if(catePageNo && validator.isNumeric(catePageNo)){
+                req.query.page = catePageNo;
+            }
         }
+        queryCatePage(req, res, currentUrl);
+    }else{
+        next();
     }
 
-    queryCatePage(req, res, currentUrl);
 
 });
 

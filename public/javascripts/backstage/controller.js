@@ -59,10 +59,16 @@ doraApp.controller("adminUserList",['$scope','$http','pageData','getItemService'
     //删除用户
     initDelOption($scope,$http,'您确认要删除选中的管理员吗？');
     //logo上传
-    initUploadFyBtn('uploadULogoImg',"userlogo",function(data){
-        alert('上传成功');
-        $("#userLogo").attr("src",data);
-        $scope.formData.logo = data;
+    initUploadFyBtn('uploadULogoImg','images',"userlogo",function(data){
+        $.tipsShow({
+            message : '上传成功',
+            type : 'success' ,
+            callBack : function(){
+                $("#userLogo").attr("src",data);
+                $scope.formData.logo = data;
+            }
+        });
+
     });
     // 修改用户
     $('#addNewAdminUser').on('show.bs.modal', function (event) {
@@ -88,12 +94,19 @@ doraApp.controller("adminUserList",['$scope','$http','pageData','getItemService'
     //添加新用户或修改用户
     $scope.processForm = function(isValid){
         if(!$scope.formData.group){
-            alert('请选择用户组!');
-            return false;
+            $.tipsShow({
+                message : '请选择用户组',
+                type : 'warning' ,
+                callBack : function(){
+                    return;
+                }
+            });
+        }else{
+            angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
+                initPagination($scope,$http);
+            });
         }
-        angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
-            initPagination($scope,$http);
-        });
+
     };
 
 }]);
@@ -190,7 +203,7 @@ doraApp.controller("addAds",['$scope','$http','pageData','getItemService',functi
     var contentArray = [];
     var editArrImg = [];
     // 初始化上传按钮
-    initUploadFyBtn('uploadAdsImg','',function(data){
+    initUploadFyBtn('uploadAdsImg','images','',function(data){
         $("#myImg").attr("src",data);
         $scope.formData.contentItem.sImg = data;
     });
@@ -414,8 +427,13 @@ doraApp.controller("backUpData",['$scope','$http',function($scope,$http){
     $scope.backUpData = function(){
         initCheckIfDo($scope,'','确认执行备份操作？数据库操作请谨慎处理',function(currentID){
             angularHttpGet($http,"/admin/manage/backupDataManage/backUp",function(){
-                alert('数据备份成功！');
-                initPagination($scope,$http);
+                $.tipsShow({
+                    message : '数据备份成功',
+                    type : 'success' ,
+                    callBack : function(){
+                        initPagination($scope,$http);
+                    }
+                });
             });
         });
     };
@@ -429,7 +447,7 @@ doraApp.controller("systemLogs",['$scope','$http',function($scope,$http){
     //获取日志数据列表
     initPagination($scope,$http);
     //删除日志数据
-    initDelOption($scope,$http);
+    initDelOption($scope,$http,'确定删除选定的日志吗？');
 
 }]);
 
@@ -442,10 +460,16 @@ doraApp.controller("addContent",['$scope','$http','pageData','getItemService',fu
     // 初始化文章标签
     initContentTags($scope,$http);
     // 初始化上传按钮
-    initUploadFyBtn('uploadContentImg',"ctTopImg",function(data){
-        alert('上传成功');
-        $("#myImg").attr("src",data);
-        $scope.formData.sImg = data;
+    initUploadFyBtn('uploadContentImg','images',"ctTopImg",function(data){
+        $.tipsShow({
+            message : '上传成功',
+            type : 'success' ,
+            callBack : function(){
+                $("#myImg").attr("src",data);
+                $scope.formData.sImg = data;
+            }
+        });
+
     });
     // 通过访问地址获取文章id
     $scope.targetID = window.location.href.split("/")[8];
@@ -461,27 +485,44 @@ doraApp.controller("addContent",['$scope','$http','pageData','getItemService',fu
     $scope.processForm = function(isValid){
         $scope.formData.state = true;
         if(!$scope.formData.category){
-            alert('请选择文档类别');
-            return false;
+            $.tipsShow({
+                message : '请选择文档类别',
+                type : 'warning' ,
+                callBack : function(){
+                    return;
+                }
+            });
+        }else{
+            angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
+                window.location = "/admin/manage/contentList";
+            });
         }
-        angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
-            window.location = "/admin/manage/contentList";
-        });
+
     };
     //  存草稿
     $scope.saveAsDraft = function(){
         $scope.formData.state = false;
+        var errors;
         if(!$scope.formData.title){
-            alert('文档标题必须填写');
-            return false;
+            errors = '文档标题必须填写';
         }
         if(!$scope.formData.category){
-            alert('文档类别必须选择');
-            return false;
+            errors = '文档类别必须选择';
         }
-        angularHttpPost($http,true,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
-            window.location = "/admin/manage/contentList";
-        });
+        if(errors){
+            $.tipsShow({
+                message : errors,
+                type : 'warning' ,
+                callBack : function(){
+                    return;
+                }
+            });
+        }else{
+            angularHttpPost($http,true,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
+                window.location = "/admin/manage/contentList";
+            });
+        }
+
     };
 
     $scope.getContentState = function(){
@@ -501,10 +542,15 @@ doraApp.controller("addPlugs",['$scope','$http','pageData','getItemService',func
     // 初始化插件分类
     initTreeDataByType($scope,$http,"contentCategories");
     // 初始化上传按钮
-    initUploadFyBtn('uploadPlugImg','plugTopImg',function(data){
-        alert('上传成功');
-        $("#myImg").attr("src",data);
-        $scope.formData.sImg = data;
+    initUploadFyBtn('uploadPlugImg','images','plugTopImg',function(data){
+        $.tipsShow({
+            message : '上传成功',
+            type : 'success' ,
+            callBack : function(){
+                $("#myImg").attr("src",data);
+                $scope.formData.sImg = data;
+            }
+        });
     });
     // 通过访问地址获取插件id
     $scope.targetID = window.location.href.split("/")[8];
@@ -519,12 +565,18 @@ doraApp.controller("addPlugs",['$scope','$http','pageData','getItemService',func
     $scope.processForm = function(isValid){
         $scope.formData.type = "plug";
         if(!$scope.formData.category){
-            alert('请选择插件类别');
-            return false;
+            $.tipsShow({
+                message : '请选择插件类',
+                type : 'warning' ,
+                callBack : function(){
+                    return;
+                }
+            });
+        }else{
+            angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
+                window.location = "/admin/manage/contentList";
+            });
         }
-        angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
-            window.location = "/admin/manage/contentList";
-        });
     }
 }]);
 
@@ -732,11 +784,39 @@ doraApp.controller("contentTemps",['$scope','$http','pageData','getItemService',
 doraApp.controller("systemTemps",['$scope','$http',function($scope,$http){
     // 初始化系统模板
     initApiPagination($scope,$http);
+    //初始化上传模板按钮
+    initUploadFyBtn('uploadCmsTemp','zip',"cmsTemp",function(data){
+        if(data.indexOf('success') >= 0){
+            var tempId = data.split('&')[1];
+            $.block({
+                message : $('#sys-progress-bar'),
+                mask : true
+            });
+            $http.get('/admin/manage/chekcIfUnzipSuccess?tempId='+tempId).success(function(result){
+                if(result && result === 'has'){
+                    $http.get('/admin/manage/initTempData?tempId='+tempId).success(function(result){
+                        $.unblock();
+                        showMessage($scope,$http,result,'恭喜，您已成功上传该模板！');
+                        window.location.reload();
+                    })
+                }else if(result && result === 'imperfect'){
+                    $.unblock();
+                    $.tipsShow({ message : '压缩包内文件不完整', type : 'warning' });
+                }else if(result && result === 'nopower'){
+                    $.unblock();
+                    $.tipsShow({ message : '对不起，您无权执行该操作！', type : 'warning' });
+                }
+            })
+
+        }else{
+            $.tipsShow({ message : data, type : 'warning' });
+        }
+    });
     // 安装模板
     $scope.installTheme = function(tempId){
         $.block({
             message : $('#sys-progress-bar'),
-            mask : false
+            mask : true
         });
         $http.get('/admin/manage/installTemp?tempId='+tempId).success(function(result){
             setTimeout(function(){
@@ -749,6 +829,20 @@ doraApp.controller("systemTemps",['$scope','$http',function($scope,$http){
     };
 }]);
 
+//模板编辑
+doraApp.controller("contentTempEdit",['$scope','$http',function($scope,$http){
+    $scope.formData = {};
+    initTreeDataByType($scope,$http,"allThemeFolderTree");
+    initSystemTempData($scope,$http);
+
+    // 提交更新后的文件
+    $scope.processMdForm = function(isValid){
+        angularHttpPost($http,isValid,'/admin/manage/contentTemps/updateFileInfo',$scope.formData,function(data){
+            $.tipsShow({ message : '更新成功！', type : 'success' });
+        });
+    };
+
+}]);
 
 
 //留言管理
@@ -844,7 +938,7 @@ doraApp.controller("contentnotices",['$scope','$http',function($scope,$http){
                 setNoticesRead(targetIds);
             });
         }else{
-            alert('请至少选择一项')
+            $.tipsShow({ message : '请至少选择一项', type : 'warning' });
         }
     };
 }]);

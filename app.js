@@ -42,7 +42,7 @@ app.use('/ueditor/ue', ueditor({//这里的/ueditor/ue是因为文件件重命�
     accessKey: '',//本地存储不填写，bcs填写
     secrectKey: '',//本地存储不填写，bcs填写
     staticPath: path.join(__dirname, 'public'), //一般固定的写法，静态资源的目录，如果是bcs，可以不填
-    dynamicPath: '/blogpicture' //动态目录，以/开头，bcs填写buckect名字，开头没有/.路径可以根据req动态变化，可以是一个函数，function(req) { return '/xx'} req.query.action是请求的行为，uploadimage表示上传图片，具体查看config.json.
+    dynamicPath: '/upload/blogpicture' //动态目录，以/开头，bcs填写buckect名字，开头没有/.路径可以根据req动态变化，可以是一个函数，function(req) { return '/xx'} req.query.action是请求的行为，uploadimage表示上传图片，具体查看config.json.
 }));
 
 
@@ -118,15 +118,26 @@ app.locals.myDateFormat = function(date){
     return moment(date).startOf('hour').fromNow();
 };
 
+app.locals.searchKeyWord = function(content,key){
+    var newContent = content;
+    if(newContent && key){
+        var keyword = key.replace(/(^\s*)|(\s*$)/g, "");
+        if(keyword != ''){
+            var reg = new RegExp(keyword,'gi');
+            newContent = content.replace(reg, '<span style="color:red">'+key+'</span>');
+        }
+    }
+    return newContent;
+};
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 /*指定路由控制*/
-app.use('/admin', validat);
-app.use('/admin', admin);
-app.use('/users', users);
 app.use('/', routes);
 app.use('/content', content);
+app.use('/users', users);
+app.use('/admin', validat);
+app.use('/admin', admin);
 app.use('/system',system);
 
 

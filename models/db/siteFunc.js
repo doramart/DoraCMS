@@ -123,7 +123,7 @@ var siteFunc = {
     },
 
     getMessageList : function(contentId){
-        return Message.find({'contentId' : contentId}).populate('author').populate('replyAuthor').populate('adminAuthor').exec();
+        return Message.find({'contentId' : contentId}).sort({'date': 1}).populate('author').populate('replyAuthor').populate('adminAuthor').exec();
     },
 
     sendSystemNoticeByType : function(req,res,type,value){

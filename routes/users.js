@@ -117,28 +117,29 @@ var returnUsersRouter = function(io) {
                 email : email,
                 userName : userName
             };
-            system.sendEmail(settings.email_notice_user_reg,regMsg,function(err){
-                if(err && err == 'notCurrentEmail'){
-                    res.end('乱写邮箱被我发现了吧！');
+
+            //        邮箱和用户名都必须唯一
+            var query=User.find().or([{'email' : email},{userName : userName}]);
+            query.exec(function(err,user){
+                if(user.length > 0){
+                    errors = "邮箱或用户名已存在！";
+                    res.end(errors);
                 }else{
-                    //        邮箱和用户名都必须唯一
-                    var query=User.find().or([{'email' : email},{userName : userName}]);
-                    query.exec(function(err,user){
-                        if(user.length > 0){
-                            errors = "邮箱或用户名已存在！";
-                            res.end(errors);
+                    system.sendEmail(settings.email_notice_user_reg,regMsg,function(err){
+                        if(err && err == 'notCurrentEmail'){
+                            res.end('乱写邮箱被我发现了吧！');
                         }else{
                             var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
                             req.body.password = newPsd;
                             //发送系统消息给管理员
                             siteFunc.sendSystemNoticeByType(req,res,'reg',userName);
-
                             DbOpt.addOne(User,req, res)
                         }
                     });
-                }
 
+                }
             });
+
         }
     });
 

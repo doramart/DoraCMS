@@ -112,7 +112,7 @@
                                                     <label class="control-label col-sm-4">模板组合</label>
                                                     <div class="col-sm-5">
                                                         <div class="dropdown">
-                                                            <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <button id="dLabel" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                 <i id="tempForderName">请选择模板组合</i>
                                                                 <span class="caret"></span>
                                                             </button>
@@ -149,16 +149,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row hide">
+                            <div class="row">
+
                                 <form action="">
                                     <div class="form-group">
                                         <div class="col-sm-5">
-                                            <div class="input-group margin">
-                                                <input type="text" class="form-control" disabled>
-                                                <span class="input-group-btn">
-                                                  <button type="button" class="btn btn-primary btn-flat">选择主题文件</button>
-                                                </span>
-                                            </div>
+                                            <button type="button" name="updateTemp" class="btn btn-primary btn-flat " id="uploadCmsTemp">安装本地主题</button>
+                                            &nbsp;<a href="http://7xkr1n.com1.z0.glb.clouddn.com/doraTempDemo.zip" target="_blank" class="btn btn-link uploadzip" role="button"><i class="fa fa-fw fa-download"></i> 下载模板基础文件</a>
                                         </div>
                                     </div>
                                 </form>

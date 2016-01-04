@@ -8,8 +8,14 @@ var router = express.Router();
 var formidable = require('formidable'),
     util = require('util'),fs=require('fs');
 
+//时间格式化
+var moment = require('moment');
 var gm = require('gm');
 var url = require('url');
+var mime = require('../util/mime').types;
+var system = require('../util/system');
+//站点配置
+var settings = require("../models/db/settings");
 
 /* GET users listing. */
 router.post('/upload', function(req, res, next) {
@@ -33,70 +39,78 @@ router.post('/upload', function(req, res, next) {
         files.push([field, file]);
         docs.push(file);
 
+        //校验文件的合法性
+        var realFileType = system.getFileMimeType(file.path);
+        var contentType  = mime[realFileType.fileType] || 'unknown';
+        if(contentType == 'unknown'){
+            res.end('typeError');
+        }
+
         var typeKey = "others";
         var thisType = file.name.split('.')[1];
         var date = new Date();
-        var ms = Date.parse(date);
+        var ms = moment(date).format('YYYYMMDDHHmmss').toString();
 
         if(fileType == 'images'){
             typeKey = "img"
         }
-
         newFileName = typeKey + ms + "."+thisType;
 
-        fs.rename(file.path,updatePath+newFileName,function(err){
-            if(err){
-                console.log(err)
-            }else{
-                // 图片缩放
-                var input =  updatePath+newFileName;
-                var out = smallImgPath+newFileName;
+        if(fileType == 'images'){
+            if(realFileType.fileType == 'jpg' || realFileType.fileType == 'jpeg' || realFileType.fileType == 'png'  || realFileType.fileType == 'gif'){
+                if(settings.imgZip){
+                    fs.rename(file.path,updatePath + newFileName,function(err){
+                        if(err){
+                            console.log(err)
+                        }else{
+                            // 图片缩放
+                            var input =  updatePath + newFileName;
+                            var out = smallImgPath + newFileName;
 
-                if(fileType == 'images'){
-                    if(fileKey == 'ctTopImg'){
-                        gm(input).resize(270,162,'!').autoOrient().write(out, function (err) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('done');
+                            if(fileKey == 'ctTopImg'){
+                                gm(input).resize(270,162,'!').autoOrient().write(out, function (err) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        console.log('done');
+                                    }
+                                });
+                            }else if(fileKey == 'plugTopImg'){ // 插件主题图片
+                                gm(input).resize(270,162,'!').autoOrient().write(out, function (err) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        console.log('done');
+                                    }
+                                });
+                            }else if(fileKey == 'userlogo'){ // 用户头像
+                                gm(input).resize(100,100,'!').autoOrient().write(out, function (err) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        console.log('done');
+                                    }
+                                });
                             }
-                        });
-                    }else if(fileKey == 'plugTopImg'){ // 插件主题图片
-                        gm(input).resize(270,162,'!').autoOrient().write(out, function (err) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('done');
-                            }
-                        });
-                    }else if(fileKey == 'userlogo'){ // 用户头像
-                        gm(input).resize(100,100,'!').autoOrient().write(out, function (err) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('done');
-                            }
-                        });
-                    }
+                        }
+                    })
+                }else{
+                    fs.rename(file.path,updatePath + newFileName,function(err){
+                        if(err){
+                            console.log(err)
+                        }
+                    })
                 }
-
+            }else{
+                res.end('typeError');
             }
-        })
+
+        }
 
     }).on('end', function() {
-        console.log('-> upload done');
-        res.writeHead(200, {
-            'content-type': 'text/plain'
-        });
-        var out={Resopnse:{
-            'result-code':0,
-            timeStamp:new Date()
-        },
-            files:docs
-        };
-        var sout=JSON.stringify(out);
-//        返回文件路径
-        if(fileKey == 'ctTopImg' || fileKey == 'plugTopImg' || fileKey == 'userlogo'){
+
+        // 返回文件路径
+        if(settings.imgZip && (fileKey == 'ctTopImg' || fileKey == 'plugTopImg' || fileKey == 'userlogo')){
             res.end('/upload/smallimgs/'+newFileName);
         }else{
             res.end('/upload/images/'+newFileName);
@@ -106,7 +120,6 @@ router.post('/upload', function(req, res, next) {
 
     form.parse(req, function(err, fields, files) {
         err && console.log('formidabel error : ' + err);
-
         console.log('parsing done');
     });
 });

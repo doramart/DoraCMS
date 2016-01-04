@@ -114,6 +114,7 @@ Contact: cms@doramart.com
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img alt="User Image" class="user-image" src="<%=adminUserInfo.logo%>">
                             <span class="hidden-xs" id="adminUserName"><%=adminUserInfo.userName%></span>
+                            <input type="hidden" id="adminId" value="<%=adminUserInfo._id%>">
                         </a>
                         <ul class="dropdown-menu">
                             <li class="user-header">
@@ -175,7 +176,15 @@ Contact: cms@doramart.com
                         <li cid="contentManage_content"><a href="/admin/manage/contentList"><i class="fa fa-file-text-o"></i> 文档管理</a></li>
                         <li cid="contentManage_cateGory"><a href="/admin/manage/contentCategorys"><i class="fa fa-clipboard"></i> 文档类别管理</a></li>
                         <li cid="contentManage_tag"><a href="/admin/manage/contentTags"><i class="fa fa-tags"></i> 文档标签管理</a></li>
-                        <li cid="contentManage_temp"><a href="/admin/manage/contentTemps"><i class="fa fa-dashboard"></i> 文档模板配置</a></li>
+                        <li cid="contentManage_temp">
+                            <a href="#"><i class="fa fa-dashboard"></i> 模板管理<i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li cid="contentManage_temp_1"><a href="/admin/manage/contentTemps/m/config"><i class="fa fa-cog"></i> 模板配置</a></li>
+                            </ul>
+                            <ul class="treeview-menu">
+                                <li cid="contentManage_temp_2"><a href="/admin/manage/contentTemps/m/edit"><i class="fa fa-edit"></i> 模板编辑</a></li>
+                            </ul>
+                        </li>
                         <li cid="contentManage_msg"><a href="/admin/manage/contentMsgs"><i class="fa fa-comments"></i> 留言管理</a></li>
                         <li cid="contentManage_notice">
                             <a href="#"><i class="fa fa-bullhorn"></i> 消息管理<i class="fa fa-angle-left pull-right"></i></a>

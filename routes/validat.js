@@ -7,6 +7,8 @@ var router = express.Router();
 //管理员用户组对象
 var AdminGroup = require("../models/AdminGroup");
 var validator = require("validator");
+var adminFunc = require("../models/db/adminFunc");
+
 function isAdminLogined(req){
     return req.session.adminlogined;
 }
@@ -21,7 +23,9 @@ router.get("/",function(req,res,next){
 
 router.get("/manage",function(req,res,next){
     if(isAdminLogined(req)){
-        next();
+        adminFunc.authDoraCMS(req, res,function(){
+            next();
+        });
     }else{
         res.redirect("/admin");
     }
@@ -52,6 +56,12 @@ validator.extend('isPsd', function (str) {
 
 validator.extend('isQQ', function (str) {
     return RegExp(/^[1-9][0-9]{4,9}$/).test(str);
+});
+
+
+//只能是英文
+validator.extend('isEn', function (str) {
+    return /^\S+[a-z A-Z]$/.test(str);
 });
 
 

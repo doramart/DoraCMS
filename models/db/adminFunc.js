@@ -35,6 +35,10 @@ var SystemOptionLog = require("../SystemOptionLog");
 var Notify = require("../Notify");
 var UserNotify = require("../UserNotify");
 var shortid = require('shortid');
+//数据校验
+var validator = require("validator");
+var system = require('../../util/system');
+var request = require('request');
 var adminFunc = {
 
     siteInfos : function (description) {
@@ -99,6 +103,7 @@ var adminFunc = {
             bigCategory : 'noticePage',
             infoType : infoType,
             infoContent : infoContent,
+            area : '',
             layout: 'manage/public/adminTemp'
         }
 
@@ -228,7 +233,99 @@ var adminFunc = {
         }else{
             res.render("manage/public/notice", this.setDataForInfo('danger','对不起，您无权操作 <strong>'+pageKey[1]+'</strong> 模块！'));
         }
+    },
+
+    checkTempInfo : function(tempInfoData,forderName,callBack){
+
+        var name = tempInfoData.name;
+        var alias = tempInfoData.alias;
+        var version = tempInfoData.version;
+        var sImg = tempInfoData.sImg;
+        var author = tempInfoData.author;
+        var comment = tempInfoData.comment;
+        var errors;
+
+        if(forderName !== alias){
+            errors = '模板名称跟文件夹名称不统一';
+        }
+
+        if(!validator.isLength(name,4,15)){
+            errors = '模板名称必须为4-15个字符';
+        }
+
+        if(!validator.isEn(alias)){
+            errors = '模板关键字必须为英文字符';
+        }
+
+        if(!validator.isLength(alias,4,15)){
+            errors = '模板关键字必须为4-15个字符';
+        }
+
+        if(!validator.isLength(version,2,15)){
+            errors = '版本号必须为2-15个字符';
+        }
+
+        if(!validator.isLength(author,4,15)){
+            errors = '作者名称必须为4-15个字符';
+        }
+
+        if(!validator.isLength(comment,4,40)){
+            errors = '模板描述必须为4-30个字符';
+        }
+
+        if(errors){
+            callBack(errors);
+        }else{
+            var query=ContentTemplate.find().or([{'name' : name},{alias : alias}]);
+            query.exec(function(err,temp){
+                if(err){
+                    res.end(err);
+                }else{
+                    if(temp.length > 0){
+                        errors = "模板名称或key已存在，请修改后重试！";
+                    }else{
+                        errors = 'success';
+                    }
+                    callBack(errors);
+                }
+
+            });
+        }
+    },
+
+    authDoraCMS : function(req,res,callBack){
+        var params = {
+          domain : req.headers.host,
+          ipAddress : adminFunc.getClienIp(req)
+        };
+        if(req.session.adminUserInfo && !req.session.adminUserInfo.auth){
+            request.post({url: settings.DORACMSAPI + '/system/checkSystemInfo', form: params}, function(err,httpResponse,body){
+                if (!err && httpResponse.statusCode == 200) {
+                    if(body == 'success'){
+                        AdminUser.update({'_id':req.session.adminUserInfo._id},{$set : {auth : true}},function(err){
+                            if(err){
+                                console.log(err);
+                            }
+                            callBack();
+                        })
+                    }
+                }else{
+                    callBack();
+                }
+            })
+        }else{
+            callBack();
+        }
+    },
+
+    setTempParentId : function(arr,key){
+        for(var i=0;i<arr.length;i++){
+            var pathObj = arr[i];
+            pathObj.pId = key;
+        }
+        return arr;
     }
+
 
 };
 

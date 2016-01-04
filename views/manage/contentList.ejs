@@ -59,7 +59,7 @@
                             <span ng-switch-when="true"><a href="" class="label label-success">true</a></span>
                             <span ng-switch-when="false"><a href="" class="label label-danger">false</a></span>
                         </td>
-                        <td>{{content.author}}</td>
+                        <td>{{content.author.name}}</td>
                         <td>
                             <a href="/admin/manage/content/edit/{{content.type}}/{{content._id}}" role="button"  title="编辑" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>
                             <a href="###" role="button"  title="推荐" ng-click="topContent(content._id,1)" class="btn btn-warning btn-xs" ng-show="content.isTop == 0"><i class="fa fa-thumbs-o-up"></i></a>
