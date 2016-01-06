@@ -62,16 +62,16 @@ var returnAdminRouter = function(io) {
 
     //管理员登录页面
     router.get('/', function(req, res, next) {
+        req.session.vnum = rw.random(4);
         res.render('manage/adminLogin', { title: settings.SITETITLE , description : 'DoraCMS后台管理登录'});
     });
 
 
 //管理员登录验证码
     router.get('/vnum',function(req, res){
-        var word = rw.random(4);
-        req.session.vnum = word;
+        var word = req.session.vnum;
         pngword.createPNG(word,function(word){
-            res.send(word);
+            res.end(word);
         })
     });
 
@@ -85,6 +85,7 @@ var returnAdminRouter = function(io) {
         var newPsd = DbOpt.encrypt(password,settings.encrypt_key);
 
         if(vnum != req.session.vnum){
+            req.session.vnum = rw.random(4);
             res.end('验证码有误！');
         }else{
             if(validator.isUserName(userName) && validator.isPsd(password)){
