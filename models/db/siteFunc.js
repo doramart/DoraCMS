@@ -119,7 +119,7 @@ var siteFunc = {
     },
 
     getFriendLink: function () {
-        return Ads.find({'category': 'friendlink'});
+        return Ads.find({'type': '2'}).populate('items').exec();
     },
 
     getMessageList : function(contentId){
@@ -157,7 +157,7 @@ var siteFunc = {
         return {
             siteConfig: this.siteInfos("首页"),
             documentList: documentList.docs,
-            hotItemListData: this.getHotItemListData({}),
+            hotItemListData: this.getHotItemListData({'state':true}),
             friendLinkData: this.getFriendLink(),
             cateTypes: this.getCategoryList(),
             cateInfo: '',
@@ -212,7 +212,7 @@ var siteFunc = {
             siteConfig: this.siteInfos(params.detail.title, params.detail.discription, params.detail.keywords),
             cateTypes: this.getCategoryList(),
             currentCateList: currentCateList,
-            hotItemListData: this.getHotItemListData({}),
+            hotItemListData: this.getHotItemListData({'state':true}),
             newItemListData: this.getNewItemListData({}),
             friendLinkData: this.getFriendLink(),
             reCommendListData : this.getRecommendListData(params.cateQuery,params.count),

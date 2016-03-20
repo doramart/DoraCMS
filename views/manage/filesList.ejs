@@ -36,10 +36,11 @@
                             'fa fa-fw fa-file-o' : (file.type == 'html'),
                             'fa fa-fw fa-file-image-o' : (file.type == 'image'),
                             'fa fa-fw fa-file-movie-o' : (file.type == 'video'),
+                            'fa fa-fw fa-file-text' : (file.type == 'txt'),
                             'fa fa-fw fa-file-text' : (file.type == 'css'),
                             'fa fa-fw fa-file-text-o' : (file.type == 'others')
                             }"></i>&nbsp;
-                                <a href="###" ng-click="getFiles(file.type,file.name,file.path)">{{file.name}}</a>
+                                <a href="###" ng-click="getFiles(file.type,file.name,file.path)" ng-bind="file.name"></a>
                             </td>
                             <td>{{file.size}}</td>
                             <td>{{file.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
@@ -55,7 +56,7 @@
                     <ul class="list-group">
                         <li class="list-group-item" ng-repeat="file in fileData">
                             <div class="fileImg" ng-click="getFiles(file.type,file.name,file.path)">
-                                <a href="/upload{{currentPath}}/{{file.name}}" class="fancybox" data-fancybox-group="gallery" ng-show="file.type == 'image'"><img src="/upload{{currentPath}}/{{file.name}}" alt="{{file.name}}" title="{{file.name}}" /></a>
+                                <a ng-href="/upload{{currentPath}}/{{file.name}}" class="fancybox" data-fancybox-group="gallery" ng-show="file.type == 'image'"><img ng-src="/upload{{currentPath}}/{{file.name}}" alt="{{file.name}}" title="{{file.name}}" /></a>
                                 <i ng-show="file.type != 'image'" ng-class="{'fa fa-fw fa-folder': (file.type == 'folder'),
                             'fa fa-fw fa-file-code-o' : (file.type == 'js'),
                             'fa fa-fw fa-fw fa-file-text' : (file.type == 'css'),
@@ -63,7 +64,7 @@
                             'fa fa-fw fa-file-o' : (file.type == 'html'),
                             'fa fa-fw fa-file-text-o' : (file.type == 'others')
                             }"></i></div>
-                            <p class="fileName">{{file.name}}</p>
+                            <p class="fileName" ng-bind="file.name"></p>
                         </li>
                     </ul>
                 </div>
@@ -88,7 +89,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-4">原名称</label>
                             <div class="col-sm-6">
-                                <p class="form-control-static text-primary">{{formData.oldName}}</p>
+                                <p class="form-control-static text-primary" ng-bind="formData.oldName"></p>
                             </div>
                         </div>
                         <div class="form-group">

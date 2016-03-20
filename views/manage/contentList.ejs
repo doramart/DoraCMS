@@ -30,6 +30,7 @@
                         <th>类型</th>
                         <th>推荐</th>
                         <th>点击</th>
+                        <th>评论数</th>
                         <th>显示</th>
                         <th>发布人</th>
                         <th>操作</th>
@@ -55,6 +56,7 @@
                         </td>
                         <td ng-class="{true:'text-danger'}[content.isTop==1]"><i class="fa fa-fw fa-flag"></i></td>
                         <td>{{content.clickNum}}</td>
+                        <td>{{content.commentNum}}</td>
                         <td ng-switch on="content.state">
                             <span ng-switch-when="true"><a href="" class="label label-success">true</a></span>
                             <span ng-switch-when="false"><a href="" class="label label-danger">false</a></span>

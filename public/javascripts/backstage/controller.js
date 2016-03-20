@@ -186,107 +186,125 @@ doraApp.controller("adsList",['$scope','$http',function($scope,$http){
 
 
 //广告编辑/添加
-doraApp.controller("addAds",['$scope','$http','pageData','getItemService',function($scope,$http,pageData,getItemService){
+doraApp.controller("addTxtAds",['$scope','$http','pageData','getItemService',function($scope,$http,pageData,getItemService){
     $scope.formData = {};
-    $scope.formData.type = "0";
-    $scope.formData.content = {};
-    $scope.formData.content.link = "http://www.doramart.com";
-    $scope.formData.content.title = "默认链接标题";
-    $scope.formData.contentItem = {};
-
-    $scope.selectTarget = [
-        {name:'_blank',value : '_blank'},
-        {name:'_self',value : '_self'}
+    //广告类型初始化
+    $scope.selectAdsType = [
+        {name:'0',value : '默认广告'},
+        {name:'2',value : '友情链接'}
     ];
-
-    $scope.formData.contentItem.target = '_blank';
-    var contentArray = [];
-    var editArrImg = [];
-    // 初始化上传按钮
-    initUploadFyBtn('uploadAdsImg','images','',function(data){
-        $("#myImg").attr("src",data);
-        $scope.formData.contentItem.sImg = data;
-    });
-
-    // 广告类型选项卡切换
-    $('a[data-toggle="tab"]').on("show.bs.tab",function(e){
-        var txt = $(this).text();
-        $("#adsType").text(txt);
-        $scope.formData.type = $(this).attr("dropValue");
-    });
-    // 添加图片信息窗口
-    $('#addNewAdImg').on('show.bs.modal', function (event) {
-        $scope.formData.contentItem = {}
-    }).on('hidden.bs.modal', function (e) {
-        clearModalData($scope,$(this));
-    });
+    $scope.formData.type = '0';
+    $scope.formData.state = '1';
 
     $scope.targetID = window.location.href.split("/")[7];
     if($scope.targetID){
         getItemService.itemInfo(pageData.bigCategory,$scope.targetID).success(function(result){
             $scope.formData = result;
-
-            if(result.type === "0"){ //文字广告
-                $("#adsType").text("文字");
-                $("#tab_2").removeClass("in active");
-                $("#tab_1").addClass("in active");
-                $("#imgAdsType").addClass("hide");
-                $scope.formData.content = JSON.parse(result.content);
-
-            }else{
-                $("#adsType").text("图片");
-                $("#tab_1").removeClass("in active");
-                $("#tab_2").addClass("in active");
-                $("#txtAdsType").addClass("hide");
-
-                var imgInfos = $scope.formData.content;
-                editArrImg = imgInfos.replace(/},/g,"};").split(";");
-                contentArray = editArrImg;
-                for(var i=0;i<editArrImg.length;i++){
-                    var item = JSON.parse(editArrImg[i]);
-                    var newItem = getImgInfo(item.sImg,item.link,item.width,item.height,item.target,item.discription);
-                    $("#imgInfolist").append(newItem);
-                    //  添加关闭按钮的监听事件
-                    initCloseBtn($scope,contentArray);
-                }
-            }
+            $scope.formData.title = result.items[0].title;
+            $scope.formData.link = result.items[0].link;
         })
     }
 
-
-    $scope.processImgForm = function(isValid){
-        contentArray.push(JSON.stringify($scope.formData.contentItem));
-        $("#addNewAdImg").modal("hide");
-        $scope.formData.content = contentArray.join();
-        // 获取demo下元素个数
-        var demoLength = $('#imgInfolist').children('.alert').length;
-        // 在demo树下添加元素
-        var newItem = getImgInfo($scope.formData.contentItem.sImg,$scope.formData.contentItem.link,$scope.formData.contentItem.width,$scope.formData.contentItem.height,$scope.formData.contentItem.target,$scope.formData.contentItem.discription);
-        $("#imgInfolist").append(newItem);
-        // 添加关闭按钮的监听事件
-        initCloseBtn($scope,contentArray);
-    };
-
     // 添加或修改广告
     $scope.processForm = function(isValid){
-
-        var currentContent = $scope.formData.content;
-        if($scope.formData.type === "0"){
-            currentContent = JSON.stringify($scope.formData.content);
+        var url = "/admin/manage/"+pageData.bigCategory+"/addOne";
+        if($scope.targetID){
+            url = "/admin/manage/"+pageData.bigCategory+"/modifyTxtAds?uid="+$scope.targetID;
         }
-        var groupData = {
-            mkey : $scope.formData.mkey,
-            title : $scope.formData.title,
-            category : $scope.formData.category,
-            type : $scope.formData.type,
-            content : currentContent,
-            state : $scope.formData.state
-        };
-
-        angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),groupData,function(data){
+        angularHttpPost($http,isValid,url,$scope.formData,function(data){
             window.location = "/admin/manage/adsList";
         });
+    }
+}]);
 
+
+doraApp.controller("addImgAdsInfo",['$scope','$http','pageData','getItemService',function($scope,$http,pageData,getItemService){
+    $scope.formData = {};
+    $scope.itemsFormData = {};
+    $scope.formData.type = '1';
+
+    // 初始化上传按钮
+    initUploadFyBtn('uploadAdsImg','images','',function(data){
+        $("#myImg").attr("src",data);
+        $scope.itemsFormData.sImg = data;
+    });
+
+    //初始化选择菜单
+    $scope.selectTarget = [
+        {name:'_blank',value : '_blank'},
+        {name:'_self',value : '_self'}
+    ];
+    $scope.itemsFormData.target = '_blank';
+
+    $scope.targetID = window.location.href.split("/")[7];
+    if($scope.targetID){
+        initAdsInfos($scope);
+    }
+
+    //修改图片广告主体信息
+    $('#addMainAds').on('show.bs.modal', function (event) {
+        var obj = $(event.relatedTarget);
+        var editId = obj.data('whatever');
+        if(editId){
+            getItemService.itemInfo(pageData.bigCategory,editId).success(function(result){
+                $scope.formData = result;
+            })
+        }
+    }).on('hidden.bs.modal', function (e) {
+        $(this).find(".form-control").val("");
+    });
+
+    // 添加图片信息窗口
+    $('#addNewAdImg').on('show.bs.modal', function (event) {
+        var obj = $(event.relatedTarget);
+        var editId = obj.data('whatever');
+        if(editId){
+            $http.get("/admin/manage/adsItems/findItem?uid="+editId).success(function(result){
+                $scope.itemsFormData = result;
+                $("#myImg").attr("src",result.sImg);
+            });
+        }
+    }).on('hidden.bs.modal', function (e) {
+        $scope.itemsFormData = {};
+        $(this).find(".form-control").val("");
+        $("#myImg").attr("src","");
+    });
+
+    // 添加或修改广告
+    $scope.processMainAds = function(isValid){
+        angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
+            initAdsInfos($scope);
+        });
+    };
+
+    //添加图片信息
+    $scope.processImgForm = function(isValid){
+        var url = "/admin/manage/adsItems/addItem?adsId="+$scope.targetID;
+        if($scope.itemsFormData._id){
+            url = "/admin/manage/adsItems/modifyItem?adsId="+$scope.targetID+"&uid="+$scope.itemsFormData._id;
+        }
+        angularHttpPost($http,isValid,url,$scope.itemsFormData,function(data){
+            initAdsInfos($scope);
+        });
+    };
+
+    //删除单个图片
+    $scope.delAdsItem = function(id){
+        initCheckIfDo($scope,$scope.targetID,'确定删除该图片么？',function(){
+            angularHttpGet($http,"/admin/manage/adsItems/delItem?adsId="+$scope.targetID+"&uid="+id,function(){
+                initAdsInfos($scope);
+            });
+        });
+
+    };
+    //刷新数据
+    function initAdsInfos($scope){
+        $('.modal').each(function(i){$(this).modal("hide");});
+        $scope.targetID = window.location.href.split("/")[7];
+        getItemService.itemInfo(pageData.bigCategory,$scope.targetID).success(function(result){
+            $scope.formData = result;
+            $scope.itemsList = result.items;
+        })
     }
 }]);
 
@@ -305,7 +323,7 @@ doraApp.controller("filesList",['$scope','$http',function($scope,$http){
     $scope.delFilesItem = function(filePath){
         initCheckIfDo($scope,'','您确认要删除该文件吗？',function(path){
             angularHttpGet($http,"/admin/manage/filesList/fileDel?filePath="+filePath,function(){
-                getFolderList($scope,$http,$scope.rootPath +$scope.currentPath);
+                getFolderList($scope,$http,$scope.currentPath);
             });
         });
     };
@@ -352,11 +370,11 @@ doraApp.controller("filesList",['$scope','$http',function($scope,$http){
         var curentUrl = "/admin/manage/filesList/addFolder";
         if($scope.targetID)
         {
-            $scope.formData.newPath = $scope.rootPath +$scope.currentPath +"/"+ $scope.formData.newName;
+            $scope.formData.newPath = $scope.currentPath +"/"+ $scope.formData.newName;
             curentUrl = "/admin/manage/filesList/fileReName";
         }
         angularHttpPost($http,isValid,curentUrl,$scope.formData,function(data){
-            getFolderList($scope,$http,$scope.rootPath +$scope.currentPath);
+            getFolderList($scope,$http,$scope.currentPath);
         });
     };
 
@@ -364,7 +382,7 @@ doraApp.controller("filesList",['$scope','$http',function($scope,$http){
     $scope.processMdForm = function(isValid){
 
         angularHttpPost($http,isValid,'/admin/manage/filesList/updateFileInfo',$scope.mdFormData,function(data){
-            getFolderList($scope,$http,$scope.rootPath +$scope.currentPath);
+            getFolderList($scope,$http,$scope.currentPath);
         });
 
     };
@@ -402,7 +420,7 @@ doraApp.controller("filesList",['$scope','$http',function($scope,$http){
         if(currentPathArr.length > 0){
             var currentFolderLength = (currentPathArr[currentPathArr.length-1]).length + 1;
             var prePath = ($scope.currentPath).substring(0,($scope.currentPath).length - currentFolderLength);
-            $scope.prePath = $scope.rootPath + prePath;
+            $scope.prePath = prePath;
         }
         getFolderList($scope,$http,$scope.prePath);
     }
@@ -455,6 +473,7 @@ doraApp.controller("systemLogs",['$scope','$http',function($scope,$http){
 //文档新增/编辑
 doraApp.controller("addContent",['$scope','$http','pageData','getItemService',function($scope,$http,pageData,getItemService){
     $scope.formData = {};
+    $scope.tagFormData = {};
     // 初始化文章分类
     initTreeDataByType($scope,$http,"contentCategories");
     // 初始化文章标签
@@ -533,6 +552,20 @@ doraApp.controller("addContent",['$scope','$http','pageData','getItemService',fu
         }else{
             return false;
         }
+    };
+
+    // 新增标签
+    $('#addContentTags').on('show.bs.modal', function (event) {
+    }).on('hidden.bs.modal', function (e) {
+        // 清空数据
+        $scope.tagFormData = {};
+    });
+
+    // 添加新标签
+    $scope.addNewTagForm = function(isValid){
+        angularHttpPost($http,isValid,getTargetPostUrl($scope,'contentManage_tag'),$scope.tagFormData,function(data){
+            initContentTags($scope,$http);
+        });
     }
 }]);
 

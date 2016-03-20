@@ -89,7 +89,7 @@ var system = {
 
 
     },
-    scanFolder : function(path){ //文件夹列表读取
+    scanFolder : function(basePath,path){ //文件夹列表读取
         // 记录原始路径
             var oldPath = path;
             var filesList = [];
@@ -97,15 +97,16 @@ var system = {
             var fileList = [],
             folderList = [],
             walk = function(path, fileList, folderList){
-                files = fs.readdirSync(path);
+                files = fs.readdirSync(basePath + path);
                 files.forEach(function(item) {
 
-                    var tmpPath = path + '/' + item,
+                    var tmpPath = basePath + path + '/' + item,
+                        relativePath = path + '/' + item,
                         stats = fs.statSync(tmpPath);
                     var typeKey = "folder";
                     if(oldPath === path){
                         if (stats.isDirectory()) {
-                            walk(tmpPath, fileList, folderList);
+                            walk(relativePath, fileList, folderList);
                         } else {
                             var fileType = item.split('.')[1];
 
@@ -138,7 +139,7 @@ var system = {
                         var fileInfo = {
                             "name" : item,
                             "type" : typeKey,
-                            "path" : tmpPath,
+                            "path" : relativePath,
                             "size" : stats.size,
                             "date" : stats.mtime
                         };
@@ -266,7 +267,6 @@ var system = {
 //        var cmdstr = 'mongodump -o "'+dataPath+'"';
         var cmdstr = settings.MONGODBEVNPATH + 'mongodump -u '+settings.USERNAME+' -p '+settings.PASSWORD+' -d '+settings.DB+' -o "'+dataPath+'"';
 
-        var batPath = settings.DATAOPERATION + '/backupData.sh';
         if(!fs.existsSync(settings.DATABACKFORDER)){
             fs.mkdirSync(settings.DATABACKFORDER);
         }

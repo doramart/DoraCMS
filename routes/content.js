@@ -96,13 +96,13 @@ router.get('/requestAds/ads/item', function(req, res, next) {
     var params = url.parse(req.url,true);
     var targetId = params.query.uid;
     if(shortid.isValid(targetId)){
-        Ads.findOne({'_id' : targetId , 'state': '1'}, function (err,result) {
+        Ads.findOne({'_id' : targetId , 'state': '1'}).populate('items').exec(function (err,result) {
             if(err){
                 res.next(err);
             }else{
                 return res.json(result);
             }
-        })
+        });
     }else{
         res.end(settings.system_illegal_param);
     }

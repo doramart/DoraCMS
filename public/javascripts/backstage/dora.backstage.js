@@ -436,7 +436,10 @@ function initTreeDataByType($scope,$http,type){
     $http.get(params.url).success(function(result){
         //回选指定值
         if(type == 'allThemeFolderTree'){
-            params.currentId = result[0]._id;
+            if(result.length > 0){
+                params.currentId = result[0]._id;
+            }
+
         }
         if(params.currentId){
             $("#"+params.listId).html(getCateNameById(result,params.currentId));
@@ -835,8 +838,8 @@ function getFolderList($scope,$http,path){
     $("#dataLoading").removeClass("hide");
     $http.get("/admin/manage/filesList/list?filePath="+path).success(function(result){
         $scope.fileData = result.pathsInfo;
-        $scope.rootPath = result.rootPath;
-        $scope.currentPath =  getCurrentPath($scope,path);
+        //$scope.rootPath = result.rootPath;
+        $scope.currentPath =  path;
         $("#dataLoading").addClass("hide");
 
     })

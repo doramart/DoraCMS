@@ -74,7 +74,7 @@ var adminFunc = {
         })
     },
 
-    setPageInfo : function(req,res,module,currentLink){
+    setPageInfo : function(req,res,module){
 
         var searchKey = '';
         //area是为了独立查询一个表其中的部分数据而设立的参数
@@ -90,7 +90,7 @@ var adminFunc = {
             bigCategory : module[0],
             searchKey : searchKey,
             area : area,
-            currentLink : currentLink,
+            currentLink : req.originalUrl,
             layout : 'manage/public/adminTemp'
         }
 
@@ -153,13 +153,15 @@ var adminFunc = {
 
     },
 
-    delNotifiesById : function(req,res,nid){
+    delNotifiesById : function(req,res,nid,callBack){
         if(shortid.isValid(nid)){
             Notify.delOneNotify(res,nid,function(){
                 var notifyQuery = {'notify': { $regex: new RegExp(nid, 'i') }};
                 UserNotify.remove(notifyQuery,function(err){
                     if(err){
                         res.end(err);
+                    }else{
+                        callBack();
                     }
                 });
             });
@@ -171,37 +173,37 @@ var adminFunc = {
 
     getTargetObj : function(currentPage){
         var targetObj;
-        if(currentPage.indexOf(settings.ADMINUSERLIST[0]) >=0 ){
+        if(currentPage === settings.adminUsersList[0] ){
             targetObj = AdminUser;
-        }else if(currentPage.indexOf(settings.ADMINGROUPLIST[0]) >=0 ){
+        }else if(currentPage === settings.adminGroupList[0] ){
             targetObj = AdminGroup;
-        }else if(currentPage.indexOf(settings.ADSLIST[0]) >=0 ){
+        }else if(currentPage === settings.adsList[0] ){
             targetObj = Ads;
-        }else if(currentPage.indexOf(settings.FILESLIST[0]) >=0 ){
+        }else if(currentPage === settings.filesList[0] ){
             targetObj = Files;
-        }else if(currentPage.indexOf(settings.BACKUPDATA[0]) >=0 ){
+        }else if(currentPage === settings.backUpData[0] ){
             targetObj = DataOptionLog;
-        }else if(currentPage.indexOf(settings.SYSTEMLOGS[0]) >=0 ){
+        }else if(currentPage === settings.systemLogs[0] ){
             targetObj = SystemOptionLog;
-        }else if(currentPage.indexOf(settings.CONTENTLIST[0]) >=0 ){
+        }else if(currentPage === settings.contentList[0] ){
             targetObj = Content;
-        }else if(currentPage.indexOf(settings.CONTENTCATEGORYS[0]) >=0 ){
+        }else if(currentPage === settings.contentCategorys[0] ){
             targetObj = ContentCategory;
-        }else if(currentPage.indexOf(settings.CONTENTTAGS[0]) >=0 ){
+        }else if(currentPage === settings.contentTags[0] ){
             targetObj = ContentTags;
-        }else if(currentPage.indexOf(settings.CONTENTTEMPS[0]) >=0 ){
+        }else if(currentPage === settings.contentTemps[0] ){
             targetObj = ContentTemplate;
-        }else if(currentPage.indexOf(settings.CONTENTTEMPITEMS[0]) >=0 ){
+        }else if(currentPage === settings.CONTENTTEMPITEMS[0] ){
             targetObj = TemplateItems;
-        }else if(currentPage.indexOf(settings.MESSAGEMANAGE[0]) >=0 ){
+        }else if(currentPage === settings.messageList[0] ){
             targetObj = Message;
-        }else if(currentPage.indexOf(settings.REGUSERSLIST[0]) >=0 ){
+        }else if(currentPage === settings.regUsersList[0] ){
             targetObj = User;
-        }else if(currentPage.indexOf(settings.SYSTEMNOTICE[0]) >=0 ){
+        }else if(currentPage === settings.systemNotice[0] ){
             targetObj = Notify;
-        }else if(currentPage.indexOf(settings.USERNOTICE[0]) >=0 ){
+        }else if(currentPage === settings.userNotice[0] ){
             targetObj = UserNotify;
-        }else if(currentPage.indexOf(settings.SYSTEMBACKSTAGENOTICE[0]) >=0 ){
+        }else if(currentPage === settings.sysTemBackStageNotice[0] ){
             targetObj = UserNotify;
         }else{
             targetObj = Content;
@@ -293,6 +295,17 @@ var adminFunc = {
         }
     },
 
+    getTempBaseFile : function(path){
+        var thisType = (path).split('.')[1];
+        var basePath;
+        if(thisType == 'ejs'){
+            basePath = settings.SYSTEMTEMPFORDER;
+        }else{
+            basePath = settings.TEMPSTATICFOLDER;
+        }
+        return basePath;
+    },
+
     authDoraCMS : function(req,res,callBack){
         var params = {
           domain : req.headers.host,
@@ -324,6 +337,62 @@ var adminFunc = {
             pathObj.pId = key;
         }
         return arr;
+    },
+
+    delRefObjById : function(res,obj,refObj,targetId,callBack){
+        obj.findOne({'_id':targetId},function(err,doc){
+            if(err){
+                res.end(err);
+            }else{
+                if(doc){
+                    var items = doc.items;
+                    refObj.remove({'_id':{$in: items}},function(err1){
+                        if(err1){
+                            res.end(err1);
+                        }else{
+                            obj.remove({'_id':targetId},function(err2){
+                                if(err2){
+                                    res.end(err2);
+                                }else{
+                                    callBack(doc);
+                                }
+                            })
+                        }
+                    });
+                }else{
+                    res.end(settings.system_illegal_param);
+                }
+            }
+        })
+    },
+
+    delSonRefObjById : function(res,obj,refObj,targetId,refObjId,callBack){
+        obj.findOne({'_id' : targetId},function(err,doc){
+            if(doc){
+                refObj.remove({_id : refObjId},function(err){
+                    if(err){
+                        res.end(err);
+                    }else{
+                        var items = doc.items;
+                        for(var i=0;i<items.length;i++){
+                            if(items[i] == refObjId){
+                                items.splice(i,1);
+                                break;
+                            }
+                        }
+                        doc.items = items;
+                        doc.save(function(err1){
+                            if(err1){
+                                res.end(err1);
+                            }
+                            callBack();
+                        });
+                    }
+                })
+            }else{
+                res.end(settings.system_illegal_param);
+            }
+        })
     }
 
 

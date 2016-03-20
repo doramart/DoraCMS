@@ -47,9 +47,8 @@
                     <div class="form-group">
                         <label class="control-label col-sm-3">TAG标签</label>
                         <div class="col-sm-4">
-                            <div class="input-group margin">
+                            <div class="input-group">
                                 <input type="text" class="form-control" name="tags" id="tagSel" ng-minlength="2" ng-maxlength="27" ng-model="formData.tags" onclick="showTagsMenu()" required/>
-
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"  id="menuBtn" onclick="showTagsMenu(); return false;">选择 <span class="fa fa-caret-down"></span></button>
                                     <div id="menuContent" class="menuContent dropdown-menu" style="display:none; position: absolute;z-index: 999">
@@ -58,6 +57,10 @@
                                 </div><!-- /btn-group -->
                             </div><!-- /input-group -->
                             <label for="inputError" class="control-label text-danger" ng-show="myForm.tags.$invalid && !myForm.tags.$pristine"><i class="fa fa-times-circle-o"></i>标签用逗号隔开，单个标签不可超过6个字，不得超过4个标签</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <a href="#addContentTags" role="button" class="btn btn-link" data-toggle="modal"><span class="fa fa-tags" aria-hidden="true">&nbsp;</span>新标签</a>
+
                         </div>
                     </div>
                     <div class="form-group">
@@ -111,6 +114,47 @@
 
             </div>
         </div>
+    </div>
+
+    <!--添加用户组模态窗口-->
+    <div class="modal fade" id="addContentTags">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">新增标签</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal" name="tagForm" ng-submit="addNewTagForm(tagForm.$valid)" novalidate>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">标签名称</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="name" ng-model="tagFormData.name" ng-minlength="1" ng-maxlength="12" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="tagForm.name.$invalid && !tagForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 1-12个非特殊字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">别名</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="alias" ng-model="tagFormData.alias" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{2,11}$/" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="tagForm.alias.$invalid && !tagForm.alias.$pristine"><i class="fa fa-times-circle-o"></i> 2-12个英文字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">标签备注</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="comments" ng-model="tagFormData.comments" ng-minlength="1" ng-maxlength="30" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="tagForm.comments.$invalid && !tagForm.comments.$pristine"><i class="fa fa-times-circle-o"></i> 备注不能为空</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="tagForm.$invalid">提交</button>
+                        </div>
+                    </form>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     </div>
 </div>
 

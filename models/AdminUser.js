@@ -30,6 +30,19 @@ var AdminUserSchema = new Schema({
     }
 });
 
+AdminUserSchema.statics = {
+
+    getOneItem : function(res,targetId,callBack){
+        AdminUser.findOne({'_id' : targetId}).populate('group').exec(function(err,user){
+            if(err){
+                res.end(err);
+            }
+            callBack(user);
+        })
+    }
+
+};
+
 
 var AdminUser = mongoose.model("AdminUser",AdminUserSchema);
 

@@ -13,6 +13,7 @@ var UserNotify = require("../models/UserNotify");
 var Content = require("../models/Content");
 var ContentCategory = require("../models/ContentCategory");
 var ContentTemplate = require("../models/ContentTemplate");
+var Ads = require("../models/Ads");
 
 //站点配置
 var settings = require("../models/db/settings");
@@ -133,6 +134,8 @@ var DbOpt = {
             query.populate('contentTemp');
         }else if(obj === ContentTemplate){
             query.populate('items');
+        }else if(obj === Ads){
+            query.populate('items');
         }
 
         query.exec(function(err,docs){
@@ -175,8 +178,8 @@ var DbOpt = {
         var resultList;
         var resultNum;
         if(q && q.length > 1){ // 多条件只要其中一条符合
-            resultList = obj.find().or(q,filed).sort(sq).skip(startNum).limit(limit);
-            resultNum = obj.find().or(q,filed).count();
+            resultList = obj.find({'state':true}).or(q,filed).sort(sq).skip(startNum).limit(limit);
+            resultNum = obj.find({'state':true}).or(q,filed).count();
         }else{
             resultList = obj.find(q,filed).sort(sq).skip(startNum).limit(limit);
             resultNum = obj.find(q,filed).count();

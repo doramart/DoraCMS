@@ -5,23 +5,39 @@
 var mongoose = require('mongoose');
 var shortid = require('shortid');
 var Schema = mongoose.Schema;
-
+var AdsItems = require('./AdsItems');
 var AdsSchema = new Schema({
     _id: {
         type: String,
         unique: true,
         'default': shortid.generate
     },
-    mkey : String, //广告位标识
-    title:  String,
-    category:  String, // friendlink表示友情链接，默认default为广告
+    name:  String,
+    type: { type: String, default: "0" }, // 展示形式 0文字 1图片 2友情链接
     state : { type: String, default: "1" }, // 广告状态，是否显示
-    type: { type: String, default: "0" }, // 展示形式 0文字 1图片
     date: { type: Date, default: Date.now },
-    content: String // 内容
+    items: [{ type: String , ref: 'AdsItems' }] // 广告列表id
 });
 
-var Ads = mongoose.model("Ads",AdsSchema);
 
+
+AdsSchema.statics = {
+
+    getOneAds : function(res,targetId,callBack){
+        if(shortid.isValid(targetId)){
+            Ads.findOne({'_id' : targetId}).populate('items').exec(function(err,doc){
+                if(err){
+                    res.end(err);
+                }
+                callBack(doc);
+            })
+        }else{
+            res.end('非法参数！');
+        }
+    }
+
+};
+
+var Ads = mongoose.model("Ads",AdsSchema);
 module.exports = Ads;
 

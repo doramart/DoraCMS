@@ -13,10 +13,14 @@ var routes = require('./routes/index');
 var io = require('socket.io')();
 //用户相关功能
 var users = require('./routes/users')(io);
-var admin = require('./routes/admin')(io);
+var admin = require('./routes/admin');
 var content = require('./routes/content');
 //验证器
 var validat = require('./routes/validat');
+//分层路由
+var adminCtrl = require('./routes/adminCtrl');
+
+
 //系统功能支持
 var system = require('./routes/system');
 //站点配置
@@ -136,7 +140,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/content', content);
 app.use('/users', users);
-app.use('/admin', validat);
+//app.use('/admin', validat);
+app.use('/admin', adminCtrl);
 app.use('/admin', admin);
 app.use('/system',system);
 
