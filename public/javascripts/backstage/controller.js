@@ -949,7 +949,7 @@ doraApp.controller("addNotice",['$scope','$http','pageData','getItemService',fun
     // 添加新公告
     $scope.processForm = function(isValid){
         angularHttpPost($http,isValid,getTargetPostUrl($scope,pageData.bigCategory),$scope.formData,function(data){
-            window.location = "/admin/manage/noticeManage/m/adminNotice";
+            window.location = "/admin/manage/systemNotice";
         });
     }
 }]);
