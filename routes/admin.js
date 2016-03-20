@@ -201,7 +201,7 @@ router.get('/manage/regUsersList', function(req, res) {
 //管理员公告列表页面
 router.get('/manage/systemNotice', function(req, res) {
     req.query.area = 'announce';
-    res.render('manage/systemNotice', adminFunc.setPageInfo(req,res,settings.systemNotice));
+    res.render('manage/adminNotice', adminFunc.setPageInfo(req,res,settings.systemNotice));
 
 });
 
