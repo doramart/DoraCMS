@@ -7,6 +7,7 @@
 var express = require('express');
 var router = express.Router();
 var url = require('url');
+var _ = require('lodash');
 //管理员用户组对象
 var AdminGroup = require("../models/AdminGroup");
 var validator = require("validator");
@@ -56,13 +57,14 @@ router.get(["/manage","/manage/*"],function(req,res,next){
 //模块管理页面
 router.get('/manage/:targetPage', function(req, res, next) {
     var currentPage = req.params.targetPage;
-    if(settings[currentPage]){
-        if(!checkAdminPower(req,settings[currentPage][0] + '_view')){
-            res.render("manage/public/notice", adminFunc.setDataForInfo('danger','对不起，您无权操作 <strong>'+settings[currentPage][1]+'</strong> 模块！'));
-        }else{
+    pageSetting = _.find(settings, function(val, key) { return key.toLowerCase() == currentPage.toLowerCase() });
+    if (pageSetting && _.isArray(pageSetting)) {
+        if (!checkAdminPower(req, pageSetting[0] + '_view')) {
+            res.render("manage/public/notice", adminFunc.setDataForInfo('danger', '对不起，您无权操作 <strong>' + pageSetting + '</strong> 模块！'));
+        } else {
             next();
         }
-    }else{
+    } else {
         next();
     }
 });
