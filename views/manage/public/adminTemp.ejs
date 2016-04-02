@@ -91,21 +91,21 @@ Contact: cms@doramart.com
                                 <ul class="menu">
                                     <%if(adminNotices.regNotices && adminNotices.regNotices.length > 0){%>
                                         <li>
-                                            <a href="/admin/manage/noticeManage/m/systemNotice?area=systemNotice">
+                                            <a href="/admin/manage/sysTemBackStageNotice">
                                                 <i class="fa fa-users text-aqua"></i> 新增&nbsp;<span class="text-red"><%=adminNotices.regNotices.length%></span>&nbsp;位注册用户
                                             </a>
                                         </li>
                                     <%}%>
                                     <%if(adminNotices.msgNotices && adminNotices.msgNotices.length > 0){%>
                                     <li>
-                                        <a href="/admin/manage/noticeManage/m/systemNotice">
+                                        <a href="/admin/manage/sysTemBackStageNotice">
                                             <i class="fa fa-envelope text-red"></i> <span class="text-red"><%=adminNotices.msgNotices.length%></span>&nbsp;位用户给您留言啦！
                                         </a>
                                     </li>
                                     <%}%>
                                 </ul>
                             </li>
-                            <li class="footer"><a href="/admin/manage/noticeManage/m/systemNotice">View all</a></li>
+                            <li class="footer"><a href="/admin/manage/sysTemBackStageNotice">View all</a></li>
                         </ul>
                     </li>
                     <li class="dropdown user user-menu">

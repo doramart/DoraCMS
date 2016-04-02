@@ -1717,14 +1717,14 @@ function removeAds(req,res){
 
 //管理员公告编辑页面
 router.get('/manage/adminNotice/edit/:noticeId', function(req, res) {
-    res.render('manage/addNotice', adminFunc.setPageInfo(req,res,settings.SYSTEMNOTICE));
+    res.render('manage/addNotice', adminFunc.setPageInfo(req,res,settings.systemNotice));
 
 });
 
 //管理员公告新增页面
 router.get('/manage/adminNotice/add', function(req, res) {
 
-    res.render('manage/addNotice', adminFunc.setPageInfo(req,res,settings.SYSTEMNOTICE));
+    res.render('manage/addNotice', adminFunc.setPageInfo(req,res,settings.systemNotice));
 
 });
 

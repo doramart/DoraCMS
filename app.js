@@ -15,8 +15,7 @@ var io = require('socket.io')();
 var users = require('./routes/users')(io);
 var admin = require('./routes/admin');
 var content = require('./routes/content');
-//验证器
-var validat = require('./routes/validat');
+
 //分层路由
 var adminCtrl = require('./routes/adminCtrl');
 

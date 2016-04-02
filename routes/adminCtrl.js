@@ -20,21 +20,6 @@ function isAdminLogined(req){
     return req.session.adminlogined;
 }
 
-function checkAdminPower(req,key){
-    var power = false;
-    var uPower = req.session.adminPower;
-    if(uPower){
-        var newPowers = eval(uPower);
-        for(var i=0;i<newPowers.length;i++) {
-            var checkedId = newPowers[i].split(':')[0];
-            if(checkedId == key && newPowers[i].split(':')[1]){
-                power = true;
-                break;
-            }
-        }
-    }
-    return power;
-}
 
 router.get("/",function(req,res,next){
     if(isAdminLogined(req)){
@@ -57,7 +42,7 @@ router.get(["/manage","/manage/*"],function(req,res,next){
 router.get('/manage/:targetPage', function(req, res, next) {
     var currentPage = req.params.targetPage;
     if(settings[currentPage]){
-        if(!checkAdminPower(req,settings[currentPage][0] + '_view')){
+        if(!adminFunc.checkAdminPower(req,settings[currentPage][0] + '_view')){
             res.render("manage/public/notice", adminFunc.setDataForInfo('danger','对不起，您无权操作 <strong>'+settings[currentPage][1]+'</strong> 模块！'));
         }else{
             next();
@@ -70,7 +55,7 @@ router.get('/manage/:targetPage', function(req, res, next) {
 //通用对象列表数据查询
 router.get('/manage/getDocumentList/:defaultUrl',function(req,res,next){
     var currentPage = req.params.defaultUrl;
-    if(checkAdminPower(req,currentPage + '_view')){
+    if(adminFunc.checkAdminPower(req,currentPage + '_view')){
         next();
     }else{
         return res.json({});
@@ -82,7 +67,7 @@ router.get('/manage/:defaultUrl/item',function(req,res,next){
     var currentPage = req.params.defaultUrl;
     var params = url.parse(req.url,true);
     var targetId = params.query.uid;
-    if(checkAdminPower(req,currentPage + '_view')){
+    if(adminFunc.checkAdminPower(req,currentPage + '_view')){
         if(shortid.isValid(targetId)){
             next();
         }else{
@@ -110,7 +95,7 @@ router.post('/manage/:defaultUrl/modify',function(req,res,next){
     var currentPage = req.params.defaultUrl;
     var params = url.parse(req.url,true);
     var targetId = params.query.uid;
-    if(checkAdminPower(req,currentPage + '_modify')){
+    if(adminFunc.checkAdminPower(req,currentPage + '_modify')){
         if(shortid.isValid(targetId)){
             next();
         }else{
@@ -126,7 +111,7 @@ router.get('/manage/:defaultUrl/del',function(req,res,next){
     var currentPage = req.params.defaultUrl;
     var params = url.parse(req.url,true);
     var targetId = params.query.uid;
-    if(checkAdminPower(req,currentPage + '_del')){
+    if(adminFunc.checkAdminPower(req,currentPage + '_del')){
         if(shortid.isValid(targetId)){
             next();
         }else{
@@ -160,7 +145,7 @@ router.get('/manage/:defaultUrl/batchDel',function(req,res,next){
 router.get('/manage/:modular/list', function(req, res, next) {
     var currentPage = req.params.modular;
     if(settings[currentPage]){
-        if(!checkAdminPower(req,settings[currentPage][0] + '_view')){
+        if(!adminFunc.checkAdminPower(req,settings[currentPage][0] + '_view')){
             return res.json({});
         }else{
             next();
