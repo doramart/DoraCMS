@@ -15,10 +15,10 @@ module.exports = {
 //    数据库配置
     URL: 'mongodb://127.0.0.1:27017/doracms',
     DB: 'doracms',
-    HOST: '',
+    HOST: '120.25.150.169',
     PORT: 27017,
-    USERNAME: '',
-    PASSWORD: '',
+    USERNAME: 'doramart',
+    PASSWORD: 'ZhaoHuiping520~~',
 
 
 //    站点基础信息配置
@@ -30,8 +30,8 @@ module.exports = {
     UPDATEFOLDER : process.cwd()+'/public/upload', // 默认上传文件夹本地路径
     TEMPSTATICFOLDER : process.cwd()+'/public/themes/', // 模板静态文件路径
     DATAOPERATION : process.cwd()+'/models/db/bat', //数据库操作脚本目录
-    DATABACKFORDER : 'C:/softbak/mongodbConfig/mongodata/', // 服务端数据备份目录
-    MONGODBEVNPATH : '/usr/local/mongodb/bin', // LINUXmongodb环境变量(win server下不用管)
+    DATABACKFORDER : '/home/databak/doracms/', // 服务端数据备份目录
+    MONGODBEVNPATH : '/usr/local/mongodb/mongodb-linux-x86_64-ubuntu1404-3.2.0/bin/', // LINUXmongodb环境变量(win server下不用管)
     SYSTEMTEMPFORDER : process.cwd()+'/views/web/temp/', // 系统模板安装目录
     DORACMSAPI : 'http://api.html-js.cn', // 系统服务提供商
     CMSDISCRIPTION : '前端开发俱乐部,分享前端知识,丰富前端技能。汇集国内专业的前端开发文档,为推动业内前端开发水平共同奋斗。html,js,css,nodejs,前端开发,jquery,web前端, web前端开发, 前端开发工程师',
@@ -70,12 +70,12 @@ module.exports = {
 //    本地缓存设置
     redis_host: '127.0.0.1',
     redis_port: 6379,
-    redis_psd : '',
+    redis_psd : 'Yoooyu0617241Xiaoshen@@520',
     redis_db: 0,
 
 //    邮件相关设置
-    site_email : 'xx@163.com',
-    site_email_psd : 'xxx',
+    site_email : 'admin@html-js.cn', // 系统邮箱
+    site_email_psd : 'xiaoshen520',
     email_findPsd : 'findPsd',
     email_reg_active : 'reg_active',
     email_notice_contentMsg : 'notice_contentMsg',

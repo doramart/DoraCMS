@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+router.caseSensitive = true;
 var url = require('url');
 
 //管理员对象
@@ -467,7 +468,7 @@ router.get('/manage/contentTags/list', function(req, res) {
 
 //所有默认模板列表
 router.get('/manage/contentTemps/list', function(req, res) {
-    ContentTemplate.getDefaultTemp(function(doc){
+    ContentTemplate.getDefaultTemp(res,function(doc){
         if(doc){
             return res.json(doc.items);
         }else{
@@ -1173,7 +1174,7 @@ router.get('/manage/enableTemp',function(req,res){
                             var fromPath = settings.SYSTEMTEMPFORDER + doc.alias + '/dist/';
                             var targetPath = settings.TEMPSTATICFOLDER + doc.alias;
                             system.copyForder(fromPath,targetPath);
-                            ContentTemplate.getDefaultTemp(function(temp){
+                            ContentTemplate.getDefaultTemp(res,function(temp){
                                 if(temp){
                                     cache.set(settings.session_secret + '_siteTemplate', temp , 1000 * 60 * 60 * 24); // 修改默认模板缓存
                                 }
@@ -1210,7 +1211,7 @@ router.post('/manage/templateItem/addNew',function(req,res){
             if(err){
                 res.end(err);
             }else{
-                ContentTemplate.getDefaultTemp(function(doc){
+                ContentTemplate.getDefaultTemp(res,function(doc){
                     if(doc){
                         doc.items.push(tempItem);
                         doc.save(function(err1){
@@ -1244,7 +1245,7 @@ function removeTemplateItem(req,res){
             if(err){
                 res.end(err);
             }else{
-                ContentTemplate.getDefaultTemp(function(doc){
+                ContentTemplate.getDefaultTemp(res,function(doc){
                     if(doc){
                         var items = doc.items;
                         for(var i=0;i<items.length;i++){
@@ -1307,7 +1308,7 @@ router.get('/manage/contentTemps/tempListByFolder', function(req, res) {
 
     if(adminFunc.checkAdminPower(req,settings.contentTemps[0] + '_view')){
         if(targetTemp == 'undefined'){
-            ContentTemplate.getDefaultTemp(function(temp){
+            ContentTemplate.getDefaultTemp(res,function(temp){
                 if(temp){
                     var tempTree = setTempData(temp.alias);
                     return res.json(tempTree);

@@ -422,7 +422,7 @@ var siteFunc = {
 
             }else{
 
-                ContentTemplate.getDefaultTemp(function(doc){
+                ContentTemplate.getDefaultTemp(res,function(doc){
                     if(doc){
                         cache.set(settings.session_secret + '_siteTemplate', doc , 1000 * 60 * 60 * 24); // 缓存一天
                     }

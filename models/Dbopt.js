@@ -76,11 +76,10 @@ var DbOpt = {
         if(shortid.isValid(targetId)){
             var conditions = {_id : targetId};
             req.body.updateDate = new Date();
-            delete req.body._id;
             var update = {$set : req.body};
             obj.update(conditions, update, function (err,result) {
                 if(err){
-                    res.end(err.message);
+                    res.end(err);
                 }else{
                     console.log(logMsg+" success!");
                     res.end("success");

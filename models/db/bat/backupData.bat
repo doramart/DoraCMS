@@ -1,1 +1,0 @@
-mongodump -o "E:/mongodata/20150625095316"

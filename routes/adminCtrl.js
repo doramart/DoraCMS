@@ -6,6 +6,7 @@
 
 var express = require('express');
 var router = express.Router();
+router.caseSensitive = true;
 var url = require('url');
 //管理员用户组对象
 var AdminGroup = require("../models/AdminGroup");

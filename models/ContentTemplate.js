@@ -37,7 +37,7 @@ ContentTemplateSchema.statics = {
 
     },
 
-    getDefaultTemp : function(callBack){
+    getDefaultTemp : function(res,callBack){
 
         ContentTemplate.findOne({'using':true}).populate('items').exec(function(err,doc){
             if(err){
