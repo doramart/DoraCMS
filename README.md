@@ -188,7 +188,7 @@ Users.js 用户中心的相关请求走这里
 Validat.js 后台权限控制（没有授予管理权限(session)会直接过滤掉请求）
 ```
 ### 2.3 关于模板
-- DoraCMS 是基于ejs 模板引擎来表现前台页面的，选择ejs 是因为比jade更好理解一些。属性js的童鞋也好接受ejs的语法来展示数据。DoraCMS 的模板文件都在 views 文件夹下：
+- DoraCMS 是基于ejs 模板引擎来表现前台页面的，选择ejs 是因为比jade更好理解一些。熟悉js的童鞋也好接受ejs的语法来展示数据。DoraCMS 的模板文件都在 views 文件夹下：
 
 
 
