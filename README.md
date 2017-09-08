@@ -4,7 +4,18 @@
 
 ## 说明
 
+DoraCMS 使用的技术栈：
 
+1、vue + vuex + vue-router 全家桶
+
+2、webpack 2
+
+3、nodejs 8.0 + express 4
+
+4、mongodb 3+
+
+演示地址： [前端开发俱乐部](https://www.html-js.cn)   
+后台登录： https://www.html-js.cn/dr-admin     测试账号：doracms/123456
 
 ## 目录结构
 
