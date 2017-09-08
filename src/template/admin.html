@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- [if IE]><html class="ie"><![endif]-->
+<html>
+
+<head>
+    <title>DoraCMS内容管理系统</title>
+    <meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta name="description" content="前端开发俱乐部">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="author" type="text/plain" href="">
+</head>
+
+<body>
+    <%if(process.env.NODE_ENV == 'development'){%>
+        <input type="hidden" id="cateValue" value='__manageCates__'>
+        <%}else{%>
+            <input type='hidden' id='cateValue' value='<%= htmlWebpackPlugin.options.manageCates%>'>
+            <%}%>
+                <div id="app"></div>
+</body>
+
+</html>

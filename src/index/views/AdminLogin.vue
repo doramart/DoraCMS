@@ -1,0 +1,151 @@
+<template>
+  <div class="dr-admin-login">
+    <div class="admin-login-form">
+      <el-row :gutter="10">
+        <el-col :xs="2" :sm="6" :md="8" :lg="8">
+          <div class="grid-content bg-purple">&nbsp;</div>
+        </el-col>
+        <el-col :xs="20" :sm="12" :md="8" :lg="8">
+          <el-form :model="adminLoginFormData" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm login-container">
+            <h3 class="pannel-title">
+              <span>管理员登录</span>
+            </h3>
+            <el-form-item label="用户名" prop="userName">
+              <el-input size="small" v-model="adminLoginFormData.userName"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input size="small" type="password" v-model="adminLoginFormData.password"></el-input>
+            </el-form-item>
+            <el-form-item class="submit-btn">
+              <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :xs="2" :sm="6" :md="8" :lg="8">
+          <div class="grid-content bg-purple">&nbsp;</div>
+        </el-col>
+      </el-row>
+    </div>
+  </div>
+</template>
+<script>
+import api from '~api'
+const validatorUtil = require('../../../utils/validatorUtil.js')
+import {
+  mapGetters,
+  mapActions
+} from 'vuex';
+export default {
+  name: 'adminLogin',
+  metaInfo() {
+    return {
+      title: '管理员登录'
+    }
+  },
+  data() {
+    return {
+      rules: {
+        userName: [{
+          required: true,
+          message: '请输入用户名',
+          trigger: 'blur'
+        }, {
+          validator: (rule, value, callback) => {
+            if (!validatorUtil.checkUserName(value)) {
+              callback(new Error('5-12个英文字符!'));
+            } else {
+              callback();
+            }
+          },
+          trigger: 'blur'
+        }],
+        password: [{
+          required: true,
+          message: '请输入密码',
+          trigger: 'blur'
+        }, {
+          validator: (rule, value, callback) => {
+            if (!validatorUtil.checkPwd(value)) {
+              callback(new Error('6-12位，只能包含字母、数字和下划线!'));
+            } else {
+              callback();
+            }
+          },
+          trigger: 'blur'
+        }]
+      }
+
+    }
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let params = this.adminLoginFormData;
+          api.post('admin/doLogin', params).then((result) => {
+            if (result.data.state == 'success') {
+              window.location = '/manage';
+            } else {
+              this.$message({
+                message: result.data.message,
+                type: 'error'
+              });
+            }
+          }).catch((err) => {
+            this.$message.error(err.response.data.error)
+          })
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    }
+  },
+  beforeMount() {
+    // this.$store.dispatch('simplePage');
+  },
+  mounted() {
+  },
+  computed: {
+    ...mapGetters({
+      adminLoginFormData: 'frontend/adminUser/loginForm'
+    })
+  }
+}
+</script>
+
+<style lang="scss">
+.admin-login-form {
+
+  margin: 0 auto;
+  margin-top: 100px;
+  margin-bottom: 100px;
+
+  .submit-btn {
+    text-align: left;
+  }
+
+  .login-container {
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    background-clip: padding-box; // margin: 180px auto;
+    padding: 25px 35px 10px 35px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+    .title {
+      margin: 0px auto 40px auto;
+      text-align: center;
+      color: #505458;
+    }
+    .remember {
+      margin: 0px 0px 35px 0px;
+    }
+  }
+}
+</style>
