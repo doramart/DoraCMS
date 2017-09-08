@@ -120,7 +120,7 @@ class AdminUser {
                     if (!user.enable) {
                         res.send({
                             state: 'error',
-                            err: "该用户已被限制登录，请稍后重试"
+                            message: "该用户已被限制登录，请稍后重试"
                         });
                     }
                     req.session.adminPower = user.group.power;
@@ -145,7 +145,7 @@ class AdminUser {
                     logUtil.error(err, req);
                     res.send({
                         state: 'error',
-                        err: "用户名或密码错误"
+                        message: "用户名或密码错误"
                     });
                 }
 
