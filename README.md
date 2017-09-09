@@ -1,6 +1,6 @@
 # doracms 2.0.0
 
-
+![DoraCMS](http://git.oschina.net/uploads/images/2015/0930/174726_d78c4a23_352304.jpeg "DoraCMS")
 
 ## 说明
 
@@ -16,6 +16,8 @@ DoraCMS 使用的技术栈：
 
 演示地址： [前端开发俱乐部](https://www.html-js.cn)   
 后台登录： https://www.html-js.cn/dr-admin     测试账号：doracms/123456
+
+部署文档： [前端内容管理框架 DoraCMS2.0 部署介绍](https://www.html-js.cn/details/ryn2kSWqZ.html)   
 
 ## 目录结构
 
