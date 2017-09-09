@@ -1,6 +1,8 @@
 const BaseComponent = require('../prototype/baseComponent');
 const AdminUserModel = require("../models").AdminUser;
 const SystemOptionLogModel = require("../models").SystemOptionLog;
+const UserNotifyModel = require("../models").UserNotify;
+const MessageModel = require("../models").Message;
 const formidable = require('formidable');
 const shortid = require('shortid');
 const validator = require('validator')
@@ -46,6 +48,26 @@ class AdminUser {
     constructor() {
         // super()
     }
+
+    async getUserSession(req, res, next){
+        try {
+            let noticeCounts = await UserNotifyModel.count({ 'systemUser': req.session.adminUserInfo._id, 'isRead': false });        
+            res.send({
+                state: 'success',
+                noticeCounts,
+                loginState: req.session.adminlogined,
+                userInfo: req.session.adminUserInfo
+            });
+        } catch (err) {
+            logUtil.error(err, req);
+            res.send({
+                state: 'error',
+                type: 'ERROR_DATA',
+                message: '获取session失败' + err
+            })
+        }
+    }
+
     async getAdminUsers(req, res, next) {
         try {
             let current = req.query.current || 1;
@@ -281,7 +303,7 @@ class AdminUser {
             res.send({
                 state: 'error',
                 type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
+                message: '删除数据失败:' + err,
             })
         }
     }

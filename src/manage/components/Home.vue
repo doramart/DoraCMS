@@ -14,7 +14,7 @@
                     <span class="el-dropdown-link userinfo-inner">
                         <img :src="loginState.userInfo.logo" /> {{loginState.userInfo.userName}}</span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="sysMessage">我的消息</el-dropdown-item>
+                        <el-dropdown-item @click.native="sysMessage">我的消息<el-badge v-show="loginState.noticeCounts > 0" class="mark" :value="loginState.noticeCounts" /></el-dropdown-item>
                         <el-dropdown-item @click.native="sysSettings">设置</el-dropdown-item>
                         <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>

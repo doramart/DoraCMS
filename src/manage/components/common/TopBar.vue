@@ -264,6 +264,8 @@ export default {
             services.setNoticeRead({ ids }).then((result) => {
                 if (result.data.state === 'success') {
                     this.$store.dispatch('getSystemNotifyList');
+                    let oldNoticeCounts = this.$store.getters.loginState.noticeCounts
+                    this.$store.dispatch('loginState', { noticeCounts :  oldNoticeCounts - this.ids.length })
                 } else {
                     this.$message.error(result.data.message);
                 }

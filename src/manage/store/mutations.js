@@ -10,7 +10,8 @@ const state = {
             email: '',
             logo: '',
             group: []
-        }
+        },
+        noticeCounts: 0
     },
     adminUser: {
         formState: {
@@ -273,7 +274,8 @@ const mutations = {
             state: false
         }, {
                 userInfo: params.userInfo,
-                state: params.loginState || false
+                state: params.loginState || false,
+                noticeCounts: params.noticeCounts
             });
     },
     [types.ADMINUSERFORMSTATE](state, formState) {
