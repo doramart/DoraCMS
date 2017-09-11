@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>自定义滚动条</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <script src="js/jquery-1.11.1.js"></script>
+    <script src="js/scroll.js"></script>
+    <script>
+        $(function(){
+
+            var jsonData1 = {
+                container : $('#panel1'),
+                contentBox : $('#panelBody1'),
+                color: '#ddd'
+
+            };
+
+            var jsonData2 = {
+                container : $('#panel2'),
+                contentBox : $('#panelBody2'),
+                color : '#337ab7',
+                width : '5px',
+                position : 'left'
+
+            };
+
+            var jsonData3 = {
+                container : $('#panel3'),
+                contentBox : $('#panelBody3'),
+                color : '#faebcc',
+                width : '8px'
+
+            };
+
+            var jsonData4 = {
+                container : $('#panel4'),
+                contentBox : $('#panelBody4'),
+                color : '#ebccd1'
+
+            };
+
+            var jsonData5 = {
+                container : $(document),
+                contentBox : $('#mainContent'),
+                color : '#ebccd1'
+
+            };
+
+            var p1 = new doraScroll(jsonData1);
+            var p2 = new doraScroll(jsonData2);
+            var p3 = new doraScroll(jsonData3);
+            var p4 = new doraScroll(jsonData4);
+
+            $('#addContent').click(function(){
+                $('#panelBody1').append("<p>This is a test</p>");
+                // 滚动条长度重置
+                p1.reSetScrollBar();
+
+            })
+
+
+        })
+    </script>
+</head>
+<body>
+<br/><br/>
+<p class="text-center"><button type="button" class="btn btn-primary" id="addContent">增加第一个面板内容</button></p>
+
+<div id="mainContent">
+
+    <div style="width: 400px;margin: 0 auto;">
+        <div class="panel panel-default" style="height:240px;" id="panel1">
+            <div class="panel-body" id="panelBody1">
+
+                <p>Basic panel example 1</p>
+
+                <p>Basic panel example 2</p>
+
+                <p>Basic panel example 3</p>
+
+                <p>Basic panel example 4</p>
+
+                <p>Basic panel example 5</p>
+
+                <p>Basic panel example 6</p>
+
+                <p>Basic panel example 7</p>
+
+                <p>Basic panel example 8</p>
+
+                <p>Basic panel example 9</p>
+
+                <p>Basic panel example 10</p>
+
+                <p>Basic panel example 11</p>
+
+                <p>Basic panel example 12</p>
+
+                <p>Basic panel example 13</p>
+
+                <p>Basic panel example 14</p>
+
+                <p>Basic panel example 15</p>
+
+                <p>Basic panel example 16</p>
+
+                <p>Basic panel example 17</p>
+
+                <p>Basic panel example 18</p>
+
+                <p>Basic panel example 19</p>
+
+                <p>Basic panel example 20</p>
+
+                <p>Basic panel example 21</p>
+
+                <p>Basic panel example 22</p>
+
+                <p>Basic panel example 23</p>
+
+                <p>Basic panel example 24</p>
+
+                <p>Basic panel example 25</p>
+
+                <p>Basic panel example 26</p>
+
+                <p>Basic panel example 27</p>
+
+                <p>Basic panel example 28</p>
+
+                <p>Basic panel example 29</p>
+
+                <p>Basic panel example 30</p>
+
+                <p>Basic panel example 31</p>
+
+                <p>Basic panel example 32</p>
+
+                <p>Basic panel example 33</p>
+
+                <p>Basic panel example 34</p>
+
+                <p>Basic panel example 35</p>
+
+                <p>Basic panel example 36</p>
+
+                <p>Basic panel example 37</p>
+
+                <p>Basic panel example 38</p>
+
+                <p>Basic panel example 39</p>
+
+                <p>Basic panel example 40</p>
+
+                <p>Basic panel example 41</p>
+
+                <p>Basic panel example 42</p>
+
+                <p>Basic panel example 43</p>
+
+                <p>Basic panel example 44</p>
+
+                <p>Basic panel example 45</p>
+
+                <p>Basic panel example 46</p>
+
+                <p>Basic panel example 47</p>
+
+                <p>Basic panel example 48</p>
+
+                <p>Basic panel example 49</p>
+
+                <p>Basic panel example 50</p>
+
+            </div>
+        </div>
+    </div>
+
+    <br/>
+    <br/>
+    <div style="width: 400px;margin: 0 auto;">
+        <div class="panel panel-primary" style="height:240px;" id="panel2">
+            <div class="panel-body" id="panelBody2">
+                <p>Basic panel example 1</p>
+
+                <p>Basic panel example 2</p>
+
+                <p>Basic panel example 3</p>
+
+                <p>Basic panel example 4</p>
+
+                <p>Basic panel example 5</p>
+
+                <p>Basic panel example 6</p>
+
+                <p>Basic panel example 7</p>
+
+                <p>Basic panel example 8</p>
+
+                <p>Basic panel example 9</p>
+
+                <p>Basic panel example 10</p>
+
+                <p>Basic panel example 11</p>
+
+                <p>Basic panel example 12</p>
+
+                <p>Basic panel example 13</p>
+
+                <p>Basic panel example 14</p>
+
+                <p>Basic panel example 15</p>
+
+                <p>Basic panel example 16</p>
+
+                <p>Basic panel example 17</p>
+
+                <p>Basic panel example 18</p>
+
+                <p>Basic panel example 19</p>
+
+                <p>Basic panel example 20</p>
+
+                <p>Basic panel example 21</p>
+
+                <p>Basic panel example 22</p>
+
+                <p>Basic panel example 23</p>
+
+                <p>Basic panel example 24</p>
+
+                <p>Basic panel example 25</p>
+
+                <p>Basic panel example 26</p>
+
+                <p>Basic panel example 27</p>
+
+                <p>Basic panel example 28</p>
+
+                <p>Basic panel example 29</p>
+
+                <p>Basic panel example 30</p>
+
+                <p>Basic panel example 31</p>
+
+                <p>Basic panel example 32</p>
+
+                <p>Basic panel example 33</p>
+
+                <p>Basic panel example 34</p>
+
+                <p>Basic panel example 35</p>
+
+                <p>Basic panel example 36</p>
+
+                <p>Basic panel example 37</p>
+
+                <p>Basic panel example 38</p>
+
+                <p>Basic panel example 39</p>
+
+                <p>Basic panel example 40</p>
+            </div>
+        </div>
+    </div>
+    <br/><br/>
+    <div style="width: 400px;margin: 0 auto;">
+        <div class="panel panel-warning" style="height:240px;" id="panel3">
+            <div class="panel-body" id="panelBody3">
+                <p>Basic panel example 1</p>
+
+                <p>Basic panel example 2</p>
+
+                <p>Basic panel example 3</p>
+
+                <p>Basic panel example 4</p>
+
+                <p>Basic panel example 5</p>
+
+                <p>Basic panel example 6</p>
+
+                <p>Basic panel example 7</p>
+
+                <p>Basic panel example 8</p>
+
+                <p>Basic panel example 9</p>
+
+                <p>Basic panel example 10</p>
+
+                <p>Basic panel example 11</p>
+
+                <p>Basic panel example 12</p>
+
+                <p>Basic panel example 13</p>
+
+                <p>Basic panel example 14</p>
+
+                <p>Basic panel example 15</p>
+
+                <p>Basic panel example 16</p>
+
+                <p>Basic panel example 17</p>
+
+                <p>Basic panel example 18</p>
+
+                <p>Basic panel example 19</p>
+
+                <p>Basic panel example 20</p>
+
+                <p>Basic panel example 21</p>
+
+                <p>Basic panel example 22</p>
+
+                <p>Basic panel example 23</p>
+
+                <p>Basic panel example 24</p>
+
+                <p>Basic panel example 25</p>
+
+                <p>Basic panel example 26</p>
+
+                <p>Basic panel example 27</p>
+
+                <p>Basic panel example 28</p>
+
+                <p>Basic panel example 29</p>
+
+                <p>Basic panel example 30</p>
+
+                <p>Basic panel example 31</p>
+
+                <p>Basic panel example 32</p>
+
+                <p>Basic panel example 33</p>
+
+                <p>Basic panel example 34</p>
+
+                <p>Basic panel example 35</p>
+
+                <p>Basic panel example 36</p>
+
+                <p>Basic panel example 37</p>
+
+                <p>Basic panel example 38</p>
+
+                <p>Basic panel example 39</p>
+
+                <p>Basic panel example 40</p>
+            </div>
+        </div>
+    </div>
+
+    <br/><br/>
+    <div style="width: 400px;margin: 0 auto;">
+        <div class="panel panel-danger" style="height:240px;" id="panel4">
+            <div class="panel-body" id="panelBody4">
+                <p>Basic panel example 1</p>
+
+                <p>Basic panel example 2</p>
+
+                <p>Basic panel example 3</p>
+
+                <p>Basic panel example 4</p>
+
+                <p>Basic panel example 5</p>
+
+                <p>Basic panel example 6</p>
+
+                <p>Basic panel example 7</p>
+
+                <p>Basic panel example 8</p>
+
+                <p>Basic panel example 9</p>
+
+                <p>Basic panel example 10</p>
+
+                <p>Basic panel example 11</p>
+
+                <p>Basic panel example 12</p>
+
+                <p>Basic panel example 13</p>
+
+                <p>Basic panel example 14</p>
+
+                <p>Basic panel example 15</p>
+
+                <p>Basic panel example 16</p>
+
+                <p>Basic panel example 17</p>
+
+                <p>Basic panel example 18</p>
+
+                <p>Basic panel example 19</p>
+
+                <p>Basic panel example 20</p>
+
+                <p>Basic panel example 21</p>
+
+                <p>Basic panel example 22</p>
+
+                <p>Basic panel example 23</p>
+
+                <p>Basic panel example 24</p>
+
+                <p>Basic panel example 25</p>
+
+                <p>Basic panel example 26</p>
+
+                <p>Basic panel example 27</p>
+
+                <p>Basic panel example 28</p>
+
+                <p>Basic panel example 29</p>
+
+                <p>Basic panel example 30</p>
+
+                <p>Basic panel example 31</p>
+
+                <p>Basic panel example 32</p>
+
+                <p>Basic panel example 33</p>
+
+                <p>Basic panel example 34</p>
+
+                <p>Basic panel example 35</p>
+
+                <p>Basic panel example 36</p>
+
+                <p>Basic panel example 37</p>
+
+                <p>Basic panel example 38</p>
+
+                <p>Basic panel example 39</p>
+
+                <p>Basic panel example 40</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

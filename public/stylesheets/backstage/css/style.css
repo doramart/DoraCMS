@@ -1,0 +1,100 @@
+
+.myInfoBox {
+    padding: 15px;
+}
+
+.sysSurvey dt {
+    font-weight: normal;
+}
+
+.thumbnailView .list-group-item {
+    border: none;
+    width: 105px;
+    height: 130px;
+    float: left;
+}
+
+.thumbnailView .list-group-item .fileImg {
+    width: 80px;
+    margin: 0 auto;
+    font-size: 60px;
+    color: #F5DA9A;
+    cursor: pointer;
+}
+
+.thumbnailView .list-group-item .fileImg img {
+    width: 80px;
+    height: 80px;
+}
+
+.thumbnailView .list-group-item .fileName {
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/*注册用户列表*/
+.users-list > li {
+    width: 9%;
+}
+
+.users-list > li > img {
+    max-width: 75%;
+}
+
+.main-statistics li {
+    list-style-type: none;
+}
+
+.datalist.noRead {
+    font-weight: 700;
+    color: #000;
+}
+
+/*进度条*/
+.system-progress {
+    background: #fff;
+    border-radius: 5px;
+    height: 14px;
+    margin: 0 auto;
+    padding: 2px 3px;
+    width: 300px;
+}
+
+.modal-msg {
+    font-size: 14px;
+}
+
+.uploadify-btn-default {
+    background: #fff;
+    border: 1px solid #ccc;
+    color: #333;
+    font-weight: normal;
+    text-shadow: none;
+}
+
+.uploadify:hover .uploadify-btn-default {
+    background: #e6e6e6;
+    border: 1px solid #adadad;
+}
+
+.uploadify-btn-primary {
+    background: #337ab7;
+    border-color: #2e6da4;
+    color: #fff;
+    font-weight: normal;
+    text-shadow: none;
+}
+
+.uploadify:hover .uploadify-btn-primary {
+    background: #286090;
+    border: 1px solid #2e6da4;
+}
+
+.uploadzip {
+    position: absolute;
+    left: 142px;
+    top: 0
+}

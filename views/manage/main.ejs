@@ -1,0 +1,113 @@
+﻿<div class="row" ng-controller="mainPanel">
+    <% include public/modal %>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h5 class="box-title">概况</h5>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                        <ul class="row text-info main-statistics">
+                            <div class="col-md-6">
+                                <li><i class="fa fa-fw fa-user"></i> 管理员 <span ng-bind="mainData.adminUserCount"></span></li>
+                                <li><i class="fa fa-fw fa-users"></i> 用户 <span ng-bind="mainData.regUsersCount"></span></li>
+                                <li><i class="fa fa-fw fa-file-text-o"></i> 文档 <span ng-bind="mainData.contentsCount"></span></li>
+                                <li><i class="fa fa-fw fa-comments-o"></i> 留言 <span ng-bind="mainData.msgCount"></span></li>
+                            </div>
+                            <div class="col-md-6">
+                                <!--<li><i class="fa fa-fw fa-comments-o"></i> 留言 {{mainData.msgCount}}</li>-->
+                            </div>
+                        </ul>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div><!-- ./col -->
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <!--<i class="fa fa-location-arrow"></i>-->
+                        <h5 class="box-title">快捷操作</h5>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                        <a class="btn btn-app" href="/admin/manage/adminUsersList">
+                            <i class="fa fa-user"></i> 添加管理员
+                        </a>
+                        <a class="btn btn-app" href="/admin/manage/content/add/content">
+                            <i class="fa fa-file-text-o"></i> 创建新文档
+                        </a>
+                        <a class="btn btn-app" href="/admin/manage/content/add/plug">
+                            <i class="fa fa-github"></i> 添加Jquery插件
+                        </a>
+                        <a class="btn btn-app" href="/admin/manage/dataManage/m/backUpData">
+                            <i class="fa fa-cloud"></i> 数据备份
+                        </a>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div><!-- ./col -->
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h5 class="box-title">近期评论</h5>
+                    </div><!-- /.box-header -->
+                    <div class="box-body chat" id="chat-box">
+                        <div class="direct-chat-messages" style="height: auto;max-height: 500px;">
+                            <div class="direct-chat-msg" ng-repeat="msg in mainData.msgList">
+                                <div ng-switch on="msg.utype">
+                                    <span ng-switch-when="0">
+                                        <div class="direct-chat-info clearfix" >
+                                            <span class="direct-chat-name pull-left">
+                                                 <a href="#">{{msg.author.userName}}</a>
+                                                在 《<a href="/details/{{msg.contentId}}.html" target="_blank" ng-bind="msg.contentTitle"></a>》 中说
+                                            </span>
+                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> <span ng-bind="msg.date | date : 'yyyy-MM-dd HH:mm:ss'"></span></span>
+                                        </div><!-- /.direct-chat-info -->
+                                        <img alt="message user image" ng-src="{{msg.author.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text" ng-bind="msg.content"></div><!-- /.direct-chat-text -->
+                                    </span>
+                                    <span ng-switch-when="1">
+                                        <div class="direct-chat-info clearfix" >
+                                            <span class="direct-chat-name pull-left">
+                                                 <a href="#">{{msg.adminAuthor.userName}}</a>
+                                                在 《<a href="/details/{{msg.contentId}}.html" target="_blank" ng-bind="msg.contentTitle"></a>》 中回复 <a href="#" ng-bind="msg.replyAuthor.userName"></a>
+                                            </span>
+                                            <span class="direct-chat-timestamp pull-right"><i class="fa fa-clock-o"></i> <span ng-bind="msg.date | date : 'yyyy-MM-dd HH:mm:ss'"></span></span>
+                                        </div><!-- /.direct-chat-info -->
+                                        <img alt="message user image" ng-src="{{msg.adminAuthor.logo}}" class="direct-chat-img"><!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text" ng-bind="msg.content"></div><!-- /.direct-chat-text -->
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.chat -->
+
+                </div><!-- /.box -->
+            </div><!-- ./col -->
+            <div class='col-md-6'>
+                <!-- USERS LIST -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h5 class="box-title">新注册用户</h5>
+                        <div class="box-tools pull-right">
+                            <span class="label label-danger">注册用户 <span ng-bind="mainData.regUsersCount"></span></span>
+                        </div>
+                    </div><!-- /.box-header -->
+                    <div class="box-body no-padding">
+                        <ul class="users-list clearfix">
+                            <li ng-repeat="user in mainData.regUsers">
+                                <img ng-src="{{user.logo}}" alt="User Image"/>
+                                <a class="users-list-name" href="#" title="{{user.userName}}" ng-bind="user.userName"></a>
+                            </li>
+                        </ul><!-- /.users-list -->
+                    </div><!-- /.box-body -->
+                    <div class="box-footer text-center">
+                        <a href="/admin/manage/regUsersList" class="uppercase">View All Users</a>
+                    </div><!-- /.box-footer -->
+                </div><!--/.box -->
+            </div><!-- /.col -->
+        </div>
+    </div>
+</div>

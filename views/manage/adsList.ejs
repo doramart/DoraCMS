@@ -1,0 +1,66 @@
+<div class="row" ng-controller="adsList">
+	<% include public/modal %>
+    <div class="col-xs-12">
+        <div class="myInfoBox bg-warning text-warning">
+            <xmp style="margin: 0">广告调用方式：new initSlides({adsId : key,containerId : 'exampleId'})</xmp>
+        </div>
+        <br/>
+        <div class="panel">
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" type="button"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>添加广告</button>
+                <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">请选择广告形式</span>
+                </button>
+                <ul role="menu" class="dropdown-menu">
+                    <li><a href="/admin/manage/ads/addTxt">文本广告</a></li>
+                    <li><a href="/admin/manage/ads/addImg">图片广告</a></li>
+                </ul>
+            </div>
+            <!--<a href="/admin/manage/ads/add" role="button" class="btn btn-primary btn-sm"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>添加广告</a>-->
+
+            <div class="pull-right">
+                <% include public/searchBox %>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover">
+                    <tr>
+                        <th><input type="checkbox" class="mini" id="selectAll"/></th>
+                        <th>广告名称</th>
+                        <th>显示</th>
+                        <th>展示方式</th>
+                        <th>key</th>
+                        <th>更新时间</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr class="datalist" ng-repeat="content in data">
+                        <td><input type="checkbox" name="listItem" class="mini" value="{{content._id}}" ng-click="getNewIds()"/></td>
+                        <td>{{content.name}}</td>
+                        <td ng-switch on="content.state">
+                            <span ng-switch-when="1"><a href="" class="label label-success">true</a></span>
+                            <span ng-switch-when="2"><a href="" class="label label-danger">false</a></span>
+                        </td>
+                        <td ng-switch on="content.type">
+                            <span ng-switch-when="0">文字</span>
+                            <span ng-switch-when="1">图片</span>
+                            <span ng-switch-when="2">友情链接</span>
+                        </td>
+                        <td>{{content._id}}</td>
+                        <td>{{content.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td>
+                            <a ng-show="content.type == '1'" href="/admin/manage/ads/addImgAds/{{content._id}}" role="button"  title="编辑" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>
+                            <a ng-show="content.type != '1'" href="/admin/manage/ads/edit/{{content._id}}" role="button"  title="编辑" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>
+                            <button class="btn btn-default btn-xs" type="button" title="删除" ng-click="delOneItem(content._id)"><i class="fa fa-trash-o"></i></button>
+                        </td>
+                    </tr>
+                </table>
+            </div><!-- /.box-body -->
+            <% include public/tableFooter %>
+        </div><!-- /.box -->
+    </div>
+
+
+</div>
+

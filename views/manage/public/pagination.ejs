@@ -1,0 +1,17 @@
+<!--分页模块-->
+<div class="row">
+    <div class="col-xs-6">
+        <div class="dataTables_info" id="example2_info">每页 <select ng-model="limitNum" ng-options="x.name as x.value for x in selectPage" ng-change="changeOption()"></select> 条，共 {{totalItems}} 条记录</div>
+    </div>
+    <div class="col-xs-6">
+        <div class="dataTables_paginate paging_bootstrap">
+            <ul class="pagination pagination-sm ">
+                <li ng-class="{true:'disabled'}[currentPage==1]"><a href="javascript:void(0);" ng-click="firstPage()"><i class="fa fa-angle-double-left"></i></a></li>
+                <li ng-class="{true:'disabled'}[currentPage==1]"><a href="javascript:void(0);" ng-click="prevPage()"><i class="fa fa-angle-left"></i></a></li>
+                <li ng-repeat="page in pages" ng-class="{true:'active'}[currentPage==page]"><a href="javascript:void(0);" ng-click="loadPage(page)">{{ page }}</a></li>
+                <li ng-class="{true:'disabled'}[currentPage==totalPage]"><a href="javascript:void(0);" ng-click="nextPage()"><i class="fa fa-angle-right"></i></a></li>
+                <li ng-class="{true:'disabled'}[currentPage==totalPage]"><a href="javascript:void(0);" ng-click="lastPage()"><i class="fa fa-angle-double-right"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>

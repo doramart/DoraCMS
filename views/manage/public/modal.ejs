@@ -1,0 +1,37 @@
+
+<!--信息提示模态窗口-->
+<div class="modal fade bs-example-modal-sm" id="askifdo">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title">{{warningInfo.title}}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-warning"><i class="icon fa fa-warning"></i>&nbsp;{{warningInfo.message}}</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">取消</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--提示确认模态窗口-->
+<div class="modal fade bs-example-modal-sm" id="checkIfDo">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title">提示</h5>
+            </div>
+            <div class="modal-body">
+                <h4><i class="icon fa fa-warning"></i>&nbsp;<span class="modal-msg"></span></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-xs" ng-click="confirmDo(targetID)">确认</button>
+                <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">取消</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

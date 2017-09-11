@@ -1,0 +1,38 @@
+<div class="row" ng-controller="systemLogs">
+	<% include public/modal %>
+    <div class="col-xs-12">
+        <div class="panel">
+            <% include public/tableTool %>
+        </div>
+        <div class="box">
+            <div class="box-body table-responsive no-padding" >
+                <table class="table table-hover">
+                    <tr>
+                        <th><input type="checkbox" class="mini" id="selectAll"/></th>
+                        <th>行为</th>
+                        <th>类别</th>
+                        <th>发生时间</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr class="datalist" ng-repeat="opt in data">
+                        <td><input type="checkbox" name="listItem" class="mini" value="{{opt._id}}" ng-click="getNewIds()"/></td>
+                        <td>{{opt.logs}}</td>
+                        <td ng-switch on="opt.type">
+                            <span ng-switch-when="login">系统登录</span>
+                        </td>
+                        <td class=" ">{{opt.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td class=" ">
+                            <button class="btn btn-default btn-xs" ng-click="delOneItem(opt._id)"><span class="fa fa-fw fa-trash-o" aria-hidden="true"></span>删除</button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div><!-- /.box-body -->
+            <% include public/tableFooter %>
+        </div><!-- /.box -->
+
+    </div><!-- /.col -->
+
+</div>
+
+

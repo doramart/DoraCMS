@@ -1,0 +1,82 @@
+<div class="row" ng-controller="contentTags">
+<% include public/modal %>
+<div class="col-xs-12">
+    <div class="panel">
+        <a href="#addContentTags" role="button" class="btn btn-primary btn-sm" data-toggle="modal"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>增加一个新标签</a>
+        <% include public/tableTool %>
+        <div class="pull-right">
+            <% include public/searchBox %>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-body table-responsive no-padding" >
+            <table class="table table-hover">
+                <tr>
+                    <th><input type="checkbox" class="mini" id="selectAll"/></th>
+                    <th>标签名称</th>
+                    <th>别名</th>
+                    <th>备注</th>
+                    <th>管理</th>
+                </tr>
+                <tr class="datalist" ng-repeat="tag in data">
+                    <td><input type="checkbox" name="listItem" class="mini" value="{{tag._id}}" ng-click="getNewIds()"/></td>
+                    <td class="  sorting_1">{{tag.name}}</td>
+                    <td class=" ">{{tag.alias}}</td>
+                    <td class=" ">{{tag.comments}}</td>
+                    <td class=" ">
+                        <button class="btn btn-primary btn-xs" data-whatever="{{tag._id}}" data-toggle="modal" data-target="#addContentTags"><span class="fa fa-fw fa-edit" aria-hidden="true"></span>编辑</button>&nbsp;
+                        <button class="btn btn-default btn-xs" ng-click="delOneItem(tag._id)"><span class="fa fa-fw fa-trash-o" aria-hidden="true"></span>删除</button>
+                    </td>
+                </tr>
+            </table>
+
+        </div><!-- /.box-body -->
+        <% include public/tableFooter %>
+    </div><!-- /.box -->
+
+</div><!-- /.col -->
+
+<!--添加用户组模态窗口-->
+<div class="modal fade" id="addContentTags">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加文章标签</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">标签名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="name" ng-model="formData.name" ng-minlength="1" ng-maxlength="12" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 1-12个非特殊字符</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">别名</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="alias" ng-model="formData.alias" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{2,11}$/" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.alias.$invalid && !myForm.alias.$pristine"><i class="fa fa-times-circle-o"></i> 2-12个英文字符</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-4">标签备注</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" name="comments" ng-model="formData.comments" ng-minlength="1" ng-maxlength="30" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i> 备注不能为空</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                    </div>
+                </form>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+ </div><!-- /.row -->
+
+</div>
+

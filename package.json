@@ -1,0 +1,39 @@
+{
+  "name": "doracms",
+  "version": "1.1.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "archiver": "^0.14.4",
+    "body-parser": "~1.12.0",
+    "compression": "^1.4.4",
+    "connect-redis": "^2.5.0",
+    "cookie-parser": "~1.3.4",
+    "debug": "~2.1.1",
+    "ejs": "~2.3.1",
+    "express": "~4.12.2",
+    "express-partials": "*",
+    "express-promise": "^0.4.0",
+    "express-session": "^1.11.3",
+    "formidable": "^1.0.17",
+    "gm": "^1.18.1",
+    "iconv-lite": "^0.4.13",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.3",
+    "mongoose": "^4.0.1",
+    "morgan": "~1.5.1",
+    "nodemailer": "^1.3.4",
+    "png-word": "0.0.7",
+    "qr-image": "^3.1.0",
+    "redis": "^0.12.1",
+    "request": "^2.67.0",
+    "serve-favicon": "~2.2.0",
+    "shortid": "^2.2.2",
+    "socket.io": "^1.3.7",
+    "ueditor-nodejs": "^0.1.0",
+    "unzip": "^0.1.11",
+    "validator": "^3.37.0"
+  }
+}

@@ -1,0 +1,54 @@
+<div class="row" ng-controller="backUpData">
+	<% include public/modal %>
+    <div class="col-xs-12">
+        <p class="myInfoBox bg-warning text-warning"><i class="icon fa fa-warning"></i> 下载备份数据请联系超级管理员</p>
+        <div class="panel">
+            <a ng-click="backUpData()" role="button" class="btn btn-primary btn-sm"><span class="fa fa-fw fa-cloud" aria-hidden="true">&nbsp;</span>执行数据备份</a>
+        </div>
+        <div class="box">
+            <div class="box-body table-responsive no-padding" >
+                <table class="table table-hover">
+                    <tr>
+                        <th>选择</th>
+                        <th>文件名</th>
+                        <th>行为</th>
+                        <th>备份时间</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr ng-repeat="opt in data">
+                        <td><input type="checkbox" class="mini"/></td>
+                        <td><i class="fa fa-fw fa-table"></i> {{opt.fileName}}</td>
+                        <td class="  sorting_1">{{opt.logs}}</td>
+                        <td class=" ">{{opt.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td class=" ">
+                            <button class="btn btn-default btn-xs" ng-click="delDataItem(opt._id,opt.path)"><span class="fa fa-fw fa-trash-o" aria-hidden="true"></span>删除</button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div><!-- /.box-body -->
+            <% include public/tableFooter %>
+        </div><!-- /.box -->
+
+    </div><!-- /.col -->
+
+    <!--信息提示模态窗口-->
+    <div class="modal fade" id="checkIfBackUp">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">系统提示</h4>
+                </div>
+                <div class="modal-body">
+                    <h4><i class="icon fa fa-warning"></i> 确认执行备份操作？数据库操作请谨慎处理</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" ng-click="confirmBackUp()">执行</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>

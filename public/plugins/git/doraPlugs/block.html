@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>弹窗组件</title>
+    <meta content="width=device-width,user-scalable=no,initial-scale=1" name="viewport">
+    <script src="js/jquery-1.10.2.min.js"></script>
+
+    <link rel="stylesheet" href="css/dora.css"/>
+    <script src="js/dora.js"></script>
+    <script>
+        $(function(){
+            $('#blockMe').click(function(){
+                $.block({
+                    message : $('#blockContent'),
+                    overClass : 'block-a'
+                });
+            });
+
+            $('#yes').click(function(){
+                alert('confirm ok')
+            });
+
+            $('#no').click(function(){
+                $.unblock();
+            })
+
+        })
+    </script>
+</head>
+<body>
+<div id="blockContent" class="block-content" style="display: none;">
+    <h3>弹窗标题</h3>
+    <p>自定义弹窗内容...</p>
+    <div class="block-footer">
+        <button type="button" class="dora-btn btn-default" id="no">取消</button>
+        <button type="button" class="dora-btn btn-primary" id="yes">继续</button>
+    </div>
+</div>
+<button type="button" class="dora-btn btn-default" id="blockMe">打开block窗口</button>
+</body>
+</html>

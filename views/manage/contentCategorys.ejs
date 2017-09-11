@@ -1,0 +1,128 @@
+<div class="row" ng-controller="contentCategorys">
+	<% include public/modal %>
+    <div class="col-xs-12">
+        <div class="panel">
+            <a href="#addContentCategory" role="button" class="btn btn-primary btn-sm" data-toggle="modal"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>增加顶级分类</a>
+        </div>
+        <div class="box">
+            <div class="box-body" >
+                <div class="zTreeDemoBackground left">
+                    <ul id="categoryTree" class="ztree"></ul>
+                </div>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+
+    </div><!-- /.col -->
+    <!--信息提示模态窗口-->
+    <div class="modal fade bs-example-modal-sm" id="checkIfDel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">系统提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="text-danger"><i class="icon fa fa-warning"></i> 确认删除该条记录？</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-xs" ng-click="delCategoryItem()">删除</button>
+                    <button type="button" class="btn btn-default btn-xs" data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!--添加用户组模态窗口-->
+    <div class="modal fade" id="addContentCategory">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">添加文档类别</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">父类别</label>
+                            <div class="col-sm-4">
+                                <p class="form-control-static text-primary">{{formData.parentID}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">类别名称</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" name="name" ng-model="formData.name" ng-minlength="2" ng-maxlength="20" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 2-20个非特殊字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">是否隐藏栏目</label>
+                            <div class="radio col-sm-4">
+                                    <label>
+                                        <input type="radio" class="mini" name="state" value="1" ng-model="formData.state" checked/>显示&nbsp;
+                                    </label>
+                                    <label>
+                                        <input type="radio" class="mini" name="state" value="0" ng-model="formData.state"/>隐藏
+                                    </label>
+
+                            </div>
+                        </div>
+                        <div class="form-group" id="setCateTemp">
+                            <label class="control-label col-sm-4">板块模板</label>
+                            <div class="col-sm-5">
+                                <div class="dropdown">
+                                    <button id="dLabel" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i id="tempsName">请选择内容模板</i>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="tempTree" class="ztree">
+                                        <li role="presentation"><a href="#">test</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="defaultUrl">
+                            <label class="control-label col-sm-4">URL</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="homePage" ng-model="formData.homePage" placeholder="由关键字组成的链接字符串" ng-minlength="2" ng-maxlength="30" ng-pattern="/^\S+[a-z A-Z]$/" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.homePage.$invalid && !myForm.homePage.$pristine"><i class="fa fa-times-circle-o"></i> 2-30个英文字符</label>
+
+                            </div>
+                        </div>
+                        <div class="form-group" id="setCateSort">
+                            <label class="control-label col-sm-4">排序</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" name="sortId" ng-model="formData.sortId" ng-minlength="1" ng-maxlength="2" ng-pattern="/^[0-9]*[1-9][0-9]*$/" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.sortId.$invalid && !myForm.sortId.$pristine"><i class="fa fa-times-circle-o"></i> 请填写1-100以内的整数</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">关键字</label>
+                            <div class="col-sm-6">
+                                <textarea name="keywords" id="" cols="30" class="form-control" rows="4"  ng-model="formData.keywords" ng-minlength="2" ng-maxlength="80" required></textarea>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.keywords.$invalid && !myForm.keywords.$pristine"><i class="fa fa-times-circle-o"></i>80个字以内，多个关键字之间用逗号隔开</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">描述</label>
+                            <div class="col-sm-7">
+                                <textarea name="comments" id="" cols="30" class="form-control" rows="8"  ng-model="formData.comments" ng-minlength="2" ng-maxlength="300" required></textarea>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i> 2-300个非特殊字符</label>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+    </div><!-- /.row -->
+
+</div>
+
+
+</div>
+
+

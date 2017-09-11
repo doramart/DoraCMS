@@ -1,0 +1,118 @@
+﻿<div class="row" ng-controller="regUsersList" >
+	<% include public/modal %>
+    <div class="col-xs-12">
+        <div class="panel">
+            <% include public/tableTool %>
+            <div class="pull-right">
+                <% include public/searchBox %>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body table-responsive no-padding" >
+                <table class="table table-hover">
+                    <tr>
+                        <th><input type="checkbox" class="mini" id="selectAll"/></th>
+                        <th>用户名</th>
+                        <th>用户类型</th>
+                        <th>姓名</th>
+                        <th>联系方式</th>
+                        <th>邮箱</th>
+                        <th>注册时间</th>
+                        <th>操作</th>
+                    </tr>
+
+                    <tr class="datalist" ng-repeat="user in data">
+                        <td><input type="checkbox" name="listItem" class="mini" value="{{user._id}}" ng-click="getNewIds()"/></td>
+                        <td class="  sorting_1">{{user.userName}}</td>
+                        <td ng-switch on="user.group">
+                            <span ng-switch-when="0">普通用户</span>
+                            <span ng-switch-when="1">会员</span>
+                        </td>
+                        <td class=" ">{{user.name}}</td>
+                        <td class=" ">{{user.phoneNum}}</td>
+                        <td class=" ">{{user.email}}</td>
+                        <td class=" ">{{user.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td class=" ">
+                            <button class="btn btn-primary btn-xs" data-whatever="{{user._id}}" data-toggle="modal" data-target="#addNewRegUser"><span class="fa fa-fw fa-edit" aria-hidden="true"></span>编辑</button>&nbsp;
+                            <button class="btn btn-default btn-xs" ng-click="delOneItem(user._id)"><span class="fa fa-fw fa-trash-o" aria-hidden="true"></span>删除</button>
+                        </td>
+                    </tr>
+                </table>
+            </div><!-- /.box-body -->
+            <% include public/tableFooter %>
+        </div><!-- /.box -->
+
+    </div><!-- /.col -->
+    
+    <!--添加新用户模态窗口-->
+    <div class="modal fade" id="addNewRegUser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">修改注册用户信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">用户名</label>
+                            <div class="col-sm-6">
+                                <p class="form-control-static text-primary">{{formData.userName}}</p>
+                                <!--<input type="text" class="form-control" name="userName" ng-minlength="5" ng-maxlength="12" ng-pattern="/^[a-zA-Z][a-zA-Z0-9_]{4,11}$/" ng-model="formData.userName" required/>-->
+                                <!--<label for="inputError" class="control-label text-danger" ng-show="myForm.userName.$invalid && !myForm.userName.$pristine"><i class="fa fa-times-circle-o"></i> 5-12个英文字符</label>-->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">姓名</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="name" ng-minlength="2" ng-maxlength="6" ng-pattern="/[\u4e00-\u9fa5]/" ng-model="formData.name" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i>2-6个中文字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group hide">
+                            <label class="control-label col-sm-4">用户组</label>
+                            <div class="col-sm-6">
+                                <div class="dropdown">
+                                    <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i id="categoryName">请选择用户组</i>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="groupTree" class="ztree">
+                                        <li role="presentation"><a href="#">test</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">电话</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="phoneNum" ng-model="formData.phoneNum" ng-pattern="/^1[3|4|5|8][0-9]\d{4,8}$/" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.phoneNum.$invalid && !myForm.phoneNum.$pristine"><i class="fa fa-times-circle-o"></i>请填写正确的手机号码</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">邮箱</label>
+                            <div class="col-sm-6">
+                                <input type="email" class="form-control" name="email" ng-model="formData.email" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.email.$invalid && !myForm.email.$pristine"><i class="fa fa-times-circle-o"></i>请填写正确的邮箱地址</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">备注</label>
+                            <div class="col-sm-6">
+                                <textarea name="comments" ng-model="formData.comments" ng-minlength="5" id="" cols="30" rows="2" class="form-control" required></textarea>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i>请输入5-30个字符</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                        </div>
+                    </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div><!-- /.row -->
+
+</div>
+

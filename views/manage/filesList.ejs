@@ -1,0 +1,153 @@
+<div class="row" ng-controller="filesList">
+    <% include public/modal %>
+    <div class="col-xs-12">
+        <div class="panel hide">
+            <a href="###" ng-click="newFolder()" role="button" class="btn btn-primary btn-sm"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>新建文件夹</a>
+        </div>
+        <div class="box">
+            <div class="box-header">
+                <div class="col-xs-3 pull-left">
+                    <ul class="list-inline">
+                        <li><a href="###" id="getPrePtah" ng-click="getPrePath()" ><i class="fa fa-fw fa-mail-reply"></i> 返回上一级</a></li>&nbsp;|&nbsp;
+                        <li><a href="###" ng-click="getAllFiles()"><i class="fa fa-fw fa-file-o"></i> 全部文件</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-7 pull-left">当前目录：{{currentPath}}</div>
+                <div class="col-xs-2 pull-right" id="fileViewStyle">
+                    <div class="btn-group pull-right">
+                        <button class="btn" ng-class="{true: 'btn-primary', false: 'btn-default'}[listView]" type="button"  ng-click="listViewShow()" title="列表"><i class="fa fa-fw fa-list"></i></button>
+                        <button class="btn" ng-class="{true: 'btn-default', false: 'btn-primary'}[listView]" type="button" ng-click="thumbnailViewShow()" title="缩略图预览"><i class="fa fa-fw fa-th-large"></i> </button>
+                    </div>
+                </div>
+            </div><!-- /.box-header -->
+
+            <div class="box-body table-responsive no-padding">
+                <div class="listView" ng-class="{true: 'show', false: 'hide'}[listView]">
+                    <table class="table table-hover">
+                        <tr>
+                            <th>文件名</th>
+                            <th>文件大小</th>
+                            <th>修改时间</th>
+                            <th>操作</th>
+                        </tr>
+                        <tr ng-repeat="file in fileData">
+                            <td class="text-primary"><i ng-class="{'fa fa-fw fa-folder': (file.type == 'folder'),
+                            'fa fa-fw fa-file-code-o' : (file.type == 'js'),
+                            'fa fa-fw fa-file-o' : (file.type == 'html'),
+                            'fa fa-fw fa-file-image-o' : (file.type == 'image'),
+                            'fa fa-fw fa-file-movie-o' : (file.type == 'video'),
+                            'fa fa-fw fa-file-text' : (file.type == 'txt'),
+                            'fa fa-fw fa-file-text' : (file.type == 'css'),
+                            'fa fa-fw fa-file-text-o' : (file.type == 'others')
+                            }"></i>&nbsp;
+                                <a href="###" ng-click="getFiles(file.type,file.name,file.path)" ng-bind="file.name"></a>
+                            </td>
+                            <td>{{file.size}}</td>
+                            <td>{{file.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                            <td>
+                                <a href="#" data-whatever="{{file.name}},{{file.path}}"data-toggle="modal" data-target="#modifyFile" title="修改"  class="text-info" ng-show="file.type == 'html' || file.type == 'js' || file.type == 'css'" class="text-info">修改</a>&nbsp;&nbsp;
+                                <a href="#" data-whatever="{{file.name}},{{file.path}}"data-toggle="modal" data-target="#reNameFile" title="重命名" class="text-warning">重命名</a>&nbsp;&nbsp;
+                                <a href="#" ng-click="delFilesItem(file.path)" title="删除" class="text-danger">删除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="thumbnailView" ng-class="{true: 'hide', false: 'show'}[listView]">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="file in fileData">
+                            <div class="fileImg" ng-click="getFiles(file.type,file.name,file.path)">
+                                <a ng-href="/upload{{currentPath}}/{{file.name}}" class="fancybox" data-fancybox-group="gallery" ng-show="file.type == 'image'"><img ng-src="/upload{{currentPath}}/{{file.name}}" alt="{{file.name}}" title="{{file.name}}" /></a>
+                                <i ng-show="file.type != 'image'" ng-class="{'fa fa-fw fa-folder': (file.type == 'folder'),
+                            'fa fa-fw fa-file-code-o' : (file.type == 'js'),
+                            'fa fa-fw fa-fw fa-file-text' : (file.type == 'css'),
+                            'fa fa-fw fa-file-movie-o' :(file.type == 'video'),
+                            'fa fa-fw fa-file-o' : (file.type == 'html'),
+                            'fa fa-fw fa-file-text-o' : (file.type == 'others')
+                            }"></i></div>
+                            <p class="fileName" ng-bind="file.name"></p>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- /.box-body -->
+            <div class="overlay hide" id="dataLoading">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div><!-- /.box -->
+    </div>
+
+    <!--文件重命名模态窗口-->
+    <div class="modal fade" id="reNameFile">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">文件或文件夹重命名</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                        <div class="alert alert-warning">重命名会影响到前台所引用的相关文件，请谨慎操作</div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">原名称</label>
+                            <div class="col-sm-6">
+                                <p class="form-control-static text-primary" ng-bind="formData.oldName"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-4">重命名</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="newName" ng-model="formData.newName" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.newName.$invalid && !myForm.newName.$pristine"><i class="fa fa-times-circle-o"></i>请填写新的文件名称</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                        </div>
+                    </form>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+    </div><!-- /.row -->
+
+    <!--文件修改模态窗口-->
+    <div class="modal fade " id="modifyFile">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">文件修改</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal" name="mdForm" ng-submit="processMdForm(mdForm.$valid)" novalidate>
+                        <div class="alert alert-danger">修改会影响到前台所引用的相关文件，请谨慎操作</div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">文件名称</label>
+                            <div class="col-sm-8">
+                                <p class="form-control-static text-primary">{{mdFormData.name}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">内容</label>
+                            <div class="col-sm-9">
+                                <textarea name="code"  class="form-control" id="" cols="100" rows="20" ng-model="mdFormData.code" required></textarea>
+                                <label for="inputError" class="control-label text-danger" ng-show="mdForm.code.$invalid && !mdForm.code.$pristine"><i class="fa fa-times-circle-o"></i>请正确加入代码，注意格式</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="mdForm.$invalid">提交</button>
+                        </div>
+                    </form>
+
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div><!-- /.row -->
+
+
+</div>
+<script>
+    $(function(){
+        $('.fancybox').fancybox();
+    })
+</script>

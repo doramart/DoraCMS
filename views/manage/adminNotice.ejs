@@ -1,0 +1,46 @@
+<div class="row" ng-controller="contentnotices">
+    <% include public/modal %>
+    <div class="col-xs-12">
+        <div class="panel">
+            <a href="/admin/manage/adminNotice/add" role="button" class="btn btn-primary btn-sm"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>增加新公告</a>
+            <div class="pull-right">
+                <% include public/searchBox %>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body table-responsive no-padding" >
+                <table class="table table-hover">
+                    <tr>
+                        <th><input type="checkbox" class="mini" id="selectAll"/></th>
+                        <th>标题</th>
+                        <th>内容</th>
+                        <th>发布时间</th>
+                        <th>管理</th>
+                    </tr>
+                    <tr class="datalist" ng-repeat="notice in data">
+                        <td><input type="checkbox" name="listItem" class="mini" value="{{notice._id}}" ng-click="getNewIds()"/></td>
+                        <td class=" " >{{notice.title}}</td>
+                        <td class=" " ng-bind-html="notice.content | trustHtml"></td>
+                        <td class=" ">{{notice.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td class=" ">
+                            <a href="/admin/manage/adminNotice/edit/{{notice._id}}" role="button"  title="编辑公告" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i>编辑</a>
+                            <button class="btn btn-default btn-xs" ng-click="delOneItem(notice._id)"><span class="fa fa-fw fa-trash-o" aria-hidden="true"></span>删除</button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div><!-- /.box-body -->
+            <% include public/tableFooter %>
+        </div><!-- /.box -->
+
+    </div><!-- /.col -->
+
+</div>
+
+
+<script>
+    /*targetID:全局对应指定记录的标记，在修改和删除时使用*/
+
+
+
+</script>

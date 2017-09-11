@@ -1,0 +1,64 @@
+<style>
+    .alert-info {
+        background-color: #d9edf7 !important;
+        border-color: #bce8f1 !important;
+        color: #31708f !important;
+    }
+</style>
+<div ng-controller="addTxtAds">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-default">
+                <div class="box-header">
+
+                </div>
+                <div class="box-body">
+                    <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">广告名称</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control input-sm" name="name" ng-minlength="3" ng-maxlength="30" ng-model="formData.name" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 3-30个非特殊字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">显示</label>
+                            <div class="radio col-sm-4">
+                                <label>
+                                    <input type="radio" checked class="mini" value="1" name="state" ng-model="formData.state"/>是&nbsp;
+                                </label>
+                                <label>
+                                    <input type="radio" class="mini" name="state" value="2" ng-model="formData.state"/>否
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">广告类别</label>
+                            <div class="col-sm-2">
+                                <select class="form-control" ng-model="formData.type" ng-options="x.name as x.value for x in selectAdsType" ng-change="adsTypeChange()"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">文字内容</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control input-sm" name="title" ng-minlength="5" ng-maxlength="30"  ng-model="formData.title" />
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.title.$invalid && !myForm.title.$pristine"><i class="fa fa-times-circle-o"></i> 5-30个非特殊字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">文字链接</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control input-sm" name="link" ng-pattern="/[a-zA-z]+://[^\s]*/"  ng-model="formData.link" />
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.link.$invalid && !myForm.link.$pristine"><i class="fa fa-times-circle-o"></i> 5-30个非特殊字符</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="row" ng-controller="contentList">
+	<% include public/modal %>
+    <div class="col-xs-12">
+        <div class="panel">
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" type="button"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>添加文档</button>
+                <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">请选择文档类型</span>
+                </button>
+                <ul role="menu" class="dropdown-menu">
+                    <li><a href="/admin/manage/content/add/content">普通文档</a></li>
+                    <li><a href="/admin/manage/content/add/plug">Jquery插件</a></li>
+                </ul>
+            </div>
+            <% include public/tableTool %>
+            <div class="pull-right">
+                <% include public/searchBox %>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover">
+                    <tr>
+                        <th><input type="checkbox" class="mini" id="selectAll"/></th>
+                        <th>文章标题</th>
+                        <th>创建时间</th>
+                        <th>类目</th>
+                        <th>来源</th>
+                        <th>类型</th>
+                        <th>推荐</th>
+                        <th>点击</th>
+                        <th>评论数</th>
+                        <th>显示</th>
+                        <th>发布人</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr class="datalist" ng-repeat="content in data">
+                        <td><input type="checkbox" name="listItem" class="mini" value="{{content._id}}" ng-click="getNewIds()"/></td>
+
+                        <td ng-switch on="content.type">
+                            <span ng-switch-when="content"><a href="/details/{{content._id}}.html" target="_blank">{{content.title}}</a></span>
+                            <span ng-switch-when="plug"><a href="/details/{{content._id}}.html" target="_blank">{{content.title}}</a></span>
+                            <span ng-switch-default>{{content.title}}</span>
+                        </td>
+                        <td>{{content.date | date : "yyyy-MM-dd HH:mm:ss"}}</td>
+                        <td>{{content.category.name}}</td>
+                        <td ng-switch on="content.from">
+                            <span ng-switch-when="1">原创</span>
+                            <span ng-switch-when="2">转载</span>
+                        </td>
+                        <td ng-switch on="content.type">
+                            <span ng-switch-when="content">文档</span>
+                            <span ng-switch-when="plug">插件</span>
+                            <span ng-switch-when="singer">其它</span>
+                        </td>
+                        <td ng-class="{true:'text-danger'}[content.isTop==1]"><i class="fa fa-fw fa-flag"></i></td>
+                        <td>{{content.clickNum}}</td>
+                        <td>{{content.commentNum}}</td>
+                        <td ng-switch on="content.state">
+                            <span ng-switch-when="true"><a href="" class="label label-success">true</a></span>
+                            <span ng-switch-when="false"><a href="" class="label label-danger">false</a></span>
+                        </td>
+                        <td>{{content.author.name}}</td>
+                        <td>
+                            <a href="/admin/manage/content/edit/{{content.type}}/{{content._id}}" role="button"  title="编辑" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>
+                            <a href="###" role="button"  title="推荐" ng-click="topContent(content._id,1)" class="btn btn-warning btn-xs" ng-show="content.isTop == 0"><i class="fa fa-thumbs-o-up"></i></a>
+                            <a href="###" role="button"  title="取消推荐" ng-click="topContent(content._id,0)" class="btn btn-default btn-xs" ng-show="content.isTop == 1"><i class="fa fa-thumbs-o-down"></i></a>
+                            <button class="btn btn-default btn-xs" type="button" title="删除" ng-click="delOneItem(content._id)"><i class="fa fa-trash-o"></i></button>
+                        </td>
+                    </tr>
+                </table>
+            </div><!-- /.box-body -->
+            <% include public/tableFooter %>
+        </div><!-- /.box -->
+    </div>
+
+
+</div>

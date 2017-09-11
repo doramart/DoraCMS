@@ -1,0 +1,87 @@
+<div class="row" ng-controller="addPlugs">
+    <div class="col-xs-12">
+        <div class="box box-default">
+            <div class="box-header">
+                <div class="alert alert-success alert-dismissable fade in hide" role="alert" id="addSuccess">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <p><i class="icon fa fa-check"></i> <strong>恭喜！</strong>内容添加成功</p>
+                </div>
+                <p class="myInfoBox bg-warning text-warning"><i class="icon fa fa-warning"></i> 信息填写完整无误才可提交</p>
+            </div>
+            <div class="box-body">
+                <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">插件标题</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control input-sm" name="title" ng-minlength="5" ng-maxlength="50" ng-model="formData.title" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.title.$invalid && !myForm.title.$pristine"><i class="fa fa-times-circle-o"></i> 5-50个非特殊字符</label>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">主图</label>
+                        <div class="col-sm-3" id="upContainer">
+                            <input type="file" name="uploadify" id="uploadPlugImg" />
+                            <img src="" alt="" width="120" height="120" class="img-thumbnail" id="myImg">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">插件类别</label>
+                        <div class="col-sm-2">
+                            <div class="dropdown">
+                                <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i id="categoryName">请选择插件类别</i>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" id="cateTree" class="ztree">
+                                    <li role="presentation"><a href="#">test</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">标识</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control input-sm" name="keywords" ng-minlength="2" ng-maxlength="50" ng-model="formData.keywords" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.keywords.$invalid && !myForm.keywords.$pristine"><i class="fa fa-times-circle-o"></i>20个字以内，多个关键字之间用逗号隔开</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">预览地址</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control input-sm" name="previewPath" ng-model="formData.previewPath" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.previewPath.$invalid && !myForm.previewPath.$pristine"><i class="fa fa-times-circle-o"></i> 请填写正确的预览地址</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Git下载链接</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control input-sm" name="downPath" ng-model="formData.downPath" ng-pattern="/[a-zA-z]+://[^\s]*/" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.downPath.$invalid && !myForm.downPath.$pristine"><i class="fa fa-times-circle-o"></i> 请填写正确的Git地址</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">插件摘要</label>
+                        <div class="col-sm-4">
+                            <textarea class="form-control input-sm" name="discription" ng-model="formData.discription" ng-minlength="15" ng-maxlength="140" required id="" cols="30" rows="3"></textarea>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.discription.$invalid && !myForm.discription.$pristine"><i class="fa fa-times-circle-o"></i> 15-140个非特殊字符</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">插件详情</label>
+                        <div class="col-sm-6">
+                            <textarea class="" name="comments" ng-model="formData.comments" id="container" ng-minlength="50" placeholder="请输入文章详情" ueditor>{{formData.comments}}</textarea>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.comments.$invalid && !myForm.comments.$pristine"><i class="fa fa-times-circle-o"></i>内容不得少于50个字</label>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+

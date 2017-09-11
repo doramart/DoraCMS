@@ -1,0 +1,182 @@
+<style>
+    .alert-info {
+        background-color: #d9edf7 !important;
+        border-color: #bce8f1 !important;
+        color: #31708f !important;
+    }
+</style>
+<div ng-controller="addImgAdsInfo">
+    <% include public/modal %>
+    <div class="modal fade" id="addNewAdImg">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">添加图片信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal" name="addImgForm" ng-submit="processImgForm(addImgForm.$valid)" novalidate>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">图片链接</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm" name="link" ng-pattern="/[a-zA-z]+://[^\s]*/" ng-model="itemsFormData.link" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="addImgForm.link.$invalid && !addImgForm.link.$pristine"><i class="fa fa-times-circle-o"></i> 请输入正确的链接地址</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">宽(px)</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control input-sm" name="width" ng-pattern="/^[1-9]\d*$/" ng-model="itemsFormData.width" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="addImgForm.width.$invalid && !addImgForm.width.$pristine"><i class="fa fa-times-circle-o"></i> 请输入正整数</label>
+                            </div>
+                            <label class="control-label col-sm-2">高(px)</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control input-sm" name="height" ng-pattern="/^[1-9]\d*$/" ng-model="itemsFormData.height" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="addImgForm.height.$invalid && !addImgForm.height.$pristine"><i class="fa fa-times-circle-o"></i> 请输入正整数</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">打开方式</label>
+                            <div class="col-sm-3">
+                                <select class="form-control" ng-model="itemsFormData.target" ng-options="x.name as x.value for x in selectTarget" ng-change="changeOption()"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">alt</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control input-sm" name="alt" ng-minlength="5" ng-maxlength="30" ng-model="itemsFormData.alt" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="addImgForm.alt.$invalid && !addImgForm.alt.$pristine"><i class="fa fa-times-circle-o"></i> 5-30个非特殊字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">上传图片</label>
+                            <div class="col-sm-8">
+                                <input type="file" name="uploadify" id="uploadAdsImg" />
+                                <!--<input type="hidden" class="form-control input-sm" name="sImg" id="sImg" ng-minlength="5" ng-model="itemsFormData.sImg" required/>-->
+                                <img src="" alt="" width="120" height="120" class="img-thumbnail" id="myImg">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="addImgForm.$invalid">添加</button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="addMainAds">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">修改图片基础信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal" name="myForm" ng-submit="processMainAds(myForm.$valid)" novalidate>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">广告名称</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control input-sm" name="name" ng-minlength="3" ng-maxlength="30" ng-model="formData.name" required/>
+                                <label for="inputError" class="control-label text-danger" ng-show="myForm.name.$invalid && !myForm.name.$pristine"><i class="fa fa-times-circle-o"></i> 3-30个非特殊字符</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">显示</label>
+                            <div class="radio col-sm-4">
+                                <label>
+                                    <input type="radio" checked class="mini" value="1" name="state" ng-model="formData.state"/>是&nbsp;
+                                </label>
+                                <label>
+                                    <input type="radio" class="mini" name="state" value="2" ng-model="formData.state"/>否
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-default">
+                <div class="box-header">
+
+                </div>
+                <div class="box-body">
+                    <form role="form" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">广告名称</label>
+                        <div class="col-sm-3" style="padding-top: 7px;">
+                            <span ng-switch on="formData.state">
+                                <span ng-switch-when="1"><a href="" class="label label-success">显示</a></span>
+                                <span ng-switch-when="2"><a href="" class="label label-danger">隐藏</a></span>
+                            </span>
+                            <span class="form-control-static text-primary" ng-bind="formData.name"></span>&nbsp;
+                            <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-whatever="{{formData._id}}" data-target="#addMainAds">修改</button>
+                        </div>
+                        <div class="col-sm-5">
+                            <a href="/admin/manage/adsList" class="btn btn-default btn-xs pull-right" type="button" role="button"><i class="fa fa-fw fa-mail-reply"></i> 返回广告列表</a>
+                        </div>
+                    </div>
+                    </form>
+                    <form role="form" class="form-horizontal" name="myForm">
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">广告内容</label>
+                            <div class="col-sm-8">
+                                <!-- Custom Tabs -->
+                                <div class="form-group">
+                                    <div class="col-sm-4">
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addNewAdImg">添加图片</button>
+                                    </div>
+                                </div>
+                                <div class="box box-primary">
+                                    <div class="box-header with-border">
+                                        <h2 class="box-title">图片列表</h2>
+                                    </div><!-- /.box-header -->
+                                    <div class="box-body">
+                                        <p class="text-warning"><i class="fa fa-fw fa-info-circle"></i>点击上传添加广告图片，单张图默认不轮播，多图为轮播显示。最多4张图</p>
+                                        <div id="imgInfolist">
+                                            <div id="imgInfo_60" class="alert alert-info fade in" ng-repeat="ad in itemsList">
+                                                <button class="close" type="button" ng-click="delAdsItem(ad._id)"><span aria-hidden="true">×</span></button>
+
+                                                <div class="col-sm-3">
+                                                    <img class="img-thumbnail" alt="" ng-src="{{ad.sImg}}">
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-4 control-label">图片链接</label>
+                                                        <div class="col-sm-8">
+                                                            <p class="form-control-static">{{ad.link}}({{ad.target}})</p>
+                                                        </div>
+                                                        <label class="col-sm-4 control-label">图片宽高</label>
+                                                        <div class="col-sm-8">
+                                                            <p class="form-control-static">{{ad.width}}*{{ad.height}}</p>
+                                                        </div>
+                                                        <label class="col-sm-4 control-label">图片备注</label>
+                                                        <div class="col-sm-8">
+                                                            <p class="form-control-static" ng-bind="ad.alt"></p>
+                                                        </div>
+                                                        <label class="col-sm-4 control-label">&nbsp;</label>
+                                                        <div class="col-sm-8">
+                                                            <a data-target="#addNewAdImg" data-toggle="modal" data-whatever="{{ad._id}}" class="btn btn-primary btn-xs" role="button">
+                                                                <span aria-hidden="true" class="fa fa-fw fa-edit"></span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div><!-- /.box-body -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

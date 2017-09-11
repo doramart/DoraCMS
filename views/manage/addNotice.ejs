@@ -1,0 +1,40 @@
+<div class="row" ng-controller="addNotice">
+    <div class="col-xs-12">
+        <div class="box box-default">
+            <div class="box-header">
+                <div class="alert alert-success alert-dismissable fade in hide" role="alert" id="addSuccess">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <p><i class="icon fa fa-check"></i> <strong>恭喜！</strong>内容添加成功</p>
+                </div>
+            </div>
+            <div class="box-body">
+                <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">公告标题</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control input-sm" name="title" ng-minlength="5" ng-maxlength="50" ng-model="formData.title" required/>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.title.$invalid && !myForm.title.$pristine"><i class="fa fa-times-circle-o"></i> 5-50个非特殊字符</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">公告内容</label>
+                        <div class="col-sm-6">
+                            <textarea class="" name="content" ng-model="formData.content" ng-minlength="10" placeholder="请输入公告详情" ueditor>{{formData.content}}</textarea>
+                            <label for="inputError" class="control-label text-danger" ng-show="myForm.content.$invalid && !myForm.content.$pristine"><i class="fa fa-times-circle-o"></i>内容不得少于10个字</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+</script>
