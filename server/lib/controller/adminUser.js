@@ -1,5 +1,6 @@
 const BaseComponent = require('../prototype/baseComponent');
 const AdminUserModel = require("../models").AdminUser;
+const MessageModel = require("../models").Message;
 const SystemOptionLogModel = require("../models").SystemOptionLog;
 const UserNotifyModel = require("../models").UserNotify;
 const MessageModel = require("../models").Message;
