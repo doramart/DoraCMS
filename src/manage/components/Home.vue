@@ -24,7 +24,7 @@
         <el-col :span="24" class="main">
             <aside :class="collapsed?'menu-collapsed':'menu-expanded'">
                 <!--导航菜单-->
-                <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router v-show="!collapsed">
+                <el-menu v-if="!collapsed" :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router v-show="!collapsed">
                     <template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
                         <el-submenu :index="index+''" v-if="!item.leaf" :key="index">
                             <template slot="title">
@@ -36,7 +36,7 @@
                     </template>
                 </el-menu>
                 <!--导航菜单-折叠后-->
-                <ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">
+                <ul class="el-menu el-menu-vertical-demo collapsed" v-else ref="menuCollapsed">
                     <li :key="index" v-for="(item,index) in $router.options.routes" v-if="!item.hidden" class="el-submenu item">
                         <template v-if="!item.leaf">
                             <div class="el-submenu__title" style="padding-left: 20px;" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)">
