@@ -1,5 +1,7 @@
 const BaseComponent = require('../prototype/baseComponent');
 const AdminUserModel = require("../models").AdminUser;
+const UserModel = require("../models").User;
+const ContentModel = require("../models").Content;
 const SystemOptionLogModel = require("../models").SystemOptionLog;
 const UserNotifyModel = require("../models").UserNotify;
 const MessageModel = require("../models").Message;
@@ -49,9 +51,9 @@ class AdminUser {
         // super()
     }
 
-    async getUserSession(req, res, next){
+    async getUserSession(req, res, next) {
         try {
-            let noticeCounts = await UserNotifyModel.count({ 'systemUser': req.session.adminUserInfo._id, 'isRead': false });        
+            let noticeCounts = await UserNotifyModel.count({ 'systemUser': req.session.adminUserInfo._id, 'isRead': false });
             res.send({
                 state: 'success',
                 noticeCounts,
@@ -64,6 +66,29 @@ class AdminUser {
                 state: 'error',
                 type: 'ERROR_DATA',
                 message: '获取session失败' + err
+            })
+        }
+    }
+
+    async getBasicSiteInfo(req, res, next) {
+        try {
+            let adminUserCount = await AdminUserModel.count();
+            let regUserCount = await UserModel.count();
+            let contentCount = await ContentModel.count();
+            let messageCount = await MessageModel.count();
+            res.send({
+                state: 'success',
+                adminUserCount,
+                regUserCount,
+                contentCount,
+                messageCount
+            });
+        } catch (error) {
+            logUtil.error(err, req);
+            res.send({
+                state: 'error',
+                type: 'ERROR_DATA',
+                message: '获取系统基础数据失败'
             })
         }
     }

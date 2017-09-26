@@ -17,8 +17,8 @@ function checkFormData(req, res, fields) {
     if (!fields.type) {
         errMsg = '资源类型为必填!';
     }
-    if (!validator.isLength(fields.comments, 5, 30)) {
-        errMsg = '请输入5-30个字符!';
+    if (!validator.isLength(fields.comments, 2, 30)) {
+        errMsg = '请输入2-30个字符!';
     }
     if (errMsg) {
         res.send({

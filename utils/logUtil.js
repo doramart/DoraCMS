@@ -2,6 +2,7 @@ let log4js = require('log4js');
 let fs = require('fs');
 let logConfig = require('../configs/logConfig');
 let _ = require('lodash');
+const SystemOptionLogModel = require("../server/lib/models").SystemOptionLog;
 
 //加载配置文件
 log4js.configure(logConfig);
@@ -85,7 +86,7 @@ let formatRes = function (req, resTime) {
 }
 
 //格式化错误日志
-let formatError = function (req = {}, error = {}, type = 'node server', resTime = 0) {
+let formatError = function (req = {}, error = {}, type = 'node', resTime = 0) {
     let logText = new String();
     let err = type === 'h5' ? req.query : error;
     //错误信息开始
@@ -124,6 +125,12 @@ let formatError = function (req = {}, error = {}, type = 'node server', resTime 
     }
     //错误信息结束
     logText += "***************  " + type + "  error log end ***************" + "\n";
+
+    let loginLog = new SystemOptionLogModel();
+    loginLog.type = type + '-exception';
+    loginLog.logs = logText;
+    loginLog.save();
+
     return logText;
 };
 

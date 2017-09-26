@@ -353,5 +353,46 @@ export default {
             formData: params
         })
     },
+    getAdsList({
+        commit
+    }, params = {}) {
+        services.getAdsList(params).then((result) => {
+            commit(types.ADS_LIST, result.data)
+        })
+    },
+    adsInfoForm: ({
+        commit
+    }, params = {}) => {
+        commit(types.ADS_INFO_FORMSTATE, {
+            edit: params.edit,
+            formData: params.formData
+        })
+    },
+    showAdsItemForm: ({
+        commit
+    }, params = {
+            edit: false,
+            formData: {}
+        }) => {
+        commit(types.ADS_ITEM_FORMSTATE, {
+            show: true,
+            edit: params.edit,
+            formData: params.formData
+        })
+    },
+    hideAdsItemForm: ({
+        commit
+    }) => {
+        commit(types.ADS_ITEM_FORMSTATE, {
+            show: false
+        })
+    },
+    getSiteBasicInfo({
+        commit
+    }, params = {}) {
+        services.getSiteBasicInfo(params).then((result) => {
+            commit(types.MAIN_SITEBASIC_INFO, result.data)
+        })
+    }
 
 }

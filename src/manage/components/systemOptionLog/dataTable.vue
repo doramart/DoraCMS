@@ -4,17 +4,22 @@
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column prop="logs" label="行为">
+                <template scope="scope">
+                    <el-tag :type="(scope.row.type).indexOf('exception') > -1 ? 'danger' : 'gray'">{{ scope.row.logs | cutWords(50)}}</el-tag>
+                </template>
             </el-table-column>
             <el-table-column prop="type" label="类别">
                 <template scope="scope">
                     <span v-if="scope.row.type == 'login'">系统登录</span>
+                    <span v-if="(scope.row.type).indexOf('exception') > -1 ">系统异常</span>
                 </template>
             </el-table-column>
             <el-table-column prop="date" label="发生时间">
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column label="操作">
                 <template scope="scope">
                     <el-button size="mini" type="danger" icon="delete" @click="deleteDataItem(scope.$index, dataList)">删除</el-button>
+                    <el-button size="mini" @click="showDetails(scope.$index, dataList)">查看详情</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -35,6 +40,11 @@ export default {
     },
 
     methods: {
+        showDetails(index, dataList){
+            this.$alert(dataList[index].logs, '日志详情', {
+                confirmButtonText: '关闭'
+            });
+        },
         handleSystemLogsSelectionChange(val) {
             if (val && val.length > 0) {
                 let ids = val.map((item, index) => {

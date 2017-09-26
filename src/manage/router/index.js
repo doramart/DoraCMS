@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '../store/index.js'
 import Home from '../components/Home'
+import Main from '../components/main/index'
 import AdminUser from '../components/adminUser/index'
 import AdminGroup from '../components/adminGroup/index'
 import AdminResource from '../components/adminResource/index'
@@ -24,7 +25,13 @@ let router = new Router({
 function renderLeftMenu() {
   let cateDataDom = document.getElementById('cateValue'), catelist = [];
   catelist = JSON.parse(cateDataDom.value);
-  let addNewRoutes = [];
+  let addNewRoutes = [
+    {
+      path: '/',
+      redirect: '/main',
+      hidden: 'true'
+    }
+  ];
   let treeData = catelist;
 
   let newResult = [].concat(treeData);
@@ -80,6 +87,10 @@ function renderLeftMenu() {
 
 
 router.beforeEach((to, from, next) => {
+  debugger;
+  if (to.fullPath == '/') {
+
+  }
   next();
 })
 

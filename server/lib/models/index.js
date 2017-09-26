@@ -39,3 +39,5 @@ exports.Notify = require('./Notify');
 exports.SystemConfig = require('./SystemConfig');
 exports.DataOptionLog = require('./DataOptionLog');
 exports.SystemOptionLog = require('./SystemOptionLog');
+exports.Ads = require('./Ads');
+exports.AdsItems = require('./AdsItems');

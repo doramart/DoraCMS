@@ -13,24 +13,13 @@ var SystemOptionLogSchema = new Schema({
         unique: true,
         'default': shortid.generate
     },
-    type: String,
+    type: String, //login:登录 exception:异常
     date: { type: Date, default: Date.now },
     logs: String
 });
 
 SystemOptionLogSchema.statics = {
 
-    //添加用户登录日志
-    addUserLoginLogs: function (req, res, targetIp) {
-        var loginLog = new SystemOptionLog();
-        loginLog.type = 'login';
-        loginLog.logs = req.session.adminUserInfo.userName + ' 登录，IP:' + targetIp;
-        loginLog.save(function (err) {
-            if (err) {
-                res.end(err);
-            }
-        });
-    }
 
 }
 

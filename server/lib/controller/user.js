@@ -199,6 +199,12 @@ class User {
             try {
                 let user = await UserModel.findOne(userObj);
                 if (user) {
+                    if (!user.enable) {
+                        res.send({
+                            state: 'error',
+                            message: "您已被限制登录，请稍后重试"
+                        });
+                    }
                     // 将cookie存入缓存
                     let auth_token = user._id + '$$$$'; // 以后可能会存储更多信息，用 $$$$ 来分隔
                     res.cookie(settings.auth_cookie_name, auth_token,

@@ -36,6 +36,7 @@
                                     <CatesMenu :typeId="typeId" />
                                     <RecentContents :recentItems="recentArticle" />
                                     <HotContents :hotItems="hotlist" :typeId="$route.params.typeId" v-if="hotlist.length > 0" />
+                                    <AdsPannel id="Sk_n90ucb" />
                                 </div>
                             </el-col>
                         </el-row>
@@ -60,6 +61,7 @@
     import SearchBox from '../components/SearchBox.vue'
     import HotContents from '../components/HotContents.vue'
     import CatesMenu from '../components/CatesMenu.vue'
+    import AdsPannel from '../components/AdsPannel.vue'
 
     export default {
         name: 'frontend-article',
@@ -117,7 +119,8 @@
             RecentContents,
             SearchBox,
             HotContents,
-            CatesMenu
+            CatesMenu,
+            AdsPannel
         },
         methods: {
             addTarget(content) {

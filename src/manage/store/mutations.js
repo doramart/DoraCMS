@@ -253,6 +253,40 @@ const state = {
     announceFormState: {
         title: '',
         content: ''
+    },
+    ads: {
+        list: {
+            pageInfo: {},
+            docs: []
+        },
+        infoFormState: {
+            edit: false,
+            formData: {
+                name: '',
+                type: '1',
+                comments: '',
+                items: [],
+                state: true
+            }
+        },
+        itemFormState: {
+            show: false,
+            edit: false,
+            formData: {
+                title: '',
+                link: '',
+                width: '',
+                height: '',
+                alt: '',
+                sImg: ''
+            }
+        }
+    },
+    basicInfo: {
+        adminUserCount: 0,
+        regUserCount: 0,
+        contentCount: 0,
+        messageCount: 0
     }
 }
 
@@ -486,6 +520,34 @@ const mutations = {
         }, formState.formData);
 
     },
+    [types.ADS_LIST](state, list) {
+        state.ads.list = list
+    },
+    [types.ADS_INFO_FORMSTATE](state, formState) {
+        state.ads.infoFormState.edit = formState.edit;
+        state.ads.infoFormState.formData = Object.assign({
+            name: '',
+            type: '1',
+            comments: '',
+            items: [],
+            state: true
+        }, formState.formData);
+    },
+    [types.ADS_ITEM_FORMSTATE](state, formState) {
+        state.ads.itemFormState.edit = formState.edit;
+        state.ads.itemFormState.show = formState.show;
+        state.ads.itemFormState.formData = Object.assign({
+            title: '',
+            link: '',
+            width: '',
+            height: '',
+            alt: '',
+            sImg: '',
+        }, formState.formData);
+    },
+    [types.MAIN_SITEBASIC_INFO](state, list) {
+        state.basicInfo = list
+    }
 
 }
 

@@ -64,8 +64,12 @@ export default {
                 this.$store.dispatch('getSystemNotifyList', {
                     current: val
                 });
-            }else if (this.pageType === 'systemAnnounce') {
+            } else if (this.pageType === 'systemAnnounce') {
                 this.$store.dispatch('getSystemAnnounceList', {
+                    current: val
+                });
+            } else if (this.pageType === 'ads') {
+                this.$store.dispatch('getAdsList', {
                     current: val
                 });
             }

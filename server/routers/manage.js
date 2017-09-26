@@ -14,7 +14,8 @@ const {
   DataOptionLog,
   SystemOptionLog,
   UserNotify,
-  Notify
+  Notify,
+  Ads
 } = require('../lib/controller');
 const {
   service,
@@ -38,6 +39,9 @@ router.get('/logout', (req, res) => {
 
 // 获取管理员信息
 router.get('/getUserSession', authSession, AdminUser.getUserSession)
+
+// 获取后台基础信息
+router.get('/getSitBasicInfo', authSession, authPower, AdminUser.getBasicSiteInfo)
 
 /**
  * 管理员管理
@@ -192,5 +196,25 @@ router.get('/systemAnnounce/deleteItem', authToken, authPower, Notify.delNotify)
 
 //发布系统公告
 router.post('/systemAnnounce/addOne', authToken, authPower, Notify.addOneSysNotify);
+
+
+/**
+ * 广告管理
+ */
+
+router.get('/ads/getList', authToken, authPower, Ads.getAds);
+
+// 获取单个广告
+router.get('/ads/getOne', authToken, authPower, Ads.getOneAd);
+
+// 新增广告
+router.post('/ads/addOne', authToken, authPower, Ads.addAds);
+
+// 更新单个广告
+router.post('/ads/updateOne', authToken, authPower, Ads.updateAds);
+
+// 删除广告
+router.get('/ads/delete', authToken, authPower, Ads.delAds);
+
 
 module.exports = router

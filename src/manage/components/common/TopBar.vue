@@ -41,6 +41,10 @@
                 <el-button type="primary" size="small" @click="addSysAnnounce">
                     <i class="fa fa-bullhorn"></i> &nbsp;新增系统公告</el-button>
             </div>
+            <div v-else-if="type === 'ads'">
+                <el-button type="primary" size="small" @click="addAds">
+                    <i class="fa fa-image"></i> &nbsp;新增广告</el-button>
+            </div>
         </div>
         <div class="dr-searchInput">
             <div v-if="type === 'content'">
@@ -59,6 +63,16 @@
                 <el-input size="small" placeholder="请输入用户名" icon="search" v-model="searchkey" :on-icon-click="searchResult">
                 </el-input>
             </div>
+            <div v-else-if="type === 'systemOptionLogs'">
+                <el-select size="small" v-model="targetSysLogType" placeholder="请选择日志类别" @change="selectSysLogType">
+                    <el-option
+                    v-for="item in systemModelTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
         </div>
     </div>
 </template>
@@ -72,6 +86,23 @@ export default {
     },
     data() {
         return {
+            systemModelTypes: [
+                {
+                value: 'all',
+                label: '全部'
+                },
+                {
+                value: 'h5-exception',
+                label: 'h5异常'
+                }, {
+                value: 'node-exception',
+                label: 'nodejs异常'
+                }, {
+                value: 'login',
+                label: '系统登录'
+                }
+            ],
+            targetSysLogType: 'all',
             loadingState: false,
             formState: {
                 show: false
@@ -80,6 +111,14 @@ export default {
         }
     },
     methods: {
+        selectSysLogType(type){
+             this.targetSysLogType = type;
+            if(type == 'all'){
+                this.$store.dispatch('getSystemLogsList');
+            }else{
+                this.$store.dispatch('getSystemLogsList', { type });
+            }
+        },
         searchResult(ev) {
             if (this.type == 'content') {
                 this.$store.dispatch('getContentList', {
@@ -116,6 +155,12 @@ export default {
         addContent() {
             this.$store.dispatch('showContentForm');
             this.$router.push('/addContent');
+        },
+        addAds() {
+            this.$store.dispatch('adsInfoForm', {
+                edit: false
+            });
+            this.$router.push('/addAds');
         },
         addSysAnnounce() {
             this.$store.dispatch('showContentForm');
@@ -265,7 +310,7 @@ export default {
                 if (result.data.state === 'success') {
                     this.$store.dispatch('getSystemNotifyList');
                     let oldNoticeCounts = this.$store.getters.loginState.noticeCounts
-                    this.$store.dispatch('loginState', { noticeCounts :  oldNoticeCounts - this.ids.length })
+                    this.$store.dispatch('loginState', { noticeCounts: oldNoticeCounts - this.ids.length })
                 } else {
                     this.$message.error(result.data.message);
                 }

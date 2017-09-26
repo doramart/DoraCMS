@@ -13,7 +13,7 @@ const {
 } = require('../../utils');
 const authUser = require('../../utils/middleware/authUser');
 
-const { AdminUser, ContentCategory, Content, ContentTag, User, Message, SystemConfig, UserNotify } = require('../lib/controller');
+const { AdminUser, ContentCategory, Content, ContentTag, User, Message, SystemConfig, UserNotify, Ads } = require('../lib/controller');
 const _ = require('lodash');
 function checkUserSession(req, res, next) {
   if (!_.isEmpty(req.session.user)) {
@@ -94,6 +94,7 @@ router.post('/message/post', Message.postMessages)
 // 获取系统配置信息
 router.get('/systemConfig/getConfig', (req, res, next) => { req.query.model = 'simple'; next() }, SystemConfig.getSystemConfigs)
 
-
+// 根据ID获取广告列表
+router.get('/ads/getOne', (req, res, next) => { req.query.state = true; next() }, Ads.getOneAd)
 
 module.exports = router

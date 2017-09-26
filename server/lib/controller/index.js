@@ -11,3 +11,4 @@ exports.User = require('./user');
 exports.SystemConfig = require('./systemConfig');
 exports.DataOptionLog = require('./dataOptionLog');
 exports.SystemOptionLog = require('./systemOptionLog');
+exports.Ads = require('./ads');

@@ -22,6 +22,10 @@ export default {
         return reqJsonData('manage/getUserSession', {}, 'get')
     },
 
+    getSiteBasicInfo(params) {
+        return reqJsonData('manage/getSitBasicInfo', params, 'get')
+    },
+
     adminUserList(params) {
         return reqJsonData('manage/adminUser/getList', params, 'get')
     },
@@ -201,5 +205,26 @@ export default {
     addSystemAnnounce(params) {
         return reqJsonData('manage/systemAnnounce/addOne', params)
     },
+
+    getAdsList(params) {
+        return reqJsonData('manage/ads/getList', params, 'get')
+    },
+
+    getOneAd(params) {
+        return reqJsonData('manage/ads/getOne', params, 'get')
+    },
+
+    addOneAd(params) {
+        return reqJsonData('manage/ads/addOne', params)
+    },
+
+    updateAds(params) {
+        return reqJsonData('manage/ads/updateOne', params)
+    },
+
+    delAds(params) {
+        return reqJsonData('manage/ads/delete', params, 'get')
+    }
+
 
 }

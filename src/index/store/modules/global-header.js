@@ -6,9 +6,6 @@ const state = () => ({
 
 const actions = {
     async ['getHeaderNavList']({ commit, state }, config) {
-        // if (state.list.data.length > 0 && config.path === state.lists.path && config.page === 1) {
-        //     return
-        // }
         const { data } = await api.get('contentCategory/getList', { ...config, cache: true })
         if (data.docs && data.state === 'success') {
             commit('receiveCategoryList', {

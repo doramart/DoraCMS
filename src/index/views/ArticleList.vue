@@ -19,6 +19,7 @@
                             </el-col>
                             <el-col :xs="0" :sm="6" :md="6" :lg="6" class="content-mainbody-right">
                                 <div class="grid-content bg-purple-light title">
+                                    <AdsPannel id="SJllJUAdcZ" />
                                     <SearchBox />
                                     <div v-if="checkCateList">
                                         <CatesMenu :typeId="$route.params.typeId" />
@@ -35,7 +36,7 @@
                 </el-row>
             </div>
         </div>
-    
+
     </div>
 </template>
 <script lang="babel">
@@ -48,6 +49,7 @@ import ItemList from '../views/ItemList.vue'
 import Pagination from '../components/Pagination.vue'
 import Tag from '../components/Tag.vue'
 import CatesMenu from '../components/CatesMenu.vue'
+import AdsPannel from '../components/AdsPannel.vue'
 
 export default {
     name: 'frontend-index',
@@ -65,7 +67,8 @@ export default {
         HotContents,
         SearchBox,
         Tag,
-        CatesMenu
+        CatesMenu,
+        AdsPannel
     },
     computed: {
         ...mapGetters({
