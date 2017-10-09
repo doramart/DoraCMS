@@ -5,10 +5,10 @@
                 <a :href="ads.data.items[0].link" target="_blank"><img :src="ads.data.items[0].sImg" :alt="ads.data.items[0].alt" /></a>
             </div>
             <div v-else>
-                <el-carousel indicator-position="outside">
+                <el-carousel :height="ads.data.height+'px'">
                     <el-carousel-item v-for="item in ads.data.items" :key="item._id">
                         <h3>
-                            <a :href="item.link" target="_blank"><img :src="item.sImg" :alt="item.alt" /></a>
+                            <a :href="item.link" target="_blank"><img :height="ads.data.height+'px'" :src="item.sImg" :alt="item.alt" /></a>
                         </h3>
                     </el-carousel-item>
                 </el-carousel>
@@ -47,7 +47,6 @@ export default {
     color: #475669;
     font-size: 18px;
     opacity: 0.75;
-    line-height: 300px;
     margin: 0;
 }
 

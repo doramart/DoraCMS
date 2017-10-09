@@ -3,24 +3,27 @@
         <div class="content-detail">
             <div class="readme">
                 <el-row :gutter="0" class="header-main">
-                    <el-col :xs="1" :sm="1" :md="1" :lg="1">
+                    <el-col :xs="1" :sm="1" :md="3" :lg="3">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
-                    <el-col :xs="22" :sm="22" :md="22" :lg="22">
+                    <el-col :xs="22" :sm="22" :md="18" :lg="18">
                         <el-row :gutter="24">
-                            <el-col :xs="24" :sm="18" :md="18" :lg="18">
+                            <el-col :xs="24" :sm="17" :md="17" :lg="17">
                                 <div>
                                     <h2 class="content-title">{{article.doc.title}}</h2>
                                     <div class="content-author">
                                         <ul>
                                             <li class="author-name">
-                                                <a>{{article.doc.author ? article.doc.author.name:''}}</a>
+                                                <el-tag size="mini">{{article.doc.author ? article.doc.author.name:''}}</el-tag>
                                             </li>
                                             <li>
                                                 <span class="dot">&nbsp;•&nbsp;</span>{{cateName}}
                                             </li>
                                             <li>
                                                 <span class="dot">&nbsp;•&nbsp;</span>{{article.doc.date}}
+                                            </li>
+                                            <li>
+                                                <span class="dot">&nbsp;•&nbsp;</span>{{article.doc.clickNum}}&nbsp;次阅读
                                             </li>
                                         </ul>
                                     </div>
@@ -30,9 +33,8 @@
                                     <Messages :userMessageList="messages.data" :contentId="article.doc._id" />
                                 </div>
                             </el-col>
-                            <el-col :xs="0" :sm="6" :md="6" :lg="6" class="content-mainbody-right">
+                            <el-col :xs="0" :sm="7" :md="7" :lg="7" class="content-mainbody-right">
                                 <div class="grid-content bg-purple-light title">
-                                    <SearchBox />
                                     <CatesMenu :typeId="typeId" />
                                     <RecentContents :recentItems="recentArticle" />
                                     <HotContents :hotItems="hotlist" :typeId="$route.params.typeId" v-if="hotlist.length > 0" />
@@ -41,7 +43,7 @@
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :xs="1" :sm="1" :md="1" :lg="1">
+                    <el-col :xs="1" :sm="1" :md="3" :lg="3">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
                 </el-row>
@@ -76,7 +78,7 @@
                     currentId = id;
                 }
             }
-            store.dispatch('frontend/article/getHotContentList', { typeId : 'indexPage'})
+            store.dispatch('frontend/article/getHotContentList', { typeId : 'indexPage', pageSize: 10})
             store.dispatch('global/message/getUserMessageList',{contentId:currentId})
             store.dispatch('frontend/article/getRecentContentList')
             await store.dispatch(`frontend/article/getArticleItem`, { id: currentId, path })
@@ -162,15 +164,15 @@
         margin-top: 0;
     }
     .content-author {
-        color: #999999;
+        color: #969696;
         ul {
             li.author-name {
-                color: #20A0FF;
+                color: #409EFF;
             }
             li {
                 display: inline-block;
                 margin-bottom: 10px;
-                font-size: 14px;
+                font-size: 13px;
             }
         }
     }

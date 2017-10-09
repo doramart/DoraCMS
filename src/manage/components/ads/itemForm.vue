@@ -1,6 +1,6 @@
 <template>
     <div class="dr-adminGroupForm">
-        <el-dialog size="small" :title="(formState.edit?'编辑':'添加')+(adsType == '1'?'图片':'文本链接')" :visible.sync="formState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" :title="(formState.edit?'编辑':'添加')+(adsType == '1'?'图片':'文本链接')" :visible.sync="formState.show" :close-on-click-modal="false">
             <el-form v-if="adsType == '1'" :model="formState.formData" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
                 <el-form-item label="描述" prop="alt">
                     <el-input size="small" v-model="formState.formData.alt"></el-input>
@@ -15,7 +15,7 @@
                     </el-upload>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">{{formState.edit ? '更新' : '保存'}}</el-button>
+                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? '更新' : '保存'}}</el-button>
                 </el-form-item>
             </el-form>
             <el-form v-if="adsType == '0'" :model="formState.formData" :rules="rules1" ref="ruleForm1" label-width="80px" class="demo-ruleForm">
@@ -26,7 +26,7 @@
                     <el-input size="small" v-model="formState.formData.link"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm1')">{{formState.edit ? '更新' : '保存'}}</el-button>
+                    <el-button size="smmediumall" type="primary" @click="submitForm('ruleForm1')">{{formState.edit ? '更新' : '保存'}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -111,13 +111,10 @@ export default {
                         for (let i = 0; i < adsItems.length; i++) {
                             if (adsItems[i]._id == params._id) adsItems[i] = params;
                         }
-                        console.log('--oldFormState1--', oldFormState)
                         this.$store.dispatch('adsInfoForm', oldFormState);
                     } else {
                         // 新增
-                        console.log('----params-', params, '----', adsItems);
                         adsItems.push(params);
-                        console.log('--oldFormState2--', oldFormState)
                         this.$store.dispatch('adsInfoForm', oldFormState);
                     }
                     this.$store.dispatch('hideAdsItemForm');
@@ -142,7 +139,7 @@ export default {
 }
 
 .avatar-uploader .el-upload:hover {
-    border-color: #20a0ff;
+    border-color: #409EFF;
 }
 
 .avatar-uploader-icon {

@@ -23,8 +23,8 @@
                             <el-input size="small" placeholder="请确认密码" type="password" v-model="userRegFormData.confirmPassword"></el-input>
                         </el-form-item>
                         <el-form-item class="submit-btn">
-                            <el-button type="primary" @click="submitRegForm('regRuleForm')">提交</el-button>
-                            <el-button @click="resetForm('regRuleForm')">重置</el-button>
+                            <el-button size="small" round type="primary" @click="submitRegForm('regRuleForm')">提交</el-button>
+                            <el-button size="small" round @click="resetForm('regRuleForm')">重置</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>

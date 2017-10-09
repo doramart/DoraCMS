@@ -1,11 +1,11 @@
 <template>
     <header class="header">
         <el-row :gutter="0" class="header-main">
-            <el-col :xs="1" :sm="1" :md="1" :lg="1">
+            <el-col :xs="1" :sm="1" :md="3" :lg="3">
                 <div class="grid-content bg-purple">&nbsp;</div>
             </el-col>
-            <el-col :xs="22" :sm="22" :md="22" :lg="22">
-                <el-row class="grid-content bg-purple-light">
+            <el-col :xs="22" :sm="22" :md="18" :lg="18">
+                <el-row :gutter="10" class="grid-content bg-purple-light">
                     <el-col :xs="24" :sm="4" :md="4" :lg="4">
                         <div class="header-logo">
                             <router-link :to="{path: '/'}">
@@ -13,7 +13,7 @@
                             </router-link>
                         </div>
                     </el-col>
-                    <el-col :xs="24" :sm="16" :md="16" :lg="16">
+                    <el-col :xs="24" :sm="13" :md="13" :lg="13">
                         <nav class="header-nav">
                             <el-row type="flex">
                                 <el-col v-for="(nav,index) in headerNav" :key="index" v-once>
@@ -22,14 +22,19 @@
                             </el-row>
                         </nav>
                     </el-col>
-                    <el-col :xs="0" :sm="4" :md="4" :lg="4">
-                        <div class="grid-content bg-purple">
-                            <LoginPannel/>
-                        </div>
+                    <el-col :xs="0" :sm="7" :md="7" :lg="7">
+                        <el-row>
+                            <el-col :xs="0" :sm="0" :md="14" :lg="14">
+                                <SearchBox />
+                            </el-col>
+                            <el-col :xs="24" :sm="24" :md="10" :lg="10">
+                                <LoginPannel/>
+                            </el-col>
+                        </el-row>
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :xs="1" :sm="1" :md="1" :lg="1">
+            <el-col :xs="1" :sm="1" :md="3" :lg="3">
                 <div class="grid-content bg-purple">
                     &nbsp;
                 </div>
@@ -39,6 +44,7 @@
 </template>
 <script>
 import LoginPannel from './loginPannel';
+import SearchBox from './searchBox';
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
 export default {
@@ -52,7 +58,8 @@ export default {
         return `navlist-${props.navs}`
     },
     components: {
-        LoginPannel
+        LoginPannel,
+        SearchBox
     },
     props: {
         navs: Array
@@ -100,7 +107,6 @@ export default {
             height: 40px;
             line-height: 40px;
             float: left;
-            margin-left: 30px;
             width: 100%;
             .el-row {
                 margin: 0;
@@ -109,9 +115,8 @@ export default {
                     list-style-type: none;
                     display: inline-block;
                     text-align: center;
-
                     a.router-link-active {
-                        color: #20A0FF
+                        color: #409EFF
                     }
                 }
             }

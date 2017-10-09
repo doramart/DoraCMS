@@ -20,15 +20,11 @@
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
-                    <el-button size="mini" @click="editUserInfo(scope.$index, dataList)">编辑</el-button>
-                    <el-button size="mini" type="danger" @click="deleteUser(scope.$index, dataList)">删除</el-button>
+                    <el-button size="mini" type="primary" plain round @click="editUserInfo(scope.$index, dataList)"> <i class="fa fa-edit"></i></el-button>
+                    <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteUser(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <div style="margin-top: 20px;display:none;">
-            <el-button @click="toggleSelection([tableData3[1], tableData3[2]])">切换第二、第三行的选中状态</el-button>
-            <el-button @click="toggleSelection()">取消选择</el-button>
-        </div>
     </div>
 </template>
 

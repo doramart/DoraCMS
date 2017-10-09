@@ -337,6 +337,10 @@ let systemService = {
                 filetype = 'jpg';
                 mimetype = ['image/jpeg', 'image/pjpeg'];
                 break;
+            case 'ffd8ffdb':
+                filetype = 'jpg';
+                mimetype = ['image/jpeg', 'image/pjpeg'];
+                break;
             case '47494638':
                 filetype = 'gif';
                 mimetype = 'image/gif';

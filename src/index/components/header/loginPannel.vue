@@ -15,7 +15,7 @@
             </li>
             <li class="login-txt" v-else>
                 <a href="/users/login">登录</a>
-                <a href="/users/reg">注册</a>
+                <el-button type="primary" plain round size="mini" @click="regUser">注册</el-button>
             </li>
         </ul>
     </div>
@@ -36,6 +36,9 @@ export default {
         })
     },
     methods: {
+        regUser() {
+            this.$router.push("/users/reg");
+        },
         userCenter() {
             this.$router.push('/users/center');
         },
@@ -64,14 +67,15 @@ export default {
 
 <style lang="scss">
 .login-pannel {
+    float: right;
     text-align: right;
     ul {
         li {
-            color: #20A0FF;
+            color: #409EFF;
             height: 40px;
             line-height: 40px;
             display: inline-block;
-            font-size: 13px;
+            font-size: 14px;
             i {
                 font-size: 12px;
             }

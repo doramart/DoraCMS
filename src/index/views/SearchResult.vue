@@ -14,7 +14,6 @@
                     <el-col :xs="22" :sm="22" :md="22" :lg="22" class="content-mainbody-left">
                         <el-row :gutter="24">
                             <el-col :xs="24" :sm="24" :md="24" :lg="24">
-                                <SearchBox />
                                 <ItemList :contentList="contentList" typeId="searchList" />
                             </el-col>
                         </el-row>

@@ -25,8 +25,8 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
-                    <el-button size="mini" @click="editAdsInfo(scope.$index, dataList)">编辑</el-button>
-                    <el-button size="mini" type="danger" @click="deleteAds(scope.$index, dataList)">删除</el-button>
+                    <el-button size="mini" type="primary" plain round @click="editAdsInfo(scope.$index, dataList)"><i class="fa fa-edit"></i></el-button>
+                    <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteAds(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>
         </el-table>

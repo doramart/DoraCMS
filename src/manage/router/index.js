@@ -87,7 +87,6 @@ function renderLeftMenu() {
 
 
 router.beforeEach((to, from, next) => {
-  debugger;
   if (to.fullPath == '/') {
 
   }

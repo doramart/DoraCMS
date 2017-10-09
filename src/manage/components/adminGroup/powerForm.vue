@@ -1,12 +1,12 @@
 <template>
     <div class="dr-adminGroupForm">
-        <el-dialog size="small" title="分配资源" :visible.sync="roleState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" title="分配资源" :visible.sync="roleState.show" :close-on-click-modal="false">
             <el-tree :data="treeData" show-checkbox node-key="_id" ref="tree" highlight-current :props="defaultProps">
             </el-tree>
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="closeTree">取 消</el-button>
-                <el-button type="primary" @click="savePower">确 定</el-button>
+                <el-button size="medium" @click="closeTree">取 消</el-button>
+                <el-button size="medium" type="primary" @click="savePower">确 定</el-button>
             </span>
         </el-dialog>
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="adminUser">
+    <div class="adminSystemConfig">
         <el-row class="dr-datatable">
             <el-col :span="24">
                 <el-form :model="systemConfig.configs" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
@@ -7,8 +7,8 @@
                         <el-input size="small" v-model="systemConfig.configs.siteName"></el-input>
                     </el-form-item>
                     <el-form-item label="站点域名" prop="siteDomain">
-                        <el-input placeholder="请输入内容" v-model="systemConfig.configs.siteDomain">
-                            <template slot="prepend">Http://</template>
+                        <el-input size="small" placeholder="请输入内容" v-model="systemConfig.configs.siteDomain">
+                            <template slot="prepend">http://</template>
                         </el-input>
                     </el-form-item>
                     <el-form-item label="站点描述" prop="siteDiscription">
@@ -18,7 +18,7 @@
                         <el-input size="small" v-model="systemConfig.configs.siteKeywords"></el-input>
                     </el-form-item>
                     <el-form-item label="系统邮箱服务器" prop="siteEmailServer">
-                        <el-select v-model="systemConfig.configs.siteEmailServer" placeholder="请选择服务器">
+                        <el-select size="small" v-model="systemConfig.configs.siteEmailServer" placeholder="请选择服务器">
                             <el-option v-for="item in serverOptions" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -39,8 +39,8 @@
                         <el-input size="small" v-model="systemConfig.configs.databackForderPath"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                        <el-button size="medium" type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                        <el-button size="medium" @click="resetForm('ruleForm')">重置</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -71,6 +71,20 @@ export default {
                 siteEmailServer: [{
                     required: true,
                     message: '请选择系统邮箱服务器',
+                    trigger: 'blur'
+                }],
+                siteDomain: [{
+                    required: true,
+                    message: '请填写系统域名',
+                    trigger: 'blur'
+                }, {
+                    validator: (rule, value, callback) => {
+                        if (!validatorUtil.checkUrl(value)) {
+                            callback(new Error('请填写正确的域名!'));
+                        } else {
+                            callback();
+                        }
+                    },
                     trigger: 'blur'
                 }],
                 siteEmail: [{
@@ -202,6 +216,8 @@ export default {
 }
 </script>
 
-<style lang="">
-
+<style lang="scss">
+.adminSystemConfig{
+    margin-top: 25px;
+}
 </style>

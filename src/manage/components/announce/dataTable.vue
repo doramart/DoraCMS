@@ -17,11 +17,9 @@
             </el-table-column>
             <el-table-column prop="date" label="发生时间">
             </el-table-column>
-            <el-table-column label="操作" width="130" fixed="right">
+            <el-table-column label="操作" fixed="right">
                 <template scope="scope">
-                    <el-button type="danger" size="mini" @click="deleteAnnounce(scope.$index, dataList)">
-                        <i class="fa fa-trash-o"></i>
-                    </el-button>
+                    <el-button type="danger" plain size="mini" round icon="el-icon-delete" @click="deleteAnnounce(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>
         </el-table>

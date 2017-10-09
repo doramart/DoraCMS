@@ -3,7 +3,8 @@ html, body {
     margin: 0;
     background: #ffffff;
     -webkit-font-smoothing: antialiased;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    color: rgb(51, 51, 51);
+    font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -16,11 +17,11 @@ html, body {
 
 a:link, a:active, a:visited {
     text-decoration: none;
-    color: #6e7173;
+    color: #333333;
 }
 
 a:hover {
-    color: #20A0FF
+    color: #409EFF
 }
 
 ul {
@@ -30,6 +31,13 @@ ul {
 
 li {
     list-style-type: none;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    color: inherit;
 }
 
 h2 {
@@ -51,7 +59,7 @@ pre {
     word-wrap: break-word;
     background-color: #f5f5f5;
     border: 1px solid #ccc;
-    border-left: 2px solid #20A0FF;
+    border-left: 2px solid #409EFF;
     border-radius: 0px;
     overflow: auto;
     font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
@@ -75,7 +83,7 @@ pre {
 }
 
 .normaltitle span {
-    background-color: #20A0FF;
+    background-color: #409EFF;
     height: 30px;
     line-height: 30px;
     padding: 2px 12px;
@@ -83,34 +91,13 @@ pre {
 }
 
 .catetitle {
-    color: #6e7173;
-}
-
-.simpletitle {
-    color: #6e7173;
-    font-weight: 100;
-    margin: 0;
-}
-
-.pannel-title {
-    /*font-size: 14px;*/
-    margin: 0;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #f1f1f1;
-}
-
-.pannel-title span {
-    color: #20A0FF;
-    border-bottom: 1px solid #20A0FF;
-    display: inline-block;
-    padding: 5px 0;
-    margin-bottom: -1px;
+    color: #333333;
 }
 
 .login-form {
     margin: 0 auto;
-    margin-top: 6%;
-    margin-bottom: 100px;
+    padding-top: 6%;
+    padding-bottom: 100px;
 }
 
 .login-form .submit-btn {
@@ -121,6 +108,8 @@ pre {
     background-clip: padding-box;
     padding: 25px 35px 10px 35px;
     background: #fff;
+    box-shadow: 0 0 8px rgba(0,0,0,.1);
+    border-radius: 4px;
 }
 
 .login-form .login-container .title {
@@ -151,6 +140,9 @@ pre {
     .login-pannel {
         display: none;
     }
+    .search-pannel {
+        display: none !important;
+    }
     .content-tag {
         display: none;
     }
@@ -161,12 +153,19 @@ pre {
     .content-item .contentImg {
         display: none !important;
     }
+
+    .content-item .post-angle{
+        display: none !important;
+    }
     .content-mainbody-right {
         display: none;
     }
 }
 
 @media screen and (max-width:992px) {
+    .content-item .post-angle{
+        display: none !important;
+    }
     .content-item .contentImg {
         display: none !important;
     }

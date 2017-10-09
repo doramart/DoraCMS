@@ -5,7 +5,7 @@
             </el-table-column>
             <el-table-column prop="logs" label="行为">
                 <template scope="scope">
-                    <el-tag :type="(scope.row.type).indexOf('exception') > -1 ? 'danger' : 'gray'">{{ scope.row.logs | cutWords(50)}}</el-tag>
+                    <el-tag size="small" :type="(scope.row.type).indexOf('exception') > -1 ? 'danger' : 'gray'">{{ scope.row.logs | cutWords(50)}}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column prop="type" label="类别">
@@ -16,10 +16,10 @@
             </el-table-column>
             <el-table-column prop="date" label="发生时间">
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="150">
                 <template scope="scope">
-                    <el-button size="mini" type="danger" icon="delete" @click="deleteDataItem(scope.$index, dataList)">删除</el-button>
-                    <el-button size="mini" @click="showDetails(scope.$index, dataList)">查看详情</el-button>
+                    <el-button size="mini" type="primary" plain round @click="showDetails(scope.$index, dataList)"><i :class="'fa ' +((scope.row.type).indexOf('exception') > -1 ? 'fa-bug' : 'fa-eye')" aria-hidden="true"></i></el-button>
+                    <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteDataItem(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -40,7 +40,7 @@ export default {
     },
 
     methods: {
-        showDetails(index, dataList){
+        showDetails(index, dataList) {
             this.$alert(dataList[index].logs, '日志详情', {
                 confirmButtonText: '关闭'
             });
