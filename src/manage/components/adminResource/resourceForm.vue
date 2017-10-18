@@ -1,6 +1,6 @@
 <template>
     <div class="dr-AdminResourceForm">
-        <el-dialog size="small" title="填写资源信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" title="填写资源信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
                 <el-form-item v-show="dialogState.type==='children' && !dialogState.edit" label="父对象" prop="label">
                     <el-input size="small" :disabled="true" v-model="dialogState.formData.parent.label"></el-input>
@@ -10,7 +10,7 @@
                     <el-input size="small" v-model="dialogState.formData.label"></el-input>
                 </el-form-item>
                 <el-form-item label="类型" prop="type">
-                    <el-select v-model="dialogState.formData.type" placeholder="请选择" @change="changeType">
+                    <el-select size="small" v-model="dialogState.formData.type" placeholder="请选择" @change="changeType">
                         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -50,8 +50,8 @@
                     <el-input size="small" v-model="dialogState.formData.comments"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
+                    <el-button size="medium" @click="resetForm('ruleForm')">重置</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -112,14 +112,7 @@ export default {
             console.log(value);
         },
         changeType(value) {
-            // let currentFormData = Object.assign(this.dialogState.formData, {
-            //     routePath: '',
-            //     componentPath: '',
-            //     enable: true,
-            //     api: '',
-            //     icon: ''
-            // })
-            // this.$store.dispatch('showAdminResourceForm', Object.assign(this.dialogState, { formData: currentFormData }));
+
         },
         confirm() {
             this.$store.dispatch('hideAdminResourceForm')

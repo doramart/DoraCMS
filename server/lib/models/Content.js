@@ -48,7 +48,7 @@ ContentSchema.path('date').get(function (v) {
     return moment(v).startOf('hour').fromNow();
 });
 ContentSchema.path('updateDate').get(function (v) {
-    return moment(v).format("YYYY-MM-DD HH:mm:ss");
+    return moment(v).format("YYYY-MM-DD HH:mm");
 });
 
 var Content = mongoose.model("Content", ContentSchema);

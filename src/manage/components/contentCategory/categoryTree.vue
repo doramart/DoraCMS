@@ -68,14 +68,14 @@ export default {
 
     renderContent(h, { node, data, store }) {
       return (
-        <span>
+        <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
           <span>
             <span>{node.label}</span>
           </span>
           <span style="float: right; margin-right: 20px">
-            <el-button size="mini" on-click={() => this.append(store, data)}>添加</el-button>
-            <el-button size="mini" on-click={() => this.edit(store, data)}>编辑</el-button>
-            <el-button size="mini" on-click={() => this.remove(store, data)}>删除</el-button>
+            <el-button type="text" on-click={() => this.append(store, data)}><i class="fa fa-plus-circle" aria-hidden="true"></i></el-button>
+            <el-button type="text" on-click={() => this.edit(store, data)}><i class="fa fa-edit"></i></el-button>
+            <el-button type="text" on-click={() => this.remove(store, data)}><i class="fa fa-trash-o"></i></el-button>
           </span>
         </span>);
     }

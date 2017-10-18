@@ -74,14 +74,24 @@ class AdminUser {
         try {
             let adminUserCount = await AdminUserModel.count();
             let regUserCount = await UserModel.count();
+            let regUsers = await UserModel.find({}).limit(20).sort({date: -1});
             let contentCount = await ContentModel.count();
             let messageCount = await MessageModel.count();
+            let messages = await MessageModel.find().limit(10).sort({date: -1}).populate([{
+                path: 'contentId',
+                select: 'stitle _id'
+            }, {
+                path: 'author',
+                select: 'userName _id enable date logo'
+            }]).populate('replyAuthor').populate('adminAuthor').exec();
             res.send({
                 state: 'success',
                 adminUserCount,
                 regUserCount,
+                regUsers,
                 contentCount,
-                messageCount
+                messageCount,
+                messages
             });
         } catch (error) {
             logUtil.error(err, req);

@@ -1,3 +1,7 @@
+a:link, a:visited {
+    text-decoration: none;
+}
+
 .dr-toolbar {
     margin: 10px auto;
     text-align: left;
@@ -6,4 +10,29 @@
 .dr-searchInput {
     width: 200px;
     float: right;
+}
+
+.el-button--small {
+    padding: 9px 8px !important;
+}
+
+.el-button--mini {
+    padding: 9px !important;
+}
+
+.el-menu {
+    border-right: solid 1px #ffffff !important;
+}
+
+.el-input-number--small {
+    line-height: 32px !important;
+}
+
+.el-table a:link, .el-table a:visited {
+    color: #5a5e66;
+    text-decoration: none;
+}
+
+.el-card__header {
+    padding: 10px 10px;
 }

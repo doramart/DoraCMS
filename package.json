@@ -1,6 +1,6 @@
 {
   "name": "doracms",
-  "version": "2.0.0beta",
+  "version": "2.0.0",
   "description": "基于nodejs,express,vue2 内容管理系统.",
   "keywords": [
     "vue",
@@ -29,7 +29,7 @@
     "cross-env": "^5.0.0",
     "crypto": "0.0.3",
     "ejs": "^2.5.6",
-    "element-ui": "^1.4.2",
+    "element-ui": "^2.0.0-alpha.2",
     "express": "^4.15.0",
     "express-http-proxy": "^1.0.3",
     "express-session": "^1.15.3",
@@ -52,12 +52,12 @@
     "store2": "^2.5.1",
     "ueditor": "^1.2.2",
     "validator": "^7.0.0",
-    "vue": "^2.3.3",
+    "vue": "^2.4.4",
     "vue-meta": "^1.0.2",
     "vue-router": "^2.5.3",
-    "vue-server-renderer": "^2.3.3",
+    "vue-server-renderer": "^2.4.4",
     "vue-ssr-html-stream": "^2.2.0",
-    "vue-template-compiler": "^2.3.3",
+    "vue-template-compiler": "^2.4.4",
     "vuex": "^2.3.1",
     "vuex-router-sync": "^4.1.2"
   },

@@ -1,6 +1,6 @@
 <template>
     <div class="dr-AdminResourceForm">
-        <el-dialog size="large" title="填写分类信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" title="填写分类信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="cateRules" ref="cateRuleForm" label-width="120px" class="demo-ruleForm">
                 <el-form-item v-show="dialogState.type==='children' && !dialogState.edit" label="父对象" prop="label">
                     <el-input size="small" :disabled="true" v-model="dialogState.formData.parentObj.name"></el-input>
@@ -24,7 +24,7 @@
                     <el-input size="small" v-model="dialogState.formData.comments"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('cateRuleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
+                    <el-button size="medium" type="primary" @click="submitForm('cateRuleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>

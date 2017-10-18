@@ -12,7 +12,8 @@ const state = () => ({
         formData: {
             contentId: '',
             content: '',
-            replyId: '',
+            replyContent: '',
+            replyAuthor: '',
             relationMsgId: ''
         }
     }
@@ -48,12 +49,7 @@ const mutations = {
     },
     ['recevieMessageForm'](state, formState) {
         state.form.reply = formState.reply;
-        state.form.formData = Object.assign({
-            contentId: '',
-            content: '',
-            replyId: '',
-            relationMsgId: ''
-        }, formState.formData);
+        state.form.formData = Object.assign(state.form.formData, formState.formData);
     },
     ['insertCommentItem'](state, data) {
         state.lists.data = [data].concat(state.lists.data)

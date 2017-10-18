@@ -1,6 +1,35 @@
 # doracms 2.0.0
 
-![DoraCMS](http://git.oschina.net/uploads/images/2015/0930/174726_d78c4a23_352304.jpeg "DoraCMS")
+![DoraCMS](http://7xkrk4.com1.z0.glb.clouddn.com/doracms2.jpg "DoraCMS")
+
+## 2.0.0版本更新
+1、生产环境日志目录可配置，修复用户部署生产报路径找不到的问题
+
+2、新增广告管理模块，修复多图轮播显示不正常的问题
+
+3、修复删除文章没有同步删除关联留言的问题
+
+4、更新前端后台样式
+
+5、修复留言过滤特殊字符的问题
+
+6、添加了留言回复功能
+
+7、修复文章上传缩略图某些jpg文件无法上传的问题
+
+8、完善了后台首页信息总览
+
+9、修复了后台修改其它管理员权限会把自己的权限置空的问题
+
+更新方法： 
+1、checkout 最新 2.0.0 代码
+
+2、删除 node_modules,重新安装依赖包
+
+3、找到 utils/settings.js，将 SYSTEMLOGPATH 参数值修改为正式服务器上(生产环境)的日志目录(very important!)
+
+3、启动数据库，执行npm run dev 
+
 
 ## 说明
 
@@ -110,6 +139,10 @@ http://localhost:8080
 
 登录
 http://localhost:8080/dr-admin
+
+# 捐赠
+如果你发现DoraCMS很有用，可以请生哥喝杯咖啡(⊙o⊙)哦
+<img width="650" src="http://7xkrk4.com1.z0.glb.clouddn.com/payme.jpg" alt="">
 
 # LICENSE
 

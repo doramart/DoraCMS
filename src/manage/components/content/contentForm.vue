@@ -37,8 +37,8 @@
                 <Ueditor @ready="editorReady"></Ueditor>
             </el-form-item>
             <el-form-item class="dr-submitContent">
-                <el-button size="small" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? '更新' : '保存'}}</el-button>
-                <el-button size="small" @click="backToList">返回</el-button>
+                <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? '更新' : '保存'}}</el-button>
+                <el-button size="medium" @click="backToList">返回</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -68,7 +68,7 @@
         overflow: hidden;
     }
     .avatar-uploader .el-upload:hover {
-        border-color: #20a0ff;
+        border-color: #409EFF;
     }
     .avatar-uploader-icon {
         font-size: 28px;

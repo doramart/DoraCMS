@@ -31,8 +31,8 @@
                 <el-input size="small" type="textarea" v-model="loginState.userInfo.comments"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-                <el-button @click="resetForm('ruleForm')">重置</el-button>
+                <el-button size="small" type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
               </el-form-item>
             </el-form>
           </div>

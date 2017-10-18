@@ -6,6 +6,10 @@
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
         <el-col :xs="20" :sm="12" :md="8" :lg="8">
+          <div class="admin-logo-title">
+            <h3>
+              <b style="color:#1D8CE0">Dora</b>CMS</h3>
+          </div>
           <el-form :model="adminLoginFormData" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm login-container">
             <h3 class="pannel-title">
               <span>管理员登录</span>
@@ -17,8 +21,8 @@
               <el-input size="small" type="password" v-model="adminLoginFormData.password"></el-input>
             </el-form-item>
             <el-form-item class="submit-btn">
-              <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-              <el-button @click="resetForm('ruleForm')">重置</el-button>
+              <el-button size="small" type="primary" @click="submitForm('ruleForm')">登录</el-button>
+              <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -119,6 +123,15 @@ export default {
 </script>
 
 <style lang="scss">
+.admin-logo-title {
+  h3 {
+    color: #99A9BF;
+    font-size: 35px;
+    text-align: center;
+    font-weight: normal;
+  }
+}
+
 .admin-login-form {
 
   margin: 0 auto;

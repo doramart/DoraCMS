@@ -33,7 +33,7 @@ export default {
         setRowState(row, index) {
             if (!row.isRead) {
                 return {
-                    color: '#20A0FF',
+                    color: '#409EFF',
                     fontWeight: 'bold'
                 }
             } else {

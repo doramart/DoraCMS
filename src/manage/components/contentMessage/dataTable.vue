@@ -5,7 +5,7 @@
             </el-table-column>
             <el-table-column prop="contentId.stitle" label="文章标题" width="200">
             </el-table-column>
-            <el-table-column prop="content" label="留言内容" width="280">
+            <el-table-column prop="content" label="留言内容" width="280" show-overflow-tooltip>
                 <template scope="scope">{{scope.row.content | cutWords(20)}}</template>
             </el-table-column>
             <el-table-column prop="author" label="留言者">
@@ -18,8 +18,8 @@
             </el-table-column>
             <el-table-column label="操作" width="150" fixed="right">
                 <template scope="scope">
-                    <el-button size="mini" @click="replyContentMessage(scope.$index, dataList)">回复</el-button>
-                    <el-button size="mini" type="danger" @click="deleteContentMessage(scope.$index, dataList)">删除</el-button>
+                    <el-button size="mini" type="primary" plain round @click="replyContentMessage(scope.$index, dataList)"><i class="fa fa-mail-reply" aria-hidden="true"></i></el-button>
+                    <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteContentMessage(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>
         </el-table>

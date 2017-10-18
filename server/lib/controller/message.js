@@ -138,7 +138,7 @@ class Message {
                         if (fields.utype === '1') {
                             mailParams.adminAuthor = req.session.adminUserInfo
                         } else {
-                            mailParams.author = replyAuthor.author
+                            mailParams.author = msgInfo.replyAuthor.author
                         }
                         service.sendEmail(req, systemConfigs[0], settings.email_notice_user_contentMsg, mailParams);
                     }

@@ -88,13 +88,16 @@ class Content {
                 files = {
                     id: 1,
                     title: 1,
-                    stitle: 1
+                    sImg: 1,
+                    stitle: 1,
+                    updateDate: 1
                 }
             } else if (model === 'normal') {
                 files = {
                     id: 1,
                     title: 1,
                     sImg: 1,
+                    isTop: 1,
                     categories: 1,
                     commentNum: 1,
                     date: 1,
@@ -109,7 +112,7 @@ class Content {
             },
             {
                 path: 'categories',
-                select: 'name _id'
+                select: 'name defaultUrl _id'
             }, {
                 path: 'tags',
                 select: 'name _id'
@@ -288,6 +291,8 @@ class Content {
                 })
             }
             await ContentModel.remove({ _id: req.query.ids });
+            // 删除关联留言
+            await MessageModel.remove({ 'contentId': { $in: req.query.ids } });
             res.send({
                 state: 'success'
             });
@@ -296,7 +301,7 @@ class Content {
             res.send({
                 state: 'error',
                 type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
+                message: '删除数据失败:' + err,
             })
         }
     }

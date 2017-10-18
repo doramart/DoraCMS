@@ -264,6 +264,7 @@ const state = {
             formData: {
                 name: '',
                 type: '1',
+                height: '',
                 comments: '',
                 items: [],
                 state: true
@@ -528,6 +529,7 @@ const mutations = {
         state.ads.infoFormState.formData = Object.assign({
             name: '',
             type: '1',
+            height: '',
             comments: '',
             items: [],
             state: true

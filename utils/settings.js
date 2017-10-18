@@ -21,7 +21,7 @@ module.exports = {
 
     // 站点基础信息配置
     DORACMSAPI: 'http://api.html-js.cn', // 系统服务提供商
-
+    SYSTEMLOGPATH: '/home/doraData/logsdir/doracms', // 服务器日志保存目录
     // 邮件相关设置
     email_findPsd: 'findPsd',
     email_reg_active: 'reg_active',

@@ -1,47 +1,55 @@
 <template>
-    <div class="content-tag">
-        <h3 class="simpletitle">标签云</h3>
-        <ul>
-            <li :key="item._id" v-for="(item,index) in tags" v-once>
-                <router-link :to="'/tag/'+item.name">{{item.name}}</router-link>
-            </li>
-        </ul>
-    </div>
+    <PannelBox title="标签云" className="content-tag">
+        <div class="content-tag-list">
+            <ul>
+                <li :key="item._id" v-for="(item,index) in tags" v-once>
+                    <el-button size="mini" round @click="searchTag(item)">{{item.name}}</el-button>
+                    <!-- <router-link :to="'/tag/'+item.name">{{item.name}}</router-link> -->
+                </li>
+            </ul>
+        </div>
+    </PannelBox>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-export default {
-    name: 'Tag',
-    props: ['tags']
-}
-
-</script>
-
-<style lang="scss">
-.content-tag {
-    text-align: left;
-    margin-bottom: 40px;
-    ul {
-        li {
-            font-size: 14px;
-            list-style-type: none;
-            display: inline-block;
-            margin: 0 20px 0 0;
-            a {
-                padding: 10px 0px;
-                display: inline-block;
-                color: #6e7173;
-                cursor: pointer;
-            }
-            a:link,
-            a:visited {
-                border-bottom: 1px dashed #ededed;
-            }
-            a:hover {
-                border-bottom: 1px dashed #20A0FF;
-                color: #20A0FF
+    import {
+        mapGetters
+    } from 'vuex'
+    import PannelBox from './PannelBox.vue'
+    export default {
+        name: 'Tag',
+        props: ['tags'],
+        components: {
+            PannelBox
+        },
+        methods: {
+            searchTag(item) {
+                this.$router.push('/tag/' + item.name)
             }
         }
     }
-}
+</script>
+
+<style lang="scss">
+    .content-tag {
+        ul {
+            padding-top: 15px;
+            li {
+                float: left;
+                height: 35px;
+                margin: 0 10px 10px 0;
+                cursor: pointer;
+                text-align: left;
+                border: none;
+                padding: 0;
+                font-weight: 700;
+                a:link,
+                a:visited {
+                    color: #3ca5f6;
+                }
+                a:hover {
+                    color: #337ab7
+                }
+            }
+        }
+    }
 </style>

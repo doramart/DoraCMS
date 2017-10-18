@@ -102,6 +102,7 @@ class Ads {
             const adObj = {
                 name: fields.name,
                 state: fields.state,
+                height: fields.height,
                 type: fields.type,
                 comments: fields.comments
             }
@@ -150,6 +151,7 @@ class Ads {
             const userObj = {
                 name: fields.name,
                 state: fields.state,
+                height: fields.height,
                 type: fields.type,
                 comments: fields.comments
             }

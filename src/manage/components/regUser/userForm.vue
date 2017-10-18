@@ -1,6 +1,6 @@
 <template>
     <div class="dr-regUserForm">
-        <el-dialog size="small" title="填写用户信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" title="填写用户信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
                 <el-form-item label="用户名" prop="userName">
                     <el-input size="small" v-model="dialogState.formData.userName"></el-input>
@@ -21,7 +21,7 @@
                     <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
+                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>

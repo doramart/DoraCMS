@@ -52,7 +52,7 @@ export default {
                 font-size: 13px;
             }
             li.active a {
-                color: #20A0FF
+                color: #409EFF
             }
         }
     }

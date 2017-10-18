@@ -13,17 +13,17 @@ var AdsItemsSchema = new Schema({
         'default': shortid.generate
     },
 
-    title:  String,
-    link : String, // 广告链接
-    width : Number,
-    height : Number,
-    target : {type : String, default : '_blank'},
-    sImg : String , // 图片路径
+    title: String,
+    link: String, // 广告链接
+    width: Number,
+    height: { type: Number, default: 1 },
+    target: { type: String, default: '_blank' },
+    sImg: String, // 图片路径
     date: { type: Date, default: Date.now },
     alt: String // 广告alt标识
 });
 
-var AdsItems = mongoose.model("AdsItems",AdsItemsSchema);
+var AdsItems = mongoose.model("AdsItems", AdsItemsSchema);
 
 module.exports = AdsItems;
 
