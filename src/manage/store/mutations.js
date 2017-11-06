@@ -267,7 +267,8 @@ const state = {
                 height: '',
                 comments: '',
                 items: [],
-                state: true
+                state: true,
+                carousel: true
             }
         },
         itemFormState: {
@@ -532,7 +533,8 @@ const mutations = {
             height: '',
             comments: '',
             items: [],
-            state: true
+            state: true,
+            carousel: true
         }, formState.formData);
     },
     [types.ADS_ITEM_FORMSTATE](state, formState) {

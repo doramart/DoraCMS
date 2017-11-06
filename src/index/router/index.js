@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Meta from 'vue-meta'
 
 import index from '../views/ArticleList.vue'
+import cmsCase from '../views/CmsCase.vue'
 import article from '../views/Article.vue'
 import adminLogin from '../views/AdminLogin.vue'
 import userLoginForm from '../views/UserLoginForm'
@@ -27,14 +28,6 @@ const scrollBehavior = to => {
     return position
 }
 
-// const guardRoute = (to, from, next) => {
-//     var token = cookies.get('user') || !inBrowser
-//     if (!token) {
-//         next('/')
-//     } else {
-//         next()
-//     }
-// }
 export function createRouter() {
     const router = new VueRouter({
         mode: 'history',
@@ -43,6 +36,7 @@ export function createRouter() {
         routes: [
             { name: 'index', path: '/', component: index, meta: { typeId: 'indexPage' } },
             { name: 'index', path: '/page/:current(\\d+)?', component: index, meta: { typeId: 'indexPage' } },
+            { name: 'cmscase', path: '/cmscase___:typeId?/:current(\\d+)?', component: cmsCase },
             { name: 'category', path: '/:cate1?___:typeId?/:current(\\d+)?', component: index },
             { name: 'category', path: '/:cate0/:cate1?___:typeId?/:current(\\d+)?', component: index },
             { name: 'search', path: '/search/:searchkey/:current(\\d+)?', component: index, meta: { typeId: 'search' } },

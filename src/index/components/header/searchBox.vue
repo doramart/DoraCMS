@@ -1,5 +1,5 @@
 <template>
-    <div class="search-pannel">
+    <div class="search-pannel" v-once>
         <div class="input-area">
             <el-form>
                 <el-form-item>
@@ -12,37 +12,28 @@
     </div>
 </template>
 <script>
-import {
-    mapGetters,
-    mapActions
-} from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
-    name: 'searchbox',
-    data() {
-        return {
-            searchkey: ''
-        }
+  name: "searchbox",
+  data() {
+    return {
+      searchkey: ""
+    };
+  },
+  methods: {
+    handleIconClick(ev) {
+      this.$router.replace("/search/" + this.searchkey);
     },
-    methods: {
-        handleIconClick(ev) {
-            this.$router.replace('/search/' + this.searchkey)
-        },
-        search(e) {
-            // var qs = e.target.value
-            // if (qs === "") {
-            //     return false
-            // }
-            // this.$router.replace('/search/' + qs)
-        }
-    }
-}
+    search(e) {}
+  }
+};
 </script>
 <style lang="scss">
 .search-pannel {
-    width: 100%;
-    display: inline-block;
-    .el-form-item {
-        margin-bottom: 0
-    }
+  width: 100%;
+  display: inline-block;
+  .el-form-item {
+    margin-bottom: 0;
+  }
 }
 </style>

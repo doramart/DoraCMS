@@ -21,7 +21,7 @@
                                 </div>
                             </el-col>
                             <el-col :xs="24" :sm="17" :md="17" :lg="17" v-else>
-                                <div>暂无内容...</div>
+                                <div style="height:300px;" v-loading="loadingState">&nbsp;</div>
                             </el-col>
                             <el-col :xs="0" :sm="7" :md="7" :lg="7" class="content-mainbody-right">
                                 <div class="grid-content bg-purple-light title">
@@ -96,6 +96,11 @@
             })
             await store.dispatch('frontend/article/getArticleList', base)
         },
+        data(){
+            return{
+                loadingState: false
+            }
+        },
         mixins: [metaMixin],
         components: {
             ItemList,
@@ -108,11 +113,15 @@
         },
         computed: {
             ...mapGetters({
-                topics: 'frontend/article/getArticleList',
                 hotlist: 'frontend/article/getHotContentList',
                 tags: 'global/tags/getTagList',
                 systemConfig: 'global/footerConfigs/getSystemConfig'
             }),
+            topics(){
+                let list  = this.$store.getters['frontend/article/getArticleList'](this.$route.path);
+                this.loadingState = list.loading;
+                return list;
+            },
             typeId() {
                 return this.$route.params.typeId ? this.$route.params.typeId : this.$route.meta.typeId;
             },
@@ -180,23 +189,23 @@
 </script>
 
 <style lang="scss">
-    .column-wrap {
-        position: relative;
-        height: 30px;
-        line-height: 30px;
-        font-size: 20px;
-        color: #303030;
-        padding-left: 18px;
-        margin-bottom: 15px;
-    }
+.column-wrap {
+  position: relative;
+  height: 30px;
+  line-height: 30px;
+  font-size: 20px;
+  color: #303030;
+  padding-left: 18px;
+  margin-bottom: 15px;
+}
 
-    .column-wrap:before {
-        content: '';
-        position: absolute;
-        width: 4px;
-        height: 21px;
-        background: #f63756;
-        left: 0;
-        top: 4px;
-    }
+.column-wrap:before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 21px;
+  background: #f63756;
+  left: 0;
+  top: 4px;
+}
 </style>

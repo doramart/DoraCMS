@@ -14,7 +14,7 @@ var AdminUser = require('./AdminUser');
 var ContentSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     title: String,

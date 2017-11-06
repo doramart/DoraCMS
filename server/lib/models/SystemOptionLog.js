@@ -10,7 +10,7 @@ var moment = require('moment')
 var SystemOptionLogSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     type: String, //login:登录 exception:异常

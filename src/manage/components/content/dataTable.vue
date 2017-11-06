@@ -4,35 +4,35 @@
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column prop="isTop" label="推荐" width="55" show-overflow-tooltip>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <i @click="topContent(scope.$index, dataList)" :class="scope.row.isTop === 1 ? 'fa fa-star' : 'fa fa-star-o'" :style="scope.row.isTop === 1 ? yellow : gray"></i>
                 </template>
             </el-table-column>
             <el-table-column prop="title" label="标题" width="200" show-overflow-tooltip>
-                <template scope="scope"><a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.title}}</a></template>
+                <template slot-scope="scope"><a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.title}}</a></template>
             </el-table-column>
             <el-table-column prop="date" label="创建时间" width="180">
-                <template scope="scope">{{scope.row.updateDate}}</template>
+                <template slot-scope="scope">{{scope.row.updateDate}}</template>
             </el-table-column>
             <el-table-column prop="categories" label="类别" show-overflow-tooltip width="120">
-                <template scope="scope">{{typeof scope.row.categories == 'object' && scope.row.categories.length > 1 ? scope.row.categories[scope.row.categories.length-1].name : '其它'}}</template>
+                <template slot-scope="scope">{{typeof scope.row.categories == 'object' && scope.row.categories.length > 1 ? scope.row.categories[scope.row.categories.length-1].name : '其它'}}</template>
             </el-table-column>
             <el-table-column prop="from" label="来源" show-overflow-tooltip>
-                <template scope="scope">{{scope.row.from === '1'?'原创':'转载'}}</template>
+                <template slot-scope="scope">{{scope.row.from === '1'?'原创':'转载'}}</template>
             </el-table-column>
             <el-table-column prop="clickNum" label="点击" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="commentNum" label="评论数" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="state" label="显示" show-overflow-tooltip>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <i :class="scope.row.state ? 'fa fa-check-circle' : 'fa fa-minus-circle'" :style="scope.row.state ? green : red"></i>
                 </template>
             </el-table-column>
             <el-table-column prop="author.name" label="作者" show-overflow-tooltip>
             </el-table-column>
             <el-table-column label="操作" width="150" fixed="right">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="mini" type="primary" plain round @click="editContentInfo(scope.$index, dataList)">
                         <i class="fa fa-edit"></i>
                     </el-button>

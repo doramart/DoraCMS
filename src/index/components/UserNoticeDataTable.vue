@@ -2,21 +2,21 @@
     <div>
         <el-table :data="dataList" style="width: 100%" row-class-name="notice-list-row" @expand="setHasRead">
             <el-table-column type="expand">
-                <template scope="props">
+                <template slot-scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
                         <span v-html="props.row.notify.content"></span>
                     </el-form>
                 </template>
             </el-table-column>
             <el-table-column label="概要" prop="notify.title" width="400">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span :style="{fontWeight:scope.row.isRead?'':'bold'}">{{scope.row.notify.title}}</span>
                 </template>
             </el-table-column>
             <el-table-column label="发布时间" prop="date">
             </el-table-column>
             <el-table-column label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="deleteMessage(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>

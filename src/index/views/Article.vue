@@ -10,7 +10,7 @@
                         <el-row :gutter="24">
                             <el-col :xs="24" :sm="17" :md="17" :lg="17">
                                 <div>
-                                    <h2 class="content-title">{{article.doc.title}}</h2>
+                                    <h2 class="content-title">{{article.doc.title}}&nbsp;<span v-show="article.doc.from == '2'" class="from">[转]</span></h2>
                                     <div class="content-author">
                                         <ul>
                                             <li class="author-name">
@@ -68,8 +68,7 @@
     export default {
         name: 'frontend-article',
         async asyncData({ store, route }) {
-            const { path, params: { id } } = route
-
+            const { path, params: { id } } = route;
             let params = {}, currentId = '';
             if (id) {
                 if (id.indexOf('html') > 0) {
@@ -78,8 +77,8 @@
                     currentId = id;
                 }
             }
-            store.dispatch('frontend/article/getHotContentList', { typeId : 'indexPage', pageSize: 10})
-            store.dispatch('global/message/getUserMessageList',{contentId:currentId})
+            store.dispatch('frontend/article/getHotContentList', { typeId: 'indexPage', pageSize: 10})
+            store.dispatch('global/message/getUserMessageList',{ contentId: currentId, pageSize: 999})
             store.dispatch('frontend/article/getRecentContentList')
             await store.dispatch(`frontend/article/getArticleItem`, { id: currentId, path })
         },
@@ -157,6 +156,11 @@
 .content-detail {
     color: #3f3f3f;
     margin-top: 20px;
+    .from{
+        color: #FA5555;
+        font-size: 13px;
+        font-weight: normal;
+    }
     img {
         max-width: 100% !important;
     }

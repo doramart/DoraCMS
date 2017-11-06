@@ -6,25 +6,25 @@
             <el-table-column prop="name" label="广告名" width="120">
             </el-table-column>
             <el-table-column prop="type" label="类型" width="80">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span v-if="scope.row.type == '0'">文字</span>
                     <span v-if="scope.row.type == '1'">图片</span>
                 </template>
             </el-table-column>
             <el-table-column prop="state" label="显示" width="100" show-overflow-tooltip>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <i :class="scope.row.state ? 'fa fa-check-circle' : 'fa fa-minus-circle'" :style="scope.row.state ? green : red"></i>
                 </template>
             </el-table-column>
             <el-table-column prop="comments" label="获取代码" width="280" show-overflow-tooltip>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span>{{'&lt;AdsPannel id=&quot;'+scope.row._id+'&quot; /&gt;'}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="comments" label="广告描述" show-overflow-tooltip>
             </el-table-column>
             <el-table-column label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="mini" type="primary" plain round @click="editAdsInfo(scope.$index, dataList)"><i class="fa fa-edit"></i></el-button>
                     <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteAds(scope.$index, dataList)"></el-button>
                 </template>

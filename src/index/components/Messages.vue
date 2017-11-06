@@ -54,6 +54,9 @@
                             <div v-if="item.replyAuthor">
                                 <span style="color: #409EFF">{{'@'+item.replyAuthor.userName}}</span>&nbsp; {{item.content}}
                             </div>
+                            <div v-else-if="item.adminReplyAuthor">
+                                <span style="color: #409EFF">{{'@'+item.adminReplyAuthor.userName}}</span>&nbsp; {{item.content}}
+                            </div>
                             <div v-else>
                                 {{item.content}}
                             </div>
@@ -126,7 +129,7 @@ export default {
         })
     },
     components: {
-            PannelBox
+        PannelBox
     },
     methods: {
         changeReplyState(state) {
@@ -136,7 +139,13 @@ export default {
         replyMsg(item) {
             this.replyObj = item;
             let currentMsgAuthor = !_.isEmpty(item.author) ? item.author : item.adminAuthor;
-            this.$store.dispatch('global/message/messageform', { reply: true, formData: { replyAuthor: currentMsgAuthor._id, relationMsgId: item._id, replyContent: "@" + currentMsgAuthor.userName + " " } })
+            let formParams = { replyAuthor: '', adminReplyAuthor: '', relationMsgId: item._id, replyContent: "@" + currentMsgAuthor.userName + " " };
+            if(!_.isEmpty(item.author)){
+                formParams.replyAuthor = currentMsgAuthor._id;
+            }else{
+                formParams.adminReplyAuthor = currentMsgAuthor._id
+            }
+            this.$store.dispatch('global/message/messageform', { reply: true, formData:  formParams})
         },
         submitForm(formName) {
             if (!this.loginState.logined) {
@@ -212,6 +221,7 @@ export default {
             .user-content {
                 color: #666666;
                 padding-left: 15px;
+                word-break: break-all;
             }
             .user-name {
                 margin: 5px 0 15px 15px;

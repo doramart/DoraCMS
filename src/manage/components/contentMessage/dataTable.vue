@@ -6,18 +6,19 @@
             <el-table-column prop="contentId.stitle" label="文章标题" width="200">
             </el-table-column>
             <el-table-column prop="content" label="留言内容" width="280" show-overflow-tooltip>
-                <template scope="scope">{{scope.row.content | cutWords(20)}}</template>
+                <template slot-scope="scope">{{scope.row.content | cutWords(20)}}</template>
             </el-table-column>
             <el-table-column prop="author" label="留言者">
-                <template v-if="scope.row.author" scope="scope">{{scope.row.utype ==='0'?(scope.row.author?scope.row.author.userName:'匿名'):(scope.row.adminAuthor?scope.row.adminAuthor.userName:'')}}</template>
+                <template slot-scope="scope">{{scope.row.utype ==='0'?(scope.row.author?scope.row.author.userName:'匿名'):(scope.row.adminAuthor?scope.row.adminAuthor.userName:'')}}</template>
             </el-table-column>
-            <el-table-column prop="replyAuthor.userName" label="关联用户(回复)">
+            <el-table-column prop="replyAuthor" label="关联用户(被回复)">
+                <template slot-scope="scope">{{scope.row.replyAuthor ? scope.row.replyAuthor.userName :(scope.row.adminReplyAuthor ? scope.row.adminReplyAuthor.userName : '')}}</template>
             </el-table-column>
             <el-table-column prop="date" label="时间">
-                <template scope="scope">{{scope.row.date}}</template>
+                <template slot-scope="scope">{{scope.row.date}}</template>
             </el-table-column>
             <el-table-column label="操作" width="150" fixed="right">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="mini" type="primary" plain round @click="replyContentMessage(scope.$index, dataList)"><i class="fa fa-mail-reply" aria-hidden="true"></i></el-button>
                     <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteContentMessage(scope.$index, dataList)"></el-button>
                 </template>

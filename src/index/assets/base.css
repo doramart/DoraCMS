@@ -1,21 +1,26 @@
-html, body {
+html,
+body {
     padding: 0;
     margin: 0;
     background: #ffffff;
     -webkit-font-smoothing: antialiased;
     color: rgb(51, 51, 51);
-    font-family: -apple-system,SF UI Text,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+    font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     transition: all .2s ease;
 }
 
-.fade-enter, .fade-leave-active {
+.fade-enter,
+.fade-leave-active {
     opacity: 0;
 }
 
-a:link, a:active, a:visited {
+a:link,
+a:active,
+a:visited {
     text-decoration: none;
     color: #333333;
 }
@@ -33,7 +38,18 @@ li {
     list-style-type: none;
 }
 
-.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: inherit;
     font-weight: 500;
     line-height: 1.1;
@@ -73,7 +89,8 @@ pre {
     border: none !important;
 }
 
-.normaltitle, .catetitle {
+.normaltitle,
+.catetitle {
     font-size: 14px;
     color: #fff;
     text-align: left;
@@ -108,7 +125,7 @@ pre {
     background-clip: padding-box;
     padding: 25px 35px 10px 35px;
     background: #fff;
-    box-shadow: 0 0 8px rgba(0,0,0,.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, .1);
     border-radius: 4px;
 }
 
@@ -137,36 +154,13 @@ pre {
     .footer .sitemap {
         display: none !important;
     }
-    .login-pannel {
-        display: none;
-    }
-    .search-pannel {
-        display: none !important;
-    }
-    .content-tag {
-        display: none;
-    }
     .content-item {
         padding-bottom: 15px !important;
-        margin-bottom: 20px !important;
-    }
-    .content-item .contentImg {
-        display: none !important;
-    }
-
-    .content-item .post-angle{
-        display: none !important;
-    }
-    .content-mainbody-right {
-        display: none;
     }
 }
 
-@media screen and (max-width:992px) {
-    .content-item .post-angle{
-        display: none !important;
-    }
-    .content-item .contentImg {
+@media screen and (max-width:1200px) {
+    .search-pannel {
         display: none !important;
     }
 }

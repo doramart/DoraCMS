@@ -13,7 +13,7 @@ var Content = require('./Content');
 var MessageSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     contentId: {
@@ -26,16 +26,19 @@ var MessageSchema = new Schema({
         ref: 'User'
 
     },  // 留言者ID
-    replyAuthor: {
-        type: String,
-        ref: 'User'
-
-    },   // 被回复者ID
     adminAuthor: {
         type: String,
         ref: 'AdminUser'
 
     },// 管理员ID
+    replyAuthor: {
+        type: String,
+        ref: 'User'
+    },   // 被回复者ID
+    adminReplyAuthor: {
+        type: String,
+        ref: 'AdminUser'
+    },   // 被回复者ID
     utype: { type: String, default: '0' }, // 评论者类型 0,普通用户，1,管理员
     relationMsgId: String, // 关联的留言Id
     date: { type: Date, default: Date.now }, // 留言时间

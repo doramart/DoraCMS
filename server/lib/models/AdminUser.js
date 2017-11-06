@@ -12,7 +12,7 @@ var AdminUserSchema = new Schema({
     id: String,
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     name: String,
@@ -24,6 +24,7 @@ var AdminUserSchema = new Schema({
     date: { type: Date, default: Date.now },
     logo: { type: String, default: "/upload/images/defaultlogo.png" },
     enable: { type: Boolean, default: false },
+    auth: { type : Boolean ,default :false},
     group: {
         type: String,
         ref: 'AdminGroup'

@@ -3,7 +3,8 @@ import api from '~api'
 const state = () => ({
     loginForm: {
         userName: '',
-        password: ''
+        password: '',
+        imageCode: ''
     }
 })
 
@@ -21,7 +22,8 @@ const mutations = {
     ['recevieAdminLoginForm'](state, { formData }) {
         state.loginForm = Object.assign({
             email: '',
-            password: ''
+            password: '',
+            imageCode: ''
         }, formData);
     }
 }

@@ -4,12 +4,12 @@
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column prop="logs" label="行为">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-tag size="small" :type="(scope.row.type).indexOf('exception') > -1 ? 'danger' : 'gray'">{{ scope.row.logs | cutWords(50)}}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column prop="type" label="类别">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span v-if="scope.row.type == 'login'">系统登录</span>
                     <span v-if="(scope.row.type).indexOf('exception') > -1 ">系统异常</span>
                 </template>
@@ -17,7 +17,7 @@
             <el-table-column prop="date" label="发生时间">
             </el-table-column>
             <el-table-column label="操作" width="150">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="mini" type="primary" plain round @click="showDetails(scope.$index, dataList)"><i :class="'fa ' +((scope.row.type).indexOf('exception') > -1 ? 'fa-bug' : 'fa-eye')" aria-hidden="true"></i></el-button>
                     <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteDataItem(scope.$index, dataList)"></el-button>
                 </template>

@@ -10,7 +10,7 @@ var Schema = mongoose.Schema;
 var AdminResourceSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     label: String,

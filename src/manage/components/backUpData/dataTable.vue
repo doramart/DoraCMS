@@ -4,7 +4,7 @@
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column prop="fileName" label="文件名" width="200">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <i :style="{color: '#99A9BF'}" class="fa fa-database"></i>&nbsp;{{scope.row.fileName}}
                 </template>
             </el-table-column>
@@ -13,7 +13,7 @@
             <el-table-column prop="date" label="备份时间">
             </el-table-column>
             <el-table-column label="操作" width="120">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteDataItem(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>

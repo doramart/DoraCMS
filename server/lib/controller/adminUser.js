@@ -2,6 +2,7 @@ const BaseComponent = require('../prototype/baseComponent');
 const AdminUserModel = require("../models").AdminUser;
 const UserModel = require("../models").User;
 const ContentModel = require("../models").Content;
+const SystemConfigModel = require("../models").SystemConfig;
 const SystemOptionLogModel = require("../models").SystemOptionLog;
 const UserNotifyModel = require("../models").UserNotify;
 const MessageModel = require("../models").Message;
@@ -10,7 +11,8 @@ const shortid = require('shortid');
 const validator = require('validator')
 const _ = require('lodash')
 const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
-
+const axios = require('axios');
+const pkgInfo = require('../../../package.json')
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
@@ -148,6 +150,11 @@ class AdminUser {
                 } else if (!validatorUtil.checkPwd(fields.password)) {
                     errMsg = '请输入正确的密码'
                 }
+
+                if(!fields.imageCode || fields.imageCode != req.session.imageCode){
+                    errMsg = '请输入正确的验证码'
+                }
+
                 if (errMsg) {
                     res.send({
                         state: 'error',
@@ -193,6 +200,31 @@ class AdminUser {
                     loginLog.type = 'login';
                     loginLog.logs = req.session.adminUserInfo.userName + ' 登录，IP:' + clientIp;
                     await loginLog.save();
+
+                    // 站点认证
+                    if(!req.session.adminUserInfo.auth){
+                        const systemConfigs = await SystemConfigModel.find({});
+                        const { siteName, siteEmail, siteDomain } = systemConfigs[0];
+                        let authParams = {
+                            domain: req.headers.host, 
+                            ipAddress: clientIp,
+                            version: pkgInfo.version,
+                            siteName,
+                            siteEmail,
+                            siteDomain
+                        };
+                        try {
+                            let writeState = await axios.post(settings.DORACMSAPI + '/system/checkSystemInfo', authParams);
+                            if(writeState.status == 200 && writeState.data == 'success'){
+                                await AdminUserModel.update({'_id': req.session.adminUserInfo._id},{$set: {auth: true}})
+                            }
+                        } catch (authError) {
+                            res.send({
+                                state: 'success',
+                                adminPower: req.session.adminPower
+                            });
+                        }
+                    }
 
                     res.send({
                         state: 'success',

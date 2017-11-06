@@ -10,7 +10,7 @@ var Schema = mongoose.Schema;
 var SystemConfigSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     date: { type: Date, default: Date.now },

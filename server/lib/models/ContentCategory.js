@@ -9,7 +9,7 @@ var Schema = mongoose.Schema;
 var ContentCategorySchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     uid: {

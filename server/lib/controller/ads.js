@@ -103,6 +103,7 @@ class Ads {
                 name: fields.name,
                 state: fields.state,
                 height: fields.height,
+                carousel: fields.carousel,
                 type: fields.type,
                 comments: fields.comments
             }
@@ -152,6 +153,7 @@ class Ads {
                 name: fields.name,
                 state: fields.state,
                 height: fields.height,
+                carousel: fields.carousel,
                 type: fields.type,
                 comments: fields.comments
             }

@@ -6,19 +6,19 @@
             <el-table-column prop="title" label="标题">
             </el-table-column>
             <el-table-column prop="content" label="内容">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span v-html="scope.row.content"></span>
                 </template>
             </el-table-column>
             <el-table-column prop="adminSender" label="发布者">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <span>{{scope.row.adminSender.userName}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="date" label="发生时间">
             </el-table-column>
             <el-table-column label="操作" fixed="right">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button type="danger" plain size="mini" round icon="el-icon-delete" @click="deleteAnnounce(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>

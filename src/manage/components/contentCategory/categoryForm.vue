@@ -8,7 +8,7 @@
                 <el-form-item label="类别名称" prop="name">
                     <el-input size="small" v-model="dialogState.formData.name"></el-input>
                 </el-form-item>
-                <el-form-item label="有效" prop="enable">
+                <el-form-item label="显示" prop="enable">
                     <el-switch on-text="是" off-text="否" v-model="dialogState.formData.enable"></el-switch>
                 </el-form-item>
                 <el-form-item label="SeoUrl" prop="defaultUrl">
@@ -21,7 +21,7 @@
                     <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="dialogState.formData.keywords"> </el-input>
                 </el-form-item>
                 <el-form-item label="描述" prop="comments">
-                    <el-input size="small" v-model="dialogState.formData.comments"></el-input>
+                    <el-input size="small" type="texarea" v-model="dialogState.formData.comments"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button size="medium" type="primary" @click="submitForm('cateRuleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
@@ -31,100 +31,107 @@
     </div>
 </template>
 <script>
-import services from '../../store/services.js';
-import _ from 'lodash';
+import services from "../../store/services.js";
+import _ from "lodash";
 export default {
-    props: {
-        dialogState: Object
-    },
-    data() {
-        return {
-            cateRules: {
-                name: [{
-                    required: true,
-                    message: '请输入类别名称',
-                    trigger: 'blur'
-                },
-                {
-                    min: 2,
-                    max: 20,
-                    message: '2-20个非特殊字符',
-                    trigger: 'blur'
-                }
-                ],
-                defaultUrl: [{
-                    required: true,
-                    message: '请输入seoUrl',
-                    trigger: 'blur'
-                }],
-                comments: [{
-                    message: '请填写备注',
-                    trigger: 'blur'
-                }, {
-                    min: 5,
-                    max: 50,
-                    message: '请输入5-50个字符',
-                    trigger: 'blur'
-                }]
-            },
-            options: [{
-                value: '0',
-                label: '基础菜单'
-            }, {
-                value: '1',
-                label: '操作和功能'
-            }]
-        };
-    },
-    methods: {
-        handleChange(value) {
-            console.log(value);
+  props: {
+    dialogState: Object
+  },
+  data() {
+    return {
+      cateRules: {
+        name: [
+          {
+            required: true,
+            message: "请输入类别名称",
+            trigger: "blur"
+          },
+          {
+            min: 2,
+            max: 20,
+            message: "2-20个非特殊字符",
+            trigger: "blur"
+          }
+        ],
+        defaultUrl: [
+          {
+            required: true,
+            message: "请输入seoUrl",
+            trigger: "blur"
+          }
+        ],
+        comments: [
+          {
+            message: "请填写备注",
+            trigger: "blur"
+          },
+          {
+            min: 4,
+            max: 100,
+            message: "请输入5-50个字符",
+            trigger: "blur"
+          }
+        ]
+      },
+      options: [
+        {
+          value: "0",
+          label: "基础菜单"
         },
-        confirm() {
-            this.$store.dispatch('hideContentCategoryForm')
-        },
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    console.log('---formdatas--', this);
-                    let params = this.dialogState.formData;
-                    // 更新
-                    if (this.dialogState.edit) {
-                        services.updateContentCategory(params).then((result) => {
-                            if (result.data.state === 'success') {
-                                this.$store.dispatch('hideContentCategoryForm');
-                                this.$store.dispatch('getContentCategoryList');
-                                this.$message({
-                                    message: '更新成功',
-                                    type: 'success'
-                                });
-                            } else {
-                                this.$message.error(result.data.message);
-                            }
-                        });
-                    } else {
-                        // 新增
-                        services.addContentCategory(params).then((result) => {
-                            if (result.data.state === 'success') {
-                                this.$store.dispatch('hideContentCategoryForm');
-                                this.$store.dispatch('getContentCategoryList');
-                                this.$message({
-                                    message: '添加成功',
-                                    type: 'success'
-                                });
-                            } else {
-                                this.$message.error(result.data.message);
-                            }
-                        })
-                    }
-
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
+        {
+          value: "1",
+          label: "操作和功能"
         }
-
+      ]
+    };
+  },
+  methods: {
+    handleChange(value) {
+      console.log(value);
+    },
+    confirm() {
+      this.$store.dispatch("hideContentCategoryForm");
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          console.log("---formdatas--", this);
+          let params = this.dialogState.formData;
+          // 更新
+          if (this.dialogState.edit) {
+            services.updateContentCategory(params).then(result => {
+              if (result.data.state === "success") {
+                this.$store.dispatch("hideContentCategoryForm");
+                this.$store.dispatch("getContentCategoryList");
+                this.$message({
+                  message: "更新成功",
+                  type: "success"
+                });
+              } else {
+                this.$message.error(result.data.message);
+              }
+            });
+          } else {
+            // 新增
+            services.addContentCategory(params).then(result => {
+              if (result.data.state === "success") {
+                this.$store.dispatch("hideContentCategoryForm");
+                this.$store.dispatch("getContentCategoryList");
+                this.$message({
+                  message: "添加成功",
+                  type: "success"
+                });
+              } else {
+                this.$message.error(result.data.message);
+              }
+            });
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     }
-}
+  }
+};
 </script>

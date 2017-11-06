@@ -10,7 +10,7 @@ var AdminResource = require('./AdminResource');
 var AdminGroupSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     name: String,

@@ -1,6 +1,6 @@
 {
   "name": "doracms",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "基于nodejs,express,vue2 内容管理系统.",
   "keywords": [
     "vue",
@@ -29,7 +29,7 @@
     "cross-env": "^5.0.0",
     "crypto": "0.0.3",
     "ejs": "^2.5.6",
-    "element-ui": "^2.0.0-alpha.2",
+    "element-ui": "^2.0.1",
     "express": "^4.15.0",
     "express-http-proxy": "^1.0.3",
     "express-session": "^1.15.3",
@@ -50,6 +50,7 @@
     "shelljs": "^0.7.7",
     "shortid": "^2.2.8",
     "store2": "^2.5.1",
+    "trek-captcha": "^0.4.0",
     "ueditor": "^1.2.2",
     "validator": "^7.0.0",
     "vue": "^2.4.4",
@@ -105,6 +106,6 @@
     "webpack-merge": "^4.1.0"
   },
   "engines": {
-    "node": "5.x"
+    "node": "8.x"
   }
 }

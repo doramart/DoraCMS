@@ -13,7 +13,7 @@ var moment = require('moment')
 var NotifySchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     title: { type: String },   // 消息的标题

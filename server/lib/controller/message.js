@@ -3,6 +3,7 @@ const ContentModel = require("../models").Content;
 const MessageModel = require("../models").Message;
 const SystemConfigModel = require("../models").SystemConfig;
 const UserModel = require("../models").User;
+const AdminUserModel = require("../models").AdminUser;
 const formidable = require('formidable');
 const _ = require('lodash');
 const shortid = require('shortid');
@@ -40,7 +41,16 @@ class Message {
             }, {
                 path: 'author',
                 select: 'userName _id enable date logo'
-            }]).populate('replyAuthor').populate('adminAuthor').exec();
+            }, {
+                path: 'replyAuthor',
+                select: 'userName _id enable date logo'
+            }, {
+                path: 'adminAuthor',
+                select: 'userName _id enable date logo'
+            }, {
+                path: 'adminReplyAuthor',
+                select: 'userName _id enable date logo'
+            }]).exec();
             const totalItems = await MessageModel.count(queryObj);
             res.send({
                 state: 'success',
@@ -100,6 +110,7 @@ class Message {
                 contentId: fields.contentId,
                 content: validatorUtil.validateWords(fields.content),
                 replyAuthor: fields.replyAuthor,
+                adminReplyAuthor: fields.adminReplyAuthor,
                 relationMsgId: fields.relationMsgId,
                 utype: fields.utype || '0'
             }
@@ -110,38 +121,35 @@ class Message {
                 messageObj.author = req.session.user._id;
             }
 
+            // console.log('----messageObj---', messageObj);
             const newMessage = new MessageModel(messageObj);
             try {
                 let currentMessage = await newMessage.save();
                 await ContentModel.findOneAndUpdate({ _id: fields.contentId }, { '$inc': { 'commentNum': 1 } })
 
                 // 给被回复用户发送提醒邮件
+                const systemConfigs = await SystemConfigModel.find({});
+                const contentInfo = await ContentModel.findOne({ _id: fields.contentId });
+                let replyAuthor;
+
                 if (fields.replyAuthor) {
-                    const systemConfigs = await SystemConfigModel.find({});
-                    const msgInfo = await MessageModel.findOne({ _id: currentMessage._id }).populate([{
-                        path: 'author',
-                        select: 'email userName'
-                    },
-                    {
-                        path: 'replyAuthor',
-                        select: 'email userName'
-                    },
-                    {
-                        path: 'contentId',
-                        select: '_id title'
-                    }]).exec();
-                    if (!_.isEmpty(systemConfigs) && !_.isEmpty(msgInfo)) {
-                        let mailParams = {
-                            replyAuthor: msgInfo.replyAuthor,
-                            content: msgInfo.contentId
-                        }
-                        if (fields.utype === '1') {
-                            mailParams.adminAuthor = req.session.adminUserInfo
-                        } else {
-                            mailParams.author = msgInfo.replyAuthor.author
-                        }
-                        service.sendEmail(req, systemConfigs[0], settings.email_notice_user_contentMsg, mailParams);
+                    replyAuthor = await UserModel.findOne({ _id: fields.replyAuthor })
+                }else{
+                    replyAuthor = await AdminUserModel.findOne({ _id: fields.adminReplyAuthor });
+                }
+
+                if (!_.isEmpty(systemConfigs) && !_.isEmpty(contentInfo) && !_.isEmpty(replyAuthor)) {
+                    let mailParams = {
+                        replyAuthor: replyAuthor,
+                        content: contentInfo
                     }
+                    if (fields.utype === '1') {
+                        mailParams.adminAuthor = req.session.adminUserInfo
+                    } else {
+                        mailParams.author = req.session.user
+                    }
+                    systemConfigs[0]['siteDomain'] = 'https://' + systemConfigs[0]['siteDomain'];
+                    service.sendEmail(req, systemConfigs[0], settings.email_notice_user_contentMsg, mailParams);
                 }
 
                 res.send({
@@ -196,6 +204,7 @@ class Message {
             })
         }
     }
+ 
 
 }
 

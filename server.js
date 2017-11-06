@@ -131,6 +131,12 @@ app.use('/system', system);
 app.get(['/', '/page/:current(\\d+)?', '/:cate1?___:typeId?/:current(\\d+)?',
     '/:cate0/:cate1?___:typeId?/:current(\\d+)?', '/search/:searchkey/:current(\\d+)?',
     '/details/:id', '/users/:userPage', '/dr-admin', '/sitemap.html', '/tag/:tagName/:page(\\d+)?'], (req, res) => {
+
+        // 非正常登录用户禁止访问
+        if (req.originalUrl.indexOf('/users') == 0 && !req.session.logined) {
+            return res.redirect('/');
+        }
+
         if (req.originalUrl === '/dr-admin' && req.session.adminlogined) {
             return res.redirect('/manage');
         }

@@ -24,10 +24,10 @@
                     </el-col>
                     <el-col :xs="0" :sm="7" :md="7" :lg="7">
                         <el-row>
-                            <el-col :xs="0" :sm="0" :md="14" :lg="14">
+                            <el-col :xs="0" :sm="14" :md="14" :lg="14" hidden-xs-only>
                                 <SearchBox />
                             </el-col>
-                            <el-col :xs="24" :sm="24" :md="10" :lg="10">
+                            <el-col :xs="24" :sm="24" :md="24" :lg="10">
                                 <LoginPannel/>
                             </el-col>
                         </el-row>
@@ -43,84 +43,78 @@
     </header>
 </template>
 <script>
-import LoginPannel from './loginPannel';
-import SearchBox from './searchBox';
-import _ from 'lodash'
-import { mapGetters } from 'vuex'
+import LoginPannel from "./loginPannel";
+import SearchBox from "./searchBox";
+import _ from "lodash";
+import { mapGetters } from "vuex";
 export default {
-    name: 'Header',
-    async asyncData({ store, route }, config = { model: 'full' }) {
-        const { params: { id, key, by, current, typeId }, path } = route
-        const base = { ...config, id, path, key, by, current, typeId }
-        await store.dispatch('global/category/getHeaderNavList', base)
-    },
-    serverCacheKey: props => {
-        return `navlist-${props.navs}`
-    },
-    components: {
-        LoginPannel,
-        SearchBox
-    },
-    props: {
-        navs: Array
-    },
-    data() {
-        return {
-
-        }
-    },
-    computed: {
-        // ...mapGetters({
-        //     headerNav: 'global/category/getHeaderNavList'
-        // })
-        headerNav() {
-            let fullNav = this.$store.getters['global/category/getHeaderNavList'];
-            let navs = fullNav.data;
-            if (navs && navs.length > 0) {
-                return _.filter(navs, (doc) => {
-                    return doc.parentId === '0'
-                });
-            } else {
-                return []
-            }
-        }
+  name: "Header",
+  async asyncData({ store, route }, config = { model: "full" }) {
+    const { params: { id, key, by, current, typeId }, path } = route;
+    const base = { ...config, id, path, key, by, current, typeId };
+    await store.dispatch("global/category/getHeaderNavList", base);
+  },
+  serverCacheKey: props => {
+    return `navlist-${props.navs}`;
+  },
+  components: {
+    LoginPannel,
+    SearchBox
+  },
+  props: {
+    navs: Array
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    headerNav() {
+      let fullNav = this.$store.getters["global/category/getHeaderNavList"];
+      let navs = fullNav.data;
+      if (navs && navs.length > 0) {
+        return _.filter(navs, doc => {
+          return doc.parentId === "0";
+        });
+      } else {
+        return [];
+      }
     }
-}
-
+  }
+};
 </script>
 <style lang="scss">
 .header {
+  overflow: hidden;
+  border-bottom: 1px solid #f1f1f1;
+
+  .header-main {
+    margin: 0 auto;
+    padding: 10px 0px;
     overflow: hidden;
-    border-bottom: 1px solid #f1f1f1;
-
-    .header-main {
-        margin: 0 auto;
-        padding: 10px 0px;
-        overflow: hidden;
-        .header-logo {
-            img {
-                max-height: 40px;
-            }
-        }
-
-        .header-nav {
-            height: 40px;
-            line-height: 40px;
-            float: left;
-            width: 100%;
-            .el-row {
-                margin: 0;
-                padding: 0;
-                .el-col {
-                    list-style-type: none;
-                    display: inline-block;
-                    text-align: center;
-                    a.router-link-active {
-                        color: #409EFF
-                    }
-                }
-            }
-        }
+    .header-logo {
+      img {
+        max-height: 40px;
+      }
     }
+
+    .header-nav {
+      height: 40px;
+      line-height: 40px;
+      float: left;
+      width: 100%;
+      .el-row {
+        margin: 0;
+        padding: 0;
+        .el-col {
+          list-style-type: none;
+          display: inline-block;
+          text-align: center;
+          a.router-link-active {
+            color: #409eff;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

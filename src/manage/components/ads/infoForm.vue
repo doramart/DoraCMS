@@ -19,6 +19,9 @@
             </el-form-item>
 
             <div v-if="formState.formData.type == '1'">
+                <el-form-item label="轮播" prop="carousel">
+                    <el-switch on-text="是" off-text="否" v-model="formState.formData.carousel"></el-switch>
+                </el-form-item>
                 <el-form-item label="显示高度" prop="height">
                     <el-input size="small" type="number" min="0" max="10" style="width:150px;" placeholder="显示高度" v-model="formState.formData.height">
                         <template slot="append">px</template>

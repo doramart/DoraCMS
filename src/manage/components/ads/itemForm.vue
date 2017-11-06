@@ -66,8 +66,8 @@ export default {
                     trigger: 'blur'
                 }, {
                     min: 2,
-                    max: 15,
-                    message: '请输入2-15个字符',
+                    max: 30,
+                    message: '请输入2-30个字符',
                     trigger: 'blur'
                 }],
                 link: [{

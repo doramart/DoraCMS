@@ -8,8 +8,7 @@
         </el-col>
         <el-col :xs="22" :sm="22" :md="22" :lg="22">
           <div class="user-message">
-            <!-- {{noticelist.docs}} -->
-            <div v-if="noticelist">
+            <div v-if="noticelist.docs.length>0">
               <UserNoticeDataTable :dataList="noticelist.docs"></UserNoticeDataTable>
               <div class="content-pagination">
                 <Pagination :pageInfo="noticelist.pageInfo" typeId="userNotice" />
@@ -30,22 +29,19 @@
   </div>
 </template>
 <script>
-import api from '~api'
-import UserBar from '../components/UserBar'
-import UserNoticeDataTable from '../components/UserNoticeDataTable';
-import Pagination from '../components/Pagination.vue'
+import api from "~api";
+import UserBar from "../components/UserBar";
+import UserNoticeDataTable from "../components/UserNoticeDataTable";
+import Pagination from "../components/Pagination.vue";
 
-const validatorUtil = require('../../../utils/validatorUtil.js')
-import {
-  mapGetters,
-  mapActions
-} from 'vuex';
+const validatorUtil = require("../../../utils/validatorUtil.js");
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'userMessage',
+  name: "userMessage",
   metaInfo() {
     return {
-      title: '用户中心'
-    }
+      title: "用户中心"
+    };
   },
   components: {
     UserBar,
@@ -53,22 +49,18 @@ export default {
     Pagination
   },
   data() {
-    return {
-
-    }
+    return {};
   },
-  methods: {
-
-  },
+  methods: {},
   mounted() {
-    this.$store.dispatch('frontend/user/userNotices');
+    this.$store.dispatch("frontend/user/userNotices");
   },
   computed: {
     ...mapGetters({
-      noticelist: 'frontend/user/noticelist'
+      noticelist: "frontend/user/noticelist"
     })
   }
-}
+};
 </script>
 
 <style lang="scss">

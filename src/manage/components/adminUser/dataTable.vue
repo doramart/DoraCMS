@@ -14,12 +14,12 @@
             <el-table-column prop="email" label="邮箱" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="enable" label="是否有效" show-overflow-tooltip>
-                <template scope="scope">
+                <template slot-scope="scope">
                     <i :class="scope.row.enable ? 'fa fa-check-circle' : 'fa fa-minus-circle'" :style="scope.row.enable ? green : red"></i>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="150">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="mini" type="primary" plain round @click="editUserInfo(scope.$index, dataList)"> <i class="fa fa-edit"></i></el-button>
                     <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteUser(scope.$index, dataList)"></el-button>
                 </template>

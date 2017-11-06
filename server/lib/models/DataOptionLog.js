@@ -10,7 +10,7 @@ var moment = require('moment')
 var DataOptionLogSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     date: { type: Date, default: Date.now },

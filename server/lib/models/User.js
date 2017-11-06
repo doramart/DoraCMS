@@ -9,7 +9,7 @@ var moment = require('moment')
 var UserSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     enable: { type: Boolean, default: true }, //用户是否有效

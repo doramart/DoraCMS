@@ -3,7 +3,7 @@ const isProd = process.env.NODE_ENV === 'production'
 const { settings } = require('../../../utils');
 
 if (!isProd) {
-    mongoose.connect("mongodb://localhost/doracms2");
+    mongoose.connect("mongodb://localhost/doracms2", { useMongoClient: true });
 } else {
     mongoose.connect('mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + '', { useMongoClient: true });
 }

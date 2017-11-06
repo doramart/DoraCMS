@@ -13,7 +13,7 @@ moment.locale('zh-cn');
 var UserNotifySchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+        
         'default': shortid.generate
     },
     isRead: { type: Boolean, default: false },

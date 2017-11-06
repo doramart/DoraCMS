@@ -11,11 +11,12 @@ var AdsItems = require('./AdsItems');
 var AdsSchema = new Schema({
     _id: {
         type: String,
-        unique: true,
+
         'default': shortid.generate
     },
     name: String,
     type: { type: String, default: "0" }, // 展示形式 0文字 1图片 2友情链接
+    carousel: { type: Boolean, default: true }, // 针对图片是否轮播    
     state: { type: Boolean, default: true }, // 广告状态，是否显示
     height: { type: Number, default: 50 },
     date: { type: Date, default: Date.now },
