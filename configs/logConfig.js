@@ -21,31 +21,35 @@ let responseFileName = "response";
 let responseLogPath = baseLogPath + responsePath + "/" + responseFileName;
 
 module.exports = {
-    "appenders":
-    [
-        //错误日志 默认按小时数记录
-        {
-            "category": "errorLogger",             //logger名称
-            "type": "dateFile",                   //日志类型
-            "filename": errorLogPath,             //日志输出位置
-            "alwaysIncludePattern": true,          //是否总是有后缀名
-            "pattern": "-yyyy-MM-dd.log",      //后缀，每天创建一个新的日志文件
-            "path": errorPath                     //自定义属性，错误日志的根目录
+    appenders: {
+        //error logs write by hours
+        errorLogger: {
+            "type": "dateFile",        //log type
+            "filename": errorLogPath,  // output location
+            "pattern": "-yyyy-MM-dd.log",  //file extension
+            "path": errorPath,   //root path,
+            "alwaysIncludePattern": true
         },
-        //响应日志 响应日志默认按天记录
-        {
-            "category": "resLogger",
-            "type": "dateFile",
-            "filename": responseLogPath,
+        resLogger: {
+            "type": "dateFile", //log type
+            "filename": responseLogPath, // output location
+            "path": responsePath, //root path,
             "alwaysIncludePattern": true,
-            "pattern": "-yyyy-MM-dd.log",   //后缀，每天创建一个新的日志文件
-            "path": responsePath
+            "pattern": "-yyyy-MM-dd.log" //file extension
         }
-    ],
-    "levels":                                   //设置logger名称对应的的日志等级
-    {
-        "errorLogger": "ERROR",
-        "resLogger": "ALL"
     },
-    "baseLogPath": baseLogPath                  //logs根目录
-}
+    categories: {
+        errorLogger: {
+            appenders:["errorLogger"],
+            level: "ERROR"
+        },
+        resLogger: {
+            appenders: ["resLogger"],
+            level: "ALL"
+        },
+        default:{
+            appenders: ["resLogger"],
+            level: "ALL"
+        },
+    }
+};
