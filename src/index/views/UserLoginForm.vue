@@ -14,7 +14,7 @@
               <el-input size="small" placeholder="请填写邮箱" v-model="userLoginFormData.email"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-              <el-input size="small" placeholder="请输入密码" type="password" v-model="userLoginFormData.password"></el-input>
+              <el-input size="small" placeholder="请输入密码" type="password" @keyup.enter.native="submitForm('ruleForm')" v-model="userLoginFormData.password"></el-input>
             </el-form-item>
             <el-form-item class="submit-btn">
               <el-button size="small" round type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -31,73 +31,78 @@
   </div>
 </template>
 <script>
-import api from '~api'
-const validatorUtil = require('../../../utils/validatorUtil.js')
-import {
-  mapGetters,
-  mapActions
-} from 'vuex';
+import api from "~api";
+const validatorUtil = require("../../../utils/validatorUtil.js");
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'userLogin',
+  name: "userLogin",
   metaInfo() {
     return {
-      title: '用户登录'
-    }
+      title: "用户登录"
+    };
   },
   data() {
     return {
       rules: {
-        email: [{
-          required: true,
-          message: '请输入邮箱',
-          trigger: 'blur'
-        }, {
-          validator: (rule, value, callback) => {
-            if (!validatorUtil.checkEmail(value)) {
-              callback(new Error('请输入正确的邮箱!'));
-            } else {
-              callback();
-            }
+        email: [
+          {
+            required: true,
+            message: "请输入邮箱",
+            trigger: "blur"
           },
-          trigger: 'blur'
-        }],
-        password: [{
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }, {
-          validator: (rule, value, callback) => {
-            if (!validatorUtil.checkPwd(value)) {
-              callback(new Error('6-12位，只能包含字母、数字和下划线!'));
-            } else {
-              callback();
-            }
+          {
+            validator: (rule, value, callback) => {
+              if (!validatorUtil.checkEmail(value)) {
+                callback(new Error("请输入正确的邮箱!"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: "blur"
           },
-          trigger: 'blur'
-        }]
+          {
+            validator: (rule, value, callback) => {
+              if (!validatorUtil.checkPwd(value)) {
+                callback(new Error("6-12位，只能包含字母、数字和下划线!"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ]
       }
-
-    }
+    };
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           let params = this.userLoginFormData;
-          api.post('users/doLogin', params).then((result) => {
-            if (result.data.state == 'success') {
-              window.location = '/';
-            } else {
-              this.$message({
-                message: result.data.message,
-                type: 'error'
-              });
-            }
-          }).catch((err) => {
-            this.$message.error(err.response.data.error)
-          })
+          api
+            .post("users/doLogin", params)
+            .then(result => {
+              if (result.data.state == "success") {
+                window.location = "/";
+              } else {
+                this.$message({
+                  message: result.data.message,
+                  type: "error"
+                });
+              }
+            })
+            .catch(err => {
+              this.$message.error(err.response.data.error);
+            });
         } else {
-          console.log('error submit!!');
+          console.log("error submit!!");
           return false;
         }
       });
@@ -111,10 +116,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userLoginFormData: 'frontend/user/loginForm'
+      userLoginFormData: "frontend/user/loginForm"
     })
   }
-}
+};
 </script>
 
 <style lang="scss">

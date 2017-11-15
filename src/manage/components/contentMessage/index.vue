@@ -3,8 +3,8 @@
         <MessageForm :dialogState="formState"></MessageForm>
         <el-row class="dr-datatable">
             <el-col :span="24">
-                <TopBar type="contentMessage" :ids="selectlist"></TopBar>
-                <DataTable :dataList="contentMessageList.docs" @changeMsgSelectList="changeSelect"></DataTable>
+                <TopBar type="contentMessage" :ids="selectlist" :pageInfo="contentMessageList.pageInfo"></TopBar>
+                <DataTable :dataList="contentMessageList.docs" :pageInfo="contentMessageList.pageInfo" @changeMsgSelectList="changeSelect"></DataTable>
                 <Pagination :pageInfo="contentMessageList.pageInfo" pageType="contentMessage"></Pagination>
             </el-col>
         </el-row>

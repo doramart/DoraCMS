@@ -13,11 +13,11 @@ a:link, a:visited {
 }
 
 .el-button--small {
-    padding: 9px 8px !important;
+    padding: 7px 6px !important;
 }
 
 .el-button--mini {
-    padding: 9px !important;
+    padding: 7px !important;
 }
 
 .el-menu {

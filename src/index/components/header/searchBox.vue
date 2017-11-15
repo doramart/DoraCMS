@@ -1,13 +1,9 @@
 <template>
     <div class="search-pannel" v-once>
         <div class="input-area">
-            <el-form>
-                <el-form-item>
-                    <el-input size="small" placeholder="请输入关键字" v-model="searchkey">
-                        <i slot="suffix" class="el-input__icon el-icon-search" @click="handleIconClick"></i>
-                    </el-input>
-                </el-form-item>
-            </el-form>
+            <el-input @keyup.enter.native="handleIconClick" size="small" placeholder="请输入关键字" v-model="searchkey">
+                  <i slot="suffix" class="el-input__icon el-icon-search" @click="handleIconClick"></i>
+            </el-input>
         </div>
     </div>
 </template>
@@ -18,6 +14,7 @@ export default {
   data() {
     return {
       searchkey: ""
+      // readySearch: false
     };
   },
   methods: {

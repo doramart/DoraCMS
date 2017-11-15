@@ -1,0 +1,21 @@
+export const ArticleList = require('../views/ArticleList.vue')
+export const CmsCase = require('../views/CmsCase.vue')
+export const Article = require('../views/Article.vue')
+export const AdminLogin = require('../views/AdminLogin.vue')
+export const UserLoginForm = require('../views/UserLoginForm.vue')
+export const UserRegForm = require('../views/UserRegForm.vue')
+export const UserCenter = require('../views/UserCenter.vue')
+export const UserMessage = require('../views/UserMessage.vue')
+export const UserReplies = require('../views/UserReplies.vue')
+export const SiteMap = require('../views/SiteMap.vue')
+
+ArticleList.chunkName = 'ArticleList';
+CmsCase.chunkName = 'CmsCase';
+Article.chunkName = 'Article';
+AdminLogin.chunkName = 'AdminLogin';
+UserLoginForm.chunkName = 'UserLoginForm';
+UserRegForm.chunkName = 'UserRegForm';
+UserCenter.chunkName = 'UserCenter';
+UserMessage.chunkName = 'UserMessage';
+UserReplies.chunkName = 'UserReplies';
+SiteMap.chunkName = 'SiteMap';

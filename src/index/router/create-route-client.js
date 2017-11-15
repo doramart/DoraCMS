@@ -1,0 +1,11 @@
+
+export const ArticleList = () => import('../views/ArticleList.vue')
+export const CmsCase = () => import('../views/CmsCase.vue')
+export const Article = () => import('../views/Article.vue')
+export const AdminLogin = () => import('../views/AdminLogin.vue')
+export const UserLoginForm = () => import('../views/UserLoginForm.vue')
+export const UserRegForm = () => import('../views/UserRegForm.vue')
+export const UserCenter = () => import('../views/UserCenter.vue')
+export const UserMessage = () => import('../views/UserMessage.vue')
+export const UserReplies = () => import('../views/UserReplies.vue')
+export const SiteMap = () => import('../views/SiteMap.vue')

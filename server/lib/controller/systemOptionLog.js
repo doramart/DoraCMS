@@ -51,7 +51,7 @@ class SystemOptionLog {
             let pageSize = req.query.pageSize || 10;
             let type = req.query.type,queryObj = {};
             if(type) queryObj.type = type;
-            const SystemOptionLogs = await SystemOptionLogModel.find(queryObj).sort({ date: -1 }).skip(10 * (Number(current) - 1)).limit(Number(pageSize));
+            const SystemOptionLogs = await SystemOptionLogModel.find(queryObj).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize));
             const totalItems = await SystemOptionLogModel.count(queryObj);
 
             res.send({

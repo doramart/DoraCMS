@@ -2,16 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Meta from 'vue-meta'
 
-import index from '../views/ArticleList.vue'
-import cmsCase from '../views/CmsCase.vue'
-import article from '../views/Article.vue'
-import adminLogin from '../views/AdminLogin.vue'
-import userLoginForm from '../views/UserLoginForm'
-import userRegForm from '../views/UserRegForm'
-import userCenter from '../views/UserCenter'
-import userMessage from '../views/UserMessage'
-import userReplies from '../views/UserReplies'
-import siteMap from '../views/SiteMap.vue'
+import { ArticleList, CmsCase, Article, AdminLogin, UserLoginForm, UserRegForm, UserCenter, UserMessage, UserReplies, SiteMap } from 'create-route'
 
 Vue.use(VueRouter)
 Vue.use(Meta)
@@ -34,21 +25,21 @@ export function createRouter() {
         //base: __dirname,
         // scrollBehavior,
         routes: [
-            { name: 'index', path: '/', component: index, meta: { typeId: 'indexPage' } },
-            { name: 'index', path: '/page/:current(\\d+)?', component: index, meta: { typeId: 'indexPage' } },
-            { name: 'cmscase', path: '/cmscase___:typeId?/:current(\\d+)?', component: cmsCase },
-            { name: 'category', path: '/:cate1?___:typeId?/:current(\\d+)?', component: index },
-            { name: 'category', path: '/:cate0/:cate1?___:typeId?/:current(\\d+)?', component: index },
-            { name: 'search', path: '/search/:searchkey/:current(\\d+)?', component: index, meta: { typeId: 'search' } },
-            { name: 'article', path: '/details/:id', component: article, meta: { notKeepAlive: true } },
-            { name: 'login', path: '/users/login', component: userLoginForm },
-            { name: 'reg', path: '/users/reg', component: userRegForm },
-            { name: 'ucenter', path: '/users/center', component: userCenter },
-            { name: 'umessage', path: '/users/messages', component: userMessage },
-            { name: 'uReplies', path: '/users/replies', component: userReplies },
-            { name: 'adminlogin', path: '/dr-admin', component: adminLogin, meta: { typeId: 'adminlogin' } },
-            { name: 'sitemap', path: '/sitemap.html', component: siteMap },
-            { name: 'tagPage', path: '/tag/:tagName/:page(\\d+)?', component: index, meta: { typeId: 'tags' } }
+            { name: 'index', path: '/', component: ArticleList, meta: { typeId: 'indexPage' } },
+            { name: 'index', path: '/page/:current(\\d+)?', component: ArticleList, meta: { typeId: 'indexPage' } },
+            { name: 'cmscase', path: '/cmscase___:typeId?/:current(\\d+)?', component: CmsCase },
+            { name: 'category', path: '/:cate1?___:typeId?/:current(\\d+)?', component: ArticleList },
+            { name: 'category', path: '/:cate0/:cate1?___:typeId?/:current(\\d+)?', component: ArticleList },
+            { name: 'search', path: '/search/:searchkey/:current(\\d+)?', component: ArticleList, meta: { typeId: 'search' } },
+            { name: 'article', path: '/details/:id', component: Article, meta: { notKeepAlive: true } },
+            { name: 'login', path: '/users/login', component: UserLoginForm },
+            { name: 'reg', path: '/users/reg', component: UserRegForm },
+            { name: 'ucenter', path: '/users/center', component: UserCenter },
+            { name: 'umessage', path: '/users/messages', component: UserMessage },
+            { name: 'uReplies', path: '/users/replies', component: UserReplies },
+            { name: 'adminlogin', path: '/dr-admin', component: AdminLogin, meta: { typeId: 'adminlogin' } },
+            { name: 'sitemap', path: '/sitemap.html', component: SiteMap },
+            { name: 'tagPage', path: '/tag/:tagName/:page(\\d+)?', component: ArticleList, meta: { typeId: 'tags' } }
         ]
     })
     return router;

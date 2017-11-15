@@ -30,6 +30,7 @@
 
 <script>
 import services from '../../store/services.js';
+import _ from 'lodash';
 export default {
     props: {
         dataList: Array
@@ -60,10 +61,11 @@ export default {
         editUserInfo(index, rows) {
             console.log('--rows---', rows);
             let rowData = rows[index];
-            rowData.group = rows[index].group._id;
+            let newRowData = _.assign({}, rowData);
+            newRowData.group = rows[index].group._id;
             this.$store.dispatch('showAdminUserForm', {
                 edit: true,
-                formData: rowData
+                formData: newRowData
             });
         },
         deleteUser(index, rows) {

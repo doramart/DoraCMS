@@ -31,7 +31,8 @@ const config = {
             '~api': path.resolve(__dirname, '../src/api/index-client'),
             '~mixins': path.resolve(__dirname, '../src/mixins'),
             '~utils': path.resolve(__dirname, '../src/utils'),
-            'api-config': path.resolve(__dirname, '../src/api/config-client')
+            'api-config': path.resolve(__dirname, '../src/api/config-client'),
+            'create-route': './create-route-client.js'
         }
     },
     resolveLoader: {

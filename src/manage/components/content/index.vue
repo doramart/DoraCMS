@@ -2,8 +2,8 @@
     <div class="content">
         <el-row class="dr-datatable">
             <el-col :span="24">
-                <TopBar type="content"></TopBar>
-                <DataTable :dataList="contentList.docs"></DataTable>
+                <TopBar type="content" :pageInfo="contentList.pageInfo"></TopBar>
+                <DataTable :dataList="contentList.docs" :pageInfo="contentList.pageInfo"></DataTable>
                 <Pagination :pageInfo="contentList.pageInfo" pageType="content"></Pagination>
             </el-col>
         </el-row>
@@ -28,7 +28,6 @@
         components: {
             DataTable,
             TopBar,
-            // ContentForm,
             Pagination
         },
         methods: mapActions([

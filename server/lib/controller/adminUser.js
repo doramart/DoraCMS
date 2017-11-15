@@ -1,5 +1,6 @@
 const BaseComponent = require('../prototype/baseComponent');
 const AdminUserModel = require("../models").AdminUser;
+const AdminResourceModel = require("../models").AdminResource;
 const UserModel = require("../models").User;
 const ContentModel = require("../models").Content;
 const SystemConfigModel = require("../models").SystemConfig;
@@ -76,16 +77,37 @@ class AdminUser {
         try {
             let adminUserCount = await AdminUserModel.count();
             let regUserCount = await UserModel.count();
-            let regUsers = await UserModel.find({}).limit(20).sort({date: -1});
+            let regUsers = await UserModel.find({},{ password: 0 ,email: 0}).limit(20).sort({ date: -1 });
             let contentCount = await ContentModel.count();
             let messageCount = await MessageModel.count();
-            let messages = await MessageModel.find().limit(10).sort({date: -1}).populate([{
+            let logQuery = { type: 'login' };
+            let reKey = new RegExp(req.session.adminUserInfo.userName, 'i')
+            logQuery.logs = { $regex: reKey }
+            let loginLogs = await SystemOptionLogModel.find(logQuery).sort({ date: -1 }).skip(1).limit(1);
+            let messages = await MessageModel.find().limit(10).sort({ date: -1 }).populate([{
                 path: 'contentId',
                 select: 'stitle _id'
             }, {
                 path: 'author',
                 select: 'userName _id enable date logo'
             }]).populate('replyAuthor').populate('adminAuthor').exec();
+            // 权限标记
+            let fullResources = await AdminResourceModel.find();
+            let newResources = [];
+            for (let i = 0; i < fullResources.length; i++) {
+                let resourceObj = JSON.parse(JSON.stringify(fullResources[i]));
+                if (resourceObj.type == '1' && !_.isEmpty(req.session.adminUserInfo)) {
+                    let adminPower = req.session.adminUserInfo.group.power;
+                    if (adminPower && adminPower.indexOf(resourceObj._id) > -1) {
+                        resourceObj.hasPower = true;
+                    } else {
+                        resourceObj.hasPower = false;
+                    }
+                    newResources.push(resourceObj);
+                } else {
+                    newResources.push(resourceObj);
+                }
+            }
             res.send({
                 state: 'success',
                 adminUserCount,
@@ -93,7 +115,9 @@ class AdminUser {
                 regUsers,
                 contentCount,
                 messageCount,
-                messages
+                messages,
+                loginLogs,
+                resources: newResources
             });
         } catch (error) {
             logUtil.error(err, req);
@@ -111,7 +135,7 @@ class AdminUser {
             let pageSize = req.query.pageSize || 10;
             const adminUsers = await AdminUserModel.find({}, { password: 0 }).sort({
                 date: -1
-            }).skip(10 * (Number(current) - 1)).limit(Number(pageSize)).populate({
+            }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate({
                 path: 'group',
                 select: "name _id"
             }).exec();
@@ -151,7 +175,7 @@ class AdminUser {
                     errMsg = '请输入正确的密码'
                 }
 
-                if(!fields.imageCode || fields.imageCode != req.session.imageCode){
+                if (!fields.imageCode || fields.imageCode != req.session.imageCode) {
                     errMsg = '请输入正确的验证码'
                 }
 
@@ -178,7 +202,7 @@ class AdminUser {
             try {
                 let user = await AdminUserModel.findOne(userObj).populate([{
                     path: 'group',
-                    select: 'power _id enable'
+                    select: 'power _id enable name'
                 }]).exec();
                 if (user) {
                     if (!user.enable) {
@@ -202,11 +226,11 @@ class AdminUser {
                     await loginLog.save();
 
                     // 站点认证
-                    if(!req.session.adminUserInfo.auth){
+                    if (validatorUtil.checkUrl(req.headers.host) && !req.session.adminUserInfo.auth) {
                         const systemConfigs = await SystemConfigModel.find({});
                         const { siteName, siteEmail, siteDomain } = systemConfigs[0];
                         let authParams = {
-                            domain: req.headers.host, 
+                            domain: req.headers.host,
                             ipAddress: clientIp,
                             version: pkgInfo.version,
                             siteName,
@@ -215,8 +239,8 @@ class AdminUser {
                         };
                         try {
                             let writeState = await axios.post(settings.DORACMSAPI + '/system/checkSystemInfo', authParams);
-                            if(writeState.status == 200 && writeState.data == 'success'){
-                                await AdminUserModel.update({'_id': req.session.adminUserInfo._id},{$set: {auth: true}})
+                            if (writeState.status == 200 && writeState.data == 'success') {
+                                await AdminUserModel.update({ '_id': req.session.adminUserInfo._id }, { $set: { auth: true } })
                             }
                         } catch (authError) {
                             res.send({

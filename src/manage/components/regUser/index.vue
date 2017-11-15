@@ -3,8 +3,8 @@
         <UserForm :dialogState="formState"></UserForm>
         <el-row class="dr-datatable">
             <el-col :span="24">
-                <TopBar type="regUser" :ids="selectlist"></TopBar>
-                <DataTable :dataList="regUserList.docs" @changeUserSelectList="changeSelect"></DataTable>
+                <TopBar type="regUser" :ids="selectlist" :pageInfo="regUserList.pageInfo"></TopBar>
+                <DataTable :pageInfo="regUserList.pageInfo" :dataList="regUserList.docs" @changeUserSelectList="changeSelect"></DataTable>
                 <Pagination :pageInfo="regUserList.pageInfo" pageType="regUser"></Pagination>
             </el-col>
         </el-row>
@@ -35,7 +35,6 @@ export default {
     },
     methods: {
         changeSelect(ids) {
-            console.log('--ids--', ids);
             this.selectlist = ids;
         }
     },

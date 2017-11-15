@@ -17,14 +17,14 @@
                 </div>
                 <!-- 橱窗展示 -->
                 <div v-else>
-                    <el-col :span="4" v-for="(item,index) in ads.data.items" :key="item._id" :offset="index > 0 ? 1 : 0">
-                        <el-card :body-style="{ padding: '0px' }">
+                  <el-col class="case-item" :xs="12" :sm="8" :md="6" :lg="6" :xl="6" v-for="(item,index) in ads.data.items" :key="item._id">
+                    <el-card :body-style="{ padding: '0px' }">
                         <div style="padding:14px 14px 5px;text-align:center;cursor:point">
                             <a :href="item.link" target="_blank"><img :src="item.sImg" class="image" :alt="item.alt"></a>
                             <span class="case-title">{{item.alt}}</span>                          
                         </div>
-                        </el-card>
-                    </el-col>
+                    </el-card>
+                  </el-col>
                 </div>
             </div>
         </div>
@@ -99,5 +99,8 @@ export default {
   color: #b4bccc;
   margin: 15px auto;
   font-size: 13px;
+}
+.case-item{
+  margin-bottom: 20px;
 }
 </style>

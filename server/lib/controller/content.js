@@ -106,7 +106,7 @@ class Content {
                 }
             }
             
-            const contents = await ContentModel.find(queryObj, files).sort(sortObj).skip(10 * (Number(current) - 1)).limit(Number(pageSize)).populate([{
+            const contents = await ContentModel.find(queryObj, files).sort(sortObj).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
                 path: 'author',
                 select: 'name -_id'
             },
@@ -124,7 +124,8 @@ class Content {
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
-                    pageSize: Number(pageSize) || 10
+                    pageSize: Number(pageSize) || 10,
+                    searchkey: searchkey || ''
                 }
             })
         } catch (err) {

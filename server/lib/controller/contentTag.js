@@ -44,15 +44,16 @@ class ContentTag {
                 queryObj.name = { $regex: reKey }
             }
 
-            const contentTags = await ContentTagModel.find(queryObj).sort({ date: -1 }).skip(10 * (Number(current) - 1)).limit(Number(pageSize));
-            const totalItems = await ContentTagModel.count();
+            const contentTags = await ContentTagModel.find(queryObj).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize));
+            const totalItems = await ContentTagModel.count(queryObj);
             res.send({
                 state: 'success',
                 docs: contentTags,
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
-                    pageSize: Number(pageSize) || 10
+                    pageSize: Number(pageSize) || 10,
+                    searchkey: searchkey || ''
                 }
             })
         } catch (err) {

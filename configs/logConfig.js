@@ -40,14 +40,14 @@ module.exports = {
     },
     categories: {
         errorLogger: {
-            appenders:["errorLogger"],
+            appenders: ["errorLogger"],
             level: "ERROR"
         },
         resLogger: {
             appenders: ["resLogger"],
             level: "ALL"
         },
-        default:{
+        default: {
             appenders: ["resLogger"],
             level: "ALL"
         },

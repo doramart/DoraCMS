@@ -21,7 +21,8 @@
 import services from '../../store/services.js';
 export default {
     props: {
-        dataList: Array
+        dataList: Array,
+        pageInfo: Object
     },
     data() {
         return {
@@ -52,7 +53,7 @@ export default {
                 });
             }).then((result) => {
                 if (result.data.state === 'success') {
-                    this.$store.dispatch('getContentTagList');
+                    this.$store.dispatch('getContentTagList', this.pageInfo);
                     this.$message({
                         message: '删除成功',
                         type: 'success'

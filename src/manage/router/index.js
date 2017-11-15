@@ -2,20 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '../store/index.js'
 import Home from '../components/Home'
-import Main from '../components/main/index'
-import AdminUser from '../components/adminUser/index'
-import AdminGroup from '../components/adminGroup/index'
-import AdminResource from '../components/adminResource/index'
-import SystemConfig from '../components/systemConfig/index'
-import ContentCategory from '../components/contentCategory/index'
-import Content from '../components/content/index'
-import ContentForm from '../components/content/contentForm'
-import ContentTag from '../components/contentTag/index'
-import ContentMessage from '../components/contentMessage/index'
-import RegUser from '../components/regUser/index'
 import Axios from "axios";
 import _ from 'lodash';
 Vue.use(Router)
+
 
 
 let router = new Router({
@@ -63,7 +53,7 @@ function renderLeftMenu() {
         (item.children).map((child, index) => {
           childrenMenu.push({
             path: '/' + child.routePath,
-            component: resolve => require(['../components/' + child.componentPath], resolve),
+            component: () => import('../components/' + child.componentPath),
             name: child.label,
             hidden: !child.enable
           })

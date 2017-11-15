@@ -28,49 +28,61 @@ export default {
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
+            let searchkey = this.pageInfo.searchkey || '';
             if (this.pageType === 'content') {
                 this.$store.dispatch('getContentList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'adminUser') {
                 this.$store.dispatch('getAdminUserList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'adminGroup') {
                 this.$store.dispatch('getAdminGroupList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'contentMessage') {
                 this.$store.dispatch('getContentMessageList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'contentTag') {
                 this.$store.dispatch('getContentTagList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'regUser') {
                 this.$store.dispatch('getRegUserList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'backUpData') {
                 this.$store.dispatch('getBakDateList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'systemOptionLogs') {
                 this.$store.dispatch('getSystemLogsList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'systemNotify') {
                 this.$store.dispatch('getSystemNotifyList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'systemAnnounce') {
                 this.$store.dispatch('getSystemAnnounceList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             } else if (this.pageType === 'ads') {
                 this.$store.dispatch('getAdsList', {
-                    current: val
+                    current: val,
+                    searchkey
                 });
             }
 

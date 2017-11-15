@@ -40,7 +40,7 @@ class Notify {
             if (type) {
                 queryObj.type = type;
             }
-            const notifies = await NotifyModel.find(queryObj).sort({ date: -1 }).skip(10 * (Number(current) - 1)).limit(Number(pageSize)).populate([{
+            const notifies = await NotifyModel.find(queryObj).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
                 path: 'adminSender',
                 select: 'userName -_id'
             }]).exec();

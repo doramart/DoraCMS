@@ -1,10 +1,10 @@
 <template>
     <div class="user-bar">
         <el-row :gutter="0" class="header-main">
-            <el-col :xs="1" :sm="1" :md="1" :lg="1">
+            <el-col :xs="1" :sm="1" :md="3" :lg="3">
                 <div class="grid-content bg-purple">&nbsp;</div>
             </el-col>
-            <el-col :xs="22" :sm="22" :md="22" :lg="22">
+            <el-col :xs="22" :sm="22" :md="18" :lg="18">
                 <div class="bar-items">
                     <ul>
                         <li :class="{active : $route.fullPath == '/users/center'}">
@@ -19,7 +19,7 @@
                     </ul>
                 </div>
             </el-col>
-            <el-col :xs="1" :sm="1" :md="1" :lg="1">
+            <el-col :xs="1" :sm="1" :md="3" :lg="3">
                 <div class="grid-content bg-purple">
                     &nbsp;
                 </div>

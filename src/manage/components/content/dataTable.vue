@@ -55,7 +55,8 @@
 import services from '../../store/services.js';
 export default {
     props: {
-        dataList: Array
+        dataList: Array,
+        pageInfo: Object,
     },
     data() {
         return {
@@ -108,7 +109,7 @@ export default {
             contentData.isTop = contentData.isTop == 1 ? 0 : 1;
             services.updateContent(contentData).then((result) => {
                 if (result.data.state === 'success') {
-                    this.$store.dispatch('getContentList');
+                    this.$store.dispatch('getContentList', this.pageInfo);
                 } else {
                     this.$message.error(result.data.message);
                 }
@@ -125,7 +126,7 @@ export default {
                 });
             }).then((result) => {
                 if (result.data.state === 'success') {
-                    this.$store.dispatch('getContentList');
+                    this.$store.dispatch('getContentList', this.pageInfo);
                     this.$message({
                         message: '删除成功',
                         type: 'success'

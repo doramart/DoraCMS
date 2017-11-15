@@ -1,6 +1,5 @@
 import axios from 'axios'
 import qs from 'qs'
-// import { createStore } from '../index/store'
 import config from './config-client'
 
 axios.interceptors.request.use(config => {

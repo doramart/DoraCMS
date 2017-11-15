@@ -22,7 +22,7 @@ class UserNotify {
             } else if (systemUser) {
                 queryObj.systemUser = req.query.systemUser;
             }
-            const userNotifys = await UserNotifyModel.find(queryObj).sort({ date: -1 }).skip(10 * (Number(current) - 1)).limit(Number(pageSize)).populate([{
+            const userNotifys = await UserNotifyModel.find(queryObj).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
                 path: 'notify',
                 select: 'title content _id'
             }]).exec();;
