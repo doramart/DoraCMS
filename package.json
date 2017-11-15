@@ -1,6 +1,6 @@
 {
   "name": "doracms",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "基于nodejs,express,vue2 内容管理系统.",
   "keywords": [
     "vue",
