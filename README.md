@@ -48,8 +48,9 @@ DoraCMS 使用的技术栈：
 
 演示地址： [前端开发俱乐部](https://www.html-js.cn)   
 后台登录： https://www.html-js.cn/dr-admin     测试账号：doracms/123456
+
 开发文档： [前端内容管理框架 DoraCMS2.0 开发文档](https://www.html-js.cn/details/ryn2kSWqZ.html)   
-生产部署教程： [DoraCMS2.0 linux部署(生产环境)教程](https://www.html-js.cn/details/ry4-B-hkf.html)   
+生产部署教程： [DoraCMS2.0 linux部署(生产环境)教程](https://www.html-js.cn/details/ry4-B-hkf.html)  
 
 ## 目录结构
 
