@@ -25,13 +25,13 @@
 
 11、其它bug修复
 
-## 更新方法： 
+## 更新方法：
 
 1、checkout 最新 2.0.2 代码
 
 2、删除 node_modules,重新安装依赖包
 
-3、启动数据库，执行npm run dev 
+3、启动数据库，执行npm run dev
 
 
 ## 说明
@@ -46,10 +46,10 @@ DoraCMS 使用的技术栈：
 
 4、mongodb 3+
 
-演示地址： [前端开发俱乐部](https://www.html-js.cn)   
+演示地址： [前端开发俱乐部](https://www.html-js.cn)
 后台登录： https://www.html-js.cn/dr-admin     测试账号：doracms/123456
 
-部署文档： [前端内容管理框架 DoraCMS2.0 部署介绍](https://www.html-js.cn/details/ryn2kSWqZ.html)   
+部署文档： [前端内容管理框架 DoraCMS2.0 部署介绍](https://www.html-js.cn/details/ryn2kSWqZ.html)
 
 ## 目录结构
 
@@ -57,9 +57,9 @@ DoraCMS 使用的技术栈：
 ├─build // webpack 相关配置文件
 │
 ├─configs // 配置文件
-│  │  
+│  │
 │  └─logConfig.js  // 日志配置文件
-│ 
+│
 ├─logs // 日志目录
 │
 ├─dist  // webpack 生成文档存放目录
@@ -124,6 +124,9 @@ https://nodejs.org/zh-cn/
 https://www.mongodb.com/download-center#community
 
 ```shell
+# 初始化数据库
+$ npm init
+
 # 安装依赖
 $ npm install
 
@@ -135,6 +138,9 @@ $ npm run build
 
 # 启动(需先生成静态文件)
 $ npm run start
+
+# 备份数据库
+$ npm dump
 ```
 
 首页

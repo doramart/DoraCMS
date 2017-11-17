@@ -12,6 +12,8 @@
   "author": "dora <admin@html-js.cn>",
   "license": "MIT",
   "scripts": {
+    "init": " node build/restore",
+    "dump": " node build/dump",
     "dev": "npm run static && cross-env NODE_ENV=development MICRO_CACHE=true node ./server",
     "start": "npm run static && cross-env NODE_ENV=development MICRO_CACHE=true node ./server",
     "build": "npm run static && npm run build:client && npm run build:server",
