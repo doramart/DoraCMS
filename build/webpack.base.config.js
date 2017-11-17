@@ -29,6 +29,7 @@ const config = {
             'scss_vars': '@/manage/assets/styles/vars.scss',
             '~src': path.resolve(__dirname, '../src'),
             '~api': path.resolve(__dirname, '../src/api/index-client'),
+            '~server': path.resolve(__dirname, '../server'),
             '~mixins': path.resolve(__dirname, '../src/mixins'),
             '~utils': path.resolve(__dirname, '../src/utils'),
             'api-config': path.resolve(__dirname, '../src/api/config-client'),
