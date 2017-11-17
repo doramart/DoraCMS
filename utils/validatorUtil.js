@@ -23,7 +23,7 @@ module.exports = {
 		return str && validator.isLength(str, min, max) && /[\u4e00-\u9fa5]/.test(str);
 	},
 	// 校验密码
-	checkPwd(str, min = 32, max = 32) {
+	checkPwd(str, min = 6, max = 32) {
 		return str && validator.isLength(str, 5, max) && /(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{6,}/.test(str);
 	},
 	// 校验邮箱
