@@ -39,7 +39,9 @@
 </template>
 <script>
 import api from "~api";
+import crypto from "~server/lib/utils/crypto.js";
 const validatorUtil = require("../../../utils/validatorUtil.js");
+
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "adminLogin",
@@ -100,7 +102,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let params = this.adminLoginFormData;
+         //let params = this.adminLoginFormData;
+         let params = Object.assign({},this.adminLoginFormData);
+          const password = params.password;
+          params.password = crypto.MD5(params.password);
+
           api
             .post("admin/doLogin", params)
             .then(result => {

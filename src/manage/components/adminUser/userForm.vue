@@ -40,8 +40,10 @@
     </div>
 </template>
 <script>
+import crypto from "~server/lib/utils/crypto.js";
 import services from '../../store/services.js';
-const validatorUtil = require('../../../../utils/validatorUtil.js')
+const validatorUtil = require('../../../../utils/validatorUtil.js');
+
 export default {
     props: {
         dialogState: Object,
@@ -160,7 +162,9 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let params = this.dialogState.formData;
+                    let params = Object.assign({},this.dialogState.formData);
+                    params.password = crypto.MD5(params.password);
+                    params.confirmPassword = crypto.MD5(params.confirmPassword);
                     // 更新
                     if (this.dialogState.edit) {
                         services.updateAdminUser(params).then((result) => {
