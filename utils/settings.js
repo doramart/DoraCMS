@@ -19,7 +19,7 @@ module.exports = {
 	// 数据库配置
 	URL: 'mongodb://127.0.0.1:27017/doracms2',
 	DB: 'doracms2',
-	HOST: '120.1.1.10',
+	HOST: '127.0.0.1',
 	PORT: 27017,
 	USERNAME: 'doracms',
 	PASSWORD: 'password',
