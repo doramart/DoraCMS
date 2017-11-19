@@ -9,7 +9,7 @@
                     <i class="fa fa-align-justify"></i>
                 </div>
             </el-col>
-            <el-col :span="4" class="userinfo">
+            <el-col :span="4" class="userinfo" v-if="loginState && loginState.userInfo">
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link userinfo-inner">
                         <img :src="loginState.userInfo.logo" /> {{loginState.userInfo.userName}}</span>
@@ -62,223 +62,217 @@
 </template>
 
 <script>
-    import {
-        mapGetters,
-        mapActions
-    } from 'vuex';
-    import services from '../store/services.js'
-    export default {
-        data() {
-            return {
-                loading: false,
-                sysName: 'DoraCMS',
-                collapsed: false,
-                isCollapse: true
-
+import { mapGetters, mapActions } from "vuex";
+import services from "../store/services.js";
+export default {
+  data() {
+    return {
+      loading: false,
+      sysName: "DoraCMS",
+      collapsed: false,
+      isCollapse: true
+    };
+  },
+  methods: {
+    onSubmit() {
+      console.log("submit!");
+    },
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleselect: function(a, b) {},
+    //退出登录
+    logout: function() {
+      var _this = this;
+      this.$confirm("确认退出吗?", "提示", {
+        type: "warning"
+      })
+        .then(() => {
+          this.loading = true;
+          services.logOut().then(result => {
+            if (result && result.data.state === "success") {
+              window.location = "/dr-admin";
+            } else {
+              this.$message.error("服务异常,请稍后再试");
             }
-        },
-        methods: {
-            onSubmit() {
-                console.log('submit!');
-            },
-            handleOpen(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleselect: function (a, b) {},
-            //退出登录
-            logout: function () {
-                var _this = this;
-                this.$confirm('确认退出吗?', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.loading = true;
-                    services.logOut().then((result) => {
-                        if (result && result.data.state === 'success') {
-                            window.location = '/dr-admin';
-                        } else {
-                            this.$message.error('服务异常,请稍后再试');
-                        }
-                    });
-                }).catch(() => {
-
-                });
-            },
-            sysMessage() {
-                this.$router.push('/systemNotify');
-            },
-            sysSettings() {
-                this.$router.push('/systemConfig');
-            },
-            //折叠导航栏
-            collapse: function () {
-                this.collapsed = !this.collapsed;
-            },
-            showMenu(i, status) {
-                this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-' + i)[0].style.display = status ?
-                    'block' : 'none';
-            },
-            sendLogOut() {
-                services.logOut().then((result) => {
-
-                    if (result && result.data.state === 'success') {
-                        window.location = '/dr-admin';
-                    } else {
-                        this.$message.error('服务异常,请稍后再试');
-                    }
-                });
-            }
-        },
-        mounted() {
-
-        },
-        computed: {
-            ...mapGetters([
-                'loginState'
-            ])
-        },
-        watch: {
-            loginState() {
-                if (!this.$store.getters.loginState.state) {
-                    this.$confirm('您的登录已超时?', '提示', {
-                        showCancelButton: false,
-                        closeOnClickModal: false,
-                        closeOnPressEscape: false,
-                        confirmButtonText: '重新登录',
-                        type: 'warning'
-                    }).then(() => {
-                        this.loading = true;
-                        window.location = '/dr-admin'
-                    }).catch(() => {
-                        this.loading = true;
-                        window.location = '/dr-admin'
-                    });
-                }
-            }
+          });
+        })
+        .catch(() => {});
+    },
+    sysMessage() {
+      this.$router.push("/systemNotify");
+    },
+    sysSettings() {
+      this.$router.push("/systemConfig");
+    },
+    //折叠导航栏
+    collapse: function() {
+      this.collapsed = !this.collapsed;
+    },
+    showMenu(i, status) {
+      this.$refs.menuCollapsed.getElementsByClassName(
+        "submenu-hook-" + i
+      )[0].style.display = status ? "block" : "none";
+    },
+    sendLogOut() {
+      services.logOut().then(result => {
+        if (result && result.data.state === "success") {
+          window.location = "/dr-admin";
+        } else {
+          this.$message.error("服务异常,请稍后再试");
         }
+      });
     }
+  },
+  mounted() {},
+  computed: {
+    ...mapGetters(["loginState"])
+  },
+  watch: {
+    loginState() {
+      if (!this.$store.getters.loginState.state) {
+        this.$confirm("您的登录已超时?", "提示", {
+          showCancelButton: false,
+          closeOnClickModal: false,
+          closeOnPressEscape: false,
+          confirmButtonText: "重新登录",
+          type: "warning"
+        })
+          .then(() => {
+            this.loading = true;
+            window.location = "/dr-admin";
+          })
+          .catch(() => {
+            this.loading = true;
+            window.location = "/dr-admin";
+          });
+      }
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
-    @import '~scss_vars';
-    .container {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        width: 100%;
-        .header {
-            height: 60px;
-            line-height: 60px;
-            background: $color-primary;
-            color: #fff;
-            .userinfo {
-                text-align: right;
-                padding-right: 35px;
-                float: right;
-                .userinfo-inner {
-                    cursor: pointer;
-                    color: #878D99;
-                    img {
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 20px;
-                        margin: 10px 0px 10px 10px;
-                        float: right;
-                    }
-                }
-            }
-            .logo {
-                color: #409EFF;
-                height: 60px;
-                font-size: 26px;
-                padding-left: 20px;
-                padding-right: 20px;
-                border-color: #ffffff;
-                border-right-width: 1px;
-                border-right-style: solid;
-                img {
-                    width: 100%;
-                    float: left;
-                    margin: 10px 10px 10px 0px;
-                }
-                .txt {
-                    color: #fff;
-                }
-            }
-            .logo-width {
-                width: 230px;
-                text-align: center;
-            }
-            .logo-collapse-width {
-                width: 60px
-            }
-            .tools {
-                padding: 0px 23px;
-                width: 14px;
-                height: 60px;
-                line-height: 60px;
-                cursor: pointer;
-                color: #D8DCE6
-            }
+@import "~scss_vars";
+.container {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  .header {
+    height: 60px;
+    line-height: 60px;
+    background: $color-primary;
+    color: #fff;
+    .userinfo {
+      text-align: right;
+      padding-right: 35px;
+      float: right;
+      .userinfo-inner {
+        cursor: pointer;
+        color: #878d99;
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          margin: 10px 0px 10px 10px;
+          float: right;
         }
-        .main {
-            display: flex; // background: #324057;
-            position: absolute;
-            top: 60px;
-            bottom: 0px;
-            overflow: hidden;
-            aside {
-                .el-menu-vertical-demo:not(.el-menu--collapse) {
-                    width: 230px;
-                    min-height: 400px;
-                }
-                .el-menu {
-                    height: 100%;
-                }
-                .collapsed {
-                    // width: 60px;
-                    .item {
-                        position: relative;
-                    }
-                    .submenu {
-                        position: absolute;
-                        top: 0px;
-                        left: 60px;
-                        z-index: 99999;
-                        height: auto;
-                        display: none;
-                    }
-                }
-            }
-            .menu-collapsed {
-                flex: 0 0 60px;
-                width: 60px;
-            }
-            .menu-expanded {
-                flex: 0 0 230px;
-                width: 230px;
-            }
-            .content-container {
-                flex: 1;
-                overflow-y: scroll;
-                padding: 20px;
-                .breadcrumb-container {
-                    .title {
-                        width: 200px;
-                        float: left;
-                        color: #475669;
-                    }
-                    .breadcrumb-inner {
-                        float: right;
-                    }
-                }
-                .content-wrapper {
-                    background-color: #fff;
-                    box-sizing: border-box;
-                }
-            }
-        }
+      }
     }
+    .logo {
+      color: #409eff;
+      height: 60px;
+      font-size: 26px;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-color: #ffffff;
+      border-right-width: 1px;
+      border-right-style: solid;
+      img {
+        width: 100%;
+        float: left;
+        margin: 10px 10px 10px 0px;
+      }
+      .txt {
+        color: #fff;
+      }
+    }
+    .logo-width {
+      width: 230px;
+      text-align: center;
+    }
+    .logo-collapse-width {
+      width: 60px;
+    }
+    .tools {
+      padding: 0px 23px;
+      width: 14px;
+      height: 60px;
+      line-height: 60px;
+      cursor: pointer;
+      color: #d8dce6;
+    }
+  }
+  .main {
+    display: flex; // background: #324057;
+    position: absolute;
+    top: 60px;
+    bottom: 0px;
+    overflow: hidden;
+    aside {
+      .el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 230px;
+        min-height: 400px;
+      }
+      .el-menu {
+        height: 100%;
+      }
+      .collapsed {
+        // width: 60px;
+        .item {
+          position: relative;
+        }
+        .submenu {
+          position: absolute;
+          top: 0px;
+          left: 60px;
+          z-index: 99999;
+          height: auto;
+          display: none;
+        }
+      }
+    }
+    .menu-collapsed {
+      flex: 0 0 60px;
+      width: 60px;
+    }
+    .menu-expanded {
+      flex: 0 0 230px;
+      width: 230px;
+    }
+    .content-container {
+      flex: 1;
+      overflow-y: scroll;
+      padding: 20px;
+      .breadcrumb-container {
+        .title {
+          width: 200px;
+          float: left;
+          color: #475669;
+        }
+        .breadcrumb-inner {
+          float: right;
+        }
+      }
+      .content-wrapper {
+        background-color: #fff;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
 </style>

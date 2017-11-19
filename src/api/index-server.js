@@ -28,6 +28,7 @@ export default {
         if (config.cached && params.cache && config.cached.has(key)) {
             return Promise.resolve(config.cached.get(key))
         }
+        Object.assign(params, { apiSource: 'server' })
         return axios({
             method: 'get',
             url: config.api + url,

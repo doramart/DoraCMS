@@ -1,4 +1,5 @@
 <style lang="scss">
+
 </style>
 <template>
     <div id="app">
@@ -15,50 +16,45 @@
     </div>
 </template>
 <script>
-import {
-    mapGetters,
-    mapState
-} from 'vuex'
+import { mapGetters, mapState } from "vuex";
 
-import MyHeader from './components/header'
-import MyFooter from './components/Footer'
+import MyHeader from "./components/header";
+import MyFooter from "./components/Footer";
 
 export default {
-    name: 'app',
-    components: {
-        MyHeader,
-        MyFooter
+  name: "app",
+  components: {
+    MyHeader,
+    MyFooter
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapGetters({
+      global: "global/getGlobal"
+    }),
+    ...mapState("appShell", ["pageTransitionName"]),
+    key() {
+      return this.$route.path.replace(/\//g, "_");
     },
-    data() {
-        return {}
+    backend() {
+      return this.$route.path.indexOf("backend") >= 0;
     },
-    computed: {
-        ...mapGetters({
-            global: 'global/getGlobal'
-        }),
-        ...mapState('appShell', [
-            'pageTransitionName'
-        ]),
-        key() {
-            return this.$route.path.replace(/\//g, '_')
-        },
-        backend() {
-            return this.$route.path.indexOf('backend') >= 0
-        },
-        isLogin() {
-            return this.$route.path === '/backend'
-        }
-    },
-    methods: {
-        handleBeforeEnter() {
-            this.$store.dispatch('appShell/setPageSwitching', true)
-        },
-        handleAfterEnter() {
-            this.$store.dispatch('appShell/setPageSwitching', false)
-        },
-        handleClickHeaderBack() {
-            this.$router.go(-1)
-        },
+    isLogin() {
+      return this.$route.path === "/backend";
     }
-}
+  },
+  methods: {
+    handleBeforeEnter() {
+      this.$store.dispatch("appShell/setPageSwitching", true);
+    },
+    handleAfterEnter() {
+      this.$store.dispatch("appShell/setPageSwitching", false);
+    },
+    handleClickHeaderBack() {
+      this.$router.go(-1);
+    }
+  }
+};
 </script>

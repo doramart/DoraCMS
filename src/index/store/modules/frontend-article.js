@@ -46,8 +46,7 @@ const actions = {
                 doc, messages, randomArticles
             }
         } = await api.get('content/getContent', {
-                ...config,
-                markdown: 1
+                ...config
             })
         if (doc) {
             commit('receiveArticleItem', {

@@ -48,8 +48,8 @@
 <script>
 import AdsPannel from "../components/AdsPannel.vue";
 import axios from "axios";
-import metaMixin from '~mixins'
-import {  mapGetters } from 'vuex'
+import metaMixin from "~mixins";
+import { mapGetters } from "vuex";
 export default {
   name: "case-item",
   mixins: [metaMixin],
@@ -64,12 +64,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-        systemConfig: 'global/footerConfigs/getSystemConfig'
+      systemConfig: "global/footerConfigs/getSystemConfig"
     }),
     currentCate() {
-        let navs = this.$store.getters['global/category/getHeaderNavList'].data || [];
-        const obj = navs.find(item => item._id === this.$route.params.typeId);
-        return obj || {};
+      let navs =
+        this.$store.getters["global/category/getHeaderNavList"].data || [];
+      const obj = navs.find(item => item._id === this.$route.params.typeId);
+      return obj || {};
     }
   },
   methods: {
@@ -87,23 +88,24 @@ export default {
         console.log(error);
       });
   },
-  metaInfo(){
-      const systemData = this.systemConfig.data[0];
-      const { siteName, siteDiscription, siteKeywords } = systemData;
-      return {
-              title: '案例 | ' + siteName,
-              meta: [{
-                      vmid: 'description',
-                      name: 'description',
-                      content: this.currentCate.comments || siteDiscription
-                  },
-                  {
-                      vmid: 'keywords',
-                      name: 'keywords',
-                      content: this.currentCate.keywords || siteKeywords
-                  }
-              ]
-          }
-    }
+  metaInfo() {
+    const systemData = this.systemConfig.data[0];
+    const { siteName, siteDiscription, siteKeywords } = systemData;
+    return {
+      title: "案例 | " + siteName,
+      meta: [
+        {
+          vmid: "description",
+          name: "description",
+          content: this.currentCate.comments || siteDiscription
+        },
+        {
+          vmid: "keywords",
+          name: "keywords",
+          content: this.currentCate.keywords || siteKeywords
+        }
+      ]
+    };
+  }
 };
 </script>

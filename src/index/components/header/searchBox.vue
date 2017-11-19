@@ -1,9 +1,7 @@
 <template>
     <div class="search-pannel" v-once>
         <div class="input-area">
-            <el-input @keyup.enter.native="handleIconClick" size="small" placeholder="请输入关键字" v-model="searchkey">
-                  <i slot="suffix" class="el-input__icon el-icon-search" @click="handleIconClick"></i>
-            </el-input>
+            <el-input @keyup.enter.native="handleIconClick"  suffix-icon="el-icon-search" size="small" placeholder="请输入关键字" v-model="searchkey"></el-input>
         </div>
     </div>
 </template>

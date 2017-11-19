@@ -53,7 +53,7 @@ class Content {
             let searchkey = req.query.searchkey; // 搜索关键字
             let model = req.query.model; // 查询模式 full/normal/simple
             let state = req.query.state;
-           
+
             // 条件配置
             let queryObj = {}, sortObj = { date: -1 }, files = null;
 
@@ -105,7 +105,7 @@ class Content {
                     discription: 1
                 }
             }
-            
+
             const contents = await ContentModel.find(queryObj, files).sort(sortObj).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
                 path: 'author',
                 select: 'name -_id'
@@ -146,7 +146,8 @@ class Content {
     async getOneContent(req, res, next) {
         try {
             let targetId = req.query.id;
-            const content = await ContentModel.findOneAndUpdate({ _id: targetId }, { '$inc': { 'clickNum': 1 } }).populate([{
+            let updateNum = req.query.apiSource == 'server' ? 1 : 0;
+            const content = await ContentModel.findOneAndUpdate({ _id: targetId }, { '$inc': { 'clickNum': updateNum } }).populate([{
                 path: 'author',
                 select: 'name -_id'
             },

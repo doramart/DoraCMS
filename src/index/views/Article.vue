@@ -27,7 +27,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div v-html="article.doc.comments">
+                                    <div v-html="article.doc.comments" class="content-main">
                                     </div>
                                     <RandomArticle :articles="article.randomArticles" />
                                     <Messages :userMessageList="messages.data" :contentId="article.doc._id" />
@@ -154,31 +154,34 @@
 </script>
 <style lang="scss">
 .content-detail {
-    color: #3f3f3f;
-    margin-top: 20px;
-    .from{
-        color: #FA5555;
+  color: #3f3f3f;
+  margin-top: 20px;
+  .from {
+    color: #fa5555;
+    font-size: 13px;
+    font-weight: normal;
+  }
+  img {
+    max-width: 100% !important;
+  }
+  .content-title {
+    margin-top: 0;
+  }
+  .content-author {
+    color: #969696;
+    ul {
+      li.author-name {
+        color: #409eff;
+      }
+      li {
+        display: inline-block;
+        margin-bottom: 10px;
         font-size: 13px;
-        font-weight: normal;
+      }
     }
-    img {
-        max-width: 100% !important;
-    }
-    .content-title {
-        margin-top: 0;
-    }
-    .content-author {
-        color: #969696;
-        ul {
-            li.author-name {
-                color: #409EFF;
-            }
-            li {
-                display: inline-block;
-                margin-bottom: 10px;
-                font-size: 13px;
-            }
-        }
-    }
+  }
+  .content-main {
+    font-size: 15px;
+  }
 }
 </style>
