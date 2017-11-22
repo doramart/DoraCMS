@@ -1,6 +1,6 @@
 <template>
     <div class="dr-contentTagForm">
-        <el-dialog width="35%" size="small" title="填写标签信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" title="填写标签信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
                 <el-form-item label="名称" prop="name">
                     <el-input size="small" v-model="dialogState.formData.name"></el-input>

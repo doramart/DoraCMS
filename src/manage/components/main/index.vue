@@ -1,6 +1,6 @@
 <template>
     <div class="admin-main">
-        <el-dialog width="55%" size="small" title="我的权限" :visible.sync="resourceShow" :close-on-click-modal="false">
+        <el-dialog width="55%" title="我的权限" :visible.sync="resourceShow" :close-on-click-modal="false">
           <ResourceView :resource="newSourceData" />
         </el-dialog>
         <el-row :gutter="15">
