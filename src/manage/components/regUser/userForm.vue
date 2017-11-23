@@ -12,7 +12,7 @@
                     <el-switch active-text="是" inactive-text="否" v-model="dialogState.formData.enable"></el-switch>
                 </el-form-item>
                 <el-form-item label="电话" prop="phoneNum">
-                    <el-input size="small" v-model="dialogState.formData.phoneNum"></el-input>
+                    <el-input size="small" v-model.number="dialogState.formData.phoneNum"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱" prop="email">
                     <el-input size="small" v-model="dialogState.formData.email"></el-input>
@@ -68,6 +68,8 @@ export default {
                     trigger: 'blur'
                 }],
                 phoneNum: [{
+                    type: 'number',
+                    required: true,
                     message: '请输入手机号',
                     trigger: 'blur'
                 }, {
