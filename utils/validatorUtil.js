@@ -32,7 +32,7 @@ module.exports = {
     },
     // 校验手机号
     checkPhoneNum(str) {
-        return str && validator.isMobilePhone(str, 'zh-CN');
+        return str && validator.isMobilePhone(str.toString(), 'zh-CN');
     },
     // 校验QQ号
     checkQqNum(str) {

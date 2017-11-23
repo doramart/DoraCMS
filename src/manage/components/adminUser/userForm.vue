@@ -20,7 +20,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="电话" prop="phoneNum">
-                    <el-input size="small" v-model="dialogState.formData.phoneNum"></el-input>
+                    <el-input size="small" v-model.number="dialogState.formData.phoneNum"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱" prop="email">
                     <el-input size="small" v-model="dialogState.formData.email"></el-input>
@@ -116,8 +116,9 @@ export default {
                     trigger: 'change'
                 }],
                 phoneNum: [{
+                    type: 'number',
                     required: true,
-                    message: '请输入正确的手机号',
+                    message: '请输入手机号',
                     trigger: 'blur'
                 }, {
                     validator: (rule, value, callback) => {
