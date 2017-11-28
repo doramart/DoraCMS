@@ -24,8 +24,8 @@ function checkFormData(req, res, fields) {
     if (!fields.tags) {
         errMsg = '请选择文档标签!';
     }
-    if (!validator.isLength(fields.discription, 5, 100)) {
-        errMsg = '5-100个非特殊字符!';
+    if (!validator.isLength(fields.discription, 5, 300)) {
+        errMsg = '5-300个非特殊字符!';
     }
     if (!validator.isLength(fields.comments, 5)) {
         errMsg = '文档内容不得少于5个字符!';
@@ -49,6 +49,7 @@ class Content {
             let pageSize = req.query.pageSize || 10;
             let sortby = req.query.sortby; //排序规则
             let typeId = req.query.typeId; // 分类ID
+            let isTop = req.query.isTop; // 推荐
             let tagName = req.query.tagName; // 文章tag
             let searchkey = req.query.searchkey; // 搜索关键字
             let model = req.query.model; // 查询模式 full/normal/simple
@@ -57,9 +58,14 @@ class Content {
             // 条件配置
             let queryObj = {}, sortObj = { date: -1 }, files = null;
 
+            if (isTop) {
+                queryObj.isTop = isTop;
+            }
+
             if (sortby) {
-                delete sortObj.date;
-                sortObj[sortby] = -1
+                for (const item of sortby) {
+                    sortObj[item] = -1
+                }
             }
 
             if (state) {

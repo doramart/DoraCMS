@@ -3,10 +3,10 @@
         <div class="content-detail">
             <div class="readme">
                 <el-row :gutter="0" class="header-main">
-                    <el-col :xs="1" :sm="1" :md="3" :lg="3">
+                    <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
-                    <el-col :xs="22" :sm="22" :md="18" :lg="18">
+                    <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12">
                         <el-row :gutter="24">
                             <el-col :xs="24" :sm="17" :md="17" :lg="17">
                                 <div>
@@ -43,7 +43,7 @@
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :xs="1" :sm="1" :md="3" :lg="3">
+                    <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
                 </el-row>
@@ -166,6 +166,8 @@
   }
   .content-title {
     margin-top: 0;
+    font-weight: 700;
+    font-size: 20px;
   }
   .content-author {
     color: #969696;

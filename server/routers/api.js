@@ -37,7 +37,6 @@ router.get('/sitemap/getList', (req, res, next) => {
 
 // 获取用户session
 router.get('/users/session', (req, res) => {
-  // console.log('--req.session.user---', req.session.user);
   res.send({
     state: 'success',
     userInfo: req.session.user,

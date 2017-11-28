@@ -3,10 +3,10 @@
         
         <div class="contentContainer">
             <el-row :gutter="0">
-                <el-col :xs="1" :sm="1" :md="3" :lg="3">
+                <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                     &nbsp;
                 </el-col>
-                <el-col :xs="22" :sm="22" :md="18" :lg="18">
+                <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12">
                     <el-row :gutter="20">
                       <h3>
                           这些站点在用DoraCMS：
@@ -18,7 +18,7 @@
                       <AdsPannel id="BkxSmqcaAZ" />
                     </el-row>
                 </el-col>
-                <el-col :xs="1" :sm="1" :md="3" :lg="3">
+                <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                     &nbsp;
                 </el-col>
             </el-row>

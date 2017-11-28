@@ -29,6 +29,12 @@ a:hover {
     color: #409EFF
 }
 
+.content-main a:link,
+.content-main a:active,
+.content-main a:visited {
+    color: #409EFF;
+}
+
 ul {
     margin: 0;
     padding: 0;
@@ -75,7 +81,7 @@ pre {
     word-wrap: break-word;
     background-color: #f5f5f5;
     border: 1px solid #ccc;
-    border-radius: 0px;
+    border-radius: 3px;
     overflow: auto;
     font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
@@ -140,7 +146,7 @@ pre {
 
 @media screen and (max-width:768px) {
     .header .header-main {
-        padding: 10px 0 !important;
+        padding: 5px 0 !important;
     }
     .header .header-main .header-logo {
         width: 150px !important;

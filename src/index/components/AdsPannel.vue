@@ -2,7 +2,7 @@
     <div class="content-ads" v-if="ads.data">
         <div class="img-pannel" v-if="ads.data.type == '1'">
             <div v-if="ads.data.items.length == 1">
-                <a :href="ads.data.items[0].link" target="_blank"><img :src="ads.data.items[0].sImg" :alt="ads.data.items[0].alt" /></a>
+                <a :href="ads.data.items[0].link" target="_blank"><img style="border-radius:4px;border: 1px solid #f0f0f0;" :src="ads.data.items[0].sImg" :alt="ads.data.items[0].alt" /></a>
             </div>
             <div v-else>
                 <!-- 轮播展示 -->
@@ -100,7 +100,7 @@ export default {
   margin: 15px auto;
   font-size: 13px;
 }
-.case-item{
+.case-item {
   margin-bottom: 20px;
 }
 </style>

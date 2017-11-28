@@ -135,7 +135,7 @@ class Message {
 
                 if (fields.replyAuthor) {
                     replyAuthor = await UserModel.findOne({ _id: fields.replyAuthor })
-                }else{
+                } else {
                     replyAuthor = await AdminUserModel.findOne({ _id: fields.adminReplyAuthor });
                 }
 
@@ -149,7 +149,7 @@ class Message {
                     } else {
                         mailParams.author = req.session.user
                     }
-                    systemConfigs[0]['siteDomain'] = 'https://' + systemConfigs[0]['siteDomain'];
+                    systemConfigs[0]['siteDomain'] = systemConfigs[0]['siteDomain'];
                     service.sendEmail(req, systemConfigs[0], settings.email_notice_user_contentMsg, mailParams);
                 }
 
@@ -205,7 +205,7 @@ class Message {
             })
         }
     }
- 
+
 
 }
 

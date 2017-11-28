@@ -16,7 +16,7 @@ function checkFormData(req, res, fields) {
     if (!fields.defaultUrl) {
         errMsg = '请输入用于seo的url!';
     }
-    if (!validator.isLength(fields.comments, 4, 100)) {
+    if (fields.comments && !validator.isLength(fields.comments, 4, 100)) {
         errMsg = '4-100个非特殊字符!';
     }
     if (errMsg) {

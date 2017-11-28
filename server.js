@@ -16,7 +16,7 @@ const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const { createBundleRenderer } = require('vue-server-renderer')
-const config = require('./src/api/config-server')
+const _ = require('lodash')
 const resolve = file => path.resolve(__dirname, file)
 
 const serverInfo =
@@ -202,7 +202,16 @@ app.get('/robots.txt', function (req, res, next) {
 });
 
 // 集成ueditor
-app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), function (req, res, next) {
+let qnParams = settings.openqn ? {
+    qn: {
+        accessKey: settings.accessKey,
+        secretKey: settings.secretKey,
+        bucket: settings.bucket,
+        origin: settings.origin
+    },
+    local: true
+} : {};
+app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), config = qnParams, function (req, res, next) {
     var imgDir = '/upload/images/ueditor/' //默认上传地址为图片
     var ActionType = req.query.action;
     if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo') {
@@ -229,12 +238,12 @@ app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), function (req, re
     }
 }));
 
+
 // 后台渲染
 app.get('/manage', authSession, function (req, res) {
-    AdminResource.getAllResource(req, res, {
-        type: '0'
-    }).then((manageCates) => {
-        let currentCates = manageCates ? JSON.stringify(manageCates) : [];
+    AdminResource.getAllResource(req, res).then((manageCates) => {
+        let adminPower = req.session.adminUserInfo.group.power;
+        let currentCates = JSON.stringify(siteFunc.renderNoPowerMenus(manageCates, adminPower));
         if (isProd) {
             res.render('admin.html', {
                 title: 'DoraCMS后台管理',
@@ -250,7 +259,13 @@ app.use('/manage', manage);
 
 // 404 页面
 app.get('*', (req, res) => {
-    res.send('HTTP STATUS: 404')
+    let Page404 = `
+        <div style="text-align:center">
+            <h3 style="width: 25%;font-size: 12rem;color: #409eff;margin: 0 auto;margin-top: 10%;">404</h3>
+            <div style="font-size: 15px;color: #878d99;">太调皮辣，不过我喜欢...哼哼 😏👽 &nbsp;<a href="/">返回首页</a></div>
+        </div>
+    `
+    res.send(Page404)
 })
 
 app.use(function (req, res, next) {
@@ -265,7 +280,7 @@ app.use(function (err, req, res) {
     res.send(err.message)
 })
 
-const port = process.env.PORT || config.port || 8080
+const port = process.env.PORT || settings.serverPort
 app.listen(port, () => {
     console.log(`server started at localhost:${port}`)
 })

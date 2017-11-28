@@ -32,14 +32,14 @@ module.exports = {
     },
     // 校验手机号
     checkPhoneNum(str) {
-        return str && validator.isMobilePhone(str, 'zh-CN');
+        return str && validator.isMobilePhone(str.toString(), 'zh-CN');
     },
     // 校验QQ号
     checkQqNum(str) {
         return RegExp(/^[1-9][0-9]{4,9}$/).test(str);
     },
 
-    checkUrl(str){
+    checkUrl(str) {
         return str && validator.isURL(str);
     }
 

@@ -79,8 +79,8 @@ class SystemConfig {
         }
     }
 
-    async getConfigsByPower() {
-        return await SystemConfigModel.find({});
+    async getConfigsByFiles(files = '') {
+        return await SystemConfigModel.find({}, files);
     }
 
     async updateSystemConfig(req, res, next) {
