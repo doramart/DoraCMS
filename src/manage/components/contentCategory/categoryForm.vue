@@ -68,7 +68,7 @@ export default {
           {
             min: 4,
             max: 100,
-            message: "请输入5-50个字符",
+            message: "请输入4-100个字符",
             trigger: "blur"
           }
         ]
