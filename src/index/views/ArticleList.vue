@@ -3,10 +3,10 @@
         <div class="contentContainer">
             <div>
                 <el-row :gutter="0">
-                    <el-col :xs="1" :sm="1" :md="3" :lg="3">
+                    <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
-                    <el-col :xs="22" :sm="22" :md="18" :lg="18" class="content-mainbody-left">
+                    <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12" class="content-mainbody-left">
                         <el-row :gutter="24">
                             <el-col :xs="24" :sm="17" :md="17" :lg="17" v-if="topics.data.length > 0">
                                 <div class="column-wrap" v-show="typeId != 'indexPage'">
@@ -35,7 +35,7 @@
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :xs="1" :sm="1" :md="3" :lg="3">
+                    <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
                 </el-row>

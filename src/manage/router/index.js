@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '../store/index.js'
 import Home from '../components/Home'
+import NotFind from '../components/errors/404.vue'
 import Axios from "axios";
 import _ from 'lodash';
 Vue.use(Router)
@@ -70,8 +71,8 @@ function renderLeftMenu() {
       children: childrenMenu
     }
     addNewRoutes.push(parentMenu);
-
   })
+  addNewRoutes.push({ path: '*', component: NotFind, hidden: 'true' });
   return addNewRoutes;
 }
 

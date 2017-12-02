@@ -16,65 +16,70 @@
     </div>
 </template>
 <script>
-import services from '../../store/services.js';
-import _ from 'lodash';
+import services from "../../store/services.js";
+import _ from "lodash";
 export default {
-    props: {
-        dialogState: Object,
-        groups: Array
+  props: {
+    dialogState: Object,
+    groups: Array
+  },
+  data() {
+    return {
+      rules: {
+        content: [
+          {
+            required: true,
+            message: "请填写留言",
+            trigger: "blur"
+          },
+          {
+            min: 5,
+            max: 200,
+            message: "请输入5-200个字符",
+            trigger: "blur"
+          }
+        ]
+      }
+    };
+  },
+  methods: {
+    confirm() {
+      this.$store.dispatch("hideContentMessageForm");
     },
-    data() {
-        return {
-            rules: {
-                content: [{
-                    required: true,
-                    message: '请填写留言',
-                    trigger: 'blur'
-                }, {
-                    min: 5,
-                    max: 200,
-                    message: '请输入5-200个字符',
-                    trigger: 'blur'
-                }]
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let parentParams = this.dialogState.parentformData,
+            repFormData = {};
+          repFormData.relationMsgId = parentParams._id;
+          repFormData.contentId = parentParams.contentId._id;
+          repFormData.utype = "1";
+          if (parentParams.author) {
+            repFormData.replyAuthor = parentParams.author._id;
+          } else if (parentParams.adminAuthor) {
+            repFormData.adminReplyAuthor = parentParams.adminAuthor._id;
+          }
+
+          repFormData.content = this.dialogState.formData.content;
+          // 新增
+          services.addContentMessage(repFormData).then(result => {
+            if (result.data.state === "success") {
+              this.$store.dispatch("hideContentMessageForm");
+              this.$store.dispatch("getContentMessageList");
+              this.$message({
+                message: "添加成功",
+                type: "success"
+              });
+            } else {
+              this.$message.error(result.data.message);
             }
-        };
-    },
-    methods: {
-        confirm() {
-            this.$store.dispatch('hideContentMessageForm')
-        },
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    let parentParams = this.dialogState.parentformData, repFormData = {};
-                    repFormData.relationMsgId = parentParams._id;
-                    repFormData.contentId = parentParams.contentId._id;
-                    repFormData.utype = '1';
-                    if (parentParams.author) {
-                        repFormData.replyAuthor = parentParams.author._id;
-                    }
-                    repFormData.content = this.dialogState.formData.content;
-                    // 新增
-                    services.addContentMessage(repFormData).then((result) => {
-                        if (result.data.state === 'success') {
-                            this.$store.dispatch('hideContentMessageForm');
-                            this.$store.dispatch('getContentMessageList');
-                            this.$message({
-                                message: '添加成功',
-                                type: 'success'
-                            });
-                        } else {
-                            this.$message.error(result.data.message);
-                        }
-                    })
-
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
         }
-
+      });
     }
-}
+  }
+};
 </script>

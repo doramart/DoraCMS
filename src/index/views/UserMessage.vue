@@ -3,10 +3,10 @@
     <div>
       <UserBar />
       <el-row :gutter="0" class="header-main">
-        <el-col :xs="1" :sm="1" :md="3" :lg="3">
+        <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
-        <el-col :xs="22" :sm="22" :md="18" :lg="18">
+        <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12">
           <div class="user-message">
             <div v-if="noticelist.docs.length>0">
               <UserNoticeDataTable :dataList="noticelist.docs"></UserNoticeDataTable>
@@ -19,7 +19,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="1" :sm="1" :md="3" :lg="3">
+        <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
           <div class="grid-content bg-purple">
             &nbsp;
           </div>

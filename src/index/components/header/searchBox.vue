@@ -27,6 +27,7 @@ export default {
 .search-pannel {
   width: 100%;
   display: inline-block;
+  margin-top: 5px;
   .el-form-item {
     margin-bottom: 0;
   }

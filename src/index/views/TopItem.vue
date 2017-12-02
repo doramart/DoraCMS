@@ -1,9 +1,8 @@
 <template>
     <article class="content-item">
         
-        <el-row :gutter="0">
-            <el-col :xs="0" :sm="7" :md="7" :lg="7" hidden-xs-only>
-                <div class="post-angle" v-show="item.isTop == 1">荐</div>
+        <el-row :gutter="30">
+          <el-col :xs="0" :sm="7" :md="7" :lg="7" hidden-xs-only>
                 <div class="grid-content bg-purple contentImg">
                     <router-link :to="'/details/'+item._id+'.html'" class="continue-reading">
                         <img :src="item.sImg" :alt="item.title" />
@@ -15,7 +14,7 @@
                     <h2>
                         <router-link :to="'/details/'+item._id+'.html'" class="continue-reading">{{item.title}}</router-link>
                     </h2>
-                    <div class="dis">{{item.discription}}</div>
+                    <div class="dis">{{item.discription | cutWords(90)}}</div>
                     <ul class="post-meta">
                         <li>
                             <div v-if="item.categories && item.categories.length>1">
@@ -31,6 +30,7 @@
                     </ul>
                 </div>
             </el-col>
+            
         </el-row>
     </article>
 </template>
@@ -62,8 +62,11 @@
   .contentImg {
     img {
       width: 100%;
+      min-height: 6rem;
+      border-radius: 4px;
+      border: 1px solid #f0f0f0;
     }
-    margin-right: 30px;
+    // margin-right: 30px;
     height: auto;
     display: block;
     position: relative;
@@ -100,11 +103,12 @@
         margin: 0;
         font-size: 18px;
         word-break: break-all;
+        font-weight: 700;
       }
     }
     .dis {
-      margin: 12px 0;
-      font-size: 14px;
+      margin: 10px 0;
+      font-size: 13px;
       color: #333333;
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "doracms",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "基于nodejs,express,vue2 内容管理系统.",
   "keywords": [
     "vue",
@@ -50,6 +50,7 @@
     "morgan": "^1.9.0",
     "nodemailer": "^4.4.0",
     "nprogress": "^0.2.0",
+    "qiniu": "^7.1.1",
     "serve-favicon": "^2.4.5",
     "shelljs": "^0.7.8",
     "shortid": "^2.2.8",

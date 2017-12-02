@@ -2,10 +2,10 @@
   <div class="dr-admin-login">
     <div class="admin-login-form">
       <el-row :gutter="10">
-        <el-col :xs="2" :sm="6" :md="8" :lg="8">
+        <el-col :xs="2" :sm="6" :md="8" :lg="8" :xl="10">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
-        <el-col :xs="20" :sm="12" :md="8" :lg="8">
+        <el-col :xs="20" :sm="12" :md="8" :lg="8" :xl="4">
           <div class="admin-logo-title">
             <h3>
               <b style="color:#1D8CE0">Dora</b>CMS</h3>
@@ -30,7 +30,7 @@
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :xs="2" :sm="6" :md="8" :lg="8">
+        <el-col :xs="2" :sm="6" :md="8" :lg="8" :xl="10">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
       </el-row>
@@ -102,8 +102,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-         //let params = this.adminLoginFormData;
-         let params = Object.assign({},this.adminLoginFormData);
+          //let params = this.adminLoginFormData;
+          let params = Object.assign({}, this.adminLoginFormData);
           const password = params.password;
           params.password = crypto.MD5(params.password);
 

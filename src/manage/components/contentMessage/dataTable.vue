@@ -28,63 +28,66 @@
 </template>
 
 <script>
-import services from '../../store/services.js';
+import services from "../../store/services.js";
 export default {
-    props: {
-        dataList: Array,
-        pageInfo: Object
-    },
-    data() {
-        return {
-            loading: false,
-            multipleSelection: []
-        }
-    },
+  props: {
+    dataList: Array,
+    pageInfo: Object
+  },
+  data() {
+    return {
+      loading: false,
+      multipleSelection: []
+    };
+  },
 
-    methods: {
-        handleMsgSelectionChange(val) {
-            if (val && val.length > 0) {
-                let ids = val.map((item, index) => {
-                    return item._id;
-                })
-                this.multipleSelection = ids;
-                this.$emit('changeMsgSelectList', ids);
-            }
-        },
-        replyContentMessage(index, rows) {
-            let rowData = rows[index];
-            this.$store.dispatch('showContentMessageForm', {
-                edit: true,
-                parentformData: rowData
+  methods: {
+    handleMsgSelectionChange(val) {
+      if (val && val.length > 0) {
+        let ids = val.map((item, index) => {
+          return item._id;
+        });
+        this.multipleSelection = ids;
+        this.$emit("changeMsgSelectList", ids);
+      }
+    },
+    replyContentMessage(index, rows) {
+      let rowData = rows[index];
+      this.$store.dispatch("showContentMessageForm", {
+        edit: true,
+        parentformData: rowData
+      });
+    },
+    deleteContentMessage(index, rows) {
+      this.$confirm("此操作将永久删除该留言, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let targetId = [];
+          return services.deleteContentMessage({
+            ids: rows[index]._id
+          });
+        })
+        .then(result => {
+          if (result.data.state === "success") {
+            this.$store.dispatch("getContentMessageList", this.pageInfo);
+            this.$message({
+              message: "删除成功",
+              type: "success"
             });
-        },
-        deleteContentMessage(index, rows) {
-            this.$confirm('此操作将永久删除该留言, 是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                let targetId = [];
-                return services.deleteContentMessage({
-                    ids: rows[index]._id
-                });
-            }).then((result) => {
-                if (result.data.state === 'success') {
-                    this.$store.dispatch('getContentMessageList', this.pageInfo);
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                } else {
-                    this.$message.error(result.data.message);
-                }
-            }).catch((err) => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除' + err
-                });
-            });
-        }
+          } else {
+            this.$message.error(result.data.message);
+          }
+        })
+        .catch(err => {
+          this.$message({
+            type: "info",
+            message: "已取消删除" + err
+          });
+        });
     }
-}
+  }
+};
 </script>

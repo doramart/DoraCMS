@@ -1,9 +1,5 @@
 import Axios from "axios";
 
-if (typeof window == "undefined") {
-    Axios.defaults.baseURL = 'http://127.0.0.1:8080';
-}
-
 export function reqJsonData(url, params = {}, method = 'post') {
     if (method === 'get') {
         return Axios.get('/' + url, { params })

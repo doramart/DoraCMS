@@ -4,8 +4,8 @@
 
 const settings = require("./settings");
 const shortid = require('shortid');
-
-var moment = require('moment');
+const _ = require('lodash');
+const moment = require('moment');
 
 var siteFunc = {
 
@@ -96,6 +96,46 @@ var siteFunc = {
             idState = false;
         }
         return idState;
+    },
+
+    renderNoPowerMenus(manageCates, adminPower) {
+        let newResources = [], newRootCates = [];
+        let rootCates = _.filter(manageCates, (doc) => { return doc.parentId == '0'; });
+        let menuCates = _.filter(manageCates, (doc) => { return doc.type == '0' && doc.parentId != '0'; });
+        let optionCates = _.filter(manageCates, (doc) => { return doc.type != '0'; });
+        if (!_.isEmpty(adminPower)) {
+            // 是否显示子菜单
+            for (let i = 0; i < menuCates.length; i++) {
+                let resourceObj = JSON.parse(JSON.stringify(menuCates[i]));
+                let cateFlag = this.checkNoAllPower(resourceObj._id, optionCates, adminPower);
+                if (!cateFlag) {
+                    newResources.push(resourceObj);
+                }
+            }
+            // 是否显示大类菜单
+            for (const cate of rootCates) {
+                let fiterSubCates = _.filter(newResources, (doc) => { return doc.parentId == cate._id; });
+                if (fiterSubCates.length != 0) {
+                    newRootCates.push(cate);
+                }
+            }
+        }
+        return newResources.concat(newRootCates);
+    },
+
+    // 子菜单都无权限校验
+    checkNoAllPower(resourceId, childCates, power) {
+        let cateFlag = true;
+        let rootCates = _.filter(childCates, (doc) => {
+            return doc.parentId == resourceId
+        });
+        for (const cate of rootCates) {
+            if ((power).indexOf(cate._id) > -1) {
+                cateFlag = false;
+                break;
+            }
+        }
+        return cateFlag;
     }
 
 };

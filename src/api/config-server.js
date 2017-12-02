@@ -1,12 +1,11 @@
-var LRU = require('lru-cache')
-
+const LRU = require('lru-cache')
+const settings = require('../../utils/settings')
 let api
 if (process.__API__) {
     api = process.__API__
 } else {
     api = process.__API__ = {
-        api: 'http://localhost:8080/api/',
-        port: 8080,
+        api: 'http://127.0.0.1:' + settings.serverPort + '/api/',
         timeout: 30000,
         cached: LRU({
             max: 1000,

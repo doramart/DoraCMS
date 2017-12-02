@@ -6,11 +6,11 @@
         <el-row :gutter="15">
             <el-col :span="8">
                 <div class="user-basic-info">
-                    <el-card class="box-card pannel-box">
+                    <el-card class="box-card pannel-box" v-if="loginState && loginState.userInfo">
                         <div class="box-body">
                             <div class="logo-pannel">
                                 <el-row :gutter="10">
-                                    <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8" style="text-align:center">
+                                    <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
                                         <div class="logo">
                                             <img :src="loginState.userInfo.logo" />
                                         </div>
@@ -97,7 +97,7 @@
                                                 <a href="#">{{msg.utype =='0'?msg.author.userName:msg.adminAuthor.userName}}</a>
                                                 在
                                                 <a class="direct-chat-contentTitle" :href="'/details/'+msg.contentId._id+'.html'" target="_blank">{{msg.contentId.stitle | cutWords(25)}}</a> 中{{msg.utype =='0'?'说':`回复 `}}
-                                                <a href="#">{{msg.utype =='1'?msg.replyAuthor.userName:''}}</a>
+                                                <a href="#">{{msg.utype =='1'?(msg.replyAuthor ? msg.replyAuthor.userName : (msg.adminReplyAuthor ? msg.adminReplyAuthor.userName : '')) : ''}}</a>
                                             </span>
                                             <span class="direct-chat-timestamp pull-right">
                                                 <i class="fa fa-clock-o"></i>
@@ -279,6 +279,7 @@ export default {
     .direct-chat-img {
       border-radius: 50%;
       width: 35px;
+      height: 35px;
       float: left;
     }
     .direct-chat-text {
@@ -321,13 +322,13 @@ export default {
 .user-basic-info {
   .logo-pannel {
     border-bottom: 1px solid #edf2fc;
-    padding-bottom: 15px;
+    padding-bottom: 12px;
     .logo {
       float: left;
       width: 100%;
       img {
-        width: 60%;
-        max-width: 100px;
+        width: 50%;
+        max-width: 60px;
         height: auto;
         border-radius: 50%;
       }
@@ -348,7 +349,7 @@ export default {
     }
   }
   .info-pannel {
-    padding-top: 15px;
+    padding-top: 12px;
     ul {
       li {
         line-height: 25px;
@@ -356,8 +357,7 @@ export default {
         font-size: 12px;
         label {
           display: inline-block;
-          text-align: right;
-          width: 35%;
+          width: 33%;
           margin-right: 20px;
         }
         .el-button--text {

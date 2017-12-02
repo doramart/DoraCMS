@@ -11,31 +11,28 @@
 
 </template>
 <script>
-    let packageJson = require("../../../package.json");
+let packageJson = require("../../../package.json");
 
-    import {
-        mapGetters,
-        mapActions
-    } from 'vuex'
-    export default {
-        props: {
-            articles: Array
-        },
-        computed: {
-
-        }
-    }
-
+import { mapGetters, mapActions } from "vuex";
+export default {
+  props: {
+    articles: Array
+  },
+  computed: {}
+};
 </script>
 <style lang="scss">
-    .random-articls {
-        margin-top: 40px;
-        margin-bottom: 25px;
-        .title {
-            display: block;
-            text-align: center;
-            padding: 10px;
-        }
-    }
-
+.random-articls {
+  margin-top: 40px;
+  margin-bottom: 25px;
+  img {
+    border-radius: 4px;
+    border: 1px solid #f0f0f0;
+  }
+  .title {
+    display: block;
+    text-align: center;
+    padding: 10px;
+  }
+}
 </style>

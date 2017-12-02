@@ -90,7 +90,16 @@ class AdminUser {
             }, {
                 path: 'author',
                 select: 'userName _id enable date logo'
-            }]).populate('replyAuthor').populate('adminAuthor').exec();
+            }, {
+                path: 'replyAuthor',
+                select: 'userName _id enable date logo'
+            }, {
+                path: 'adminAuthor',
+                select: 'userName _id enable date logo'
+            }, {
+                path: 'adminReplyAuthor',
+                select: 'userName _id enable date logo'
+            }]).exec();
             // 权限标记
             let fullResources = await AdminResourceModel.find();
             let newResources = [];
@@ -168,7 +177,6 @@ class AdminUser {
                 password
             } = fields;
             try {
-
                 let errMsg = '';
                 if (!validatorUtil.checkUserName(fields.userName)) {
                     errMsg = '请输入正确的用户名'

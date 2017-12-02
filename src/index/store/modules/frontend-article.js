@@ -65,6 +65,7 @@ const actions = {
             data
         } = await api.get('content/getSimpleListByParams', {
                 ...config,
+                isTop: 1,
                 sortby: 'clickNum',
                 model: 'simple',
                 cache: true

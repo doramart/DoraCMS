@@ -169,7 +169,7 @@ export default {
           },
           {
             min: 5,
-            max: 100,
+            max: 300,
             message: "5-100个非特殊字符",
             trigger: "blur"
           }

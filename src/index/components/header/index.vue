@@ -1,10 +1,10 @@
 <template>
     <header class="header">
         <el-row :gutter="0" class="header-main">
-            <el-col :xs="1" :sm="1" :md="3" :lg="3">
+            <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                 <div class="grid-content bg-purple">&nbsp;</div>
             </el-col>
-            <el-col :xs="22" :sm="22" :md="18" :lg="18">
+            <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12">
                 <el-row :gutter="10" class="grid-content bg-purple-light">
                     <el-col :xs="24" :sm="4" :md="4" :lg="4">
                         <div class="header-logo">
@@ -34,7 +34,7 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :xs="1" :sm="1" :md="3" :lg="3">
+            <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
                 <div class="grid-content bg-purple">
                     &nbsp;
                 </div>
@@ -89,7 +89,7 @@ export default {
 
   .header-main {
     margin: 0 auto;
-    padding: 10px 0px;
+    padding: 5px 0px;
     overflow: hidden;
     .header-logo {
       img {
