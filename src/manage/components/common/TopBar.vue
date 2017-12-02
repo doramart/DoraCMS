@@ -49,19 +49,19 @@
            <!-- <el-form>
             <el-form-item > -->
             <div v-if="type === 'content'">
-                <el-input size="small" placeholder="请输入关键字" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                <el-input size="small" placeholder="请输入关键字" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult">
                 </el-input>
             </div>
             <div v-else-if="type === 'contentTag'">
-                <el-input size="small" placeholder="标签名称" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                <el-input size="small" placeholder="标签名称" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult">
                 </el-input>
             </div>
             <div v-else-if="type === 'contentMessage'">
-                <el-input size="small" placeholder="留言内容" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                <el-input size="small" placeholder="留言内容" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult">
                 </el-input>
             </div>
             <div v-else-if="type === 'regUser'">
-                <el-input size="small" placeholder="请输入用户名" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                <el-input size="small" placeholder="请输入用户名" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult">
                 </el-input>
             </div>
             <div v-else-if="type === 'systemOptionLogs'">

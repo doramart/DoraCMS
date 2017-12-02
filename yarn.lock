@@ -58,6 +58,12 @@ agent-base@^4.1.0:
   dependencies:
     es6-promisify "^5.0.0"
 
+agentkeepalive@3.3.0:
+  version "3.3.0"
+  resolved "http://registry.npm.taobao.org/agentkeepalive/download/agentkeepalive-3.3.0.tgz#6d5de5829afd3be2712201a39275fd11c651857c"
+  dependencies:
+    humanize-ms "^1.2.1"
+
 agentkeepalive@^2.2.0:
   version "2.2.0"
   resolved "http://registry.npm.taobao.org/agentkeepalive/download/agentkeepalive-2.2.0.tgz#c5d1bd4b129008f1163f236f86e5faea2026e2ef"
@@ -1565,6 +1571,10 @@ crc32-stream@^2.0.0:
     crc "^3.4.4"
     readable-stream "^2.0.0"
 
+crc32@0.2.2:
+  version "0.2.2"
+  resolved "http://registry.npm.taobao.org/crc32/download/crc32-0.2.2.tgz#7ad220d6ffdcd119f9fc127a7772cacea390a4ba"
+
 crc@3.4.4:
   version "3.4.4"
   resolved "http://registry.npm.taobao.org/crc/download/crc-3.4.4.tgz#9da1e980e3bd44fc5c93bf5ab3da3378d85e466b"
@@ -2661,7 +2671,7 @@ formidable@^1.1.1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/formidable/download/formidable-1.1.1.tgz#96b8886f7c3c3508b932d6bd70c4d3a88f35f1a9"
 
-formstream@^1.0.0:
+formstream@1.1.0, formstream@^1.0.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/formstream/download/formstream-1.1.0.tgz#51f3970f26136eb0ad44304de4cebb50207b4479"
   dependencies:
@@ -3133,7 +3143,7 @@ https-proxy-agent@1, https-proxy-agent@^1.0.0:
     debug "2"
     extend "3"
 
-humanize-ms@^1.2.0:
+humanize-ms@^1.2.0, humanize-ms@^1.2.1:
   version "1.2.1"
   resolved "http://registry.npm.taobao.org/humanize-ms/download/humanize-ms-1.2.1.tgz#c46e3159a293f6b896da29316d8b6fe8bb79bbed"
   dependencies:
@@ -3143,7 +3153,7 @@ iconv-lite@0.4.15:
   version "0.4.15"
   resolved "http://registry.npm.taobao.org/iconv-lite/download/iconv-lite-0.4.15.tgz#fe265a218ac6a57cfe854927e9d04c19825eddeb"
 
-iconv-lite@0.4.19, iconv-lite@^0.4.15, iconv-lite@^0.4.17, iconv-lite@^0.4.19, iconv-lite@~0.4.13:
+iconv-lite@0.4.19, iconv-lite@^0.4.15, iconv-lite@^0.4.17, iconv-lite@^0.4.19, iconv-lite@~0.4.11, iconv-lite@~0.4.13:
   version "0.4.19"
   resolved "http://registry.npm.taobao.org/iconv-lite/download/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 
@@ -4042,7 +4052,7 @@ mime-types@^2.1.11, mime-types@^2.1.12, mime-types@~2.1.15, mime-types@~2.1.16, 
   dependencies:
     mime-db "~1.30.0"
 
-mime@1.3.x:
+mime@1.3.6, mime@1.3.x:
   version "1.3.6"
   resolved "http://registry.npm.taobao.org/mime/download/mime-1.3.6.tgz#591d84d3653a6b0b4a3b9df8de5aa8108e72e5e0"
 
@@ -5164,6 +5174,18 @@ q@^1.1.2:
 q@~1.4.0:
   version "1.4.1"
   resolved "http://registry.npm.taobao.org/q/download/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
+
+qiniu@^7.1.1:
+  version "7.1.1"
+  resolved "http://registry.npm.taobao.org/qiniu/download/qiniu-7.1.1.tgz#12138888e41036be49b8923caa8eef81dea2a94a"
+  dependencies:
+    agentkeepalive "3.3.0"
+    crc32 "0.2.2"
+    formstream "1.1.0"
+    mime "1.3.6"
+    tunnel-agent "0.6.0"
+    urlencode "1.1.0"
+    urllib "2.22.0"
 
 qn@^1.3.0:
   version "1.3.0"
@@ -6308,7 +6330,7 @@ tty-browserify@0.0.0:
   version "0.0.0"
   resolved "http://registry.npm.taobao.org/tty-browserify/download/tty-browserify-0.0.0.tgz#a157ba402da24e9bf957f9aa69d524eed42901a6"
 
-tunnel-agent@^0.6.0:
+tunnel-agent@0.6.0, tunnel-agent@^0.6.0:
   version "0.6.0"
   resolved "http://registry.npm.taobao.org/tunnel-agent/download/tunnel-agent-0.6.0.tgz#27a5dea06b36b04a0a9966774b290868f0fc40fd"
   dependencies:
@@ -6453,6 +6475,27 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+urlencode@1.1.0:
+  version "1.1.0"
+  resolved "http://registry.npm.taobao.org/urlencode/download/urlencode-1.1.0.tgz#1f2ba26f013c85f0133f7a3ad6ff2730adf7cbb7"
+  dependencies:
+    iconv-lite "~0.4.11"
+
+urllib@2.22.0:
+  version "2.22.0"
+  resolved "http://registry.npm.taobao.org/urllib/download/urllib-2.22.0.tgz#2965dc4ae127a6fb695b7db27d3184f17d82cb42"
+  dependencies:
+    any-promise "^1.3.0"
+    content-type "^1.0.2"
+    debug "^2.6.0"
+    default-user-agent "^1.0.0"
+    digest-header "^0.0.1"
+    ee-first "~1.1.1"
+    humanize-ms "^1.2.0"
+    iconv-lite "^0.4.15"
+    qs "^6.4.0"
+    statuses "^1.3.1"
 
 urllib@^2.11.0:
   version "2.25.1"

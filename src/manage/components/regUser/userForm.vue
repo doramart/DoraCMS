@@ -1,6 +1,6 @@
 <template>
     <div class="dr-regUserForm">
-        <el-dialog width="35%" size="small" title="填写用户信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" title="填写用户信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
                 <el-form-item label="用户名" prop="userName">
                     <el-input size="small" v-model="dialogState.formData.userName"></el-input>
@@ -9,7 +9,7 @@
                     <el-input size="small" v-model="dialogState.formData.name"></el-input>
                 </el-form-item>
                 <el-form-item label="有效" prop="enable">
-                    <el-switch on-text="是" off-text="否" v-model="dialogState.formData.enable"></el-switch>
+                    <el-switch active-text="是" inactive-text="否" v-model="dialogState.formData.enable"></el-switch>
                 </el-form-item>
                 <el-form-item label="电话" prop="phoneNum">
                     <el-input size="small" v-model.number="dialogState.formData.phoneNum"></el-input>

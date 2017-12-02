@@ -1,6 +1,6 @@
 <template>
     <div class="dr-AdminResourceForm">
-        <el-dialog width="35%" size="small" title="填写资源信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" title="填写资源信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
                 <el-form-item v-show="dialogState.type==='children' && !dialogState.edit" label="父对象" prop="label">
                     <el-input size="small" :disabled="true" v-model="dialogState.formData.parent.label"></el-input>
@@ -32,7 +32,7 @@
                             </el-input>
                         </el-form-item>
                         <el-form-item label="显示在菜单项" prop="enable">
-                            <el-switch on-text="是" off-text="否" v-model="dialogState.formData.enable"></el-switch>
+                            <el-switch active-text="是" inactive-text="否" v-model="dialogState.formData.enable"></el-switch>
                         </el-form-item>
                     </div>
                 </div>

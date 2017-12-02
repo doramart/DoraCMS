@@ -12,7 +12,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="有效" prop="state">
-                <el-switch on-text="是" off-text="否" v-model="formState.formData.state"></el-switch>
+                <el-switch active-text="是" inactive-text="否" v-model="formState.formData.state"></el-switch>
             </el-form-item>
             <el-form-item label="备注" prop="comments">
                 <el-input size="small" v-model="formState.formData.comments"></el-input>
@@ -20,7 +20,7 @@
 
             <div v-if="formState.formData.type == '1'">
                 <el-form-item label="轮播" prop="carousel">
-                    <el-switch on-text="是" off-text="否" v-model="formState.formData.carousel"></el-switch>
+                    <el-switch active-text="是" inactive-text="否" v-model="formState.formData.carousel"></el-switch>
                 </el-form-item>
                 <el-form-item label="显示高度" prop="height">
                     <el-input size="small" type="number" min="0" max="10" style="width:150px;" placeholder="显示高度" v-model="formState.formData.height">
