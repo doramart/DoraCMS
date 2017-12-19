@@ -66,7 +66,7 @@ class User {
                 queryObj.userName = { $regex: reKey }
             }
 
-            const Users = await UserModel.find(queryObj, { password: 0}).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize));
+            const Users = await UserModel.find(queryObj, { password: 0 }).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize));
             const totalItems = await UserModel.count(queryObj);
             res.send({
                 state: 'success',
@@ -113,9 +113,11 @@ class User {
                 email: fields.email,
                 logo: fields.logo,
                 phoneNum: fields.phoneNum || '',
-                password: service.encrypt(fields.password, settings.encrypt_key),
                 confirm: fields.confirm,
                 group: fields.group
+            }
+            if (fields.password) {
+                userObj.password = service.encrypt(fields.password, settings.encrypt_key);
             }
             const item_id = fields._id;
 

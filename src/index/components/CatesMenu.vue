@@ -52,25 +52,5 @@
     }
 </script>
 <style lang="scss">
-    .catesMenu {
-        font-size: 14px;
-        .parent-name {
-            font-weight: 700;
-            height: 30px;
-            line-height: 30px;
-            padding-left: 30px;
-            margin-top: 15px;
-        }
-        .cate-list {
-            padding-left: 40px;
-            .active a:link,.active a:visited{
-                color: #3ca5f6;
-            }
-        }
-        .cate-list li {
-            font-weight: normal;
-            height: 30px;
-            line-height: 30px;
-        }
-    }
+  
 </style>

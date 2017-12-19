@@ -1,0 +1,69 @@
+.admin-logo-title {
+    h3 {
+        color: #99a9bf;
+        font-size: 35px;
+        text-align: center;
+        font-weight: normal;
+    }
+}
+
+.admin-login-form {
+    margin: 0 auto;
+    margin-top: 70px;
+    margin-bottom: 100px;
+    input {
+        border-top-right-radius: 4px !important;
+        border-bottom-right-radius: 4px !important;
+    }
+    .el-input-group__prepend {
+        padding: 0 10px;
+    }
+    .submit-btn {
+        text-align: center;
+        .el-button {
+            width: 100%;
+        }
+    }
+    .imageCode {
+        width: 8rem;
+        height: 2rem;
+        float: right;
+    }
+    .login-container {
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        background-clip: padding-box;
+        background: transparent;
+        border: 1px solid #eaeaea;
+        box-shadow: 0 0 20px #cac6c6; 
+        h3 {
+            margin: 0;
+            border-bottom: 1px solid #e9eaec;
+            padding: 14px 16px;
+            line-height: 1;
+            font-weight: 500;
+            i {
+                display: inline-block;
+                margin-right: 10px;
+            }
+        }
+        .loginForm {
+            padding: 14px 16px;
+        }
+        .el-form-item {
+            margin-bottom: 15px;
+            .el-form-item__error {
+                left: 2rem;
+            }
+        }
+        .title {
+            margin: 0px auto 40px auto;
+            text-align: center;
+            color: #505458;
+        }
+        .remember {
+            margin: 0px 0px 35px 0px;
+        }
+    }
+}

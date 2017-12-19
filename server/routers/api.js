@@ -15,6 +15,7 @@ const authUser = require('../../utils/middleware/authUser');
 
 const { AdminUser, ContentCategory, Content, ContentTag, User, Message, SystemConfig, UserNotify, Ads } = require('../lib/controller');
 const _ = require('lodash');
+const qr = require('qr-image')
 
 function checkUserSession(req, res, next) {
   if (!_.isEmpty(req.session.user)) {
@@ -54,6 +55,22 @@ router.get('/content/getSimpleListByParams', (req, res, next) => { req.query.sta
 
 // 查询文档详情
 router.get('/content/getContent', Content.getOneContent)
+
+// 更新喜欢文档
+router.get('/content/updateLikeNum', checkUserSession, Content.updateLikeNum)
+
+//文章二维码生成
+router.get('/qrImg', (req, res, next) => {
+  let detailLink = req.query.detailLink;
+  try {
+    let img = qr.image(detailLink, { size: 10 });
+    res.writeHead(200, { 'Content-Type': 'image/png' });
+    img.pipe(res);
+  } catch (e) {
+    res.writeHead(414, { 'Content-Type': 'text/html' });
+    res.end('<h1>414 Request-URI Too Large</h1>');
+  }
+});
 
 // 用户登录
 router.post('/users/doLogin', User.loginAction);

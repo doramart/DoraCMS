@@ -1,0 +1,48 @@
+ // 近期文档
+ .recent-content-list {
+     margin-bottom: 30px;
+     .content-list {
+         text-align: left;
+         ul {
+             .hot-li:last-child {
+                 border: none;
+             }
+             li {
+                 position: relative;
+                 margin: 0;
+                 padding: 7px 0 8px;
+                 overflow: hidden;
+                 font-size: 14px;
+                 display: block;
+                 img {
+                     width: 100%;
+                     vertical-align: top;
+                     border-radius: 2px;
+                 }
+                 .right-text {
+                     position: relative;
+                     line-height: 1.4;
+                     .title {
+                         font-size: 13px;
+                         height: 2.3rem;
+                         display: block;
+                         margin-bottom: 10px;
+                         word-break: break-all;
+                     }
+                     span {
+                         display: block;
+                         margin: 0;
+                         font-size: 12px;
+                         color: #999;
+                         line-height: 14px; //  margin-top: 10px;
+                     }
+                 }
+             }
+         }
+     }
+ }
+
+ .recent-content-list.fixed {
+     position: fixed;
+     top: 62px;
+ }

@@ -1,51 +1,43 @@
 <template>
-  <div class="user-center">
-    <div>
-      <UserBar />
-      <el-row :gutter="0" class="header-main">
-        <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
+  <div class="contentContainer">
+    <div class="mainbody user-center">
+      <el-row :gutter="0">
+        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
-        <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12">
+        <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14">
           <div class="user-info">
-            <el-form :model="loginState.userInfo" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
-              <div class="user-logo">
-                <el-form-item prop="sImg">
-                    <el-upload class="avatar-uploader" action="/system/upload?type=images" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                        <img v-if="loginState.userInfo.logo" :src="loginState.userInfo.logo" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
-              </div>
-              <el-form-item label="用户名" prop="userName">
-                <el-input size="small" v-model="loginState.userInfo.userName"></el-input>
-              </el-form-item>
-              <el-form-item label="姓名" prop="name">
-                <el-input size="small" v-model="loginState.userInfo.name"></el-input>
-              </el-form-item>
-              <el-form-item label="电话" prop="phoneNum">
-                <el-input size="small" v-model="loginState.userInfo.phoneNum"></el-input>
-              </el-form-item>
-              <el-form-item label="邮箱" prop="email">
-                <el-input size="small" v-model="loginState.userInfo.email"></el-input>
-              </el-form-item>
-              <el-form-item label="密码" prop="password">
-                <el-input size="small" placeholder="请输入密码" type="password" v-model="loginState.userInfo.password"></el-input>
-              </el-form-item>
-              <el-form-item label="确认密码" prop="confirmPassword">
-                <el-input size="small" placeholder="请确认密码" type="password" v-model="loginState.userInfo.confirmPassword"></el-input>
-              </el-form-item>
-              <el-form-item label="备注" prop="comments">
-                <el-input size="small" type="textarea" v-model="loginState.userInfo.comments"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button size="small" type="primary" @click="submitForm('ruleForm')">保存</el-button>
-                <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
-              </el-form-item>
-            </el-form>
+            <el-row :gutter="30" class="basic-info">
+              <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="left-pannel">
+                <UserCenterLeftMenu @setNewlogo="setFormLogo" :userInfo="loginState.userInfo"/>
+              </el-col>
+              <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16" class="right-pannel">
+                  <h3 class="top-bar"><i class="fa fa-user"></i><span>基本资料</span></h3>
+                  <el-form label-position="top" :model="loginState.userInfo" :rules="rules" ref="ruleForm" label-width="150px" class="info-form">
+                    <el-form-item label="用户名" prop="userName">
+                      <el-input v-model="loginState.userInfo.userName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="姓名" prop="name">
+                      <el-input v-model="loginState.userInfo.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="电话" prop="phoneNum">
+                      <el-input v-model="loginState.userInfo.phoneNum"></el-input>
+                    </el-form-item>
+                    <el-form-item label="邮箱" prop="email">
+                      <el-input v-model="loginState.userInfo.email"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注" prop="comments">
+                      <el-input type="textarea" v-model="loginState.userInfo.comments"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button size="small" type="primary" @click="submitForm('ruleForm')">更新信息</el-button>
+                    </el-form-item>
+                  </el-form>
+              </el-col>
+            </el-row>
           </div>
         </el-col>
-        <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
+        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
           <div class="grid-content bg-purple">
             &nbsp;
           </div>
@@ -57,6 +49,7 @@
 <script>
 import api from "~api";
 import UserBar from "../components/UserBar";
+import UserCenterLeftMenu from "../components/UserCenterLeftMenu";
 const validatorUtil = require("../../../utils/validatorUtil.js");
 import { mapGetters, mapActions } from "vuex";
 export default {
@@ -67,7 +60,8 @@ export default {
     };
   },
   components: {
-    UserBar
+    UserBar,
+    UserCenterLeftMenu
   },
   data() {
     return {
@@ -146,40 +140,6 @@ export default {
             trigger: "blur"
           }
         ],
-        password: [
-          {
-            required: true,
-            message: "请输入密码",
-            trigger: "blur"
-          },
-          {
-            validator: (rule, value, callback) => {
-              if (!validatorUtil.checkPwd(value)) {
-                callback(new Error("6-12位，只能包含字母、数字和下划线!"));
-              } else {
-                callback();
-              }
-            },
-            trigger: "blur"
-          }
-        ],
-        confirmPassword: [
-          {
-            required: true,
-            message: "请确认密码",
-            trigger: "blur"
-          },
-          {
-            validator: (rule, value, callback) => {
-              if (value !== this.loginState.userInfo.password) {
-                callback(new Error("两次输入密码不一致!"));
-              } else {
-                callback();
-              }
-            },
-            trigger: "blur"
-          }
-        ],
         comments: [
           {
             message: "请填写备注",
@@ -196,21 +156,8 @@ export default {
     };
   },
   methods: {
-    handleAvatarSuccess(res, file) {
-      this.loginState.userInfo.logo = res;
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isGIF = file.type === "image/gif";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG && !isPNG && !isGIF) {
-        this.$message.error("上传头像图片只能是 JPG,PNG,GIF 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return (isJPG || isPNG || isGIF) && isLt2M;
+    setFormLogo(res) {
+      this.loginState && (this.loginState.userInfo.logo = res);
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -239,13 +186,7 @@ export default {
           return false;
         }
       });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
     }
-  },
-  beforeMount() {
-    // this.$store.dispatch('simplePage');
   },
   computed: {
     ...mapGetters({
@@ -256,45 +197,5 @@ export default {
 </script>
 
 <style lang="scss">
-.user-center {
-  background-color: #f4f5f5;
-  .user-info {
-    form {
-      width: 50%;
-    }
-    margin: 15px 0;
-    padding: 15px;
-    background-color: #ffffff;
-    position: relative;
-    .user-logo {
-      position: absolute;
-      top: 30px;
-      right: 100px;
-    }
-  }
 
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-    text-align: center;
-  }
-  .avatar {
-    width: 100px;
-    height: 100px;
-    display: block;
-  }
-}
 </style>

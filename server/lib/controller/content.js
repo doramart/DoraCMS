@@ -6,7 +6,7 @@ const formidable = require('formidable');
 const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
-
+const _ = require('lodash')
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
@@ -63,9 +63,12 @@ class Content {
             }
 
             if (sortby) {
-                for (const item of sortby) {
-                    sortObj[item] = -1
-                }
+                // for (const item of sortby) {
+                //     sortObj[item] = -1
+                // }
+                delete sortObj.date;
+                sortObj[sortby] = -1;
+
             }
 
             if (state) {
@@ -169,7 +172,7 @@ class Content {
             content && (content.commentNum = commentNum);
             // 推荐文章查询
             const totalContents = await ContentModel.count({});
-            const randomArticles = await ContentModel.find({}, 'stitle sImg').skip(Math.floor(totalContents * Math.random())).limit(4);
+            const randomArticles = await ContentModel.find({}, 'stitle sImg').skip(Math.floor(totalContents * Math.random())).limit(6);
             res.send({
                 state: 'success',
                 doc: content || {},
@@ -183,6 +186,33 @@ class Content {
                 state: 'error',
                 type: 'ERROR_DATA',
                 message: '获取Content失败'
+            })
+        }
+    }
+
+    async updateLikeNum(req, res, next) {
+        let targetId = req.query.contentId;
+        let userId = req.session.user._id;
+        try {
+            let oldContent = await ContentModel.findOne({ _id: targetId });
+            if (!_.isEmpty(oldContent) && (oldContent.likeUserIds).indexOf(userId) > -1) {
+                res.send({
+                    state: 'error',
+                    type: 'ERROR_IN_UPDATE_DATA',
+                    message: '不可重复提交',
+                })
+            } else {
+                let newContent = await ContentModel.findOneAndUpdate({ _id: targetId }, { '$inc': { 'likeNum': 1 }, '$push': { 'likeUserIds': userId } });
+                res.send({
+                    state: 'success',
+                    likeNum: newContent.likeNum + 1
+                });
+            }
+        } catch (error) {
+            res.send({
+                state: 'error',
+                type: 'ERROR_IN_SAVE_DATA',
+                message: '更新数据失败:' + error,
             })
         }
     }
@@ -216,7 +246,8 @@ class Content {
                 isTop: fields.isTop,
                 from: fields.from,
                 discription: fields.discription,
-                comments: fields.comments
+                comments: fields.comments,
+                likeUserIds: []
             }
 
             const newContent = new ContentModel(groupObj);

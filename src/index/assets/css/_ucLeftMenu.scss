@@ -1,0 +1,56 @@
+.user-menu-options {
+    margin-top: 2rem;
+    text-align: left;
+    li {
+        position: relative;
+        margin-bottom: 1px;
+        background: #eee;
+        cursor: pointer;
+        a {
+            color: #999;
+            padding: 4px 0;
+            font-size: 14px;
+            height: 30px;
+            line-height: 30px;
+            display: block;
+            i {
+                padding: 0 15px;
+                font-size: 20px;
+                line-height: 30px;
+            }
+            span.label {
+                font-size: 14px;
+                color: #555;
+                padding-left: 15px;
+            }
+            span.fa {
+                font-size: 20px;
+                padding: 0 15px;
+                line-height: 30px;
+                border-right: 1px solid #ccc;
+            }
+            span.fa-asterisk {
+                font-size: 15px;
+            }
+            .fa-angle-right {
+                right: 0;
+                top: 6px;
+                font-size: 26px;
+                position: absolute;
+                opacity: .6;
+            }
+        }
+        a:hover {
+            color: #444;
+            background: #ddd;
+        }
+    }
+    li.active {
+        span.label {
+            font-weight: 700;
+        }
+        span.fa {
+            color: $color-primary;
+        }
+    }
+}

@@ -17,7 +17,7 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteMessage(scope.$index, dataList)"></el-button>
+                    <el-button size="mini" type="danger"  icon="el-icon-delete" @click="deleteMessage(scope.$index, dataList)"></el-button>
                 </template>
             </el-table-column>
         </el-table>

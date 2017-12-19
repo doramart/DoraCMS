@@ -13,6 +13,7 @@ const state = () => ({
         isLoad: false
     },
     hotContentList: [],
+    recContentList: [],
     recentContentList: []
 })
 
@@ -65,13 +66,29 @@ const actions = {
             data
         } = await api.get('content/getSimpleListByParams', {
                 ...config,
-                isTop: 1,
                 sortby: 'clickNum',
                 model: 'simple',
                 cache: true
             })
         if (data.docs && data.state === 'success') {
             commit('receiveHotList', data)
+        }
+    },
+    async ['getRecContentList']({
+        commit,
+        state
+    }, config) {
+        if (state.recContentList.length && config.path === state.lists.path) return
+        const {
+            data
+        } = await api.get('content/getSimpleListByParams', {
+                ...config,
+                isTop: 1,
+                model: 'simple',
+                cache: true
+            })
+        if (data.docs && data.state === 'success') {
+            commit('receiveRecList', data)
         }
     },
     async ['getRecentContentList']({
@@ -122,6 +139,9 @@ const mutations = {
     ['receiveHotList'](state, data) {
         state.hotContentList = data.docs
     },
+    ['receiveRecList'](state, data) {
+        state.recContentList = data.docs
+    },
     ['receiveRecentList'](state, data) {
         state.recentContentList = data.docs
     }
@@ -141,6 +161,9 @@ const getters = {
     },
     ['getHotContentList'](state) {
         return state.hotContentList
+    },
+    ['getRecContentList'](state) {
+        return state.recContentList
     },
     ['getRecentContentList'](state) {
         return state.recentContentList

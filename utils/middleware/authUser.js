@@ -1,11 +1,9 @@
 /**
  * Created by Administrator on 2015/9/9.
  */
-// let mongoose = require('mongoose');
-// let UserModel = mongoose.model('User');
 let settings = require('../settings');
 let siteFunc = require('../siteFunc');
-// let UserNotify = require('../models/UserNotify');
+
 //用户实体类
 const { User, UserNotify } = require('../../server/lib/controller');
 

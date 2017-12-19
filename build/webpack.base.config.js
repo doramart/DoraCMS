@@ -26,6 +26,7 @@ const config = {
         ],
         alias: {
             '@': path.join(__dirname, '..', 'src'),
+            'front_public': '@/index/assets/css/public.scss',
             'scss_vars': '@/manage/assets/styles/vars.scss',
             '~src': path.resolve(__dirname, '../src'),
             '~api': path.resolve(__dirname, '../src/api/index-client'),

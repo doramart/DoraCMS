@@ -1,0 +1,121 @@
+// 留言组件
+.content-message,
+.content-message-list {
+    padding: 0 !important;
+    h3 {
+        padding: 0;
+        border: none;
+        font-size: 18px;
+        margin: 30px 0 20px;
+        font-weight: 500;
+    }
+}
+
+.content-message {
+    .give-message {
+        .el-form-item {
+            margin-bottom: 0;
+        }
+        .el-form-item__content {
+            margin-left: 0 !important;
+        }
+        .el-textarea__inner {
+            border-color: #efefef !important;
+            border-bottom-color: #f5f5f5 !important;
+            border-width: 1px !important;
+        }
+        .el-form-item__error {
+            padding-top: 20px;
+            text-align: right;
+            right: 100px;
+        }
+        .user-notice {
+            float: left;
+            font-size: 13px;
+            a:link,
+            a:visited {
+                color: $color-primary;
+            }
+        }
+        .send-content {
+            // margin-bottom: 10px;
+        }
+        .send-button {
+            padding: 5px 15px;
+            text-align: right;
+            background: #fbfbfb;
+            border: 1px solid #efefef;
+            border-top: 0;
+            -webkit-border-bottom-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+            -webkit-border-bottom-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+            overflow: hidden;
+        }
+    }
+}
+
+.content-message-list {
+    ul {
+        li {
+            border-top: 1px solid #efefef;
+            padding: 15px 0 24px;
+            font-size: 14px;
+            .user-logo {
+                img {
+                    width: 82%;
+                    min-height: 2rem;
+                    border-radius: 50%;
+                }
+            }
+            .user-content {
+                position: relative;
+                color: #666666;
+                padding-left: 15px;
+                word-break: break-all;
+                .reply {
+                    position: absolute;
+                    display: none;
+                    bottom: -20px;
+                    right: 0;
+                }
+            }
+            .reply-message {
+                margin-top: 30px;
+                padding-left: 25px;
+                .el-form-item {
+                    margin-bottom: 0px;
+                    margin-top: 5px;
+                    text-align: right;
+                    .el-form-item__error {
+                        right: 100px;
+                        padding-top: 20px;
+                    }
+                }
+            }
+            .user-name {
+                margin: 0px 0 0px 15px;
+                color: $color-primary;
+                .name {
+                    display: inline-block;
+                }
+                .time {
+                    font-size: 11px;
+                    display: inline-block;
+                    color: #777;
+                }
+            }
+        }
+        li:hover {
+            margin: 0 -30px;
+            padding: 15px 30px 24px;
+            background: #fafafa;
+            -webkit-transition: all 0.3s ease-out 0s;
+            -o-transition: all 0.3s ease-out 0s;
+            transition: all 0.3s ease-out 0s;
+            .reply {
+                display: block;
+            }
+        }
+    }
+}

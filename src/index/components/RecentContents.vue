@@ -1,70 +1,45 @@
 <template>
-    <PannelBox title="近期文章" className="recent-content-list">
+    <PannelBox title="最新文章" :className="recentClassName">
         <div class="content-list">
             <ul>
-                <li :key='index' v-for="(item,index) in recentItems">
-                    <span class="triangle"></span>
-                    <div class="con">
-                        <router-link class="title" :to="'/details/'+item._id+'.html'">{{item.title}}</router-link>
-                        <span class="time">{{item.updateDate}}</span>
-                    </div>
+                <li class="hot-li" v-for="item in recentItems" :key="item._id">
+                    <el-row :gutter="10">
+                    <el-col :xs="9" :sm="9" :md="9" :lg="9" :xl="9">
+                        <div class="contentImg">
+                            <router-link :to="'/details/'+item._id+'.html'" class="continue-reading">
+                                <img :src="item.sImg" :alt="item.title" />
+                            </router-link>
+                        </div>
+                    </el-col>
+                    <el-col :xs="15" :sm="15" :md="15" :lg="15" :xl="15">
+                        <div class="right-text">
+                            <router-link class="title" :to="'/details/'+item._id+'.html'">{{item.title}}</router-link>
+                            <span>{{item.updateDate}}</span>
+                        </div>
+                    </el-col>
+                    </el-row>
                 </li>
             </ul>
         </div>
     </PannelBox>
 </template>
 <script>
-    import PannelBox from './PannelBox.vue'
-    export default {
-        name: 'recentlyContents',
-        data() {
-            return {
-                loadingState: true
-            }
-        },
-        components: {
-            PannelBox
-        },
-        props: ['recentItems']
-    }
+import PannelBox from "./PannelBox.vue";
+export default {
+  name: "recentlyContents",
+  data() {
+    return {
+      loadingState: true,
+      recentClassName: "recent-content-list"
+    };
+  },
+  components: {
+    PannelBox
+  },
+  props: ["recentItems"]
+};
 </script>
 
 <style lang="scss">
-    .recent-content-list {
-        .content-list {
-            text-align: left;
-            ul {
-                li {
-                    font-size: 14px;
-                    padding: 0 0 .75rem 1rem;
-                    position: relative;
-                    color: #333;
-                    .triangle {
-                        position: absolute;
-                        top: .3rem;
-                        left: .3rem;
-                        width: 0;
-                        height: 0;
-                        border-style: solid;
-                        border-color: #fff #fff #fff #4285f4;
-                        -webkit-transform-origin: 25% center;
-                        transform-origin: 25% center;
-                        border-width: 4px;
-                    }
-                    .con {
-                        -webkit-transition: opacity .5s ease-in;
-                        transition: opacity .5s ease-in;
-                        .title{
-                            display: block;
-                        }
-                        .time {
-                            padding-top: 3px;
-                            display: inline-block;
-                            color: #a4abb1;
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 </style>

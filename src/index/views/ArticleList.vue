@@ -1,42 +1,51 @@
 <template>
     <div>
         <div class="contentContainer">
-            <div>
+            <div class="mainbody">
                 <el-row :gutter="0">
-                    <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
+                    <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
-                    <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12" class="content-mainbody-left">
-                        <el-row :gutter="24">
+                    <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14" class="content-list">
+                        <el-row :gutter="15">
                             <el-col :xs="24" :sm="17" :md="17" :lg="17" v-if="topics.data.length > 0">
-                                <div class="column-wrap" v-show="typeId != 'indexPage'">
-                                    <span v-if="$route.params.tagName">{{'标签：' + $route.params.tagName}}</span>
-                                    <span v-else>{{typeId == 'search' ? '搜索：' + $route.params.searchkey : currentCate.name}}</span>
-                                </div>
-                                <div>
-                                    <ItemList v-for="item in topics.data" :item="item" :key="item._id" />
-                                </div>
-                                <div class="content-pagination">
-                                    <Pagination :pageInfo="topics.pageInfo" :typeId="typeId" />
+                                <div class="main-list">
+                                    <div class="column-wrap" v-show="typeId != 'indexPage'">
+                                    <h1 v-if="$route.params.tagName">{{'标签：' + $route.params.tagName}}</h1>
+                                    <h1 v-else>{{typeId == 'search' ? '搜索：' + $route.params.searchkey : currentCate.name}}</h1>
+                                    </div>
+                                    <div>
+                                        <div class="cate-pannle-menu" v-show="typeId == 'indexPage'">
+                                            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                                            <el-menu-item index="1">最新文档</el-menu-item>
+                                            </el-menu>
+                                        </div>
+                                        <div class="article-list">
+                                            <ItemList v-for="item in topics.data" :item="item" :key="item._id" />
+                                        </div>
+                                    </div>
+                                    <div class="content-pagination">
+                                        <Pagination :pageInfo="topics.pageInfo" :typeId="typeId" />
+                                    </div>
                                 </div>
                             </el-col>
                             <el-col :xs="24" :sm="17" :md="17" :lg="17" v-else>
                                 <div style="height:300px;" v-loading="loadingState">&nbsp;</div>
                             </el-col>
-                            <el-col :xs="0" :sm="7" :md="7" :lg="7" class="content-mainbody-right">
-                                <div class="grid-content bg-purple-light title">
+                            <el-col :xs="0" :sm="7" :md="7" :lg="7" >
+                                <div class="main-right">
                                     <AdsPannel id="SJllJUAdcZ" />
                                     <div v-if="checkCateList">
                                         <CatesMenu :typeId="$route.params.typeId" />
                                     </div>
-                                    <Tag :tags="tags.data" />
                                     <HotContents :hotItems="hotlist" :typeId="$route.params.typeId" v-if="hotlist.length > 0" />
+                                    <RecommendContents :reclist="reclist" :typeId="$route.params.typeId" v-if="reclist.length > 0" />
                                 </div>
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
-                        <div class="grid-content bg-purple">&nbsp;</div>
+                    <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+                        <BackTop/>
                     </el-col>
                 </el-row>
             </div>
@@ -50,6 +59,7 @@
         mapGetters
     } from 'vuex'
     import metaMixin from '~mixins'
+    import RecommendContents from '../components/RecommendContents.vue'
     import HotContents from '../components/HotContents.vue'
     import SearchBox from '../components/SearchBox.vue'
     import ItemList from '../views/ItemList.vue'
@@ -57,64 +67,40 @@
     import Tag from '../components/Tag.vue'
     import CatesMenu from '../components/CatesMenu.vue'
     import AdsPannel from '../components/AdsPannel.vue'
+    import BackTop from '../components/BackTop.vue'
 
     export default {
         name: 'frontend-index',
-        async asyncData({
-            store,
-            route
-        }, config = {
-            current: 1,
-            model: 'normal'
-        }) {
-            const {
-                params: {
-                    id,
-                    key,
-                    tagName,
-                    current,
-                    typeId,
-                    searchkey
-                },
-                path
-            } = route
-            const base = { ...config,
-                pageSize: 10,
-                id,
-                path,
-                searchkey,
-                tagName,
-                current,
-                typeId
-            }
-            store.dispatch('frontend/article/getHotContentList', {
-                pageSize: 10,
-                typeId
-            })
-            store.dispatch('global/tags/getTagList', {
-                pageSize: 30
-            })
-            await store.dispatch('frontend/article/getArticleList', base)
+        async asyncData({ store, route }, config = { current: 1, model: 'normal'}) {
+            const { params: { id,  key, tagName, current, typeId, searchkey },path} = route
+            const base = { ...config,  pageSize: 10, id,  path, searchkey, tagName, current, typeId}
+            store.dispatch('frontend/article/getRecContentList', { pageSize: 10,typeId })
+            store.dispatch('frontend/article/getArticleList', base)
+            await store.dispatch('frontend/article/getHotContentList', base)
         },
         data(){
             return{
-                loadingState: false
+                loadingState: false,
+                activeIndex: '1',
             }
         },
         mixins: [metaMixin],
         components: {
             ItemList,
             Pagination,
+            RecommendContents,
             HotContents,
             SearchBox,
             Tag,
             CatesMenu,
-            AdsPannel
+            AdsPannel,
+            BackTop
         },
         computed: {
             ...mapGetters({
+                reclist: 'frontend/article/getRecContentList',
                 hotlist: 'frontend/article/getHotContentList',
-                tags: 'global/tags/getTagList',
+                // tags: 'global/tags/getTagList',
                 systemConfig: 'global/footerConfigs/getSystemConfig'
             }),
             topics(){
@@ -136,29 +122,18 @@
             }
         },
         methods: {
-
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            }
         },
         activated() {
-            this.$options.asyncData({
-                store: this.$store,
-                route: this.$route
-            }, {
-                current: 1
-            })
+            this.$options.asyncData({ store: this.$store, route: this.$route}, { current: 1})
         },
         metaInfo() {
             const systemData = this.systemConfig.data[0];
-            const {
-                siteName,
-                siteDiscription,
-                siteKeywords
-            } = systemData;
+            const { siteName, siteDiscription, siteKeywords } = systemData;
             let title = '首页';
-            const {
-                tagName,
-                typeId,
-                searchkey
-            } = this.$route.params
+            const { tagName, typeId, searchkey } = this.$route.params
             if (typeId) {
                 const obj = this.currentCate;
                 if (obj) {
@@ -189,23 +164,23 @@
 </script>
 
 <style lang="scss">
-.column-wrap {
-  position: relative;
-  height: 30px;
-  line-height: 30px;
-  font-size: 20px;
-  color: #303030;
-  padding-left: 18px;
-  margin-bottom: 15px;
-}
+// .column-wrap {
+//   position: relative;
+//   height: 30px;
+//   line-height: 30px;
+//   font-size: 20px;
+//   color: #303030;
+//   padding-left: 18px;
+//   margin-bottom: 15px;
+// }
 
-.column-wrap:before {
-  content: "";
-  position: absolute;
-  width: 4px;
-  height: 21px;
-  background: #f63756;
-  left: 0;
-  top: 4px;
-}
+// .column-wrap:before {
+//   content: "";
+//   position: absolute;
+//   width: 4px;
+//   height: 21px;
+//   background: #f63756;
+//   left: 0;
+//   top: 4px;
+// }
 </style>

@@ -10,10 +10,10 @@
 <template>
     <div class="container min-hight" style="margin-bottom: 20px;background: #FFFFFF">
         <el-row :gutter="10">
-            <el-col :xs="2" :sm="2" :md="4" :lg="4">
+            <el-col :xs="1" :sm="1" :md="2" :lg="2" :xl="5">
                 <div class="grid-content bg-purple">&nbsp;</div>
             </el-col>
-            <el-col :xs="20" :sm="20" :md="16" :lg="16">
+            <el-col :xs="22" :sm="22" :md="20" :lg="20" :xl="14">
                 <div class="col-md-12 siteMap">
                     <ul>
                         <li v-for="(item,index) in siteMapList.data" :key="item._id" v-once>
@@ -22,7 +22,7 @@
                     </ul>
                 </div>
             </el-col>
-            <el-col :xs="2" :sm="2" :md="4" :lg="4">
+            <el-col :xs="1" :sm="1" :md="2" :lg="2" :xl="5">
                 <div class="grid-content bg-purple">&nbsp;</div>
             </el-col>
         </el-row>

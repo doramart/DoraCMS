@@ -1,33 +1,35 @@
 <template>
-    <div class="dr-user-login">
-        <div class="login-form">
+    <div class="contentContainer">
+        <div class="mainbody">
             <el-row :gutter="10">
-                <el-col :xs="2" :sm="6" :md="8" :lg="8" :xl="10">
+                <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
                     <div class="grid-content bg-purple">&nbsp;</div>
                 </el-col>
-                <el-col :xs="20" :sm="12" :md="8" :lg="8" :xl="4">
-                    <el-form :model="userRegFormData" :rules="regRules" ref="regRuleForm" label-width="0px" class="demo-ruleForm login-container">
-                        <h3 class="pannel-title">
-                            <span>用户注册</span>
+                <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14" class="login-main">
+                    <div class="login-box">
+                      <el-form label-position="top" :model="userRegFormData" :rules="regRules" ref="regRuleForm" label-width="0px" class="demo-ruleForm login-container">
+                        <h3 class="title">
+                            <span>注册</span>
                         </h3>
-                        <el-form-item prop="userName">
-                            <el-input size="small" placeholder="请填写用户名" v-model="userRegFormData.userName"></el-input>
+                        <el-form-item prop="userName" label="用户名">
+                            <el-input placeholder="请填写用户名" v-model="userRegFormData.userName"></el-input>
                         </el-form-item>
-                        <el-form-item prop="email">
-                            <el-input size="small" placeholder="请填写邮箱" v-model="userRegFormData.email"></el-input>
+                        <el-form-item prop="email" label="邮箱">
+                            <el-input placeholder="请填写邮箱" v-model="userRegFormData.email"></el-input>
                         </el-form-item>
-                        <el-form-item prop="password">
-                            <el-input size="small" placeholder="请输入密码" type="password" v-model="userRegFormData.password"></el-input>
+                        <el-form-item prop="password" label="密码">
+                            <el-input placeholder="请输入密码" type="password" v-model="userRegFormData.password"></el-input>
                         </el-form-item>
-                        <el-form-item prop="confirmPassword">
-                            <el-input size="small" placeholder="请确认密码" type="password" v-model="userRegFormData.confirmPassword"></el-input>
+                        <el-form-item prop="confirmPassword" label="重复密码">
+                            <el-input placeholder="请确认密码" type="password" v-model="userRegFormData.confirmPassword"></el-input>
                         </el-form-item>
                         <el-form-item class="submit-btn">
-                            <el-button size="small" round type="primary" @click="submitRegForm('regRuleForm')">提交</el-button>
+                            <el-button  type="primary" @click="submitRegForm('regRuleForm')">注册</el-button>
                         </el-form-item>
                     </el-form>
+                    </div>
                 </el-col>
-                <el-col :xs="2" :sm="6" :md="8" :lg="8":xl="10" >
+                <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
                     <div class="grid-content bg-purple">&nbsp;</div>
                 </el-col>
             </el-row>

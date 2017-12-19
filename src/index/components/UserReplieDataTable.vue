@@ -12,41 +12,39 @@
 </template>
 
 <script>
-import api from '~api'
+import api from "~api";
 export default {
-    props: {
-        dataList: Array,
-        userInfo: Object
-    },
-    data() {
-        return {
-            loading: false,
-            multipleSelection: [],
-        }
-    },
+  props: {
+    dataList: Array,
+    userInfo: Object
+  },
+  data() {
+    return {
+      loading: false,
+      multipleSelection: []
+    };
+  },
 
-    methods: {
-
-    }
-}
+  methods: {}
+};
 </script>
 
 <style lang="scss">
 .replyList {
-
-    li {
-        font-size: 14px;
-        position: relative;
-        padding-left: 15px;
-        border-bottom: 1px dashed #ededed;
-        blockquote {
-            color: #475669;
-        }
-        time {
-            float: right;
-            color: #8492A6;
-            font-size: 12px;
-        }
+  li {
+    font-size: 14px;
+    position: relative;
+    padding-left: 15px;
+    border-bottom: 1px dashed #ededed;
+    blockquote {
+      color: #475669;
     }
+    time {
+      float: right;
+      color: #8492a6;
+      font-size: 12px;
+      margin-right: 30px;
+    }
+  }
 }
 </style>

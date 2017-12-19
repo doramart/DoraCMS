@@ -1,0 +1,27 @@
+$divide:10;
+$pswWidth:375;
+$ppr:375/$divide/1; //定义单位，以iphone6为标准
+@mixin font-dpr($font-size) {
+    font-size: #{$font-size / $ppr}rem;
+}
+
+@mixin renderRem($property, $values...) {
+    $max: length($values);
+    $remValues: '';
+    @for $i from 1 through $max {
+        $newValue: nth($values, $i);
+        $value: '';
+        @if $newValue==auto {
+            $value: $newValue;
+            $remValues: #{$remValues + $value};
+        }
+        @else {
+            $value: $newValue * $divide / $pswWidth;
+            $remValues: #{$remValues + $value}rem;
+        }
+        @if $i < $max {
+            $remValues:#{$remValues + " "}
+        }
+    }
+    #{$property}:$remValues;
+}

@@ -31,6 +31,12 @@ module.exports = {
 	origin: 'http://cdn.html-js.cn', // cdn域名
 	fsizeLimit: 1024 * 1024 * 5, // 上传文件大小限制默认为5M
 
+    // redis配置
+    openRedis: false, //是否开启,若为true 则下面的信息必须配置正确完整
+    redis_host: '10.0.0.1',
+    redis_port: 6379,
+    redis_psd: 'your redis password',
+    redis_db: 0,
 	// 站点基础信息配置
 	DORACMSAPI: 'http://api.html-js.cn', // 系统服务提供商
 	SYSTEMLOGPATH: '/home/doraData/logsdir/doracms', // 服务器日志保存目录

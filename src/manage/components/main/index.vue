@@ -75,6 +75,10 @@
                                     <el-button size="small" type="warning" plain round @click="getToPage('systemConfig')">
                                         <i class="fa fa-fw fa-cog"></i> 系统配置</el-button>
                                 </li>
+                                <li>
+                                    <el-button size="small" type="danger" plain round @click="getToPage('backUpData')">
+                                        <i class="fa fa-fw fa-database"></i> 数据备份</el-button>
+                                </li>
                             </ul>
                         </div>
                     </el-card>

@@ -1,5 +1,5 @@
 <style lang="scss">
-
+@import "~front_public";
 </style>
 <template>
     <div id="app">

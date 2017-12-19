@@ -1,0 +1,46 @@
+// 热门话题
+
+// 近期文档
+.hot-content-list {
+    .content-list {
+        text-align: left;
+        ul {
+            li {
+                font-size: 14px;
+                padding: 0 0 0.75rem 1rem;
+                position: relative;
+                .triangle {
+                    position: absolute;
+                    top: 0.5rem;
+                    left: 0;
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                    border-color: #fff #fff #fff #cccccc;
+                    -webkit-transform-origin: 25% center;
+                    transform-origin: 25% center;
+                    border-width: 4px;
+                }
+                .con {
+                    -webkit-transition: opacity 0.5s ease-in;
+                    transition: opacity 0.5s ease-in;
+                    .title {
+                        display: block;
+                    }
+                    .time {
+                        padding-top: 3px;
+                        display: inline-block;
+                        color: #a4abb1;
+                    }
+                }
+                .con a:link,
+                .con a:visited {
+                    color: #666666;
+                }
+                .con a:hover {
+                    color: $color-primary;
+                }
+            }
+        }
+    }
+}

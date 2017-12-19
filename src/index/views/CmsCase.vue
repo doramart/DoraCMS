@@ -1,13 +1,12 @@
 <template>
-    <article class="case-box">
-        
-        <div class="contentContainer">
+    <article class="contentContainer">
+        <div class="mainbody case-box">
             <el-row :gutter="0">
-                <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
+                <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
                     &nbsp;
                 </el-col>
-                <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12">
-                    <el-row :gutter="20">
+                <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14" >
+                    <div class="case-list">
                       <h3>
                           这些站点在用DoraCMS：
                           <el-button-group>
@@ -16,9 +15,10 @@
                           </el-button-group>              
                       </h3>
                       <AdsPannel id="BkxSmqcaAZ" />
-                    </el-row>
+                      <div style="clear:both"></div>
+                    </div>
                 </el-col>
-                <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
+                <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
                     &nbsp;
                 </el-col>
             </el-row>
@@ -27,22 +27,7 @@
     </article>
 </template>
 <style lang="scss">
-.case-box {
-  min-height: 400px;
-  h3 {
-    margin: 5px 10px 20px;
-    font-size: 15px;
-    color: #878d99;
-    .el-button--mini {
-      padding: 5px 8px;
-      font-weight: 700;
-    }
-  }
-  img {
-    width: 100%;
-    height: 2rem;
-  }
-}
+
 </style>
 
 <script>

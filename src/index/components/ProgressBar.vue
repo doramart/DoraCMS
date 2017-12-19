@@ -88,16 +88,5 @@ export default {
 </script>
 
 <style scoped>
-.progress {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  height: 2px;
-  width: 0%;
-  transition: width 0.2s, opacity 0.4s;
-  opacity: 1;
-  background-color: #efc14e;
-  z-index: 999999;
-}
+
 </style>

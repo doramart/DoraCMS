@@ -183,12 +183,10 @@ class Message {
                     message: errMsg,
                 })
             }
-            let contentIdArr = [];
+
             for (let i = 0; i < targetIds.length; i++) {
                 let msgObj = await MessageModel.findOne({ _id: targetIds[i] });
-                if (msgObj && contentIdArr.indexOf(msgObj.contentId) == -1) {
-                    // 避免重复删除
-                    contentIdArr.push(msgObj.contentId);
+                if (msgObj) {
                     await ContentModel.findOneAndUpdate({ _id: msgObj.contentId }, { '$inc': { 'commentNum': -1 } })
                 }
             }

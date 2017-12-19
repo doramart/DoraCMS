@@ -1,13 +1,13 @@
 <template>
-  <div class="user-center">
-    <div>
-      <UserBar />
-      <el-row :gutter="0" class="header-main">
-        <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
+  <div class="contentContainer">
+    <div class="mainbody user-center">
+      <el-row :gutter="0">
+        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
-        <el-col :xs="22" :sm="22" :md="18" :lg="18" :xl="12">
+        <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14">
           <div class="user-message">
+            <UserBar />
             <div v-if="noticelist.docs.length>0">
               <UserNoticeDataTable :dataList="noticelist.docs"></UserNoticeDataTable>
               <div class="content-pagination">
@@ -19,7 +19,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :xs="1" :sm="1" :md="3" :lg="3" :xl="6">
+        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
           <div class="grid-content bg-purple">
             &nbsp;
           </div>
@@ -64,12 +64,5 @@ export default {
 </script>
 
 <style lang="scss">
-.user-center {
-  background-color: #f4f5f5;
-  .user-message {
-    margin: 15px 0;
-    padding: 15px;
-    background-color: #ffffff;
-  }
-}
+
 </style>

@@ -14,7 +14,7 @@ var AdminUser = require('./AdminUser');
 var ContentSchema = new Schema({
     _id: {
         type: String,
-        
+
         'default': shortid.generate
     },
     title: String,
@@ -35,7 +35,7 @@ var ContentSchema = new Schema({
     comments: String,
     commentNum: { type: Number, default: 0 }, // 评论数
     likeNum: { type: Number, default: 0 }, // 喜欢数
-    likeUserIds: String, // 喜欢该文章的用户ID集合
+    likeUserIds: [{ type: String, default: [] }], // 喜欢该文章的用户ID集合
     from: { type: String, default: '1' } // 来源 1为原创 2为转载
 
 });
@@ -48,7 +48,7 @@ ContentSchema.path('date').get(function (v) {
     return moment(v).startOf('hour').fromNow();
 });
 ContentSchema.path('updateDate').get(function (v) {
-    return moment(v).format("YYYY-MM-DD HH:mm");
+    return moment(v).format("YYYY-MM-DD");
 });
 
 var Content = mongoose.model("Content", ContentSchema);

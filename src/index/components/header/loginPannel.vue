@@ -2,20 +2,22 @@
     <div class="login-pannel">
         <ul>
             <li v-if="loginState.logined && loginState.userInfo">
+                <div class="logo"><img :src="loginState.userInfo.logo" alt=""></div>
                 <el-dropdown>
                     <span class="el-dropdown-link">
                         {{loginState.userInfo.userName}}
                         <i class="el-icon-caret-bottom el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="userCenter">用户中心</el-dropdown-item>
+                        <el-dropdown-item @click.native="userCenter('messages')">用户中心</el-dropdown-item>
+                        <el-dropdown-item @click.native="userCenter('center')">帐号设置</el-dropdown-item>
                         <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </li>
             <li class="login-txt" v-else>
-                <el-button type="text" style="color:#878D99;fontSize:13px;" @click="login">登录</el-button>
-                <el-button type="primary" plain round size="mini" @click="regUser">注册</el-button>
+                <el-button type="text" style="color:#878D99;fontSize:15px;" @click="login">登录</el-button>
+                <el-button type="primary" size="small" @click="regUser">注册</el-button>
             </li>
         </ul>
     </div>
@@ -42,8 +44,8 @@ export default {
     regUser() {
       this.$router.push("/users/reg");
     },
-    userCenter() {
-      this.$router.push("/users/center");
+    userCenter(page) {
+      this.$router.push("/users/" + page);
     },
     logout() {
       api.get("users/logOut").then(result => {
@@ -68,31 +70,7 @@ export default {
 </script>
 
 <style lang="scss">
-.login-pannel {
-  float: right;
-  text-align: right;
-  ul {
-    li {
-      color: #409eff;
-      height: 40px;
-      line-height: 40px;
-      display: inline-block;
-      font-size: 14px;
-      i {
-        font-size: 12px;
-      }
-    }
-    .login-txt {
-      a:first-child {
-        margin-right: 10px;
-      }
-    }
-  }
-}
 
-.el-dropdown-menu {
-  li {
-    font-size: 14px;
-  }
-}
+
+
 </style>

@@ -9,6 +9,7 @@ const favicon = require('serve-favicon')
 const express = require('express')
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const RedisStore = require('connect-redis')(session);
 const compression = require('compression')
 const lurCache = require('lru-cache')
 const ueditor = require("ueditor")
@@ -96,21 +97,36 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // cookie 解析中间件
 app.use(cookieParser(settings.session_secret));
 // session配置
-app.use(session({ //session持久化配置
-    secret: settings.encrypt_key,
-    // key: "kvkenskey",
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 1
-    },
-    resave: false,
-    saveUninitialized: true,
-    store: new MongoStore({
-        db: "session",
-        host: "localhost",
-        port: 27017,
-        url: !isProd ? settings.URL : 'mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + ''
-    })
-}));
+let sessionConfig = {};
+if (settings.openRedis) {
+    sessionConfig = {
+        secret: settings.session_secret,
+        store: new RedisStore({
+            port: settings.redis_port,
+            host: settings.redis_host,
+            pass: settings.redis_psd,
+            ttl: 1800 // 过期时间
+        }),
+        resave: true,
+        saveUninitialized: true
+    }
+} else {
+    sessionConfig = {
+        secret: settings.encrypt_key,
+        cookie: {
+            maxAge: 1000 * 60 * 10
+        },
+        resave: false,
+        saveUninitialized: true,
+        store: new MongoStore({
+            db: "session",
+            host: "localhost",
+            port: 27017,
+            url: !isProd ? settings.URL : 'mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + ''
+        })
+    }
+}
+app.use(session(sessionConfig));
 // 鉴权用户
 app.use(authUser.auth);
 // 初始化日志目录
