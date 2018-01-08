@@ -20,11 +20,7 @@ function checkFormData(req, res, fields) {
         errMsg = '4-100个非特殊字符!';
     }
     if (errMsg) {
-        res.send({
-            state: 'error',
-            type: 'ERROR_PARAMS',
-            message: errMsg
-        })
+        throw new siteFunc.UserException(errMsg);
     }
 }
 
@@ -179,10 +175,7 @@ class ContentCategory {
                 errMsg = '非法请求，请稍后重试！';
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
             await ContentCategoryModel.remove({ _id: req.query.ids });
             res.send({
@@ -193,7 +186,7 @@ class ContentCategory {
             res.send({
                 state: 'error',
                 type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
+                message: '删除数据失败:' + err,
             })
         }
     }

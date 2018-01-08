@@ -1,10 +1,10 @@
 <template>
     <header class="header">
         <el-row :gutter="0" class="header-main">
-            <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+            <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
                 <div class="grid-content bg-purple">&nbsp;</div>
             </el-col>
-            <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14">
+            <el-col :xs="22" :sm="22" :md="22" :lg="22" :xl="14">
                 <el-row :gutter="15" class="grid-content bg-purple-light">
                     <el-col :xs="24" :sm="4" :md="4" :lg="4">
                       <el-row>
@@ -51,7 +51,7 @@
                         </el-col>
                       </el-row>                   
                     </el-col>
-                    <el-col :xs="0" :sm="12" :md="12" :lg="12">
+                    <el-col :xs="0" :sm="11" :md="11" :lg="11">
                         <nav class="header-nav">
                           <ul>
                             <li :class="{active : $route.fullPath == '/'}"><router-link :to="{path: '/'}">首页</router-link></li>
@@ -71,19 +71,19 @@
                           </ul>
                         </nav>
                     </el-col>
-                    <el-col :xs="0" :sm="8" :md="8" :lg="8" class="right-pannel">
+                    <el-col :xs="0" :sm="9" :md="9" :lg="9" class="right-pannel">
                         <el-row>
-                            <el-col :xs="0" :sm="14" :md="14" :lg="14" hidden-xs-only>
+                            <el-col :xs="0" :sm="14" :md="14" :lg="12" hidden-xs-only>
                                 <SearchBox />
                             </el-col>
-                            <el-col :xs="24" :sm="10" :md="10" :lg="10">
+                            <el-col :xs="24" :sm="10" :md="10" :lg="12">
                                 <LoginPannel ref="loginPannel"/>
                             </el-col>
                         </el-row>
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+            <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
                 <div class="grid-content bg-purple">
                     &nbsp;
                 </div>
@@ -101,6 +101,7 @@ export default {
   async asyncData({ store, route }, config = { model: "full" }) {
     const { params: { id, key, by, current, typeId }, path } = route;
     const base = { ...config, id, path, key, by, current, typeId };
+    await store.dispatch("global/ads/getAdsList");
     await store.dispatch("global/category/getHeaderNavList", base);
   },
   serverCacheKey: props => {

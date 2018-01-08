@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
-
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const config = {
     performance: {
         maxEntrypointSize: 300000,
@@ -10,8 +10,7 @@ const config = {
     },
     entry: {
         app: './src/entry-client.js',
-        admin: './src/admin.js',
-        vendor: ['./src/polyfill']
+        admin: './src/admin.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
@@ -56,6 +55,7 @@ const config = {
         }]
     },
     plugins: [
+        new LodashModuleReplacementPlugin,
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
         })

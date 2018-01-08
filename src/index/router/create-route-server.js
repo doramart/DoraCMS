@@ -8,6 +8,8 @@ export const UserCenter = require('../views/UserCenter.vue')
 export const UserPwd = require('../views/UserPwd.vue')
 export const UserMessage = require('../views/UserMessage.vue')
 export const UserReplies = require('../views/UserReplies.vue')
+export const UserAddContent = require('../views/UserAddContent.vue')
+export const UserContents = require('../views/UserContents.vue')
 export const SiteMap = require('../views/SiteMap.vue')
 
 ArticleList.chunkName = 'ArticleList';
@@ -20,4 +22,6 @@ UserCenter.chunkName = 'UserCenter';
 UserPwd.chunkName = 'UserPwd';
 UserMessage.chunkName = 'UserMessage';
 UserReplies.chunkName = 'UserReplies';
+UserAddContent.chunkName = 'UserAddContent';
+UserContents.chunkName = 'UserContents';
 SiteMap.chunkName = 'SiteMap';

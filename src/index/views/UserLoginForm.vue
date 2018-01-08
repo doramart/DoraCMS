@@ -2,10 +2,10 @@
   <div class="contentContainer">
     <div class="mainbody login-form">
       <el-row :gutter="10">
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
-        <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14" class="login-main">
+        <el-col :xs="22" :sm="22" :md="22" :lg="22" :xl="14" class="login-main">
           <div class="login-box">
             <el-form label-position="top" :model="userLoginFormData" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
             <h3 class="title">
@@ -30,7 +30,7 @@
           </el-form>
           </div>
         </el-col>
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
       </el-row>

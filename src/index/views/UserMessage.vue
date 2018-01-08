@@ -1,36 +1,24 @@
 <template>
   <div class="contentContainer">
-    <div class="mainbody user-center">
-      <el-row :gutter="0">
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
-          <div class="grid-content bg-purple">&nbsp;</div>
-        </el-col>
-        <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14">
-          <div class="user-message">
-            <UserBar />
-            <div v-if="noticelist.docs.length>0">
-              <UserNoticeDataTable :dataList="noticelist.docs"></UserNoticeDataTable>
-              <div class="content-pagination">
-                <Pagination :pageInfo="noticelist.pageInfo" typeId="userNotice" />
-              </div>
-            </div>
-            <div v-else>
-              暂无消息...
-            </div>
+      <UserCenterTemp className="user-message">
+        <div v-if="noticelist && noticelist.docs.length>0">
+          <UserNoticeDataTable :dataList="noticelist.docs"></UserNoticeDataTable>
+          <div class="content-pagination">
+            <Pagination :pageInfo="noticelist.pageInfo" typeId="userNotice" />
           </div>
-        </el-col>
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
-          <div class="grid-content bg-purple">
-            &nbsp;
+        </div>
+        <div class="no-contents" v-else>
+          <div class="um-profile-note">
+            <i class="fa fa-frown-o"></i>
+            <span>暂无消息</span>
           </div>
-        </el-col>
-      </el-row>
+        </div>
+      </UserCenterTemp>
     </div>
-  </div>
 </template>
 <script>
 import api from "~api";
-import UserBar from "../components/UserBar";
+import UserCenterTemp from "./UserCenterTemp";
 import UserNoticeDataTable from "../components/UserNoticeDataTable";
 import Pagination from "../components/Pagination.vue";
 
@@ -40,11 +28,11 @@ export default {
   name: "userMessage",
   metaInfo() {
     return {
-      title: "用户中心"
+      title: "用户中心-消息"
     };
   },
   components: {
-    UserBar,
+    UserCenterTemp,
     UserNoticeDataTable,
     Pagination
   },

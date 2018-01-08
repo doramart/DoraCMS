@@ -33,11 +33,7 @@ function checkFormData(req, res, fields) {
         errMsg = '请输入数据备份路径!';
     }
     if (errMsg) {
-        res.send({
-            state: 'error',
-            type: 'ERROR_PARAMS',
-            message: errMsg
-        })
+        throw new siteFunc.UserException(errMsg);
     }
 }
 
@@ -49,8 +45,8 @@ class SystemOptionLog {
         try {
             let current = req.query.current || 1;
             let pageSize = req.query.pageSize || 10;
-            let type = req.query.type,queryObj = {};
-            if(type) queryObj.type = type;
+            let type = req.query.type, queryObj = {};
+            if (type) queryObj.type = type;
             const SystemOptionLogs = await SystemOptionLogModel.find(queryObj).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize));
             const totalItems = await SystemOptionLogModel.count(queryObj);
 
@@ -85,10 +81,7 @@ class SystemOptionLog {
                     targetIds = targetIds.split(',');
                 }
                 if (errMsg) {
-                    res.send({
-                        state: 'error',
-                        message: errMsg,
-                    })
+                    throw new siteFunc.UserException(errMsg);
                 }
                 await SystemOptionLogModel.remove({ '_id': { $in: targetIds } });
             }
@@ -101,7 +94,7 @@ class SystemOptionLog {
             res.send({
                 state: 'error',
                 type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
+                message: '删除数据失败:' + err,
             })
         }
     }

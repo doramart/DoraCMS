@@ -2,10 +2,10 @@
   <div class="contentContainer">
     <div class="mainbody user-center">
       <el-row :gutter="0">
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
           <div class="grid-content bg-purple">&nbsp;</div>
         </el-col>
-        <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14">
+        <el-col :xs="22" :sm="22" :md="22" :lg="22" :xl="14">
           <div class="user-info">
             <el-row :gutter="30" class="basic-info">
               <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="left-pannel">
@@ -37,7 +37,7 @@
             </el-row>
           </div>
         </el-col>
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
           <div class="grid-content bg-purple">
             &nbsp;
           </div>

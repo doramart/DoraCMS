@@ -34,11 +34,7 @@ function checkFormData(req, res, fields) {
         errMsg = '请输入5-30个字符!';
     }
     if (errMsg) {
-        res.send({
-            state: 'error',
-            type: 'ERROR_PARAMS',
-            message: errMsg
-        })
+        throw new siteFunc.UserException(errMsg);
     }
 }
 
@@ -150,10 +146,7 @@ class User {
                 targetIds = targetIds.split(',');
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
             for (let i = 0; i < targetIds.length; i++) {
                 let regUserMsg = await MessageModel.find({ 'author': targetIds[i] });
@@ -191,12 +184,7 @@ class User {
                     errMsg = '请输入正确的密码'
                 }
                 if (errMsg) {
-                    res.send({
-                        state: 'error',
-                        type: 'ERROR_PARAMS',
-                        message: errMsg
-                    })
-                    return;
+                    throw new siteFunc.UserException(errMsg);
                 }
             } catch (err) {
                 console.log(err.message, err);
@@ -266,12 +254,7 @@ class User {
                     errMsg = '两次输入密码不一致，请重新输入'
                 }
                 if (errMsg) {
-                    res.send({
-                        state: 'error',
-                        type: 'ERROR_PARAMS',
-                        message: errMsg
-                    })
-                    return;
+                    throw new siteFunc.UserException(errMsg);
                 }
             } catch (err) {
                 console.log(err.message, err);

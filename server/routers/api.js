@@ -59,6 +59,17 @@ router.get('/content/getContent', Content.getOneContent)
 // 更新喜欢文档
 router.get('/content/updateLikeNum', checkUserSession, Content.updateLikeNum)
 
+// 添加或更新文章
+router.post('/content/addOne', checkUserSession, (req, res, next) => {
+  req.query.role = 'user';
+  next();
+}, Content.addContent)
+
+router.post('/content/updateOne', checkUserSession, (req, res, next) => {
+  req.query.role = 'user';
+  next();
+}, Content.updateContent)
+
 //文章二维码生成
 router.get('/qrImg', (req, res, next) => {
   let detailLink = req.query.detailLink;
@@ -93,6 +104,9 @@ router.get('/users/delUserNotify', checkUserSession, UserNotify.delUserNotify);
 // 获取用户参与话题
 router.get('/users/getUserReplies', checkUserSession, (req, res, next) => { req.query.user = req.session.user._id; next() }, Message.getMessages);
 
+// 获取用户发布文章
+router.get('/users/getUserContents', checkUserSession, (req, res, next) => { req.query.user = req.session.user._id; next() }, Content.getContents);
+
 // 用户注销
 router.get('/users/logOut', checkUserSession, User.logOut);
 
@@ -115,6 +129,9 @@ router.get('/systemConfig/getConfig', (req, res, next) => { req.query.model = 's
 
 // 根据ID获取广告列表
 router.get('/ads/getOne', (req, res, next) => { req.query.state = true; next() }, Ads.getOneAd)
+
+// 获取可见的所有广告信息
+router.get('/ads/getAll', (req, res, next) => { req.query.state = true; next() }, Ads.getAds)
 
 
 module.exports = router

@@ -31,6 +31,8 @@ export default {
 
 <style lang="scss">
 .replyList {
+  padding: 15px;
+  background-color: #ffffff;
   li {
     font-size: 14px;
     position: relative;

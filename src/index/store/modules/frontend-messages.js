@@ -7,6 +7,7 @@ const state = () => ({
         page: 1,
         path: ''
     },
+    toplist: [],
     form: {
         reply: false,
         formData: {
@@ -22,9 +23,17 @@ const state = () => ({
 const actions = {
     async ['getUserMessageList']({ commit, state }, config) {
         const { data } = await api.get('message/getList', { ...config })
-        // console.log('---msgdata----', data);
         if (data.docs && data.state === 'success') {
             commit('recevieMessageList', {
+                ...config,
+                ...data
+            })
+        }
+    },
+    async ['getUserMessageTopList']({ commit, state }, config) {
+        const { data } = await api.get('message/getList', { ...config })
+        if (data.docs && data.state === 'success') {
+            commit('recevieMessageTopList', {
                 ...config,
                 ...data
             })
@@ -47,26 +56,23 @@ const mutations = {
             data: docs, hasNext, hasPrev, page, path
         }
     },
+    ['recevieMessageTopList'](state, { docs }) {
+        state.toplist = {
+            data: docs
+        }
+    },
     ['recevieMessageForm'](state, formState) {
         state.form.reply = formState.reply;
         state.form.formData = Object.assign(state.form.formData, formState.formData);
-    },
-    ['insertCommentItem'](state, data) {
-        state.lists.data = [data].concat(state.lists.data)
-    },
-    ['deleteComment'](state, id) {
-        const obj = state.lists.data.find(ii => ii._id === id)
-        obj.is_delete = 1
-    },
-    ['recoverComment'](state, id) {
-        const obj = state.lists.data.find(ii => ii._id === id)
-        obj.is_delete = 0
     }
 }
 
 const getters = {
     ['getUserMessageList'](state) {
         return state.lists
+    },
+    ['getUserMessageTopList'](state) {
+        return state.toplist
     },
     ['getMessageForm'](state) {
         return state.form

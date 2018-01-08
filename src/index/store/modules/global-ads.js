@@ -6,8 +6,8 @@ const state = () => ({
 
 const actions = {
     async ['getAdsList']({ commit, state }, config) {
-        const { data } = await api.get('ads/getOne', { ...config })
-        if (data.doc && data.state === 'success') {
+        const { data } = await api.get('ads/getAll', { ...config })
+        if (data.docs && data.state === 'success') {
             commit('receiveAdsList', {
                 ...config,
                 ...data
@@ -17,9 +17,9 @@ const actions = {
 }
 
 const mutations = {
-    ['receiveAdsList'](state, { doc, hasNext, hasPrev, page, path }) {
+    ['receiveAdsList'](state, { docs,  path }) {
         state.lists = {
-            data: doc, hasNext, hasPrev, page, path
+            data: docs, path
         }
     }
 }

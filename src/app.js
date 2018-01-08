@@ -1,3 +1,4 @@
+// import Vue from './utils/ele-vue'
 import Vue from 'vue'
 import App from './index/App.vue'
 import { createStore } from './index/store'

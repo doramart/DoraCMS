@@ -123,6 +123,9 @@ textarea {
 @import 'recentContent.scss';
 @import 'ucLeftMenu.scss';
 @import 'adminLogin.scss';
+@import 'userAddContent.scss';
+@import 'userContentList.scss';
+@import 'messagePannel.scss';
 .contentContainer {
     padding-top: 62px;
     .mainbody {
@@ -191,6 +194,24 @@ textarea {
                         border-bottom: 1px solid #efefef; // margin-bottom: 25px;
                         padding: 20px 0px;
                         .content-item {
+                            .item-category {
+                                z-index: 1;
+                                position: absolute;
+                                left: 10px;
+                                top: 10px;
+                                padding: 5px 6px;
+                                font-size: 12px;
+                                line-height: 1;
+                                color: #fff;
+                                background-color: #000;
+                                filter: alpha(opacity=60);
+                                background: rgba(0, 0, 0, .5);
+                                border-radius: 2px;
+                                text-decoration: none;
+                            }
+                            .item-category:hover {
+                                background: $color-primary;
+                            }
                             .post-angle {
                                 position: absolute;
                                 left: -10px;
@@ -265,6 +286,21 @@ textarea {
                                         font-size: 13px;
                                         color: #999999;
                                         margin: 0px 10px 0px 0;
+                                    }
+                                    li.author {
+                                        margin-right: 20px;
+                                        .logo {
+                                            display: inline-block;
+                                            vertical-align: middle;
+                                            img {
+                                                border-radius: 50%;
+                                                width: 22px;
+                                                height: 22px;
+                                            }
+                                        }
+                                        span {
+                                            display: inline-block;
+                                        }
                                     }
                                 }
                             }
@@ -424,6 +460,9 @@ textarea {
         min-height: 400px;
     } // 用户中心
     .user-center {
+        .user-contents {
+            background-color: #ffffff;
+        }
         .user-message {
             background-color: #ffffff;
         }
@@ -553,6 +592,9 @@ textarea {
             }
             .contentImg {
                 max-height: 6rem;
+                .item-category {
+                    display: none !important;
+                }
             }
         }
         .discription {
@@ -563,11 +605,25 @@ textarea {
             }
             .post-meta {
                 position: relative !important;
+                .author {
+                    display: none !important;
+                }
+            }
+        }
+    }
+    .top-ads {
+        .el-carousel__container {
+            height: 8rem !important;
+            img {
+                height: auto !important;
             }
         }
     }
     .main-list {
         padding: 0 !important;
+        .article-list {
+            padding: 0 10px !important;
+        }
     }
     .footer {
         display: none !important;

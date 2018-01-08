@@ -146,7 +146,7 @@ app.use('/system', system);
 // 前台路由, ssr 渲染
 app.get(['/', '/page/:current(\\d+)?', '/:cate1?___:typeId?/:current(\\d+)?',
     '/:cate0/:cate1?___:typeId?/:current(\\d+)?', '/search/:searchkey/:current(\\d+)?',
-    '/details/:id', '/users/:userPage', '/dr-admin', '/sitemap.html', '/tag/:tagName/:page(\\d+)?'], (req, res) => {
+    '/details/:id', '/users/:userPage', '/users/editContent/:id', '/dr-admin', '/sitemap.html', '/tag/:tagName/:page(\\d+)?'], (req, res) => {
 
         // 非正常登录用户禁止访问
         if (req.originalUrl.indexOf('/users') == 0 && !req.session.logined) {
@@ -194,7 +194,8 @@ app.get(['/', '/page/:current(\\d+)?', '/:cate1?___:typeId?/:current(\\d+)?',
             description: '前端开发俱乐部',
             keywords: 'doracms',
             url: req.url,
-            cookies: req.cookies
+            cookies: req.cookies,
+            env: process.env.NODE_ENV
         }
         renderer.renderToString(context, (err, html) => {
             if (err) {
@@ -258,7 +259,8 @@ app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), config = qnParams
 // 后台渲染
 app.get('/manage', authSession, function (req, res) {
     AdminResource.getAllResource(req, res).then((manageCates) => {
-        let adminPower = req.session.adminUserInfo.group.power;
+        let adminPower = req.session.adminPower;
+        console.log('adminPower', adminPower);
         let currentCates = JSON.stringify(siteFunc.renderNoPowerMenus(manageCates, adminPower));
         if (isProd) {
             res.render('admin.html', {
@@ -266,7 +268,7 @@ app.get('/manage', authSession, function (req, res) {
                 manageCates: currentCates
             })
         } else {
-            backend = backend.replace('__manageCates__', currentCates)
+            backend = backend.replace(/\[[^\]]+\]/g, currentCates)
             res.send(backend)
         }
     })

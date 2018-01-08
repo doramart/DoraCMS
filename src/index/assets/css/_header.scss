@@ -94,6 +94,7 @@
                 margin-right: 5px;
                 img {
                     width: 100%;
+                    height: 100%;
                     border-radius: 50%;
                 }
             }
@@ -102,6 +103,10 @@
             a:first-child {
                 margin-right: 10px;
             }
+        }
+        .login-add {
+            margin-left: 10px;
+            ;
         }
     }
 } // searchPannel

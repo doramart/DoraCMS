@@ -218,7 +218,8 @@ export default {
     }
   }
   .main {
-    display: flex; // background: #324057;
+    display: flex;
+    background: #ffffff;
     position: absolute;
     top: 60px;
     bottom: 0px;

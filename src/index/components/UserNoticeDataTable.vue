@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="userNoticeList">
         <el-table :data="dataList" style="width: 100%" row-class-name="notice-list-row" @expand-change="setHasRead">
             <el-table-column type="expand">
                 <template slot-scope="props">
@@ -8,7 +8,7 @@
                     </el-form>
                 </template>
             </el-table-column>
-            <el-table-column label="概要" prop="notify.title" width="400">
+            <el-table-column label="概要" prop="notify.title" width="300">
                 <template slot-scope="scope">
                     <span :style="{fontWeight:scope.row.isRead?'':'bold'}">{{scope.row.notify.title}}</span>
                 </template>
@@ -94,6 +94,9 @@ export default {
 </script>
 
 <style lang="scss">
+.userNoticeList {
+  padding: 15px;
+}
 .notice-list-row {
   height: 20px;
   font-size: 13px;

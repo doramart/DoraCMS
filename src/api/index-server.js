@@ -2,7 +2,6 @@ import axios from 'axios'
 import qs from 'qs'
 import md5 from 'md5'
 import config from './config-server'
-
 export default {
     post(url, data) {
         const key = md5(url + JSON.stringify(data))
@@ -28,7 +27,7 @@ export default {
         if (config.cached && params.cache && config.cached.has(key)) {
             return Promise.resolve(config.cached.get(key))
         }
-        Object.assign(params, { apiSource: 'server' })
+        params.apiSource = 'server';
         return axios({
             method: 'get',
             url: config.api + url,

@@ -9,15 +9,18 @@
                         <i class="el-icon-caret-bottom el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="userCenter('messages')">用户中心</el-dropdown-item>
+                        <el-dropdown-item @click.native="userCenter('contents')">用户中心</el-dropdown-item>
                         <el-dropdown-item @click.native="userCenter('center')">帐号设置</el-dropdown-item>
                         <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </li>
             <li class="login-txt" v-else>
-                <el-button type="text" style="color:#878D99;fontSize:15px;" @click="login">登录</el-button>
-                <el-button type="primary" size="small" @click="regUser">注册</el-button>
+                <el-button type="text" style="color:#878D99;fontSize:14px;" @click="login">登录</el-button>
+                <el-button type="text" style="color:#878D99;fontSize:14px;" @click="regUser">注册</el-button>
+            </li>
+            <li class="login-add">
+                <el-button type="primary" size="mini" @click="addContent">投稿</el-button>
             </li>
         </ul>
     </div>
@@ -43,6 +46,13 @@ export default {
     },
     regUser() {
       this.$router.push("/users/reg");
+    },
+    addContent() {
+      if (this.loginState.logined) {
+        this.$router.push("/users/addContent");
+      } else {
+        this.$router.push("/users/login");
+      }
     },
     userCenter(page) {
       this.$router.push("/users/" + page);
@@ -70,7 +80,5 @@ export default {
 </script>
 
 <style lang="scss">
-
-
 
 </style>

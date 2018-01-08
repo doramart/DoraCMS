@@ -8,7 +8,6 @@ import _ from 'lodash';
 export function renderTreeData(result) {
     let newResult = result;
     let treeData = newResult.docs;
-    let delAtArr = [];
     let childArr = _.filter(treeData, (doc) => {
         return doc.parentId != '0'
     });
@@ -20,8 +19,6 @@ export function renderTreeData(result) {
             if (treeItem._id == child.parentId) {
                 if (!treeItem.children) treeItem.children = [];
                 treeItem.children.push(child);
-                // 记录需要删除的索引
-                delAtArr.push(_.indexOf(treeData, child));
                 break;
             }
         }
@@ -204,7 +201,9 @@ export default {
         commit
     }, params = {}) {
         services.contentCategoryList(params).then((result) => {
+            console.log('----result.data--999--', result.data);
             let treeData = renderTreeData(result.data);
+            console.log('---treeData---', treeData);
             commit(types.CONTENTCATEGORYS_LIST, treeData)
         })
     },

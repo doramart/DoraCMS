@@ -1,6 +1,6 @@
 {
   "name": "doracms",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "基于nodejs,express,vue2 内容管理系统.",
   "keywords": [
     "vue",
@@ -34,17 +34,20 @@
     "crypto": "0.0.3",
     "crypto-js": "^3.1.9-1",
     "ejs": "^2.5.7",
-    "element-ui": "^2.0.4",
+    "element-ui": "^2.0.10",
     "express": "^4.16.2",
     "express-http-proxy": "^1.1.0",
     "express-session": "^1.15.6",
     "font-awesome": "^4.7.0",
     "formidable": "^1.1.1",
+    "highlight.js": "^9.12.0",
     "iconv-lite": "^0.4.19",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
+    "lodash-webpack-plugin": "^0.11.4",
     "log4js": "^2.3.12",
     "lru-cache": "^4.1.1",
+    "marked": "^0.3.9",
     "md5": "^2.2.1",
     "moment": "^2.19.2",
     "mongoose": "^4.13.3",
@@ -67,13 +70,16 @@
     "vue-ssr-html-stream": "^2.2.0",
     "vue-template-compiler": "^2.5.4",
     "vuex": "^2.5.0",
-    "vuex-router-sync": "^4.3.2"
+    "vuex-router-sync": "^4.3.2",
+    "webpack": "^2.7.0",
+    "xss": "^0.3.7"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.0",
     "babel-core": "^6.24.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.2",
     "babel-loader": "^7.0.0",
+    "babel-plugin-lodash": "^3.3.2",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
@@ -84,7 +90,6 @@
     "babel-runtime": "^6.20.0",
     "browserslist": "^2.1.2",
     "connect-multiparty": "^2.0.0",
-    "copy-webpack-plugin": "^4.0.0",
     "css-loader": "^0.28.1",
     "eslint": "^4.11.0",
     "eslint-config-lcy-vue": "^1.0.6",
@@ -108,10 +113,11 @@
     "url-loader": "^0.5.7",
     "vue-loader": "^12.0.4",
     "vue-ssr-webpack-plugin": "^3.0.0",
-    "webpack": "^2.5.1",
+    "webpack-bundle-analyzer": "^2.9.1",
     "webpack-dev-middleware": "^1.10.2",
     "webpack-hot-middleware": "^2.18.0",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "copy-webpack-plugin": "^4.0.0"
   },
   "engines": {
     "node": "8.x"

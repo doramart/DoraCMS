@@ -41,11 +41,7 @@ function checkFormData(req, res, fields) {
         errMsg = '请输入5-30个字符!';
     }
     if (errMsg) {
-        res.send({
-            state: 'error',
-            type: 'ERROR_PARAMS',
-            message: errMsg
-        })
+        throw new siteFunc.UserException(errMsg);
     }
 }
 
@@ -187,11 +183,7 @@ class AdminUser {
                 }
 
                 if (errMsg) {
-                    res.send({
-                        state: 'error',
-                        type: 'ERROR_PARAMS',
-                        message: errMsg
-                    })
+                    throw new siteFunc.UserException(errMsg);
                 }
             } catch (err) {
                 console.log(err.message, err);
@@ -387,10 +379,7 @@ class AdminUser {
                 errMsg = '非法请求，请稍后重试！';
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
             let adminUserMsg = await MessageModel.find({ 'adminAuthor': req.query.ids });
             if (!_.isEmpty(adminUserMsg)) {
@@ -410,7 +399,7 @@ class AdminUser {
             res.send({
                 state: 'error',
                 type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:' + err,
+                message: '删除数据失败:' + err.message,
             })
         }
     }

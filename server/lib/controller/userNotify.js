@@ -60,10 +60,7 @@ class UserNotify {
                 targetIds = targetIds.split(',');
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
             // 删除消息记录
             await UserNotifyModel.remove({ '_id': { $in: targetIds } });

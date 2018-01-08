@@ -17,11 +17,7 @@ function checkFormData(req, res, fields) {
         errMsg = '请输入5-30个字符!';
     }
     if (errMsg) {
-        res.send({
-            state: 'error',
-            type: 'ERROR_PARAMS',
-            message: errMsg
-        })
+        throw new siteFunc.UserException(errMsg);
     }
 }
 
@@ -134,10 +130,7 @@ class AdminGroup {
                 errMsg = '非法请求，请稍后重试！';
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
             await AdminGroupModel.remove({ _id: req.query.ids });
             res.send({
@@ -148,7 +141,7 @@ class AdminGroup {
             res.send({
                 state: 'error',
                 type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
+                message: '删除数据失败:' + err,
             })
         }
     }

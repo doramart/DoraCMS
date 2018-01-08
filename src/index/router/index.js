@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Meta from 'vue-meta'
 
-import { ArticleList, CmsCase, Article, AdminLogin, UserLoginForm, UserRegForm, UserCenter, UserPwd, UserMessage, UserReplies, SiteMap } from 'create-route'
+import { ArticleList, CmsCase, Article, AdminLogin, UserLoginForm, UserRegForm, UserCenter, UserPwd, UserMessage, UserReplies, UserAddContent, UserContents, SiteMap } from 'create-route'
 
 Vue.use(VueRouter)
 Vue.use(Meta)
@@ -49,6 +49,9 @@ export function createRouter() {
             { name: 'upassword', path: '/users/password', component: UserPwd },
             { name: 'umessage', path: '/users/messages', component: UserMessage },
             { name: 'uReplies', path: '/users/replies', component: UserReplies },
+            { name: 'uAddContent', path: '/users/addContent', component: UserAddContent },
+            { name: 'ueditContent', path: '/users/editContent/:id', component: UserAddContent },
+            { name: 'userContents', path: '/users/contents', component: UserContents },
             { name: 'adminlogin', path: '/dr-admin', component: AdminLogin, meta: { typeId: 'adminlogin' } },
             { name: 'sitemap', path: '/sitemap.html', component: SiteMap },
             { name: 'tagPage', path: '/tag/:tagName/:current(\\d+)?', component: ArticleList, meta: { typeId: 'tags', scrollToTop: true } }

@@ -7,6 +7,25 @@ const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../.
 const shortid = require('shortid');
 const validator = require('validator')
 const _ = require('lodash')
+
+// markdown配置
+const Marked = require('marked');
+const hljs = require('highlight.js');
+Marked.setOptions({
+    highlight: function (code, lang) {
+        if (hljs.getLanguage(lang)) {
+            return hljs.highlight(lang, code).value
+        } else {
+            return hljs.highlightAuto(code).value
+        }
+    }
+})
+function marked(text) {
+    var tok = Marked.lexer(text)
+    text = Marked.parser(tok).replace(/<pre>/ig, '<pre class="hljs">')
+    return text
+}
+
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
@@ -15,8 +34,8 @@ function checkFormData(req, res, fields) {
     if (!validator.isLength(fields.title, 5, 50)) {
         errMsg = '5-50个非特殊字符!';
     }
-    if (!validator.isLength(fields.stitle, 5, 40)) {
-        errMsg = '5-40个非特殊字符!';
+    if (fields.stitle && !validator.isLength(fields.stitle, 5, 50)) {
+        errMsg = '5-50个非特殊字符!';
     }
     if (!fields.categories) {
         errMsg = '请选择文档类别!';
@@ -27,15 +46,11 @@ function checkFormData(req, res, fields) {
     if (!validator.isLength(fields.discription, 5, 300)) {
         errMsg = '5-300个非特殊字符!';
     }
-    if (!validator.isLength(fields.comments, 5)) {
+    if (fields.comments && !validator.isLength(fields.comments, 5)) {
         errMsg = '文档内容不得少于5个字符!';
     }
     if (errMsg) {
-        res.send({
-            state: 'error',
-            type: 'ERROR_PARAMS',
-            message: errMsg
-        })
+        throw new siteFunc.UserException(errMsg);
     }
 }
 
@@ -54,6 +69,7 @@ class Content {
             let searchkey = req.query.searchkey; // 搜索关键字
             let model = req.query.model; // 查询模式 full/normal/simple
             let state = req.query.state;
+            let user = req.query.user;
 
             // 条件配置
             let queryObj = {}, sortObj = { date: -1 }, files = null;
@@ -63,12 +79,8 @@ class Content {
             }
 
             if (sortby) {
-                // for (const item of sortby) {
-                //     sortObj[item] = -1
-                // }
                 delete sortObj.date;
                 sortObj[sortby] = -1;
-
             }
 
             if (state) {
@@ -77,6 +89,11 @@ class Content {
 
             if (typeId && typeId != 'indexPage') {
                 queryObj.categories = typeId
+            }
+
+            if (user) {
+                queryObj.uAuthor = user;
+                model === 'normal'
             }
 
             if (tagName) {
@@ -107,6 +124,8 @@ class Content {
                     title: 1,
                     sImg: 1,
                     isTop: 1,
+                    author: 1,
+                    uAuthor: 1,
                     categories: 1,
                     commentNum: 1,
                     date: 1,
@@ -117,7 +136,11 @@ class Content {
 
             const contents = await ContentModel.find(queryObj, files).sort(sortObj).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
                 path: 'author',
-                select: 'name -_id'
+                select: 'userName name logo -_id'
+            },
+            {
+                path: 'uAuthor',
+                select: 'userName name logo -_id'
             },
             {
                 path: 'categories',
@@ -155,10 +178,14 @@ class Content {
     async getOneContent(req, res, next) {
         try {
             let targetId = req.query.id;
-            let updateNum = req.query.apiSource == 'server' ? 1 : 0;
+            let updateNum = req.query.apiSource == 'client' ? 1 : 0;
             const content = await ContentModel.findOneAndUpdate({ _id: targetId }, { '$inc': { 'clickNum': updateNum } }).populate([{
                 path: 'author',
-                select: 'name -_id'
+                select: 'userName name -_id'
+            },
+            {
+                path: 'uAuthor',
+                select: 'userName _id'
             },
             {
                 path: 'tags',
@@ -218,6 +245,7 @@ class Content {
     }
 
     async addContent(req, res, next) {
+        const role = req.query.role;
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
             try {
@@ -241,13 +269,33 @@ class Content {
                 tags: fields.tags,
                 keywords: fields.keywords,
                 sImg: fields.sImg,
-                author: req.session.adminUserInfo._id,
+                author: !_.isEmpty(req.session.adminUserInfo) ? req.session.adminUserInfo._id : '',
                 state: fields.state,
                 isTop: fields.isTop,
                 from: fields.from,
                 discription: fields.discription,
                 comments: fields.comments,
                 likeUserIds: []
+            }
+
+            if (role === 'user') {
+                // TODO 临时控制普通用户添加
+                let hadAddContentsNum = await ContentModel.count({ uAuthor: req.session.user._id });
+                if (hadAddContentsNum > 3) {
+                    res.send({
+                        state: 'error',
+                        message: '您的操作太频繁，请歇会吧！'
+                    });
+                }
+                groupObj.markDownComments = fields.markDownComments;
+                groupObj.comments = marked(
+                    (fields.markDownComments).replace(/<!--more-->/g, "")
+                )
+                groupObj.stitle = groupObj.title;
+                groupObj.from = '3';
+                groupObj.uAuthor = req.session.user._id;
+                groupObj.state = false;
+                groupObj.author = '';
             }
 
             const newContent = new ContentModel(groupObj);
@@ -269,6 +317,7 @@ class Content {
     }
 
     async updateContent(req, res, next) {
+        const role = req.query.role;
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
             try {
@@ -292,13 +341,26 @@ class Content {
                 tags: fields.tags,
                 keywords: fields.keywords,
                 sImg: fields.sImg,
-                author: req.session.adminUserInfo._id,
+                author: !_.isEmpty(req.session.adminUserInfo) ? req.session.adminUserInfo._id : '',
                 state: fields.state,
                 isTop: fields.isTop,
                 from: fields.from,
                 discription: fields.discription,
                 comments: fields.comments
             }
+
+            if (role === 'user' || fields.from === '3') {
+                contentObj.markDownComments = fields.markDownComments;
+                contentObj.comments = marked(
+                    (fields.markDownComments).replace(/<!--more-->/g, "")
+                )
+                contentObj.stitle = contentObj.title;
+                contentObj.from = '3';
+                contentObj.uAuthor = req.session.user._id;
+                (role === 'user') && (contentObj.state = false);
+                contentObj.author = '';
+            }
+
             const item_id = fields._id;
             try {
                 await ContentModel.findOneAndUpdate({ _id: item_id }, { $set: contentObj });
@@ -324,10 +386,7 @@ class Content {
                 errMsg = '非法请求，请稍后重试！';
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
             await ContentModel.remove({ _id: req.query.ids });
             // 删除关联留言

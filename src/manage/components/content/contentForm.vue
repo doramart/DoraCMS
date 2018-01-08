@@ -10,6 +10,7 @@
             <el-form-item label="来源" prop="from">
                 <el-radio class="radio" v-model="formState.formData.from" label="1">原创</el-radio>
                 <el-radio class="radio" v-model="formState.formData.from" label="2">转载</el-radio>
+                <el-radio class="radio" v-model="formState.formData.from" label="3">用户发布</el-radio>
             </el-form-item>
             <el-form-item label="发布" prop="state">
                 <el-switch on-text="是" off-text="否" v-model="formState.formData.state"></el-switch>
@@ -34,7 +35,8 @@
                 <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
             </el-form-item>
             <el-form-item label="文档详情" prop="comments">
-                <Ueditor @ready="editorReady"></Ueditor>
+                <Ueditor @ready="editorReady" v-show="!formState.formData.uAuthor"></Ueditor>
+                <MarkDownEditor v-show="formState.formData.uAuthor" v-model="formState.formData.markDownComments" @input="inputEditor" :toc="toc" @change="changeEditor"></MarkDownEditor>
             </el-form-item>
             <el-form-item class="dr-submitContent">
                 <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? '更新' : '保存'}}</el-button>
@@ -89,6 +91,8 @@
 <script>
 import services from "../../store/services.js";
 import Ueditor from "../common/Ueditor.vue";
+import MarkDownEditor from "../../../index/components/mkeditor";
+
 import _ from "lodash";
 import { mapGetters, mapActions } from "vuex";
 export default {
@@ -97,6 +101,7 @@ export default {
   },
   data() {
     return {
+      toc: "",
       content: "",
       defaultMsg: "初始文本",
       config: {
@@ -132,8 +137,8 @@ export default {
           },
           {
             min: 5,
-            max: 40,
-            message: "5-40个非特殊字符",
+            max: 50,
+            message: "5-50个非特殊字符",
             trigger: "blur"
           }
         ],
@@ -190,9 +195,21 @@ export default {
     };
   },
   components: {
-    Ueditor
+    Ueditor,
+    MarkDownEditor
   },
   methods: {
+    inputEditor(value) {
+      this.$store.dispatch("showContentForm", {
+        edit: this.formState.edit,
+        formData: Object.assign({}, this.formState.formData, {
+          markDownComments: value
+        })
+      });
+    },
+    changeEditor(value) {
+      console.log(value);
+    },
     editorReady(instance) {
       if (this.formState.edit) {
         instance.setContent(this.formState.formData.comments);

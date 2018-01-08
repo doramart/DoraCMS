@@ -2,10 +2,10 @@
     <div class="contentContainer">
         <div class="mainbody content-detail">
             <el-row :gutter="0">
-                    <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+                    <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
-                    <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14" class="main-details">
+                    <el-col :xs="22" :sm="22" :md="22" :lg="22" :xl="14" class="main-details">
                         <el-row :gutter="15">
                             <el-col :xs="24" :sm="17" :md="17" :lg="17" >
                                 <div class="hentry">
@@ -13,7 +13,7 @@
                                     <div class="content-author">
                                         <ul>
                                             <li class="author-name">
-                                                {{article.doc.author ? article.doc.author.name:''}}
+                                                {{article.doc.author ? article.doc.author.userName:article.doc.uAuthor.userName}}
                                             </li>
                                             <li>
                                                 <span class="dot">&nbsp;•&nbsp;</span>{{cateName}}
@@ -28,9 +28,6 @@
                                     </div>
                                     <div v-html="article.doc.comments" class="content-main">
                                     </div>
-                                    <!-- <div class="meta-tags" v-if="article.doc.tags && article.doc.tags.length>0">
-                                        <el-button @click="searchByTag(tag.name)" plain v-for="tag in article.doc.tags" size="mini" :key="tag._id">{{tag.name}}</el-button>
-                                    </div> -->
                                     <div class="meta-bottom">
                                         <el-row :gutter="10">
                                         <el-col :xs="24" :sm="14" :md="14" :lg="14" :xl="14">
@@ -83,13 +80,11 @@
                                 <div class="grid-content bg-purple-light title">
                                     <CatesMenu :typeId="typeId" />
                                     <RecentContents :recentItems="recentArticle" />
-                                    <!-- <RecommendContents :reclist="reclist" :typeId="$route.params.typeId" v-if="reclist.length > 0" /> -->
-                                    <AdsPannel id="Sk_n90ucb" />
                                 </div>
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+                    <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
                         <BackTop/>
                     </el-col>
                 </el-row>

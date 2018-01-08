@@ -46,7 +46,8 @@ export default {
             }
         }).then(checkStatus).then(checkCode)
     },
-    get(url, params) {
+    get(url, params = {}) {
+        params.apiSource = 'client';
         return axios({
             method: 'get',
             url: config.api + url,

@@ -17,6 +17,7 @@
                 ]
             ],
             "plugins": [
+                "lodash",
                 "transform-runtime",
                 "transform-object-rest-spread",
                 "transform-vue-jsx",
@@ -38,6 +39,7 @@
                 ]
             ],
             "plugins": [
+                "lodash",
                 "transform-object-rest-spread",
                 "transform-vue-jsx",
                 "transform-remove-strict-mode",

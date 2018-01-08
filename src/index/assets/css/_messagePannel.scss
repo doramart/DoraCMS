@@ -1,0 +1,64 @@
+.rec-message-list {
+    .message-list {
+        border-top: 1px solid #efefef;
+        font-size: 14px;
+        color: #999999;
+        padding: 16px 0;
+        a:link,
+        a:visited {
+            color: #999999;
+        }
+        a:hover {
+            color: $color-primary;
+        }
+        .comment-info {
+            .logo {
+                display: inline-block;
+                vertical-align: middle;
+                img {
+                    width: 1.9rem;
+                    height: 1.9rem;
+                    border-radius: 50%;
+                }
+            }
+            .uname {
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                word-wrap: normal;
+            }
+            span {
+                float: right;
+            }
+        }
+        .comment-excerpt {
+            position: relative;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f5f5f5;
+            border-radius: 1px;
+            color: #666;
+            p {
+                margin: 0;
+                padding: 0 10px;
+            }
+        }
+        .comment-excerpt:before {
+            position: absolute;
+            left: 10px;
+            top: -10px;
+            content: "";
+            width: 0;
+            height: 0;
+            line-height: 0;
+            border: 5px solid transparent;
+            border-bottom-color: #f5f5f5;
+        }
+        .comment-post {
+            font-size: 13px;
+            padding: 0;
+            margin: 0;
+        }
+    }
+}

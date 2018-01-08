@@ -11,10 +11,10 @@ var shortid = require('shortid');
 var ContentCategory = require('./ContentCategory');
 var ContentTag = require('./ContentTag');
 var AdminUser = require('./AdminUser');
+var User = require('./User');
 var ContentSchema = new Schema({
     _id: {
         type: String,
-
         'default': shortid.generate
     },
     title: String,
@@ -29,14 +29,16 @@ var ContentSchema = new Schema({
     date: { type: Date, default: Date.now },
     updateDate: { type: Date, default: Date.now }, // 更新时间
     author: { type: String, ref: 'AdminUser' }, // 文档作者
+    uAuthor: { type: String, ref: 'User' }, // 文档作者(普通用户)
     state: { type: Boolean, default: true },  // 是否在前台显示，默认显示
     isTop: { type: Number, default: 0 },  // 是否推荐，默认不推荐 0为不推荐，1为推荐
     clickNum: { type: Number, default: 1 },
     comments: String,
+    markDownComments: String, // markdow格式
     commentNum: { type: Number, default: 0 }, // 评论数
     likeNum: { type: Number, default: 0 }, // 喜欢数
     likeUserIds: [{ type: String, default: [] }], // 喜欢该文章的用户ID集合
-    from: { type: String, default: '1' } // 来源 1为原创 2为转载
+    from: { type: String, default: '1' } // 来源 1为原创 2为转载 3为用户发送
 
 });
 

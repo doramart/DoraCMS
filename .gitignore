@@ -7,3 +7,4 @@ admin.lock
 server/config/secret.js
 logs/
 databak/
+dist/

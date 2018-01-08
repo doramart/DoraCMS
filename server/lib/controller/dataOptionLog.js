@@ -131,10 +131,7 @@ class DataItem {
                 errMsg = '非法请求，请稍后重试！';
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
             let currentItem = await DataOptionLogModel.findOne({
                 _id: req.query.ids

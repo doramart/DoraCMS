@@ -3,12 +3,22 @@
         <div class="contentContainer">
             <div class="mainbody">
                 <el-row :gutter="0">
-                    <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+                    <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
                         <div class="grid-content bg-purple">&nbsp;</div>
                     </el-col>
-                    <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14" class="content-list">
+                    <el-col :xs="22" :sm="22" :md="22" :lg="22" :xl="14" class="content-list">
                         <el-row :gutter="15">
                             <el-col :xs="24" :sm="17" :md="17" :lg="17" v-if="topics.data.length > 0">
+                                <div class="top-ads" v-if="typeId == 'indexPage'">
+                                    <el-row :gutter="15">
+                                        <el-col :xs="24" :sm="19" :md="19" :lg="19" >
+                                            <AdsPannel id="rk49YAOcb" v-if="typeId == 'indexPage'"/>
+                                        </el-col>
+                                        <el-col :xs="0" :sm="5" :md="5" :lg="5" >
+                                            <TopRecoContents :reclist="reclist"/>
+                                        </el-col>
+                                    </el-row>
+                                </div>
                                 <div class="main-list">
                                     <div class="column-wrap" v-show="typeId != 'indexPage'">
                                     <h1 v-if="$route.params.tagName">{{'标签：' + $route.params.tagName}}</h1>
@@ -40,11 +50,12 @@
                                     </div>
                                     <HotContents :hotItems="hotlist" :typeId="$route.params.typeId" v-if="hotlist.length > 0" />
                                     <RecommendContents :reclist="reclist" :typeId="$route.params.typeId" v-if="reclist.length > 0" />
+                                    <MessagePannel v-if="typeId == 'indexPage'" :messagelist="messagelist"/>    
                                 </div>
                             </el-col>
                         </el-row>
                     </el-col>
-                    <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
+                    <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="5">
                         <BackTop/>
                     </el-col>
                 </el-row>
@@ -61,11 +72,11 @@
     import metaMixin from '~mixins'
     import RecommendContents from '../components/RecommendContents.vue'
     import HotContents from '../components/HotContents.vue'
-    import SearchBox from '../components/SearchBox.vue'
+    import MessagePannel from '../components/MessagePannel.vue'
     import ItemList from '../views/ItemList.vue'
     import Pagination from '../components/Pagination.vue'
-    import Tag from '../components/Tag.vue'
     import CatesMenu from '../components/CatesMenu.vue'
+    import TopRecoContents from '../components/TopRecoContents.vue'
     import AdsPannel from '../components/AdsPannel.vue'
     import BackTop from '../components/BackTop.vue'
 
@@ -76,6 +87,7 @@
             const base = { ...config,  pageSize: 10, id,  path, searchkey, tagName, current, typeId}
             store.dispatch('frontend/article/getRecContentList', { pageSize: 10,typeId })
             store.dispatch('frontend/article/getArticleList', base)
+            store.dispatch('global/message/getUserMessageTopList', {pageSize : 5})
             await store.dispatch('frontend/article/getHotContentList', base)
         },
         data(){
@@ -90,17 +102,17 @@
             Pagination,
             RecommendContents,
             HotContents,
-            SearchBox,
-            Tag,
+            MessagePannel,
             CatesMenu,
             AdsPannel,
+            TopRecoContents,
             BackTop
         },
         computed: {
             ...mapGetters({
                 reclist: 'frontend/article/getRecContentList',
                 hotlist: 'frontend/article/getHotContentList',
-                // tags: 'global/tags/getTagList',
+                messagelist: 'global/message/getUserMessageTopList',
                 systemConfig: 'global/footerConfigs/getSystemConfig'
             }),
             topics(){

@@ -1,7 +1,7 @@
 <template>
     <div class="notice-404">
         <h3>404</h3>
-        <div class="text">太调皮辣，不过我喜欢...哼哼 😏👽 &nbsp;<el-button type="text" @click="backToMain">返回管理首页</el-button></div>
+        <div class="text">您访问的页面不存在或者您没有权限访问该模块 😏👽 &nbsp;<el-button type="text" @click="backToMain">返回管理首页</el-button></div>
     </div>
 </template>
 <script>

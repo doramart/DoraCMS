@@ -1,36 +1,24 @@
 <template>
   <div class="contentContainer">
-    <div class="mainbody user-center">
-      <el-row :gutter="0" class="header-main">
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
-          <div class="grid-content bg-purple">&nbsp;</div>
-        </el-col>
-        <el-col :xs="22" :sm="22" :md="22" :lg="20" :xl="14">
-          <div class="user-message">
-            <UserBar />
-            <div v-if="replylist">
-              <UserReplieDataTable :dataList="replylist.docs" :userInfo="loginState.userInfo"></UserReplieDataTable>
-              <div class="content-pagination">
-                <Pagination :pageInfo="replylist.pageInfo" typeId="userReplies" />
-              </div>
-            </div>
-            <div v-else>
-              暂无参与话题...
-            </div>
+      <UserCenterTemp className="user-message">
+        <div v-if="replylist && replylist.docs.length>0">
+          <UserReplieDataTable :dataList="replylist.docs" :userInfo="loginState.userInfo"></UserReplieDataTable>
+          <div class="content-pagination">
+            <Pagination :pageInfo="replylist.pageInfo" typeId="userReplies" />
           </div>
-        </el-col>
-        <el-col :xs="1" :sm="1" :md="1" :lg="2" :xl="5">
-          <div class="grid-content bg-purple">
-            &nbsp;
+        </div>
+        <div class="no-contents" v-else>
+          <div class="um-profile-note">
+            <i class="fa fa-frown-o"></i>
+            <span>暂无参与话题</span>
           </div>
-        </el-col>
-      </el-row>
+        </div>
+      </UserCenterTemp>
     </div>
-  </div>
 </template>
 <script>
 import api from "~api";
-import UserBar from "../components/UserBar";
+import UserCenterTemp from "./UserCenterTemp";
 import UserReplieDataTable from "../components/UserReplieDataTable";
 import Pagination from "../components/Pagination.vue";
 
@@ -40,11 +28,11 @@ export default {
   name: "userMessage",
   metaInfo() {
     return {
-      title: "用户中心"
+      title: "用户中心-参与话题"
     };
   },
   components: {
-    UserBar,
+    UserCenterTemp,
     UserReplieDataTable,
     Pagination
   },
@@ -65,4 +53,5 @@ export default {
 </script>
 
 <style lang="scss">
+
 </style>

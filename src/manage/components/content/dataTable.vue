@@ -18,7 +18,7 @@
                 <template slot-scope="scope">{{typeof scope.row.categories == 'object' && scope.row.categories.length > 1 ? scope.row.categories[scope.row.categories.length-1].name : '其它'}}</template>
             </el-table-column>
             <el-table-column prop="from" label="来源" show-overflow-tooltip>
-                <template slot-scope="scope">{{scope.row.from === '1'?'原创':'转载'}}</template>
+                <template slot-scope="scope">{{scope.row.from === '1'?'原创':(scope.row.from === '2'?'转载':'投稿')}}</template>
             </el-table-column>
             <el-table-column prop="clickNum" label="点击" show-overflow-tooltip>
             </el-table-column>
@@ -30,6 +30,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="author.name" label="作者" show-overflow-tooltip>
+                <template slot-scope="scope">{{scope.row.from === '3' ? scope.row.uAuthor.userName : scope.row.author.userName}}</template>
             </el-table-column>
             <el-table-column label="操作" width="150" fixed="right">
                 <template slot-scope="scope">
@@ -44,107 +45,109 @@
 </template>
 <style lang="scss">
 .fa-star {
-    cursor: pointer
+  cursor: pointer;
 }
 
 .fa-star-o {
-    cursor: pointer
+  cursor: pointer;
 }
 </style>
 <script>
-import services from '../../store/services.js';
+import services from "../../store/services.js";
 export default {
-    props: {
-        dataList: Array,
-        pageInfo: Object,
-    },
-    data() {
-        return {
-            loading: false,
-            multipleSelection: [],
-            yellow: {
-                color: '#F7BA2A'
-            },
-            gray: {
-                color: '#CCC'
-            },
-            green: { color: '#13CE66' },
-            red: { color: '#FF4949' }
-        }
-    },
+  props: {
+    dataList: Array,
+    pageInfo: Object
+  },
+  data() {
+    return {
+      loading: false,
+      multipleSelection: [],
+      yellow: {
+        color: "#F7BA2A"
+      },
+      gray: {
+        color: "#CCC"
+      },
+      green: { color: "#13CE66" },
+      red: { color: "#FF4949" }
+    };
+  },
 
-    methods: {
-        toggleSelection(rows) {
-            if (rows) {
-                rows.forEach(row => {
-                    this.$refs.multipleTable.toggleRowSelection(row);
-                });
-            } else {
-                this.$refs.multipleTable.clearSelection();
-            }
-        },
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-        },
-        editContentInfo(index, rows) {
-            let rowData = rows[index];
-            let categoryIdArr = [],
-                tagsArr = [];
-            rowData.categories && rowData.categories.map((item, index) => {
-                categoryIdArr.push(item._id);
-            })
-            rowData.tags && rowData.tags.map((item, index) => {
-                tagsArr.push(item._id);
-            })
-            rowData.categories = categoryIdArr;
-            rowData.tags = tagsArr;
-            this.$store.dispatch('showContentForm', {
-                edit: true,
-                formData: rowData
-            });
-            this.$router.push('/editContent/' + rowData._id);
-        },
-        topContent(index, rows) {
-            let contentData = rows[index];
-            contentData.isTop = contentData.isTop == 1 ? 0 : 1;
-            services.updateContent(contentData).then((result) => {
-                if (result.data.state === 'success') {
-                    this.$store.dispatch('getContentList', this.pageInfo);
-                } else {
-                    this.$message.error(result.data.message);
-                }
-            });
-        },
-        deleteContent(index, rows) {
-            this.$confirm('此操作将永久删除该文档, 是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                return services.deleteContent({
-                    ids: rows[index]._id
-                });
-            }).then((result) => {
-                if (result.data.state === 'success') {
-                    this.$store.dispatch('getContentList', this.pageInfo);
-                    this.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                } else {
-                    this.$message.error(result.data.message);
-                }
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
-            });
-        }
+  methods: {
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
     },
-    computed: {
-
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    editContentInfo(index, rows) {
+      let rowData = rows[index];
+      let categoryIdArr = [],
+        tagsArr = [];
+      rowData.categories &&
+        rowData.categories.map((item, index) => {
+          categoryIdArr.push(item._id);
+        });
+      rowData.tags &&
+        rowData.tags.map((item, index) => {
+          tagsArr.push(item._id);
+        });
+      rowData.categories = categoryIdArr;
+      rowData.tags = tagsArr;
+      this.$store.dispatch("showContentForm", {
+        edit: true,
+        formData: rowData
+      });
+      this.$router.push("/editContent/" + rowData._id);
+    },
+    topContent(index, rows) {
+      let contentData = rows[index];
+      contentData.isTop = contentData.isTop == 1 ? 0 : 1;
+      services.updateContent(contentData).then(result => {
+        if (result.data.state === "success") {
+          this.$store.dispatch("getContentList", this.pageInfo);
+        } else {
+          this.$message.error(result.data.message);
+        }
+      });
+    },
+    deleteContent(index, rows) {
+      this.$confirm("此操作将永久删除该文档, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          return services.deleteContent({
+            ids: rows[index]._id
+          });
+        })
+        .then(result => {
+          if (result.data.state === "success") {
+            this.$store.dispatch("getContentList", this.pageInfo);
+            this.$message({
+              message: "删除成功",
+              type: "success"
+            });
+          } else {
+            this.$message.error(result.data.message);
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
-}
-
+  },
+  computed: {}
+};
 </script>

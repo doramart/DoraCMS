@@ -11,28 +11,22 @@
               <b style="color:#1D8CE0">Dora</b>CMS</h3>
           </div>
           <div class="login-container">
-            <h3>
-              <span><i class="fa fa-sign-in" aria-hidden="true"></i>欢迎登录</span>
-            </h3>
             <el-form :model="adminLoginFormData" :rules="rules" ref="ruleForm" label-width="0px" class="loginForm">
               <el-form-item prop="userName">
-                <el-input size="small" v-model="adminLoginFormData.userName" placeholder="请输入用户名">
-                  <template slot="prepend"><i class="fa fa-user"></i></template>
-                </el-input>
+                <i class="fa fa-user-o"></i>
+                <el-input size="medium" v-model="adminLoginFormData.userName" placeholder="请输入用户名"> </el-input>
               </el-form-item>
               <el-form-item prop="password">
-                <el-input size="small" type="password" v-model="adminLoginFormData.password" placeholder="请输入密码">
-                  <template slot="prepend"><i class="fa fa-lock"></i></template>
-                </el-input>
+                <i class="fa fa-lock"></i>
+                <el-input size="medium" type="password" v-model="adminLoginFormData.password" placeholder="请输入密码"></el-input>
               </el-form-item>
               <el-form-item prop="imageCode">
-                <el-input size="small" style="width: 40%" type="imageCode" placeholder="图形码" @keyup.enter.native="submitForm('ruleForm')" v-model="adminLoginFormData.imageCode">
-                  <template slot="prepend"><i class="fa fa-random"></i></template>
-                </el-input>
+                <i class="fa fa-random"></i>
+                <el-input size="medium" style="width: 40%" type="imageCode" placeholder="图形码" @keyup.enter.native="submitForm('ruleForm')" v-model="adminLoginFormData.imageCode"></el-input>
                 <img :src="imgCodeUrl" class="imageCode" @click="reSetImgCode"/>
               </el-form-item>
               <el-form-item class="submit-btn">
-                <el-button size="small" type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                <el-button size="medium" type="primary" @click="submitForm('ruleForm')">登录</el-button>
               </el-form-item>
             </el-form>
           </div>

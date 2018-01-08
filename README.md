@@ -1,42 +1,33 @@
-# DoraCMS 2.0.4
+# doracms 2.0.5
 
 ![DoraCMS](http://7xkrk4.com1.z0.glb.clouddn.com/doracms2.jpg "DoraCMS")
 
-## 2.0.4版本更新
+## 2.0.5版本更新
+1、用户中心添加文章功能，用户可以发布文章了，支持markdown语法
 
-1、添加系统支持redis缓存，通过开关控制，并添加通过redis缓存数据中间件。要知道redis在存储性能方面MongoDB要好很多（主要存储session数据）
+2、优化webpack打包流程，压缩lodash，拆分element-ui
 
-2、重新整理了样式，组件样式全部单独提取，提高可维护性。
+3、服务端异常处理
 
-3、文档详情页添加了“喜欢”功能。
+4、用户留言xss处理
 
-4、修复了某些场景下批量删除留言异常的bug。
+5、修复文章点击量不准确的问题
 
-5、添加了二维码分享功能。
+6、修复在开发环境下，后台切换登录超级管理员和测试管理员，左侧菜单没有变化的问题
 
-6、添加了回到顶部按钮。
+7、首页添加了用户留言模块，以及推荐模块
 
-7、优化了包括 最新文档、近期文档、推荐文档等模块的代码结构。
+8、优化相关样式和界面布局
 
-8、优化了用户中心的界面和交互。
-
-9、修复页面跳转后滚动条不置顶的问题。
-
-10、修复了某些场景下通过标签查询，分页异常的问题。
-
-11、优化了cms在移动端的显示。
-
-12、修复了一些明显bug
+9、修复了其它bug
 
 
-
-## 更新方法：
-
-1、checkout 最新 2.0.4 代码
+更新方法： 
+1、checkout 最新 2.0.5 代码
 
 2、删除 node_modules,重新安装依赖包
 
-3、启动数据库，执行npm run dev
+3、启动数据库，执行npm run dev 
 
 
 ## 说明
@@ -47,16 +38,14 @@ DoraCMS 使用的技术栈：
 
 2、webpack 2
 
-3、nodejs 8.1 + express 4
+3、nodejs 8.0 + express 4
 
 4、mongodb 3+
 
-演示地址： [前端开发俱乐部](https://www.html-js.cn)
+演示地址： [前端开发俱乐部](https://www.html-js.cn)   
 后台登录： https://www.html-js.cn/dr-admin     测试账号：doracms/123456
 
-开发文档： [前端内容管理框架 DoraCMS2.0 开发文档](https://www.html-js.cn/details/ryn2kSWqZ.html)   
-生产部署教程： [DoraCMS2.0 linux部署(生产环境)教程](https://www.html-js.cn/details/ry4-B-hkf.html)  
-
+部署文档： [前端内容管理框架 DoraCMS2.0 部署介绍](https://www.html-js.cn/details/ryn2kSWqZ.html)   
 
 ## 目录结构
 
@@ -64,9 +53,9 @@ DoraCMS 使用的技术栈：
 ├─build // webpack 相关配置文件
 │
 ├─configs // 配置文件
-│  │
+│  │  
 │  └─logConfig.js  // 日志配置文件
-│
+│ 
 ├─logs // 日志目录
 │
 ├─dist  // webpack 生成文档存放目录
@@ -131,9 +120,6 @@ https://nodejs.org/zh-cn/
 https://www.mongodb.com/download-center#community
 
 ```shell
-# 初始化数据库
-$ npm init
-
 # 安装依赖
 $ npm install
 
@@ -145,9 +131,6 @@ $ npm run build
 
 # 启动(需先生成静态文件)
 $ npm run start
-
-# 备份数据库
-$ npm dump
 ```
 
 首页

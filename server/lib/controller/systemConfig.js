@@ -39,11 +39,7 @@ function checkFormData(req, res, fields) {
         errMsg = '请输入数据备份路径!';
     }
     if (errMsg) {
-        res.send({
-            state: 'error',
-            type: 'ERROR_PARAMS',
-            message: errMsg
-        })
+        throw new siteFunc.UserException(errMsg);
     }
 }
 

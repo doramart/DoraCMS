@@ -136,6 +136,12 @@ var siteFunc = {
             }
         }
         return cateFlag;
+    },
+
+    // 异常捕获对象
+    UserException: function (message) {
+        this.message = message;
+        this.name = "UserException";
     }
 
 };

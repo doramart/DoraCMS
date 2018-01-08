@@ -7,7 +7,8 @@ const AdminUserModel = require("../models").AdminUser;
 const formidable = require('formidable');
 const _ = require('lodash');
 const shortid = require('shortid');
-const validator = require('validator')
+const validator = require('validator');
+const xss = require("xss");
 const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
 
 
@@ -37,7 +38,7 @@ class Message {
                 date: -1
             }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
                 path: 'contentId',
-                select: 'stitle _id'
+                select: 'title stitle _id'
             }, {
                 path: 'author',
                 select: 'userName _id enable date logo'
@@ -90,12 +91,7 @@ class Message {
                     errMsg = '留言内容不能为空'
                 }
                 if (errMsg) {
-                    res.send({
-                        state: 'error',
-                        type: 'ERROR_PARAMS',
-                        message: errMsg
-                    })
-                    return
+                    throw new siteFunc.UserException(errMsg);
                 }
             } catch (err) {
                 console.log(err.message, err);
@@ -109,7 +105,7 @@ class Message {
 
             const messageObj = {
                 contentId: fields.contentId,
-                content: validatorUtil.validateWords(fields.content),
+                content: xss(fields.content),
                 replyAuthor: fields.replyAuthor,
                 adminReplyAuthor: fields.adminReplyAuthor,
                 relationMsgId: fields.relationMsgId,
@@ -178,10 +174,7 @@ class Message {
                 targetIds = targetIds.split(',');
             }
             if (errMsg) {
-                res.send({
-                    state: 'error',
-                    message: errMsg,
-                })
+                throw new siteFunc.UserException(errMsg);
             }
 
             for (let i = 0; i < targetIds.length; i++) {
@@ -199,7 +192,7 @@ class Message {
             res.send({
                 state: 'error',
                 type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
+                message: '删除数据失败:' + err,
             })
         }
     }
