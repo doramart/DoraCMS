@@ -155,7 +155,7 @@ class User {
                         state: 'error',
                         message: '请删除该用户留言后在执行该操作！',
                     })
-                    break;
+                    return;
                 }
             }
             await UserModel.remove({ '_id': { $in: targetIds } });
