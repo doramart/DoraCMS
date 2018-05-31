@@ -1,0 +1,83 @@
+<!--头部模板-->
+<script>
+    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        document.write("<script src='/plugins/iscroll/iscroll.js'><" + '/' + "script>");
+        $(function () {
+            new IScroll('#navWrapper', { scrollX: true, scrollY: false, mouseWheel: true, click: true });
+        })
+    }
+</script>
+<input type="hidden" value="{{userInfo._id}}" id="userId">
+<input type="hidden" value="{{logined}}" id="logined">
+<input type="hidden" value="{{tokenId}}" id="tokenId">
+<header class="clearfix" id="header" ms-controller="headerCtr">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 header-box">
+                <div class="row header-main">
+                    <div class="col-sm-2 col-md-2">
+                        <div class="site-name ">
+                            <a href="/" id="logo">
+                                <img src="/themes/{{staticforder}}/images/logo.png" alt="{{siteInfo.title}}" />
+                            </a>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-9 col-md-5" id="navWrapper">
+                        <div id="navScroller">
+                            <ul>
+                                {% for cate in cateTypes %} {% if cate.parentId == '0' %}
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" alt="{{siteInfo.altkey}}{{cate.name}}" href="/{{cate.defaultUrl}}___{{cate._id}}">{{cate.name}}</a>
+                                </li>
+                                {% endif %} {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 col-md-5">
+                        <div class="text-right topNav">
+                            <div class="search-pannel">
+                                <div :class="['input-area',(@activeSearch? 'active':'')]">
+                                    <div class="el-input el-input--small">
+                                        <input ms-on-keydown="@searchOpt" type="text" class="form-control" ms-duplex="@searchkey" placeholder="{{lk.lc_please_write_key}}">
+                                    </div>
+                                    <i ms-click='@searchMe' class="fa fa-search"></i>
+                                </div>
+                            </div>
+                            <ul class="navbar-right">
+                                {% if logined == undefined %}
+                                <li>
+                                    <a rel="nofollow" href="/users/login">{{lk.lc_login}}</a>
+                                </li>
+                                <li>
+                                    <a rel="nofollow" href="/users/reg">{{lk.lc_newAccount}}</a>
+                                </li>
+                                {% else %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{userInfo.userName}}
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="/users/userContents">{{lk.lc_userCenter}}</a>
+                                        </li>
+                                        <li>
+                                            <a href="/users/userCenter">{{lk.lc_accountSet}}</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" id="userLoginOut">{{lk.lc_loginOut}}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                <li>
+                                    <button type="button" ms-on-click="@postArticel" class="btn btn-primary btn-sm navbar-btn">{{lk.lc_myPostArticels}}</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

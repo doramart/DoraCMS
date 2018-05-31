@@ -1,15 +1,26 @@
-a:link, a:visited {
+a:link,
+a:visited {
     text-decoration: none;
 }
 
 .dr-toolbar {
     margin: 10px auto;
-    text-align: left;
+    height: 30px;
 }
 
 .dr-searchInput {
     width: 200px;
-    float: right;
+    display: inline-block;
+}
+
+.dr-select-box {
+    display: inline-block;
+}
+
+.dr-toolbar-right {
+    width: 100%;
+    display: block;
+    text-align: right;
 }
 
 .el-button--small {
@@ -28,7 +39,8 @@ a:link, a:visited {
     line-height: 32px !important;
 }
 
-.el-table a:link, .el-table a:visited {
+.el-table a:link,
+.el-table a:visited {
     color: #5a5e66;
     text-decoration: none;
 }

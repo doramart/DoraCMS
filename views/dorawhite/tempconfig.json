@@ -1,0 +1,10 @@
+﻿[
+    {
+        "name": "dora简约",
+        "alias": "dorawhite",
+        "version": "v1.0.0",
+        "sImg": "/images/demo.jpg",
+        "author": "doramart",
+        "comment": "DoraCMS默认模板，用最基础的白色展现页面，希望大家喜欢"
+    }
+]

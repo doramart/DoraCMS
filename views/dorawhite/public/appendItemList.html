@@ -1,0 +1,100 @@
+<!--
+约定documentList.docs为文档列表数据集合
+item为子元素集合
+-->
+<div ms-controller="appendItems">
+	<div class="post-list">
+		<article class="post" ms-for="(index,item) in @appendDocumentList">
+			<div class="row">
+				<div class="col-xs-5 col-sm-3 col-md-4">
+					<a ms-if="@item.categories.length > 1" target="_blank" class="item-category" ms-attr="{href:'/'+(@item.categories)[@item.categories.length-1].defaultUrl+ '___'+(@item.categories)[@item.categories.length-1]._id}"
+					 ms-text="(@item.categories)[@item.categories.length-1].name"></a>
+					<a ms-if="@item.categories.length == 1" target="_blank" class="item-category" ms-attr="{href:'/'+(@item.categories)[0].defaultUrl+ '___'+(@item.categories)[0]._id}"
+					 ms-text="(@item.categories)[0].name"></a>
+					<a ms-attr="{href:'/details/'+ @item._id + '.html'}" target="_blank " class="contentImg ">
+						<img ms-attr="{src: @item.sImg,alt:@item.title }" class="img-responsive " />
+					</a>
+				</div>
+				<div class="col-xs-7 col-sm-9 col-md-8 discription ">
+					<h2 class="post-title" ms-attr="{alt:@item.title}">
+						<a ms-attr="{href:'/details/'+ @item._id + '.html'}" target="_blank" ms-text="@item.title">
+						</a>
+					</h2>
+					<div class="post-content " ms-text="@item.discription | cutwords(60)">
+					</div>
+					<ul class="post-meta ">
+						<li class="author">
+							<a class="logo">
+								<img ms-if="@item.author" ms-attr="{src: @showAuthor(@item,'author','logo')}">
+								<img ms-if="@item.uAuthor" ms-attr="{src: @showAuthor(@item,'uAuthor','logo')}">
+							</a>
+							<span ms-if="@item.author" ms-text="@showAuthor(@item,'author','userName')"></span>
+							<span ms-if="@item.uAuthor" ms-text="@showAuthor(@item,'uAuthor','userName')"></span>
+						</li>
+						<li>
+							<i class="fa fa-clock-o " aria-hidden="true "></i>&nbsp;&nbsp;
+							<span ms-text="@item.updateDate"></span>
+						</li>
+						<li>
+							<i class="fa fa-eye " aria-hidden="true "></i>&nbsp;&nbsp;
+							<span ms-text="@item.clickNum"></span>
+						</li>
+						<li>
+							<i class="fa fa-comment " aria-hidden="true "></i>&nbsp;&nbsp;
+							<span ms-text="@item.commentNum"></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</article>
+	</div>
+	{% if documentList.docs.length > 0 %}
+	<div class="loading-more" ms-on-click="@getMoreNews">
+		<i :visible="!@loadingState" class="fa fa-sort-down" aria-hidden="true"></i>
+		<i :visible="@loadingState" class="fa fa-spin fa-spinner"></i>
+	</div>
+	{% endif %}
+</div>
+
+<script>
+	var pageType = "{{pageType}}";
+	var cateId = "{{cateInfo._id}}"
+	var appendNewsVm = avalon.define({
+		$id: 'appendItems',
+		current: 1,
+		appendDocumentList: [],
+		loadingState: false,
+		showAuthor: function (item, author, userName) {
+			var obj = item[author]
+			if (obj) {
+				return obj[userName]
+			}
+			return ''
+		},
+		getMoreNews: function () {
+			getAppendList();
+		}
+	})
+
+	function getAppendList() {
+		appendNewsVm.loadingState = true;
+		appendNewsVm.current++;
+		$.ajax({
+			type: 'GET',
+			url: '/api/content/getList?type=1&typeId=' + cateId + '&current=' + appendNewsVm.current,
+			success: function (data) {
+				appendNewsVm.loadingState = false;
+				if (data.status == 200) {
+					if (data.data.docs.length > 0) {
+						appendNewsVm.appendDocumentList = (appendNewsVm.appendDocumentList).concat(data.data.docs);
+					}
+				} else {
+					toastr.error('加载失败，请稍后重试！')
+				}
+			},
+			error: function (d) {
+				console.log('error:', d)
+			}
+		})
+	}
+</script>

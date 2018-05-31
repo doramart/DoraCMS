@@ -23,9 +23,8 @@ module.exports = (req, res, next) => {
         }
         if (!hasPower) {
             res.send({
-                state: 'error',
-                err: 'adminGroupPower',
-                message: '对不起，您暂无权限执行该操作！'
+                status: 500,
+                message: res.__('label_systemnotice_nopower')
             });
         } else {
             return next();

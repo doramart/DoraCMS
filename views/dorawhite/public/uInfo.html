@@ -1,0 +1,64 @@
+<!--用户信息完善-->
+<style>
+    #uploadULogoImg {
+        margin: 5px auto;
+    }
+</style>
+<div class="uInfos" ms-controller="user-info">
+    <form name="loginForm" ms-validate="@validate">
+        <h3 class="top-bar">
+            <i class="fa fa-user"></i>
+            <span>{{lk.lc_basic_userInfo}}</span>
+        </h3>
+        <small style="display:block" class="text-danger text-center" :visible="@showErr" ms-html="@message"></small>
+        <div class="form-group">
+            <label for="">{{lk.lc_userName}}</label>
+            <input type="text" class="form-control" name="userName" ms-duplex="@userName" placeholder="{{lk.lc_basic_pl_username}}" ms-rules="{required:true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{4,11}$/ }"
+                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_userName)}}" data-message="{{lk.lc_basic_user_writecurrent_username}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{lk.lc_basic_user_name}}</label>
+            <input type="text" class="form-control" name="name" ms-duplex="@name" placeholder="{{lk.lc_basic_pl_name}}" ms-rules="{required:true,minlength:2,maxlength:6, pattern: /[\u4e00-\u9fa5]/ }"
+                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_basic_user_name)}}" data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(2,6,lk.lc_basic_user_name)}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{lk.lc_basic_user_tel}}</label>
+            <input type="text" class="form-control" name="phoneNum" ms-duplex="@phoneNum" placeholder="{{lk.lc_basic_pl_tel}}" ms-rules="{required:true,number:true }"
+                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_basic_user_tel)}}" data-message="{{lk.validate_inputCorrect | inputCurrent(lk.lc_basic_user_tel)}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{lk.lc_email}}</label>
+            <input type="email" class="form-control" name="email" ms-duplex="@email" placeholder="{{lk.lc_write_email}}" ms-rules="{required:true, pattern: /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/ }"
+                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_email)}}" data-message="{{lk.validate_inputCorrect | inputCurrent(lk.lc_email)}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{lk.lc_basic_user_comments}}</label>
+            <input type="text" class="form-control" name="comments" ms-duplex="@comments" placeholder="{{lk.lc_basic_pl_comments}}">
+        </div>
+        <div class="sub-btns" id="ul-s5">
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">{{lk.lc_basic_sub_btn}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 请求用户信息
+    $.ajax({
+        type: "GET",
+        url: '/users/userInfo',
+        success: function (data) {
+            console.log('data', data);
+            if (data.status === 200) {
+                userInfoVm.name = data.data.userInfo.name || '';
+                userInfoVm.userName = data.data.userInfo.userName;
+                userInfoVm.email = data.data.userInfo.email;
+                userInfoVm.phoneNum = data.data.userInfo.phoneNum || '';
+                userInfoVm.comments = data.data.userInfo.comments;
+            }
+        }
+    })
+</script>

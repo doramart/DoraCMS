@@ -1,0 +1,26 @@
+{% extends "../public/defaultTemp.html" %} {% block content %} {% import "../public/adsPannel.html" as adsPannel %}
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main-container cmscase-pannel">
+            <div class="column-wrap">
+                <h1>DoraCMS案例展示</h1>
+                <div class="gitstar">
+                    <a aria-label="Star doramart/DoraCMS on GitHub" data-count-aria-label="# stargazers on GitHub" data-count-api="/repos/doramart/DoraCMS#stargazers_count"
+                        data-count-href="/doramart/DoraCMS/stargazers" href="https://github.com/doramart/DoraCMS" class="github-button">Star</a>
+                </div>
+            </div>
+            <div class="row cmscase-container">
+                <div class="col-md-12">
+
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        {{adsPannel.slider(adsList,'BkxSmqcaAZ')}}
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

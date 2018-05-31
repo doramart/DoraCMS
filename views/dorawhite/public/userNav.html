@@ -1,0 +1,29 @@
+<!--用户中心右侧菜单-->
+<div class="user-left-menu" ms-controller="user-nav">
+    <div class="user-logo">
+        <div class="logo">
+            <img src="{{userInfo.logo}}" alt="">
+        </div>
+        <span>{{userInfo.userName}}</span>
+        <span style="font-size:12px !important;">{{lk.lc_basic_myScore_label}}:&nbsp;{{userInfo.integral}}</span>
+    </div>
+    <ul class="user-menu-options">
+        <li :class="[@currentPath.indexOf('userCenter')>0 && 'active']">
+            <a href="/users/userCenter">
+                <span class="fa fa-user"></span>
+                <span class="label">{{lk.lc_basic_userInfo}}</span>
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+        <li :class="[@currentPath.indexOf('setUserPsd')>0 && 'active']">
+            <a href="/users/setUserPsd">
+                <span class="fa fa-asterisk"></span>
+                <span class="label">{{lk.lc_basic_set_password}}</span>
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+<script>
+
+</script>

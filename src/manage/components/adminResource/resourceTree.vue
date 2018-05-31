@@ -43,9 +43,9 @@ export default {
     },
 
     remove(store, data) {
-      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t("main.del_notice"), this.$t("main.scr_modal_title"), {
+        confirmButtonText: this.$t("main.confirmBtnText"),
+        cancelButtonText: this.$t("main.cancelBtnText"),
         type: "warning"
       })
         .then(() => {
@@ -54,10 +54,10 @@ export default {
           });
         })
         .then(result => {
-          if (result.data.state === "success") {
+          if (result.data.status === 200) {
             this.$store.dispatch("getAdminResourceList");
             this.$message({
-              message: "删除成功",
+              message: this.$t("main.scr_modal_del_succes_info"),
               type: "success"
             });
           } else {
@@ -67,7 +67,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: this.$t("main.scr_modal_del_error_info")
           });
         });
     },

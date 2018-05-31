@@ -14,10 +14,10 @@
                     <span class="el-dropdown-link userinfo-inner">
                         <img :src="loginState.userInfo.logo" /> {{loginState.userInfo.userName}}</span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="sysMessage">我的消息
+                        <el-dropdown-item @click.native="sysMessage">{{$t('main.myMessage')}}
                             <el-badge v-show="loginState.noticeCounts > 0" class="mark" :value="loginState.noticeCounts" /></el-dropdown-item>
-                        <el-dropdown-item @click.native="sysSettings">设置</el-dropdown-item>
-                        <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+                        <el-dropdown-item @click.native="sysSettings">{{$t('main.settings')}}</el-dropdown-item>
+                        <el-dropdown-item divided @click.native="logout">{{$t('main.logOut')}}</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
@@ -87,16 +87,20 @@ export default {
     //退出登录
     logout: function() {
       var _this = this;
-      this.$confirm("确认退出吗?", "提示", {
-        type: "warning"
-      })
+      this.$confirm(
+        this.$t("main.confirm_logout"),
+        this.$t("main.scr_modal_title"),
+        {
+          type: "warning"
+        }
+      )
         .then(() => {
           this.loading = true;
           services.logOut().then(result => {
-            if (result && result.data.state === "success") {
+            if (result && result.data.status === 200) {
               window.location = "/dr-admin";
             } else {
-              this.$message.error("服务异常,请稍后再试");
+              this.$message.error(this.$t("main.server_error_notice"));
             }
           });
         })
@@ -112,38 +116,39 @@ export default {
     collapse: function() {
       this.collapsed = !this.collapsed;
     },
-    showMenu(i, status) {
-      this.$refs.menuCollapsed.getElementsByClassName(
-        "submenu-hook-" + i
-      )[0].style.display = status ? "block" : "none";
-    },
-    sendLogOut() {
-      services.logOut().then(result => {
-        if (result && result.data.state === "success") {
-          window.location = "/dr-admin";
-        } else {
-          this.$message.error("服务异常,请稍后再试");
-        }
-      });
+    savePageInfo(route) {
+      if (route === "/addContent") {
+        let params = this.contentFormState.formData,
+          postState = this.contentFormState.edit ? "editContent" : "addContent";
+        localStorage.setItem(postState, JSON.stringify(params));
+      }
+      window.location = "/dr-admin";
     }
   },
   mounted() {},
   computed: {
-    ...mapGetters(["loginState"])
+    ...mapGetters(["loginState"]),
+    contentFormState() {
+      return this.$store.getters.contentFormState;
+    }
   },
   watch: {
     loginState() {
       if (!this.$store.getters.loginState.state) {
-        this.$confirm("您的登录已超时?", "提示", {
-          showCancelButton: false,
-          closeOnClickModal: false,
-          closeOnPressEscape: false,
-          confirmButtonText: "重新登录",
-          type: "warning"
-        })
+        this.$confirm(
+          this.$t("main.login_timeout"),
+          this.$t("main.scr_modal_title"),
+          {
+            showCancelButton: false,
+            closeOnClickModal: false,
+            closeOnPressEscape: false,
+            confirmButtonText: this.$t("main.re_login"),
+            type: "warning"
+          }
+        )
           .then(() => {
             this.loading = true;
-            window.location = "/dr-admin";
+            this.savePageInfo(this.$route.path);
           })
           .catch(() => {
             this.loading = true;

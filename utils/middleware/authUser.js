@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2015/9/9.
  */
-let settings = require('../settings');
+let settings = require('../../configs/settings');
 let siteFunc = require('../siteFunc');
 
 //用户实体类
@@ -29,7 +29,7 @@ exports.auth = function (req, res, next) {
                     currentUser = user;
                     return UserNotify.getNoReadNotifyCountByUserId(user._id, 'user');
                 }).then((count) => {
-                    currentUser.msg_count = count;
+                    // currentUser.msg_count = count;
                     req.session.user = currentUser;
                     req.session.logined = true;
                     return next();

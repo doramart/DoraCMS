@@ -1,0 +1,37 @@
+<!--用户登录模块-->
+<div class="login-container" ms-controller="adminUserlogin">
+    <div class="admin-logo-title">
+        <h3>
+            <b style="color:#1D8CE0;">Dora</b>CMS</h3>
+        <small class="text-danger" :visible="@showErr" ms-html="@message"></small>
+    </div>
+    <form name="loginForm" ms-validate="@validate">
+        <div class="form-group">
+            <i class="fa fa-user-o"></i>
+            <input type="text" class="form-control" name="userName" ms-duplex="@userName" placeholder="{{lk.lc_basic_pl_username}}" ms-rules="{required:true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{4,11}$/ }"
+                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_userName)}}" data-message="{{lk.lc_basic_user_writecurrent_username}}">
+        </div>
+        <div class="form-group">
+            <i class="fa fa-lock"></i>
+            <input type="password" class="form-control" name="password" placeholder="{{lk.lc_password_null_tips}}" ms-duplex="@password"
+                ms-rules="{required: true,pattern: /(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/}" data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_password)}}"
+                data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(6,12,lk.lc_password)}}">
+        </div>
+        {%if siteInfo.configs.showImgCode %}
+        <div class="form-group">
+            <i class="fa fa-random"></i>
+            <input type="text" class="form-control imageCode-input" name="imageCode" placeholder="{{lk.validate_inputNull | inputNotNull(lk.label_user_imageCode)}}"
+                ms-duplex="@imageCode" ms-rules="{required: true}" data-required-message="{{lk.validate_inputNull | inputNotNull(lk.label_user_imageCode)}}"
+                data-message="{{lk.validate_inputCorrect | inputCurrent(lk.label_user_imageCode)}}">
+            <img ms-attr="{src: @imgCodeUrl}" class="imageCode-img" ms-on-click="reSetImgCode" />
+        </div>
+        {% endif %}
+        <div id="ul-s5">
+            <button type="submit" class="btn btn-primary">{{lk.lc_login}}</button>&nbsp;
+        </div>
+    </form>
+</div>
+
+<script>
+
+</script>

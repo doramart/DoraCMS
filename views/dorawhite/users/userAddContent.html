@@ -1,0 +1,234 @@
+<!--投稿-->
+{% extends "../public/defaultTemp.html" %} {% block content %}
+<link href="/plugins/webuploader/webuploader.css" rel="stylesheet">
+<script src="/plugins/webuploader/webuploader.min.js"></script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main-container ">
+            <div class="row user-contents-post" ms-controller="user-post">
+                <div class="pannel-container clearfix">
+                    <form name="postForm" ms-validate="@validate">
+                        <div class="col-md-8 left-frame">
+                            <div class="main-form">
+                                <div class="form-group">
+                                    <label for="">{{lk.lc_documentCate}}</label>
+                                    <select class="form-control" onchange="selectCateOnChange(this)">
+                                        <option value="0" selected>{{lk.lc_please_select_documentCate}}</option>
+                                        {% if cateTypes.length > 0 %} {% for item in cateTypes %} {% if item.parentId == '0' %} {%if item.type == '1'%}
+                                        <option value="{{item._id}}">{{item.name}}</option>
+                                        {% endif %} {% endif %} {% endfor %} {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">{{lk.lc_documentTitle}}</label>
+                                    <input type="text" class="form-control" name="title" ms-duplex="@title" placeholder="{{lk.lc_please_documentTitle}}" ms-rules="{required:true, minlength：5,maxlength:50 }"
+                                        data-required-message="{{lk.lc_please_documentTitle_null_tips}}" data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(5,50,lk.lc_please_documentTitle)}}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">{{lk.lc_documentDis}}</label>
+                                    <input type="text" class="form-control" name="discription" ms-duplex="@discription" placeholder="{{lk.lc_pleace_documentDis}}"
+                                        ms-rules="{required:true, minlength：5,maxlength:300 }" data-required-message="{{lk.lc_pleace_documentDis_null_tips}}"
+                                        data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(5,300,lk.lc_documentDis)}}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">{{lk.lc_contentDetails}}</label>
+                                    <!-- 加载编辑器的容器 -->
+                                    <script id="container" name="content" type="text/plain"></script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 right-frame">
+                            <div class="right-form">
+                                <button type="submit" class="btn btn-primary sub-content">{{lk.lc_commitUserConent}}</button>
+                                <div class="form-group thumbImg">
+                                    <label for="">{{lk.lc_small_images}}</label>
+                                    <div id="uploader-demo">
+                                        <!--用来存放item-->
+                                        <div id="fileList" class="uploader-list"></div>
+                                        <div id="filePicker">选择图片</div>
+                                    </div>
+                                </div>
+                                <div class="form-group tag-list">
+                                    <label for="">{{lk.lc_content_tag}}</label>
+                                    <select class="form-control" onchange="selectTagOnChange(this)">
+                                        <option value="0" selected>{{lk.lc_select_documentTag}}</option>
+                                        {% if tagList.docs.length > 0 %} {% for item in tagList.docs %}
+                                        <option value="{{item._id}}">{{item.name}}</option>
+                                        {% endfor %} {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 配置文件 -->
+<script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="/ueditor/ueditor.all.js"></script>
+<script>
+    function selectTagOnChange(obj) {
+        postArticelVM.tags = obj.value;
+    }
+    function selectCateOnChange(obj) {
+        postArticelVM.categories = obj.value;
+    }
+    $(function () {
+
+        // 初始化Web Uploader
+        var $list = $('#fileList')
+        var uploader = WebUploader.create({
+
+            // 选完文件后，是否自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: '/plugins/webuploader/Uploader.swf',
+
+            // 文件接收服务端。
+            server: '/system/upload?type=images',
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#filePicker',
+
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+        // 当有文件添加进来的时候
+        uploader.on('fileQueued', function (file) {
+            var $li = $(
+                '<div id="' + file.id + '" class="file-item thumbnail">' +
+                '<img>' +
+
+                '</div>'
+            ),
+                $img = $li.find('img');
+
+
+            // $list为容器jQuery实例
+            $list.append($li);
+
+            // 创建缩略图
+            // 如果为非图片文件，可以不用调用此方法。
+            // thumbnailWidth x thumbnailHeight 为 100 x 100
+            uploader.makeThumb(file, function (error, src) {
+                if (error) {
+                    $img.replaceWith('<span>不能预览</span>');
+                    return;
+                }
+
+                $img.attr('src', src);
+            }, 100, 100);
+        });
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on('uploadProgress', function (file, percentage) {
+            var $li = $('#' + file.id),
+                $percent = $li.find('.progress span');
+
+            // 避免重复创建
+            if (!$percent.length) {
+                $percent = $('<p class="progress"><span></span></p>')
+                    .appendTo($li)
+                    .find('span');
+            }
+
+            $percent.css('width', percentage * 100 + '%');
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on('uploadSuccess', function (file, response) {
+            $('#' + file.id).addClass('upload-state-done');
+            postArticelVM.sImg = response._raw
+        });
+
+        // 文件上传失败，显示上传出错。
+        uploader.on('uploadError', function (file) {
+            var $li = $('#' + file.id),
+                $error = $li.find('div.error');
+
+            // 避免重复创建
+            if (!$error.length) {
+                $error = $('<div class="error"></div>').appendTo($li);
+            }
+
+            $error.text('上传失败');
+        });
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on('uploadComplete', function (file) {
+            $('#' + file.id).find('.progress').remove();
+
+        });
+    })
+    var postArticelVM = avalon.define({
+        $id: 'user-post',
+        title: '',
+        discription: '',
+        comments: '',
+        message: '',
+        contentObj: UE.getEditor('container'),
+        sImg: "",
+        tags: [],
+        categories: [],
+        showErr: false,
+        validate: {
+            onError: function (reasons) {
+                reasons.forEach(function (reason) {
+                    console.log(reason.getMessage())
+                })
+            },
+            onValidateAll: function (reasons) {
+                if (reasons.length > 0) {
+                    console.log('有表单没有通过', reasons)
+                    postArticelVM.showErr = true;
+                    postArticelVM.message = reasons[0].message;
+                } else {
+                    console.log('全部通过');
+                    if (!postArticelVM.sImg) {
+                        toastr.error('请添加缩略图');
+                    } else if (postArticelVM.categories.length == 0 || postArticelVM.tags.length == 0) {
+                        toastr.error('请选择类别或标签');
+                    } else {
+                        var params = {
+                            title: postArticelVM.title,
+                            sImg: postArticelVM.sImg,
+                            discription: postArticelVM.discription,
+                            categories: postArticelVM.categories,
+                            tags: postArticelVM.tags,
+                            comments: postArticelVM.contentObj.getContent()
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            contentType: 'application/json; charset=utf-8', // 很重要
+                            traditional: true,
+                            data: JSON.stringify(params),
+                            url: '/api/content/addOne',
+                            success: function (data) {
+                                console.log('success:', data)
+                                if (data.status == 200) {
+                                    toastr.success("添加成功!");
+                                    window.location.href = "/users/userContents"
+                                } else {
+                                    toastr.error(data.message);
+                                }
+                            },
+                            error: function (d) {
+                                console.log('error:', d)
+                            }
+                        })
+                    }
+
+                }
+            }
+        }
+    })
+
+</script> {% endblock %}

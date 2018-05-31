@@ -1,0 +1,19 @@
+<!--约定currentCateList为分类集合-->
+{% if currentCateList.parents.length>0 %}
+<div class="pannel-box catesMenu">
+    <h2 class="pannel-title">{{lk.lc_panne_title_cate}}</h2>
+    <div class="content-list">
+        {% for parentNav in currentCateList.parents %}
+        <div class="parent-name">{{parentNav.name}}</div>
+        <ul class="cate-list">
+            {% for sonNav in currentCateList.cates %} {% if sonNav.parentId === parentNav._id %} {% if cateInfo._id == sonNav._id %}
+            {% set navClass = 'active'%} {% else %} {% set navClass = ''%} {% endif %}
+            <li class="{{navClass}}">
+                <a href="{{'/'+sonNav.defaultUrl+ '___'+sonNav._id}}">{{sonNav.name}}</a>
+            </li>
+            {% endif %} {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

@@ -2,7 +2,6 @@
  * 全局校验类
  */
 const validator = require("validator");
-// const shortid = require('shortid');
 
 module.exports = {
 

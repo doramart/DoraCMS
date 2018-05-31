@@ -1,0 +1,26 @@
+{% extends "../public/defaultTemp.html" %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main-container">
+            <div class="row">
+                <div class="col-md-8 left-frame">
+                    <div class="column-wrap">
+                        {% if pageType == 'search' %}
+                        <h1 alt="{{siteInfo.altkey}}{{targetSearchKey}}">搜索：{{targetSearchKey}}</h1>
+                        {% elif pageType == 'tag' %}
+                        <h1 alt="{{siteInfo.altkey}}{{targetTagName}}">标签：{{targetTagName}}</h1>
+                        {% else %}
+                        <h1 alt="{{siteInfo.altkey}}{{cateInfo.name}}">{{cateInfo.name}}</h1>
+                        {% endif %}
+                    </div>
+                    {% include "../public/itemListTemp.html" %}
+                </div>
+                <div class="col-md-4 right-frame">
+                    {% include "../public/cateList.html" %} {% include "../public/hotNewsList.html" %} {% include "../public/reCommendList.html"
+                    %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

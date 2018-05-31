@@ -1,46 +1,50 @@
 <template>
     <div class="dr-contentForm">
-        <el-form :model="formState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-            <el-form-item label="标题" prop="title">
-                <el-input size="small" v-model="formState.formData.title"></el-input>
-            </el-form-item>
-            <el-form-item label="简短标题" prop="stitle">
-                <el-input size="small" v-model="formState.formData.stitle"></el-input>
-            </el-form-item>
-            <el-form-item label="来源" prop="from">
-                <el-radio class="radio" v-model="formState.formData.from" label="1">原创</el-radio>
-                <el-radio class="radio" v-model="formState.formData.from" label="2">转载</el-radio>
-                <el-radio class="radio" v-model="formState.formData.from" label="3">用户发布</el-radio>
-            </el-form-item>
-            <el-form-item label="发布" prop="state">
-                <el-switch on-text="是" off-text="否" v-model="formState.formData.state"></el-switch>
-            </el-form-item>
-            <el-form-item label="标签/关键字" prop="tags">
-                <el-select size="small" v-model="formState.formData.tags" multiple filterable allow-create placeholder="请选择文章标签">
-                    <el-option v-for="item in contentTagList.docs" :key="item._id" :label="item.name" :value="item._id">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="缩略图" prop="sImg">
-                <el-upload class="avatar-uploader" action="/system/upload?type=images" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                    <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-            </el-form-item>
-            <el-form-item label="文章类别" prop="categories">
+        <el-form :model="formState.formData" :rules="formState.formData.type=='2'?flashRules:(formState.formData.type=='3'?twiterRules:rules)" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+            <el-form-item :label="$t('contents.categories')" prop="categories">
                 <el-cascader size="small" expand-trigger="hover" :options="contentCategoryList.docs" v-model="formState.formData.categories" @change="handleChangeCategory" :props="categoryProps">
                 </el-cascader>
             </el-form-item>
-            <el-form-item label="内容摘要" prop="discription">
+            <el-form-item :label="$t('contents.type')" prop="type">
+                <el-radio class="radio" v-model="formState.formData.type" label="1">{{$t('contents.type_normal')}}</el-radio>
+            </el-form-item>
+            <div v-if="formState.formData.type == 1">
+              <el-form-item :label="$t('contents.title')" prop="title">
+                  <el-input size="small" v-model="formState.formData.title"></el-input>
+              </el-form-item>
+              <el-form-item :label="$t('contents.stitle')" prop="stitle">
+                  <el-input size="small" v-model="formState.formData.stitle"></el-input>
+              </el-form-item>
+              <el-form-item :label="$t('contents.from')" prop="from">
+                  <el-radio class="radio" v-model="formState.formData.from" label="1">{{$t('contents.from_1')}}</el-radio>
+                  <el-radio class="radio" v-model="formState.formData.from" label="2">{{$t('contents.from_2')}}</el-radio>
+                  <el-radio class="radio" v-model="formState.formData.from" disabled label="3">{{$t('contents.from_3')}}</el-radio>
+              </el-form-item>
+              <el-form-item :label="$t('contents.enable')" prop="state">
+                  <el-switch :on-text="$t('main.radioOn')" :off-text="$t('main.radioOff')" v-model="formState.formData.state"></el-switch>
+              </el-form-item>
+              <el-form-item :label="$t('contents.tagOrKey')" prop="tags">
+                <el-select size="small" v-model="formState.formData.tags" multiple filterable allow-create :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})">
+                    <el-option v-for="item in contentTagList.docs" :key="item._id" :label="item.name" :value="item._id">
+                    </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item :label="$t('contents.sImg')" prop="sImg">
+                  <el-upload class="avatar-uploader" action="/system/upload?type=images" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                      <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar">
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </el-upload>
+              </el-form-item>
+            </div>
+            <el-form-item :label="$t('contents.discription')" prop="discription">
                 <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
             </el-form-item>
-            <el-form-item label="文档详情" prop="comments">
-                <Ueditor @ready="editorReady" v-show="!formState.formData.uAuthor"></Ueditor>
-                <MarkDownEditor v-show="formState.formData.uAuthor" v-model="formState.formData.markDownComments" @input="inputEditor" :toc="toc" @change="changeEditor"></MarkDownEditor>
+            <el-form-item :label="$t('contents.comments')" prop="comments">
+                <Ueditor @ready="editorReady"></Ueditor>
             </el-form-item>
             <el-form-item class="dr-submitContent">
-                <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? '更新' : '保存'}}</el-button>
-                <el-button size="medium" @click="backToList">返回</el-button>
+                <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+                <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -51,6 +55,11 @@
   margin: 15px 0;
   width: 80%;
   padding-bottom: 50px;
+  .post-rate {
+    .el-rate {
+      margin-top: 10px;
+    }
+  }
   .dr-submitContent {
     position: fixed;
     z-index: 9999999;
@@ -91,7 +100,6 @@
 <script>
 import services from "../../store/services.js";
 import Ueditor from "../common/Ueditor.vue";
-import MarkDownEditor from "../../../index/components/mkeditor";
 
 import _ from "lodash";
 import { mapGetters, mapActions } from "vuex";
@@ -103,42 +111,49 @@ export default {
     return {
       toc: "",
       content: "",
-      defaultMsg: "初始文本",
+      isflash: false,
       config: {
         initialFrameWidth: null,
         initialFrameHeight: 320
       },
       imageUrl: "",
+      flashPostConfig: {
+        panneState: true
+      },
       categoryProps: {
         value: "_id",
         label: "name",
         children: "children"
       },
-
+      currentType: "1",
       rules: {
         title: [
           {
             required: true,
-            message: "请输入文档标题",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.title")
+            }),
             trigger: "blur"
           },
           {
-            min: 5,
+            min: 2,
             max: 50,
-            message: "5-50个非特殊字符",
+            message: this.$t("validate.rangelength", { min: 2, max: 50 }),
             trigger: "blur"
           }
         ],
         stitle: [
           {
             required: true,
-            message: "请输入简短标题",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.stitle")
+            }),
             trigger: "blur"
           },
           {
-            min: 5,
+            min: 2,
             max: 50,
-            message: "5-50个非特殊字符",
+            message: this.$t("validate.rangelength", { min: 2, max: 50 }),
             trigger: "blur"
           }
         ],
@@ -146,7 +161,13 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (_.isEmpty(value)) {
-                callback(new Error("请选择文档类别!"));
+                callback(
+                  new Error(
+                    this.$t("validate.selectNull", {
+                      label: this.$t("contents.categories")
+                    })
+                  )
+                );
               } else {
                 callback();
               }
@@ -158,7 +179,13 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (_.isEmpty(value)) {
-                callback(new Error("请选择标签!"));
+                callback(
+                  new Error(
+                    this.$t("validate.selectNull", {
+                      label: this.$t("contents.tags")
+                    })
+                  )
+                );
               } else {
                 callback();
               }
@@ -169,25 +196,142 @@ export default {
         discription: [
           {
             required: true,
-            message: "请输入内容摘要",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.discription")
+            }),
             trigger: "blur"
           },
           {
             min: 5,
             max: 300,
-            message: "5-100个非特殊字符",
+            message: this.$t("validate.rangelength", { min: 5, max: 100 }),
             trigger: "blur"
           }
         ],
         comments: [
           {
             required: true,
-            message: "请输入内容详情",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.comments")
+            }),
             trigger: "blur"
           },
           {
             min: 5,
-            message: "5-10000个非特殊字符",
+            message: this.$t("validate.rangelength", { min: 5, max: 10000 }),
+            trigger: "blur"
+          }
+        ]
+      },
+      flashRules: {
+        categories: [
+          {
+            validator: (rule, value, callback) => {
+              if (_.isEmpty(value)) {
+                callback(
+                  new Error(
+                    this.$t("validate.selectNull", {
+                      label: this.$t("contents.categories")
+                    })
+                  )
+                );
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        discription: [
+          {
+            required: true,
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.flashComments")
+            }),
+            trigger: "blur"
+          },
+          {
+            min: 5,
+            max: 300,
+            message: this.$t("validate.rangelength", { min: 5, max: 300 }),
+            trigger: "blur"
+          }
+        ],
+        comments: [
+          {
+            required: true,
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.comments")
+            }),
+            trigger: "blur"
+          },
+          {
+            min: 5,
+            message: this.$t("validate.rangelength", { min: 5, max: 10000 }),
+            trigger: "blur"
+          }
+        ]
+      },
+      twiterRules: {
+        twiterAuthor: [
+          {
+            required: true,
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.twiterAuthor")
+            }),
+            trigger: "blur"
+          },
+          {
+            min: 2,
+            max: 100,
+            message: this.$t("validate.rangelength", { min: 2, max: 100 }),
+            trigger: "blur"
+          }
+        ],
+        categories: [
+          {
+            validator: (rule, value, callback) => {
+              if (_.isEmpty(value)) {
+                callback(
+                  new Error(
+                    this.$t("validate.selectNull", {
+                      label: this.$t("contents.categories")
+                    })
+                  )
+                );
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        translate: [
+          {
+            required: true,
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.translate")
+            }),
+            trigger: "blur"
+          },
+          {
+            min: 5,
+            max: 300,
+            message: this.$t("validate.rangelength", { min: 5, max: 300 }),
+            trigger: "blur"
+          }
+        ],
+        comments: [
+          {
+            required: true,
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.comments")
+            }),
+            trigger: "blur"
+          },
+          {
+            min: 5,
+            message: this.$t("validate.rangelength", { min: 5, max: 10000 }),
             trigger: "blur"
           }
         ]
@@ -195,10 +339,17 @@ export default {
     };
   },
   components: {
-    Ueditor,
-    MarkDownEditor
+    Ueditor
   },
   methods: {
+    checkFlashPost(currentType) {
+      this.$store.dispatch("showContentForm", {
+        edit: this.formState.edit,
+        formData: Object.assign({}, this.formState.formData, {
+          type: currentType ? "2" : "1"
+        })
+      });
+    },
     inputEditor(value) {
       this.$store.dispatch("showContentForm", {
         edit: this.formState.edit,
@@ -242,10 +393,12 @@ export default {
       const isGIF = file.type === "image/gif";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG && !isPNG && !isGIF) {
-        this.$message.error("上传头像图片只能是 JPG,PNG,GIF 格式!");
+        this.$message.error(this.$t("validate.limitUploadImgType"));
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error(
+          this.$t("validate.limitUploadImgSize", { size: 2 })
+        );
       }
       return (isJPG || isPNG || isGIF) && isLt2M;
     },
@@ -262,10 +415,10 @@ export default {
           // 更新
           if (this.formState.edit) {
             services.updateContent(params).then(result => {
-              if (result.data.state === "success") {
+              if (result.data.status === 200) {
                 this.$router.push("/content");
                 this.$message({
-                  message: "更新成功",
+                  message: this.$t("main.updateSuccess"),
                   type: "success"
                 });
               } else {
@@ -275,10 +428,10 @@ export default {
           } else {
             // 新增
             services.addContent(params).then(result => {
-              if (result.data.state === "success") {
+              if (result.data.status === 200) {
                 this.$router.push("/content");
                 this.$message({
-                  message: "添加成功",
+                  message: this.$t("main.addSuccess"),
                   type: "success"
                 });
               } else {
@@ -303,9 +456,9 @@ export default {
     // 针对手动页面刷新
     if (this.$route.params.id && !this.formState.formData.title) {
       services.getOneContent(this.$route.params).then(result => {
-        if (result.data.state === "success") {
-          if (result.data.doc) {
-            let contentObj = result.data.doc,
+        if (result.data.status === 200) {
+          if (result.data.data.doc) {
+            let contentObj = result.data.data.doc,
               categoryIdArr = [];
             contentObj.categories.map((item, index) => {
               categoryIdArr.push(item._id);
@@ -317,7 +470,7 @@ export default {
             });
           } else {
             this.$message({
-              message: "参数非法,请重新操作！",
+              message: this.$t("validate.error_params"),
               type: "warning",
               onClose: () => {
                 this.$router.push("/content");

@@ -1,0 +1,19 @@
+<!--通过邮箱找回密码模块-->
+<div class="conformBoard" ms-controller="confirmEmail">
+    <form name="confirmEmailForm" ms-validate="@validate">
+        <h3>{{lk.label_findpwd}} &nbsp;
+            <small style="display:block" class="text-danger text-center" :visible="@showErr" ms-html="@message"></small>
+        </h3>
+        <div class="form-group">
+            <label for="">{{lk.lc_email}}</label>
+            <input type="email" class="form-control" name="email" ms-duplex="@email" placeholder="{{lk.lc_write_email}}" ms-rules="{required:true, pattern: /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/ }"
+                data-required-message="{{lk.lc_write_current_email}}" data-message="{{lk.lc_write_current_email}}">
+        </div>
+        <div id="ul-s5">
+            <button type="submit" class="btn btn-primary">{{lk.label_resetpwd_sendEmail}}</button>&nbsp;
+        </div>
+    </form>
+</div>
+
+<script>
+   </script>

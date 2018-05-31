@@ -1,0 +1,57 @@
+<!--
+约定documentList.docs为文档列表数据集合
+item为子元素集合
+-->
+<div class="post-list">
+	{% if pageType == 'index' %}
+	<h2 class="top-news">
+		<span>{{lk.lc_new_document}}
+			<span>
+	</h2>
+	{% endif %} {% for item in documentList.docs %}
+	<article class="post">
+		<div class="row">
+			<div class="col-xs-5 col-sm-3 col-md-4">
+				{% if item.categories %} {% if item.categories.length > 1 %}
+				<a target="_blank" class="item-category" href="{{'/'+(item.categories)[item.categories.length-1].defaultUrl+ '___'+(item.categories)[item.categories.length-1]._id}}">{{(item.categories)[item.categories.length-1].name}}</a>
+				{% elif item.categories == 1 %}
+				<a target="_blank" class="item-category" href="{{'/'+(item.categories)[0].defaultUrl+ '___'+(item.categories)[0]._id}}">{{(item.categories)[0].name}}</a>
+				{% endif%} {% endif%}
+				<a href="/details/{{item._id}}.html " target="_blank " class="contentImg ">
+					<img src="{{item.sImg}} " class="img-responsive " alt="{{item.title}} " />
+				</a>
+			</div>
+			<div class="col-xs-7 col-sm-9 col-md-8 discription ">
+				<h2 class="post-title" alt="{{siteInfo.altkey}}{{item.title}}">
+					<a href="/details/{{item._id}}.html " target="_blank ">
+						{% if targetSearchKey %} {{item.title | hightWords(targetSearchKey) | safe }} {% else %} {{item.title}} {% endif %}
+					</a>
+				</h2>
+				<div class="post-content ">
+					{% if targetSearchKey %} {{item.discription | cutwords(200) | hightWords(targetSearchKey) | safe }} {% else %} {{item.discription
+					| cutwords(200)}} {% endif %}
+				</div>
+				<ul class="post-meta ">
+					{% if item.author %} {% set renderAuthor = item.author %} {% else %} {% set renderAuthor = item.uAuthor %} {% endif %}
+					<li class="author">
+						<a class="logo">
+							<img src="{{renderAuthor.logo}}" alt="{{renderAuthor.userName}}">
+						</a>
+						<span>{{renderAuthor.userName}}</span>
+					</li>
+					<li>
+						<i class="fa fa-clock-o " aria-hidden="true "></i>&nbsp; {{item.updateDate}}
+					</li>
+					<li>
+						<i class="fa fa-eye " aria-hidden="true "></i>&nbsp;{{item.clickNum}}
+					</li>
+					<li>
+						<i class="fa fa-comment " aria-hidden="true "></i>&nbsp;{{item.commentNum}}
+					</li>
+				</ul>
+			</div>
+		</div>
+	</article>
+	{% endfor %} {% include "./pagination.html" %}
+
+</div>

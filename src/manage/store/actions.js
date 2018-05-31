@@ -16,7 +16,7 @@ export function renderTreeData(result) {
         let child = childArr[i];
         for (let j = 0; j < treeData.length; j++) {
             let treeItem = treeData[j];
-            if (treeItem._id == child.parentId) {
+            if (treeItem._id == child.parentId || treeItem.id == child.parentId) {
                 if (!treeItem.children) treeItem.children = [];
                 treeItem.children.push(child);
                 break;
@@ -61,19 +61,19 @@ export default {
     loginState: ({
         commit
     }, params = {
-            userInfo: {},
-            state: false
-        }) => {
+        userInfo: {},
+        state: false
+    }) => {
         services.getUserSession().then((result) => {
-            commit(types.ADMING_LOGINSTATE, result.data)
+            commit(types.ADMING_LOGINSTATE, result.data.data)
         })
     },
     showAdminUserForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {}
-        }) => {
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.ADMINUSERFORMSTATE, {
             show: true,
             edit: params.edit,
@@ -91,15 +91,15 @@ export default {
         commit
     }, params = {}) {
         services.adminUserList(params).then((result) => {
-            commit(types.ADMINUSERLIST, result.data)
+            commit(types.ADMINUSERLIST, result.data.data)
         })
     },
     showAdminGroupForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {}
-        }) => {
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.ADMINGROUP_FORMSTATE, {
             show: true,
             edit: params.edit,
@@ -116,9 +116,9 @@ export default {
     showAdminGroupRoleForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {}
-        }) => {
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.ADMINGROUP_ROLEFORMSTATE, {
             show: true,
             edit: params.edit,
@@ -136,16 +136,16 @@ export default {
         commit
     }, params = {}) {
         services.adminGroupList(params).then((result) => {
-            commit(types.ADMINGROUP_LIST, result.data)
+            commit(types.ADMINGROUP_LIST, result.data.data)
         })
     },
     showAdminResourceForm: ({
         commit
     }, params = {
-            type: 'root',
-            edit: false,
-            formData: {}
-        }) => {
+        type: 'root',
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.ADMINRESOURCE_FORMSTATE, {
             show: true,
             type: params.type,
@@ -164,25 +164,73 @@ export default {
         commit
     }, params = {}) {
         services.adminResourceList(params).then((result) => {
-            let treeData = renderTreeData(result.data);
+            let treeData = renderTreeData(result.data.data);
             commit(types.ADMINRESOURCE_LIST, treeData)
+        })
+    },
+    getAdminTemplateList({
+        commit
+    }, params = {}) {
+        services.adminTemplateList(params).then((result) => {
+            let treeData = renderTreeData(result.data.data);
+            commit(types.ADMINTEMPLATE_LIST, treeData)
+        })
+    },
+    getMyTemplateList({
+        commit
+    }, params = {}) {
+        services.getMyTemplateList(params).then((result) => {
+            commit(types.MYTEMPLATE_LIST, result.data.data)
+        })
+    },
+    showTemplateConfigForm: ({
+        commit
+    }, params = {
+        edit: false,
+        formData: {}
+    }) => {
+        commit(types.TEMPLATECONFIG_FORMSTATE, {
+            show: true,
+            edit: params.edit,
+            formData: params.formData
+        })
+    },
+    hideTemplateConfigForm: ({
+        commit
+    }) => {
+        commit(types.TEMPLATECONFIG_FORMSTATE, {
+            show: false
+        })
+    },
+    getTemplateItemForderList({
+        commit
+    }, params = {}) {
+        services.getTemplateItemlist(params).then((result) => {
+            commit(types.TEMPLATEITEMFORDER_LIST, result.data.data)
+        })
+    },
+    getTempsFromShop({
+        commit
+    }, params = {}) {
+        services.getTemplatelistfromShop(params).then((result) => {
+            commit(types.DORACMSTEMPLATE_LIST, result.data.data)
         })
     },
     getSystemConfig({
         commit
     }, params = {}) {
         services.getSystemConfigs(params).then((config) => {
-            let currentConfig = (config.data && config.data.docs) ? config.data.docs[0] : {};
+            let currentConfig = (config.data.data && config.data.data.docs) ? config.data.data.docs[0] : {};
             commit(types.SYSTEMCONFIG_CONFIGLIST, currentConfig)
         })
     },
     showContentCategoryForm: ({
         commit
     }, params = {
-            type: 'root',
-            edit: false,
-            formData: {}
-        }) => {
+        type: 'root',
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.CONTENTCATEGORYS_FORMSTATE, {
             show: true,
             type: params.type,
@@ -201,9 +249,7 @@ export default {
         commit
     }, params = {}) {
         services.contentCategoryList(params).then((result) => {
-            console.log('----result.data--999--', result.data);
-            let treeData = renderTreeData(result.data);
-            console.log('---treeData---', treeData);
+            let treeData = renderTreeData(result.data.data);
             commit(types.CONTENTCATEGORYS_LIST, treeData)
         })
     },
@@ -211,9 +257,9 @@ export default {
     showContentForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {}
-        }) => {
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.CONTENT_FORMSTATE, {
             edit: params.edit,
             formData: params.formData
@@ -223,7 +269,7 @@ export default {
         commit
     }, params = {}) {
         services.contentList(params).then((result) => {
-            commit(types.CONTENT_LIST, result.data)
+            commit(types.CONTENT_LIST, result.data.data)
         })
     },
 
@@ -231,16 +277,16 @@ export default {
         commit
     }, params = {}) {
         services.contentInfo(params).then((result) => {
-            commit(types.CONTENT_ONE, result.data)
+            commit(types.CONTENT_ONE, result.data.data)
         })
     },
 
     showContentTagForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {}
-        }) => {
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.CONTENTTAG_FORMSTATE, {
             show: true,
             edit: params.edit,
@@ -258,16 +304,16 @@ export default {
         commit
     }, params = {}) {
         services.contentTagList(params).then((result) => {
-            commit(types.CONTENTTAG_LIST, result.data)
+            commit(types.CONTENTTAG_LIST, result.data.data)
         })
     },
     showContentMessageForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {},
-            parentformData: {}
-        }) => {
+        edit: false,
+        formData: {},
+        parentformData: {}
+    }) => {
         commit(types.CONTENTMESSAGE_FORMSTATE, {
             show: true,
             edit: params.edit,
@@ -286,15 +332,15 @@ export default {
         commit
     }, params = {}) {
         services.contentMessageList(params).then((result) => {
-            commit(types.CONTENTMESSAGE_LIST, result.data)
+            commit(types.CONTENTMESSAGE_LIST, result.data.data)
         })
     },
     showRegUserForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {}
-        }) => {
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.REGUSERFORMSTATE, {
             show: true,
             edit: params.edit,
@@ -312,7 +358,7 @@ export default {
         commit
     }, params = {}) {
         services.regUserList(params).then((result) => {
-            commit(types.REGUSERLIST, result.data)
+            commit(types.REGUSERLIST, result.data.data)
         })
     },
 
@@ -320,7 +366,7 @@ export default {
         commit
     }, params = {}) {
         services.getBakDataList(params).then((result) => {
-            commit(types.BAKUPDATA_LIST, result.data)
+            commit(types.BAKUPDATA_LIST, result.data.data)
         })
     },
 
@@ -328,21 +374,21 @@ export default {
         commit
     }, params = {}) {
         services.getSystemOptionLogsList(params).then((result) => {
-            commit(types.SYSTEMOPTIONLOGS_LIST, result.data)
+            commit(types.SYSTEMOPTIONLOGS_LIST, result.data.data)
         })
     },
     getSystemNotifyList({
         commit
     }, params = {}) {
         services.getSystemNotifyList(params).then((result) => {
-            commit(types.SYSTEMNOTIFY_LIST, result.data)
+            commit(types.SYSTEMNOTIFY_LIST, result.data.data)
         })
     },
     getSystemAnnounceList({
         commit
     }, params = {}) {
         services.getSystemAnnounceList(params).then((result) => {
-            commit(types.SYSTEMANNOUNCE_LIST, result.data)
+            commit(types.SYSTEMANNOUNCE_LIST, result.data.data)
         })
     },
     showSysAnnounceForm: ({
@@ -356,7 +402,7 @@ export default {
         commit
     }, params = {}) {
         services.getAdsList(params).then((result) => {
-            commit(types.ADS_LIST, result.data)
+            commit(types.ADS_LIST, result.data.data)
         })
     },
     adsInfoForm: ({
@@ -370,9 +416,9 @@ export default {
     showAdsItemForm: ({
         commit
     }, params = {
-            edit: false,
-            formData: {}
-        }) => {
+        edit: false,
+        formData: {}
+    }) => {
         commit(types.ADS_ITEM_FORMSTATE, {
             show: true,
             edit: params.edit,
@@ -390,7 +436,7 @@ export default {
         commit
     }, params = {}) {
         services.getSiteBasicInfo(params).then((result) => {
-            commit(types.MAIN_SITEBASIC_INFO, result.data)
+            commit(types.MAIN_SITEBASIC_INFO, result.data.data)
         })
     }
 

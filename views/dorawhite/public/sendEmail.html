@@ -1,0 +1,53 @@
+<!--联系我们-->
+<div class="email-user-info" ms-controller="email-user-info">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <form class="form-horizontal" name="loginEmailForm" ms-validate="@validate">
+                    <h3 class="col-sm-offset-3 top-bar">
+                        <span>{{lk.lc_sendEmail_title}}</span>
+                        <small style="display:inline-block" class="text-danger" :visible="@showErr" ms-html="@message"></small>
+                    </h3>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">{{lk.lc_sendEmail_user_name}}</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="name" ms-duplex="@name" placeholder="{{lk.lc_basic_pl_name}}" ms-rules="{required:true,minlength:2,maxlength:16}"
+                                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_basic_user_name)}}" data-message="{{lk.validate_rangelength | ranglengthandnormal(2,16,lk.lc_basic_user_name)}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">{{lk.lc_sendEmail_user_email}}</label>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" name="email" id="em" ms-duplex="@email" placeholder="{{lk.lc_write_email}}" ms-rules="{required:true, pattern: /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/ }"
+                                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_sendEmail_user_email)}}" data-message="{{lk.validate_inputCorrect | inputCurrent(lk.lc_sendEmail_user_email)}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">{{lk.lc_basic_user_tel}}</label>
+                        <div class="col-sm-9">
+                                <input type="text" class="form-control" name="phoneNum" ms-duplex="@phoneNum" placeholder="{{lk.lc_basic_pl_tel}}" ms-rules="{required:true,number:true }"
+                                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_basic_user_tel)}}" data-message="{{lk.validate_inputCorrect | inputCurrent(lk.lc_basic_user_tel)}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-3 control-label">{{lk.lc_sendEmail_user_content}}</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" name="comments" ms-duplex="@comments" placeholder="{{lk.lc_sendEmail_user_content}}" ms-rules="{ required:true,minlength:5,maxlength:1000 }"
+                                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_sendEmail_user_content)}}" data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(5,1000,lk.lc_sendEmail_user_content)}}"></textarea>
+                        </div>
+                    </div>
+                    <div class="sub-btns" id="ul-s5">
+                        <div class="row">
+                            <div class="col-sm-offset-3 col-sm-10">
+                                <button type="submit" class="btn btn-primary">{{lk.lc_sendEmail_user_sub_btn}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+
+<script>
+ </script>

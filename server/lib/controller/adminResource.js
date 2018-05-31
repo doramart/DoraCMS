@@ -4,21 +4,21 @@ const formidable = require('formidable');
 const shortid = require('shortid');
 const validator = require('validator')
 
-const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
+const { service, validatorUtil,   siteFunc } = require('../../../utils');
 
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
-        errMsg = '非法请求，请稍后重试！';
+        errMsg = res.__("validate_error_params");
     }
     if (!validatorUtil.checkName(fields.label, 2, 10)) {
-        errMsg = '2-10个中文字符!';
+        errMsg = res.__("validate_rangelength", { min: 2, max: 10, label: res.__("label_resourceName") });
     }
     if (!fields.type) {
-        errMsg = '资源类型为必填!';
+        errMsg = res.__("validate_inputNull", { label: res.__("label_resourceType") });
     }
     if (!validator.isLength(fields.comments, 2, 30)) {
-        errMsg = '请输入2-30个字符!';
+        errMsg = res.__("validate_rangelength", { min: 2, max: 30, label: res.__("label_comments") });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
@@ -37,22 +37,21 @@ class AdminResource {
                 sortId: 1
             });
             const totalItems = await AdminResourceModel.count();
-            res.send({
-                state: 'success',
+            let renderData = {
                 docs: AdminResources,
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
                     pageSize: Number(pageSize) || 10
                 }
-            })
+            };
+
+            res.send(siteFunc.renderApiData(res, 200, 'adminResource', renderData, 'getlist'))
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_DATA',
-                message: '获取AdminResources失败'
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
+
         }
     }
 
@@ -70,12 +69,7 @@ class AdminResource {
                 checkFormData(req, res, fields);
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
 
             const groupObj = {
@@ -94,35 +88,22 @@ class AdminResource {
             const newAdminResource = new AdminResourceModel(groupObj);
             try {
                 await newAdminResource.save();
-                res.send({
-                    state: 'success',
-                    id: newAdminResource._id
-                });
+                res.send(siteFunc.renderApiData(res, 200, 'adminResource', { id: newAdminResource._id }, 'save'))
             } catch (err) {
-                logUtil.error(err, req);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_IN_SAVE_DATA',
-                    message: '保存数据失败:',
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
             }
         })
     }
 
     async updateAdminResource(req, res, next) {
-        console.log('--req.params--', req.params);
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
             try {
                 checkFormData(req, res, fields);
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
 
             const userObj = {
@@ -144,16 +125,10 @@ class AdminResource {
                 }, {
                         $set: userObj
                     });
-                res.send({
-                    state: 'success'
-                });
+                res.send(siteFunc.renderApiData(res, 200, 'adminResource', {}, 'update'))
             } catch (err) {
-                logUtil.error(err, req);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_IN_SAVE_DATA',
-                    message: '更新数据失败:',
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'update'));
             }
         })
 
@@ -163,7 +138,7 @@ class AdminResource {
         try {
             let errMsg = '';
             if (!siteFunc.checkCurrentId(req.query.ids)) {
-                errMsg = '非法请求，请稍后重试！';
+                errMsg = res.__("validate_error_params");
             }
             if (errMsg) {
                 throw new siteFunc.UserException(errMsg);
@@ -171,16 +146,11 @@ class AdminResource {
             await AdminResourceModel.remove({
                 _id: req.query.ids
             });
-            res.send({
-                state: 'success'
-            });
+            res.send(siteFunc.renderApiData(res, 200, 'adminResource', {}, 'delete'))
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'delete'));
         }
     }
 

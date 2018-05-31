@@ -8,9 +8,8 @@ if (process.env.NODE_ENV !== 'production') {
     }
 } else {
     loaders = {
-        // css: ExtractTextPlugin.extract({ fallback: 'vue-style-loader', use: 'css-loader' }),
         scss: ExtractTextPlugin.extract({
-            loader: "css-loader!sass-loader",
+            loader: "css-loader!postcss-loader!sass-loader",
             fallback: "vue-style-loader"
         })
     }

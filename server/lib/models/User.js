@@ -9,7 +9,7 @@ var moment = require('moment')
 var UserSchema = new Schema({
     _id: {
         type: String,
-        
+
         'default': shortid.generate
     },
     enable: { type: Boolean, default: true }, //用户是否有效
@@ -19,7 +19,7 @@ var UserSchema = new Schema({
     email: String,
     qq: Number,
     phoneNum: Number,
-    comments: { type: String, default: "这个人很懒，什么都没有留下..." },
+    comments: { type: String, default: "" },
     position: String, // 职位
     company: String,  // 大学或公司
     website: String, // 个人站点
@@ -31,8 +31,8 @@ var UserSchema = new Schema({
     city: String, // 所在城市
     year: Number, // 出生年
     openid: String,   // 针对qq互联
-    retrieve_time: { type: Number } // 用户发送激活请求的时间
-
+    retrieve_time: { type: Number }, // 用户发送激活请求的时间
+    integral: { type: Number, default: 0 } // 用户积分
 });
 
 UserSchema.set('toJSON', { getters: true, virtuals: true });

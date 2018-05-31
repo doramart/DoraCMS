@@ -2,7 +2,7 @@ const BaseComponent = require('../prototype/baseComponent');
 const UserNotifyModel = require("../models").UserNotify;
 const NotifyModel = require("../models").Notify;
 const formidable = require('formidable');
-const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
+const { service, validatorUtil, siteFunc } = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
 
@@ -27,22 +27,21 @@ class UserNotify {
                 select: 'title content _id'
             }]).exec();;
             const totalItems = await UserNotifyModel.count(queryObj);
-            res.send({
-                state: 'success',
+            let renderData = {
                 docs: userNotifys,
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
-                    pageSize: Number(pageSize) || 10
+                    pageSize: Number(pageSize) || 10,
+                    totalPage: Math.ceil(totalItems / pageSize)
                 }
-            })
+            }
+            res.send(siteFunc.renderApiData(res, 200, 'userNotify', renderData, 'getlist'));
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_DATA',
-                message: '获取UserNotify失败'
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
+
         }
     }
 
@@ -55,27 +54,27 @@ class UserNotify {
         try {
             let errMsg = '', targetIds = req.query.ids;
             if (!siteFunc.checkCurrentId(targetIds)) {
-                errMsg = '非法请求，请稍后重试！';
+                errMsg = res.__("validate_error_params");
             } else {
                 targetIds = targetIds.split(',');
             }
             if (errMsg) {
                 throw new siteFunc.UserException(errMsg);
             }
+
             // 删除消息记录
-            await UserNotifyModel.remove({ '_id': { $in: targetIds } });
-            // 删除消息源数据
-            await NotifyModel.remove({ 'notify': { $in: targetIds } });
-            res.send({
-                state: 'success'
-            });
+            for (let i = 0; i < targetIds.length; i++) {
+                const userNotifyId = targetIds[i];
+                let userNotifyObj = await UserNotifyModel.findOne({ '_id': userNotifyId });
+                await NotifyModel.remove({ '_id': userNotifyObj.notify });
+                await UserNotifyModel.remove({ '_id': userNotifyId });
+            }
+
+            res.send(siteFunc.renderApiData(res, 200, 'userNotify', {}, 'delete'));
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:',
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'delete'));
         }
     }
 
@@ -93,15 +92,14 @@ class UserNotify {
     async setMessageHasRead(req, res, next) {
         let errMsg = '', targetIds = req.query.ids;
         if (!siteFunc.checkCurrentId(targetIds)) {
-            errMsg = '非法请求，请稍后重试！';
+            errMsg = res.__("validate_error_params");
         } else {
             targetIds = targetIds.split(',');
         }
         if (errMsg) {
-            res.send({
-                state: 'error',
-                message: errMsg,
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, errMsg, 'update'));
+
         }
         let query = { '_id': { $in: targetIds } };
         // 用户只能操作自己的消息
@@ -114,15 +112,13 @@ class UserNotify {
         }
         try {
             await UserNotifyModel.update(query, { $set: { 'isRead': true } }, { multi: true });
-            res.send({
-                state: 'success',
-                message: '设置已读成功',
-            })
+
+            res.send(siteFunc.renderApiData(res, 200, res.__("resdata_setnoticeread_success"), {}, 'update'));
+
         } catch (error) {
-            res.send({
-                state: 'error',
-                message: '设置已读失败' + error,
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, res.__("resdata_setnoticeread_error", { error: error.message }), 'update'));
+
         }
 
     }

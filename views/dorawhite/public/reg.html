@@ -1,0 +1,42 @@
+<!--用户注册模块-->
+<div class="login-box" ms-controller="reglogin">
+    <form name="loginForm" ms-validate="@validate">
+        <h3 class="title">
+            <span>{{lk.lc_newAccount}}</span>
+        </h3>
+        <small style="display:block" class="text-danger text-center" :visible="@showErr" ms-html="@message"></small>
+
+        <div class="form-group">
+            <label for="">{{lk.lc_userName}}</label>
+            <input type="text" class="form-control" name="userName" ms-duplex="@userName" placeholder="{{lk.lc_basic_pl_username}}" ms-rules="{required:true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{4,11}$/ }"
+                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_userName)}}" data-message="{{lk.validate_rangelength | rangelength(5,12,lk.lc_userName)}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{lk.lc_email}}</label>
+            <input type="email" class="form-control" name="email" ms-duplex="@email" placeholder="{{lk.lc_write_email}}" ms-rules="{required:true, pattern: /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/ }"
+                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_email)}}" data-message="{{lk.validate_inputCorrect | inputCurrent(lk.lc_email)}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{lk.lc_password}}</label>
+            <input type="password" class="form-control" id="pw" name="password" placeholder="{{lk.lc_write_password}}" ms-duplex="@password"
+                ms-rules="{required: true,pattern: /(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/}" data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_password)}}"
+                data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(6,12,lk.lc_password)}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{lk.lc_repassword}}</label>
+            <input type="password" class="form-control" name="confirmPassword" placeholder="{{lk.lc_write_re_password}}" ms-duplex="@confirmPassword  | change"
+                ms-rules="{required: true,,equalto:'pw'}" data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_repassword)}}"
+                data-message="{{lk.validate_passwordnotmatching}}">
+        </div>
+        <div class="sub-btns" id="ul-s5">
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">{{lk.lc_confirm_login}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+ </script>

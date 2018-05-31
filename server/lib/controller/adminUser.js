@@ -11,34 +11,33 @@ const formidable = require('formidable');
 const shortid = require('shortid');
 const validator = require('validator')
 const _ = require('lodash')
-const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
+const { service, validatorUtil, siteFunc } = require('../../../utils');
+
+const settings = require('../../../configs/settings');
 const axios = require('axios');
 const pkgInfo = require('../../../package.json')
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
-        errMsg = '非法请求，请稍后重试！';
+        errMsg = res.__("validate_error_params");
     }
     if (!validatorUtil.checkUserName(fields.userName)) {
-        errMsg = '5-12个英文字符!';
+        errMsg = res.__("validate_rangelength", { min: 5, max: 12, label: res.__("label_user_userName") });
     }
     if (!validatorUtil.checkName(fields.name)) {
-        errMsg = '2-6个中文字符!';
+        errMsg = res.__("validate_rangelength", { min: 2, max: 6, label: res.__("label_name") });
     }
-    // if (!validatorUtil.checkPwd(fields.password)) {
-    //     errMsg = '6-12位，只能包含字母、数字和下划线!';
-    // }
     if (fields.password !== fields.confirmPassword) {
-        errMsg = '两次输入密码不一致!';
+        errMsg = res.__("validate_error_pass_atypism");
     }
     if (fields.phoneNum && !validatorUtil.checkPhoneNum(fields.phoneNum)) {
-        errMsg = '请填写正确的手机号码!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_phoneNum") });
     }
     if (!validatorUtil.checkEmail(fields.email)) {
-        errMsg = '请填写正确的邮箱!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_email") });
     }
     if (fields.comments && !validator.isLength(fields.comments, 5, 30)) {
-        errMsg = '请输入5-30个字符!';
+        errMsg = res.__("validate_rangelength", { min: 5, max: 30, label: res.__("label_comments") });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
@@ -53,19 +52,17 @@ class AdminUser {
     async getUserSession(req, res, next) {
         try {
             let noticeCounts = await UserNotifyModel.count({ 'systemUser': req.session.adminUserInfo._id, 'isRead': false });
-            res.send({
-                state: 'success',
+            let renderData = {
                 noticeCounts,
                 loginState: req.session.adminlogined,
                 userInfo: req.session.adminUserInfo
-            });
+            };
+            res.send(siteFunc.renderApiData(res, 200, 'adminUser', renderData, 'getlist'))
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_DATA',
-                message: '获取session失败' + err
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
+
         }
     }
 
@@ -113,8 +110,7 @@ class AdminUser {
                     newResources.push(resourceObj);
                 }
             }
-            res.send({
-                state: 'success',
+            let renderBasicInfo = {
                 adminUserCount,
                 regUserCount,
                 regUsers,
@@ -123,14 +119,13 @@ class AdminUser {
                 messages,
                 loginLogs,
                 resources: newResources
-            });
+            }
+
+            res.send(siteFunc.renderApiData(res, 200, 'adminUser', renderBasicInfo, 'getlist'))
+
         } catch (error) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_DATA',
-                message: '获取系统基础数据失败'
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
         }
     }
 
@@ -145,29 +140,29 @@ class AdminUser {
                 select: "name _id"
             }).exec();
             const totalItems = await AdminUserModel.count();
-            res.send({
-                state: 'success',
+            let renderData = {
                 docs: adminUsers,
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
                     pageSize: Number(pageSize) || 10
                 }
-            })
+            };
+
+            res.send(siteFunc.renderApiData(res, 200, 'adminUser', renderData, 'getlist'))
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_DATA',
-                message: '获取adminUsers失败'
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
+
         }
     }
 
     async loginAction(req, res, next) {
+        const systemConfigs = await SystemConfigModel.find({});
+        const { siteName, siteEmail, siteDomain, showImgCode } = systemConfigs[0];
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
-
             let {
                 userName,
                 password
@@ -175,11 +170,11 @@ class AdminUser {
             try {
                 let errMsg = '';
                 if (!validatorUtil.checkUserName(fields.userName)) {
-                    errMsg = '请输入正确的用户名'
+                    errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_userName") })
                 }
 
-                if (!fields.imageCode || fields.imageCode != req.session.imageCode) {
-                    errMsg = '请输入正确的验证码'
+                if (showImgCode && (!fields.imageCode || fields.imageCode != req.session.imageCode)) {
+                    errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_imageCode") })
                 }
 
                 if (errMsg) {
@@ -187,12 +182,7 @@ class AdminUser {
                 }
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return;
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
             const userObj = {
                 userName: fields.userName,
@@ -205,10 +195,7 @@ class AdminUser {
                 }]).exec();
                 if (user) {
                     if (!user.enable) {
-                        res.send({
-                            state: 'error',
-                            message: "该用户已被限制登录，请稍后重试"
-                        });
+                        throw new siteFunc.UserException(res.__("validate_user_forbiden"));
                     }
                     req.session.adminPower = user.group.power;
                     req.session.adminlogined = true;
@@ -226,8 +213,7 @@ class AdminUser {
 
                     // 站点认证
                     if (validatorUtil.checkUrl(req.headers.host) && !req.session.adminUserInfo.auth) {
-                        const systemConfigs = await SystemConfigModel.find({});
-                        const { siteName, siteEmail, siteDomain } = systemConfigs[0];
+
                         let authParams = {
                             domain: req.headers.host,
                             ipAddress: clientIp,
@@ -242,30 +228,24 @@ class AdminUser {
                                 await AdminUserModel.update({ '_id': req.session.adminUserInfo._id }, { $set: { auth: true } })
                             }
                         } catch (authError) {
-                            res.send({
-                                state: 'success',
-                                adminPower: req.session.adminPower
-                            });
+
+                            res.send(siteFunc.renderApiData(res, 200, 'adminUser', { adminPower: req.session.adminPower }, 'getlist'))
+
                         }
                     }
 
-                    res.send({
-                        state: 'success',
-                        adminPower: req.session.adminPower
-                    });
+                    res.send(siteFunc.renderApiData(res, 200, 'adminUser', { adminPower: req.session.adminPower }, 'getlist'))
+
                 } else {
-                    logUtil.error(err, req);
-                    res.send({
-                        state: 'error',
-                        message: "用户名或密码错误"
-                    });
+
+
+                    res.send(siteFunc.renderApiErr(req, res, 500, res.__("validate_login_notSuccess"), 'save'));
                 }
 
             } catch (err) {
-                res.send({
-                    state: 'error',
-                    message: err.message
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, err));
+
             }
         })
     }
@@ -277,12 +257,7 @@ class AdminUser {
                 checkFormData(req, res, fields);
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
 
             const userObj = {
@@ -300,25 +275,17 @@ class AdminUser {
             try {
                 let user = await AdminUserModel.find().or([{ userName: fields.userName }])
                 if (!_.isEmpty(user)) {
-                    res.send({
-                        state: 'error',
-                        message: '用户名已存在！'
-                    });
+
+                    res.send(siteFunc.renderApiErr(req, res, 500, res.__("validate_hadUse_userName")));
+
                 } else {
                     const newAdminUser = new AdminUserModel(userObj);
                     await newAdminUser.save();
-                    res.send({
-                        state: 'success',
-                        id: newAdminUser._id
-                    });
+                    res.send(siteFunc.renderApiData(res, 200, 'adminUser', { id: newAdminUser._id }, 'save'))
                 }
             } catch (err) {
-                logUtil.error(err, req);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_IN_SAVE_DATA',
-                    message: '保存数据失败:',
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
             }
 
         })
@@ -331,12 +298,7 @@ class AdminUser {
                 checkFormData(req, res, fields);
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
 
             const userObj = {
@@ -357,16 +319,11 @@ class AdminUser {
                 }, {
                         $set: userObj
                     });
-                res.send({
-                    state: 'success'
-                });
+                res.send(siteFunc.renderApiData(res, 200, 'adminUser', {}, 'update'))
+
             } catch (err) {
-                logUtil.error(err, req);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_IN_SAVE_DATA',
-                    message: '更新数据失败:',
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'update'));
             }
         })
 
@@ -376,31 +333,26 @@ class AdminUser {
         try {
             let errMsg = '';
             if (!siteFunc.checkCurrentId(req.query.ids)) {
-                errMsg = '非法请求，请稍后重试！';
+                errMsg = res.__("validate_error_params");
             }
             if (errMsg) {
                 throw new siteFunc.UserException(errMsg);
             }
             let adminUserMsg = await MessageModel.find({ 'adminAuthor': req.query.ids });
             if (!_.isEmpty(adminUserMsg)) {
-                res.send({
-                    state: 'error',
-                    message: '请删除该管理员留言后在执行该操作！',
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, res.__("validate_del_adminUser_notice"), 'delete'));
+
             }
             await AdminUserModel.remove({
                 _id: req.query.ids
             });
-            res.send({
-                state: 'success'
-            });
+
+            res.send(siteFunc.renderApiData(res, 200, 'adminUser', {}, 'delete'))
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:' + err.message,
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'delete'));
         }
     }
 

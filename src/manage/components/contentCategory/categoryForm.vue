@@ -1,30 +1,43 @@
 <template>
     <div class="dr-AdminResourceForm">
-        <el-dialog width="35%" size="small" title="填写分类信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" :title="$t('contentCategory.form_title')" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="cateRules" ref="cateRuleForm" label-width="120px" class="demo-ruleForm">
-                <el-form-item v-show="dialogState.type==='children' && !dialogState.edit" label="父对象" prop="label">
+                <el-form-item v-show="dialogState.type==='children' && !dialogState.edit" :label="$t('adminResource.lb_parentType')" prop="label">
                     <el-input size="small" :disabled="true" v-model="dialogState.formData.parentObj.name"></el-input>
                 </el-form-item>
-                <el-form-item label="类别名称" prop="name">
+                <el-form-item :label="$t('contentCategory.cate_name')" prop="name">
                     <el-input size="small" v-model="dialogState.formData.name"></el-input>
                 </el-form-item>
-                <el-form-item label="显示" prop="enable">
-                    <el-switch on-text="是" off-text="否" v-model="dialogState.formData.enable"></el-switch>
+                <el-form-item :label="$t('contentCategory.enabel')" prop="enable">
+                    <el-switch :on-text="$t('main.radioOn')" :off-text="$t('main.radioOff')" v-model="dialogState.formData.enable"></el-switch>
                 </el-form-item>
-                <el-form-item label="SeoUrl" prop="defaultUrl">
+                <el-form-item :label="$t('contentCategory.type')" prop="type">
+                  <el-radio class="radio" v-model="dialogState.formData.type" label="1">{{$t('contentCategory.typeNormal')}}</el-radio>
+              </el-form-item>
+              <el-form-item v-show="dialogState.formData.parentId == '0'" :label="$t('templateConfig.temp')" prop="contentTemp">
+                    <el-select size="small" v-model="dialogState.formData.contentTemp" placeholder="请选择">
+                      <el-option
+                        v-for="item in forderlist"
+                        :key="item._id"
+                        :label="item.name"
+                        :value="item._id">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('contentCategory.seoUrl')" prop="defaultUrl">
                     <el-input size="small" v-model="dialogState.formData.defaultUrl"></el-input>
                 </el-form-item>
-                <el-form-item label="排序" prop="sortId">
+                <el-form-item :label="$t('contentCategory.sort')" prop="sortId">
                     <el-input-number size="small" v-model="dialogState.formData.sortId" @change="handleChange" :min="1" :max="50"></el-input-number>
                 </el-form-item>
-                <el-form-item label="关键字" prop="keywords">
-                    <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="dialogState.formData.keywords"> </el-input>
+                <el-form-item :label="$t('contentCategory.keywords')" prop="keywords">
+                    <el-input type="textarea" :rows="2"  v-model="dialogState.formData.keywords"> </el-input>
                 </el-form-item>
-                <el-form-item label="描述" prop="comments">
+                <el-form-item :label="$t('contentCategory.comments')" prop="comments">
                     <el-input size="small" type="texarea" v-model="dialogState.formData.comments"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button size="medium" type="primary" @click="submitForm('cateRuleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
+                    <el-button size="medium" type="primary" @click="submitForm('cateRuleForm')">{{dialogState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -34,55 +47,52 @@
 import services from "../../store/services.js";
 import _ from "lodash";
 export default {
-  props: {
-    dialogState: Object
-  },
+  props: ["dialogState", "forderlist"],
   data() {
     return {
       cateRules: {
         name: [
           {
             required: true,
-            message: "请输入类别名称",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contentCategory.cate_name")
+            }),
             trigger: "blur"
           },
           {
             min: 2,
             max: 20,
-            message: "2-20个非特殊字符",
+            message: this.$t("validate.rangelength", { min: 2, max: 20 }),
             trigger: "blur"
           }
         ],
         defaultUrl: [
           {
             required: true,
-            message: "请输入seoUrl",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contentCategory.seoUrl")
+            }),
             trigger: "blur"
           }
         ],
         comments: [
           {
-            message: "请填写备注",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("main.comments_label")
+            }),
             trigger: "blur"
           },
           {
             min: 4,
             max: 100,
-            message: "请输入4-100个字符",
+            message: this.$t("validate.ranglengthandnormal", {
+              min: 4,
+              max: 100
+            }),
             trigger: "blur"
           }
         ]
-      },
-      options: [
-        {
-          value: "0",
-          label: "基础菜单"
-        },
-        {
-          value: "1",
-          label: "操作和功能"
-        }
-      ]
+      }
     };
   },
   methods: {
@@ -95,16 +105,16 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("---formdatas--", this);
+          // console.log("---formdatas--", this);
           let params = this.dialogState.formData;
           // 更新
           if (this.dialogState.edit) {
             services.updateContentCategory(params).then(result => {
-              if (result.data.state === "success") {
+              if (result.data.status === 200) {
                 this.$store.dispatch("hideContentCategoryForm");
                 this.$store.dispatch("getContentCategoryList");
                 this.$message({
-                  message: "更新成功",
+                  message: this.$t("main.updateSuccess"),
                   type: "success"
                 });
               } else {
@@ -114,11 +124,11 @@ export default {
           } else {
             // 新增
             services.addContentCategory(params).then(result => {
-              if (result.data.state === "success") {
+              if (result.data.status === 200) {
                 this.$store.dispatch("hideContentCategoryForm");
                 this.$store.dispatch("getContentCategoryList");
                 this.$message({
-                  message: "添加成功",
+                  message: this.$t("main.addSuccess"),
                   type: "success"
                 });
               } else {

@@ -1,5 +1,5 @@
 let path = require('path');
-const { settings } = require('../utils');
+const settings = require('../configs/settings');
 
 //日志根目录
 

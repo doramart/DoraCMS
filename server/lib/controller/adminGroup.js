@@ -1,20 +1,20 @@
 const BaseComponent = require('../prototype/baseComponent');
 const AdminGroupModel = require("../models").AdminGroup;
 const formidable = require('formidable');
-const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
+const { service, validatorUtil, siteFunc } = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
 
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
-        errMsg = '非法请求，请稍后重试！';
+        errMsg = res.__("validate_error_params");
     }
-    if (!validatorUtil.checkName(fields.name, 2, 10)) {
-        errMsg = '2-10个中文字符!';
+    if (fields.name && !validator.isLength(fields.name, 2, 50)) {
+        errMsg = res.__("validate_rangelength", { min: 2, max: 50, label: res.__("label_name") });
     }
     if (fields.comments && !validator.isLength(fields.comments, 5, 30)) {
-        errMsg = '请输入5-30个字符!';
+        errMsg = res.__("validate_rangelength", { min: 5, max: 30, label: res.__("label_comments") });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
@@ -31,22 +31,18 @@ class AdminGroup {
             let pageSize = req.query.pageSize || 10;
             const AdminGroups = await AdminGroupModel.find({});
             const totalItems = await AdminGroupModel.count();
-            res.send({
-                state: 'success',
+            let adminGroupData = {
                 docs: AdminGroups,
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
                     pageSize: Number(pageSize) || 10
                 }
-            })
+            };
+            let renderSendData = siteFunc.renderApiData(res, 200, 'adminGroup', adminGroupData)
+            res.send(renderSendData);
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_DATA',
-                message: '获取AdminGroups失败'
-            })
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
         }
     }
 
@@ -57,12 +53,7 @@ class AdminGroup {
                 checkFormData(req, res, fields);
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
             const groupObj = {
                 name: fields.name,
@@ -72,17 +63,9 @@ class AdminGroup {
             const newAdminGroup = new AdminGroupModel(groupObj);
             try {
                 await newAdminGroup.save();
-                res.send({
-                    state: 'success',
-                    id: newAdminGroup._id
-                });
+                res.send(siteFunc.renderApiData(res, 200, 'adminGroup', { id: newAdminGroup._id }, 'save'))
             } catch (err) {
-                logUtil.error(err, req);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_IN_SAVE_DATA',
-                    message: '保存数据失败:',
-                })
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
             }
         })
     }
@@ -94,12 +77,7 @@ class AdminGroup {
                 checkFormData(req, res, fields);
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
             const userObj = {
                 name: fields.name,
@@ -109,16 +87,10 @@ class AdminGroup {
             const item_id = fields._id;
             try {
                 await AdminGroupModel.findOneAndUpdate({ _id: item_id }, { $set: userObj });
-                res.send({
-                    state: 'success'
-                });
+                res.send(siteFunc.renderApiData(res, 200, 'adminGroup', {}, 'update'))
             } catch (err) {
-                logUtil.error(err, req);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_IN_SAVE_DATA',
-                    message: '更新数据失败:',
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
             }
         })
     }
@@ -127,22 +99,17 @@ class AdminGroup {
         try {
             let errMsg = '';
             if (!siteFunc.checkCurrentId(req.query.ids)) {
-                errMsg = '非法请求，请稍后重试！';
+                errMsg = res.__("validate_error_params");
             }
             if (errMsg) {
                 throw new siteFunc.UserException(errMsg);
             }
             await AdminGroupModel.remove({ _id: req.query.ids });
-            res.send({
-                state: 'success'
-            });
+            res.send(siteFunc.renderApiData(res, 200, 'adminGroup', {}, 'delete'))
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_IN_SAVE_DATA',
-                message: '删除数据失败:' + err,
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'delete'));
         }
     }
 

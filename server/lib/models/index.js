@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const isProd = process.env.NODE_ENV === 'production'
-const { settings } = require('../../../utils');
+const settings = require('../../../configs/settings');
 
 if (!isProd) {
-    mongoose.connect("mongodb://localhost/doracms2", { useMongoClient: true });
+    mongoose.connect("mongodb://localhost/" + settings.DB, { useMongoClient: true });
 } else {
     mongoose.connect('mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + '', { useMongoClient: true });
 }
@@ -12,7 +12,7 @@ mongoose.Promise = global.Promise;
 const db = mongoose.connection;
 
 db.once('open', () => {
-    console.log('连接数据成功')
+    console.log('connect mongodb success')
 })
 
 db.on('error', function (error) {
@@ -22,7 +22,6 @@ db.on('error', function (error) {
 
 db.on('close', function () {
     console.log('数据库断开，重新连接数据库');
-    // mongoose.connect(config.url, {server:{auto_reconnect:true}});
 });
 
 
@@ -41,3 +40,5 @@ exports.DataOptionLog = require('./DataOptionLog');
 exports.SystemOptionLog = require('./SystemOptionLog');
 exports.Ads = require('./Ads');
 exports.AdsItems = require('./AdsItems');
+exports.ContentTemplate = require('./ContentTemplate');
+exports.TemplateItems = require('./TemplateItems');

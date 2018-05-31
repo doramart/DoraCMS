@@ -1,15 +1,15 @@
 <template>
     <div class="dr-contentMessageForm">
-        <el-dialog width="35%" size="small" title="留言回复" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" :title="$t('contentMessage.replyUser')" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="90px" class="demo-ruleForm">
-                <el-form-item label="用户说">
+                <el-form-item :label="$t('contentMessage.userSaid')">
                     {{dialogState.parentformData.content}}
                 </el-form-item>
-                <el-form-item label="回复" prop="content">
+                <el-form-item :label="$t('contentMessage.reply')" prop="content">
                     <el-input size="small" type="textarea" v-model="dialogState.formData.content"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">回复</el-button>
+                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{$t('contentMessage.reply')}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -29,13 +29,18 @@ export default {
         content: [
           {
             required: true,
-            message: "请填写留言",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contentMessage.content")
+            }),
             trigger: "blur"
           },
           {
             min: 5,
             max: 200,
-            message: "请输入5-200个字符",
+            message: this.$t("validate.ranglengthandnormal", {
+              min: 2,
+              max: 200
+            }),
             trigger: "blur"
           }
         ]
@@ -63,11 +68,11 @@ export default {
           repFormData.content = this.dialogState.formData.content;
           // 新增
           services.addContentMessage(repFormData).then(result => {
-            if (result.data.state === "success") {
+            if (result.data.status === 200) {
               this.$store.dispatch("hideContentMessageForm");
               this.$store.dispatch("getContentMessageList");
               this.$message({
-                message: "添加成功",
+                message: this.$t("main.addSuccess"),
                 type: "success"
               });
             } else {

@@ -1,4 +1,4 @@
-const settings = require("./settings");
+const settings = require("../configs/settings");
 
 function _clearSession(req) {
     req.session.adminlogined = false;

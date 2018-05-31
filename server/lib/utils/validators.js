@@ -7,12 +7,10 @@ function validateEmail(email) {
 }
 
 function validateName(loginname) {
-    // console.log('------loginname',loginname && loginname && loginname.length < 25);
     return loginname && loginname.length > 2 && loginname.length < 25
 }
 
 function validatePassword(pwd) {
-    // console.log('-------pwd------------------------', pwd.length < 100 & pwd.length > 6);
     return pwd.length < 100 & pwd.length > 6;
 }
 

@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
-
+router.caseSensitive = true
+router.strict = true
 const {
   AdminUser,
   AdminGroup,
@@ -15,11 +16,11 @@ const {
   SystemOptionLog,
   UserNotify,
   Notify,
-  Ads
+  Ads,
+  ContentTemplate
 } = require('../lib/controller');
 const {
   service,
-  settings,
   authSession,
   authToken,
   authPower,
@@ -33,7 +34,7 @@ router.get('/logout', (req, res) => {
   req.session.adminPower = '';
   req.session.adminUserInfo = '';
   res.send({
-    state: 'success'
+    status: 200
   });
 });
 
@@ -216,5 +217,37 @@ router.post('/ads/updateOne', authToken, authPower, Ads.updateAds);
 // 删除广告
 router.get('/ads/delete', authToken, authPower, Ads.delAds);
 
+// 获取模板文件列表
+router.get('/template/getTemplateForderList', authToken, authPower, ContentTemplate.getContentDefaultTemplate);
+
+// 读取文件内容
+router.get('/template/getTemplateFileText', authToken, authPower, ContentTemplate.getFileInfo);
+
+// 更新文件内容
+router.post('/template/updateTemplateFileText', authToken, authPower, ContentTemplate.updateFileInfo);
+
+// 获取已安装的模板列表
+router.get('/template/getMyTemplateList', authToken, authPower, ContentTemplate.getMyTemplateList);
+
+// 新增模板单元
+router.post('/template/addTemplateItem', authToken, authPower, ContentTemplate.addTemplateItem);
+
+// 删除模板单元
+router.get('/template/delTemplateItem', authToken, authPower, ContentTemplate.delTemplateItem);
+
+// 获取默认模板的模板单元列表
+router.get('/template/getTemplateItemlist', authToken, authPower, ContentTemplate.getTempItemForderList);
+
+// 获取模板市场中的模板列表
+router.get('/template/getTempsFromShop', authToken, authPower, ContentTemplate.getTempsFromShop);
+
+// 安装模板
+router.get('/template/installTemp', authToken, authPower, ContentTemplate.installTemp);
+
+// 启用模板
+router.get('/template/enableTemp', authToken, authPower, ContentTemplate.enableTemp);
+
+// 卸载模板
+router.get('/template/uninstallTemp', authToken, authPower, ContentTemplate.uninstallTemp);
 
 module.exports = router

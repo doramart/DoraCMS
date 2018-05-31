@@ -1,15 +1,15 @@
 const BaseComponent = require('../prototype/baseComponent');
 const SystemConfigModel = require("../models").SystemConfig;
 const formidable = require('formidable');
-const { service, settings, validatorUtil, logUtil, siteFunc } = require('../../../utils');
+const { service, validatorUtil, siteFunc } = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
-
+const settings = require('../../../configs/settings');
 
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
-        errMsg = '非法请求，请稍后重试！';
+        errMsg = res.__("validate_error_params");
     }
     if (!fields.siteEmailServer) {
         errMsg = '请选择系统邮箱服务器！';
@@ -18,25 +18,28 @@ function checkFormData(req, res, fields) {
         errMsg = '6-12位，只能包含字母、数字和下划线!';
     }
     if (!validatorUtil.checkEmail(fields.siteEmail)) {
-        errMsg = '请填写正确的邮箱!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_email") });
     }
-    if (!validator.isLength(fields.siteName, 5, 30)) {
-        errMsg = '请输入站点名称!';
+    if (!validator.isLength(fields.siteName, 5, 100)) {
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_name") });
     }
     if (!validator.isLength(fields.siteDiscription, 5, 200)) {
-        errMsg = '请输入站点描述!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_dis") });
     }
     if (!validator.isLength(fields.siteKeywords, 5, 100)) {
-        errMsg = '请输入站点关键字!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_keyWords") });
+    }
+    if (!validator.isLength(fields.siteAltKeywords, 5, 100)) {
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_tags") });
     }
     if (!validator.isLength(fields.registrationNo, 5, 30)) {
-        errMsg = '请输入站点备案号!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_icp") });
     }
     if (!validator.isLength(fields.mongodbInstallPath, 5, 100)) {
-        errMsg = '请输入mongodb的bin目录!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_mongoPath") });
     }
     if (!validator.isLength(fields.databackForderPath, 5, 100)) {
-        errMsg = '请输入数据备份路径!';
+        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_databakPath") });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
@@ -49,6 +52,7 @@ class SystemConfig {
     }
     async getSystemConfigs(req, res, next) {
         try {
+            let modules = req.query.modules;
             let model = req.query.model, files = null; // 查询模式 full/simple
             if (model === 'simple') {
                 files = {
@@ -56,22 +60,30 @@ class SystemConfig {
                     siteDomain: 1,
                     siteDiscription: 1,
                     siteKeywords: 1,
+                    siteAltKeywords: 1,
                     siteEmail: 1,
-                    registrationNo: 1
+                    registrationNo: 1,
+                    showImgCode: 1
                 }
             }
             const systemConfigs = await SystemConfigModel.find({}, files);
-            res.send({
-                state: 'success',
+
+            let configData = {
                 docs: systemConfigs
-            })
+            };
+
+            let renderData = siteFunc.renderApiData(res, 200, 'systemConfig', configData, 'getlist');
+
+            if (modules && modules.length > 0) {
+                return renderData.data.docs;
+            } else {
+                res.send(renderData);
+            }
+
         } catch (err) {
-            logUtil.error(err, req);
-            res.send({
-                state: 'error',
-                type: 'ERROR_DATA',
-                message: '获取SystemConfigs失败'
-            })
+
+            res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
+
         }
     }
 
@@ -86,12 +98,7 @@ class SystemConfig {
                 checkFormData(req, res, fields);
             } catch (err) {
                 console.log(err.message, err);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_PARAMS',
-                    message: err.message
-                })
-                return
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
             }
 
             const systemObj = {
@@ -99,12 +106,17 @@ class SystemConfig {
                 siteDomain: fields.siteDomain,
                 siteDiscription: fields.siteDiscription,
                 siteKeywords: fields.siteKeywords,
+                siteAltKeywords: fields.siteAltKeywords,
                 siteEmailServer: fields.siteEmailServer,
                 siteEmail: fields.siteEmail,
                 registrationNo: fields.registrationNo,
                 databackForderPath: fields.databackForderPath,
                 mongodbInstallPath: fields.mongodbInstallPath,
-                siteEmailPwd: service.encrypt(fields.siteEmailPwd, settings.encrypt_key)
+                showImgCode: fields.showImgCode,
+                siteEmailPwd: service.encrypt(fields.siteEmailPwd, settings.encrypt_key),
+                poseArticlScore: fields.poseArticlScore,
+                postMessageScore: fields.postMessageScore,
+                shareArticlScore: fields.shareArticlScore
             }
             const item_id = fields._id;
             try {
@@ -114,16 +126,10 @@ class SystemConfig {
                     const newAdminUser = new SystemConfigModel(systemObj);
                     await newAdminUser.save();
                 }
-                res.send({
-                    state: 'success'
-                });
+                res.send(siteFunc.renderApiData(res, 200, 'systemConfig', {}, 'update'))
             } catch (err) {
-                logUtil.error(err, req);
-                res.send({
-                    state: 'error',
-                    type: 'ERROR_IN_SAVE_DATA',
-                    message: '更新数据失败:',
-                })
+
+                res.send(siteFunc.renderApiErr(req, res, 500, err, 'update'));
             }
         })
 

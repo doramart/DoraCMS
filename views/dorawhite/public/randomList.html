@@ -1,0 +1,24 @@
+<!--文章推荐模块-->
+<div class="pannel-box random-content-list">
+    <h2 class="pannel-title">{{lk.lc_random_document}}</h2>
+    <div class="content-list">
+        <div class="row random-articls">
+            {% if randomListData.docs.length > 0 %} {% for item in randomListData.docs %}
+            <div class="col-xs-6 col-md-4">
+                <div class="contentImg">
+                    <a href="/details/{{item._id}}.html">
+                        <img src="{{item.sImg}}" alt="{{item.title}}" />
+                    </a>
+                </div>
+                <div class="title">
+                    <a href="/details/{{item._id}}.html" target="_blank">
+                        {{item.stitle | cutwords(50)}}
+                    </a>
+                </div>
+            </div>
+            {% endfor %} {% else %}
+            <p class="text-center">暂无内容...</p>
+            {% endif%}
+        </div>
+    </div>
+</div>

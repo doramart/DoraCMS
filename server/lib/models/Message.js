@@ -4,16 +4,17 @@
  */
 var mongoose = require('mongoose');
 var shortid = require('shortid');
+var settings = require('../../../configs/settings');
 var Schema = mongoose.Schema;
 var moment = require('moment')
-moment.locale('zh-cn');
+moment.locale((settings.lang).toLowerCase());
 var AdminUser = require('./AdminUser');
 var User = require('./User');
 var Content = require('./Content');
 var MessageSchema = new Schema({
     _id: {
         type: String,
-        
+
         'default': shortid.generate
     },
     contentId: {

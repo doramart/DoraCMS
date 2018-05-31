@@ -1,0 +1,65 @@
+{% macro slider(adsList, adsId) %} {% if adsList.docs.length > 0%} {% set targetAds = {} %} {% for adsItem in adsList.docs
+%} {% if adsItem._id == adsId %} {% set targetAds = adsItem %} {% endif %} {% endfor %} {% if targetAds.type == '1' %} {%
+if (targetAds.carousel) and (targetAds.items.length > 0) %}
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        {% for item in targetAds.items %} {% if loop.index0 == 0 %}
+        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+        {{else}}
+        <li data-target="#carousel-example-generic" data-slide-to="{{loop.index0}}"></li>
+        {% endif %} {%endfor%}
+    </ol>
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+        {% for item in targetAds.items %} {%set activeImg = ''%} {% if loop.index0 == 0 %} {%set activeImg ='active'%} {% endif %}
+        <div class="{{'item ' + activeImg}}">
+            <a href="{{item.link}}" target="_blank">
+                <img src="{{item.sImg}}" alt="{{item.title}}">
+            </a>
+            <div class="carousel-caption">
+                <h3>{{item.alt}}</h3>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+    <!-- Controls -->
+    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+{% elif targetAds.items.length > 1 %}
+<div class="gap-img-ads">
+    <ul>
+        {% for item in targetAds.items %}
+        <li class="col-xs-6 col-md-3">
+            <a href="{{item.link}}" target="_blank">
+                <img src="{{item.sImg}}" alt="{{item.title}}">
+            </a>
+            <span>{{item.alt}}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% elif targetAds.items.length == 1%} {% set normalAds = targetAds.items[0] %}
+<div class="normal-img-ads">
+    <a href="{{normalAds.link}}" target="_blank">
+        <img src="{{normalAds.sImg}}" alt="{{normalAds.title}}">
+    </a>
+</div>
+{% endif %} {% elif targetAds.type == '0' %}
+<div class="normal-text-ads">
+    <ul>
+        {% for item in targetAds.items %}
+        <li>
+            <a href="{{item.link}}">{{item.title}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %} {% endif %} {% endmacro %}

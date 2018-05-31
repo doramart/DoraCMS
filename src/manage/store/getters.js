@@ -29,6 +29,11 @@ export default {
     adsList: state => state.ads.list,
     adsInfoForm: state => state.ads.infoFormState,
     adsItemForm: state => state.ads.itemFormState,
-    basicInfo: state => state.basicInfo
+    basicInfo: state => state.basicInfo,
+    adminTemplateList: state => state.adminTemplate.templateList,
+    templateConfigList: state => state.myTemplates.templateList,
+    templateConfigFormState: state => state.myTemplates.formState,
+    templateItemForderList: state => state.myTemplates.templateItemForderList,
+    tempShoplist: state => state.tempShoplist
 
 }

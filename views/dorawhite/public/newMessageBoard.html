@@ -1,0 +1,27 @@
+{% if newMessageList.docs.length > 0 %}
+<div class="pannel-box rec-message-list">
+    <h2 class="pannel-title">{{lk.lc_newComments}}</h2>
+    <div class="content-list">
+        <ul>
+            {% for item in newMessageList.docs %}
+            <li class="message-list">
+                <div class="comment-info">
+                    {% if item.author %} {% set getAuthor = item.author %} {% else %} {% set getAuthor = item.adminAuthor %} {% endif %}
+                    <a href="#" class="logo">
+                        <img src="{{getAuthor.logo}}" alt="">
+                    </a>
+                    <a href="#" class="uname">{{getAuthor.userName}}</a>
+                    <span>{{item.date}}</span>
+                </div>
+                <div class="comment-excerpt">
+                    <p>{{item.content | cutwords(50)}}</p>
+                </div>
+                <p class="comment-post">
+                    <a href="/details/{{item.contentId._id}}.html" class="title">{{item.contentId.title | cutwords(24)}}</a>
+                </p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif%}

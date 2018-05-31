@@ -1,6 +1,6 @@
 <template>
     <div class="dr-toolbar">
-        <div class="option-button">
+        <div class="option-button el-col-6">
             <div v-if="type === 'adminGroup'">
                 <el-button size="small" type="primary" plain @click="addRole" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
             </div>
@@ -11,7 +11,8 @@
                 <el-button size="small" type="primary" plain @click="addResource" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
             </div>
             <div v-else-if="type === 'content'">
-                <el-button size="small" type="primary" plain @click="addContent" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
+                <el-button size="small" type="primary" plain @click="addContent('content')" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
+                <el-button size="small" type="danger" plain round @click="branchDelete('content')"><i class="fa fa-fw fa-trash-o"></i></el-button>
             </div>
             <div v-else-if="type === 'contentCategory'">
                 <el-button size="small" type="primary" plain @click="addTopCates" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
@@ -27,6 +28,9 @@
             </div>
             <div v-else-if="type === 'backUpData'">
                 <el-button size="small" type="primary" plain round @click="bakUpData" :loading="loadingState"><i class="fa fa-fw fa-cloud-download" aria-hidden="true"></i></el-button>
+            </div>
+            <div v-else-if="type === 'adminTemplate'">
+                <el-button size="small" type="primary" plain round @click="saveTemplate"><i class="fa fa-fw fa-save" aria-hidden="true"></i></el-button>
             </div>
             <div v-else-if="type === 'systemOptionLogs'">
                 <el-button size="small" type="danger" plain round @click="branchDelete('systemlogs')"><i class="fa fa-fw fa-trash-o"></i></el-button>
@@ -45,33 +49,43 @@
                 <el-button type="primary" size="small" plain round @click="addAds"><i class="fa fa-fw fa-plus"></i></el-button>
             </div>
         </div>
-        <div class="dr-searchInput">
-           <!-- <el-form>
-            <el-form-item > -->
-            <div v-if="type === 'content'">
-                <el-input size="small" placeholder="请输入关键字" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+        <div class="el-col-18">
+            <div class="dr-toolbar-right" v-if="type === 'content'">
+                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.keywords')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
                 </el-input>
-            </div>
-            <div v-else-if="type === 'contentTag'">
-                <el-input size="small" placeholder="标签名称" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
-                </el-input>
-            </div>
-            <div v-else-if="type === 'contentMessage'">
-                <el-input size="small" placeholder="留言内容" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
-                </el-input>
-            </div>
-            <div v-else-if="type === 'regUser'">
-                <el-input size="small" placeholder="请输入用户名" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
-                </el-input>
-            </div>
-            <div v-else-if="type === 'systemOptionLogs'">
-                <el-select size="small" v-model="targetSysLogType" placeholder="请选择日志类别" @change="selectSysLogType">
-                    <el-option v-for="item in systemModelTypes" :key="item.value" :label="item.label" :value="item.value">
+                <div class="dr-select-box">
+                  <el-select size="small" @change="changePostOptions" v-model="authPost" placeholder="请选择">
+                    <el-option
+                      v-for="item in authPostOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
                     </el-option>
-                </el-select>
+                  </el-select>
+                </div>
             </div>
-            <!-- </el-form-item>
-        </el-form> -->
+            <div class="dr-toolbar-right" v-else-if="type === 'contentTag'">
+                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.tagName')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                </el-input>
+            </div>
+            <div class="dr-toolbar-right" v-else-if="type === 'contentMessage'">
+                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.messageContent')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                </el-input>
+            </div>
+            <div class="dr-toolbar-right" v-else-if="type === 'regUser'">
+                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.regUser')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                </el-input>
+            </div>
+            <div class="dr-toolbar-right" v-else-if="type === 'regUser'">
+                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.regUser')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
+                </el-input>
+            </div>
+            <div class="dr-toolbar-right" style="text-align:left" v-else-if="type === 'adminTemplate'">
+                <el-tag :v-if="path" type="info" size="small">{{path}}</el-tag>
+            </div>
+            <div class="dr-toolbar-right" v-else>
+              &nbsp;
+            </div>
         </div>
     </div>
 </template>
@@ -82,26 +96,28 @@ export default {
   props: {
     pageInfo: Object,
     type: String,
-    ids: Array
+    ids: Array,
+    code: String,
+    path: String
   },
   data() {
     return {
       systemModelTypes: [
         {
           value: "all",
-          label: "全部"
+          label: this.$t("topBar.systemModelTypes_all")
         },
         {
           value: "h5-exception",
-          label: "h5异常"
+          label: this.$t("topBar.systemModelTypes_h5")
         },
         {
           value: "node-exception",
-          label: "nodejs异常"
+          label: this.$t("topBar.systemModelTypes_node")
         },
         {
           value: "login",
-          label: "系统登录"
+          label: this.$t("topBar.systemModelTypes_login")
         }
       ],
       targetSysLogType: "all",
@@ -109,10 +125,28 @@ export default {
       formState: {
         show: false
       },
-      searchkey: ""
+      searchkey: "",
+      authPost: "0",
+      authPostOptions: [
+        {
+          value: "0",
+          label: "全部"
+        },
+        {
+          value: "1",
+          label: "待审核"
+        }
+      ]
     };
   },
   methods: {
+    changePostOptions(value) {
+      if (value == "0") {
+        this.$store.dispatch("getContentList");
+      } else if (value == "1") {
+        this.$store.dispatch("getContentList", { state: false });
+      }
+    },
     selectSysLogType(type) {
       this.targetSysLogType = type;
       if (type == "all") {
@@ -122,7 +156,7 @@ export default {
       }
     },
     searchResult(ev) {
-      let searchkey = this.pageInfo.searchkey;
+      let searchkey = this.pageInfo ? this.pageInfo.searchkey : "";
       if (this.type == "content") {
         this.$store.dispatch("getContentList", {
           searchkey
@@ -179,16 +213,20 @@ export default {
       });
     },
     clearSystemOptionLogs() {
-      this.$confirm(`此操作将清空所有日志, 是否继续?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
+      this.$confirm(
+        this.$t("main.del_notice"),
+        this.$t("main.scr_modal_title"),
+        {
+          confirmButtonText: this.$t("main.confirmBtnText"),
+          cancelButtonText: this.$t("main.cancelBtnText"),
+          type: "warning"
+        }
+      )
         .then(() => {
           return services.clearSystemOptionLogs();
         })
         .then(result => {
-          if (result.data.state === "success") {
+          if (result.data.status === 200) {
             this.$store.dispatch("getSystemLogsList");
             this.$message({
               message: `清空日志成功`,
@@ -201,7 +239,7 @@ export default {
         .catch(err => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: this.$t("main.scr_modal_del_error_info")
           });
         });
     },
@@ -209,26 +247,32 @@ export default {
       let _this = this,
         targetName;
       if (target === "msg") {
-        targetName = "留言";
+        targetName = this.$t("topBar.del_message");
       } else if (target === "user") {
-        targetName = "用户";
+        targetName = this.$t("topBar.del_user");
       } else if (target === "systemlogs") {
-        targetName = "系统操作日志";
+        targetName = this.$t("topBar.del_sysopt_log");
       } else if (target === "systemnotify") {
-        targetName = "系统消息";
+        targetName = this.$t("topBar.del_sys_notice");
       }
       if (_.isEmpty(_this.ids)) {
         this.$message({
           type: "info",
-          message: "请选择指定目标！"
+          message: this.$t("validate.selectNull", {
+            label: this.$t("main.target_Item")
+          })
         });
         return false;
       }
-      this.$confirm(`此操作将永久删除这些${targetName}, 是否继续?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
+      this.$confirm(
+        this.$t("main.del_notice"),
+        this.$t("main.scr_modal_title"),
+        {
+          confirmButtonText: this.$t("main.confirmBtnText"),
+          cancelButtonText: this.$t("main.cancelBtnText"),
+          type: "warning"
+        }
+      )
         .then(() => {
           let ids = _this.ids.join();
           if (target === "msg") {
@@ -247,10 +291,14 @@ export default {
             return services.deleteSystemNotify({
               ids
             });
+          } else if (target === "content") {
+            return services.deleteContent({
+              ids
+            });
           }
         })
         .then(result => {
-          if (result.data.state === "success") {
+          if (result.data.status === 200) {
             if (target === "msg") {
               this.$store.dispatch("getContentMessageList");
             } else if (target === "user") {
@@ -259,9 +307,11 @@ export default {
               this.$store.dispatch("getSystemLogsList");
             } else if (target === "systemnotify") {
               this.$store.dispatch("getSystemNotifyList");
+            } else if (target === "content") {
+              this.$store.dispatch("getContentList");
             }
             this.$message({
-              message: `${targetName}删除成功`,
+              message: `${this.$t("main.scr_modal_del_succes_info")}`,
               type: "success"
             });
           } else {
@@ -271,7 +321,7 @@ export default {
         .catch(err => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: this.$t("main.scr_modal_del_error_info")
           });
         });
     },
@@ -282,21 +332,25 @@ export default {
       // this.$store.dispatch('showAdminUserForm')
     },
     bakUpData() {
-      this.$confirm(`您即将执行数据备份操作, 是否继续?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
+      this.$confirm(
+        this.$t("backUpData.askBak"),
+        this.$t("main.scr_modal_title"),
+        {
+          confirmButtonText: this.$t("main.confirmBtnText"),
+          cancelButtonText: this.$t("main.cancelBtnText"),
+          type: "warning"
+        }
+      )
         .then(() => {
           this.loadingState = true;
           return services.bakUpData();
         })
         .then(result => {
-          if (result.data.state === "success") {
+          if (result.data.status === 200) {
             this.loadingState = false;
             this.$store.dispatch("getBakDateList");
             this.$message({
-              message: `数据备份成功`,
+              message: this.$t("backUpData.bakSuccess"),
               type: "success"
             });
           } else {
@@ -306,21 +360,39 @@ export default {
         .catch(err => {
           this.$message({
             type: "info",
-            message: "数据备份失败:" + err
+            message: this.$t("backUpData.bakEr") + err
           });
         });
+    },
+    saveTemplate() {
+      let params = {
+        code: this.code,
+        path: this.path
+      };
+      services.updateTemplateFileText(params).then(result => {
+        if (result.data.status == 200) {
+          this.$message({
+            message: this.$t("main.updateSuccess"),
+            type: "success"
+          });
+        } else {
+          this.$message.error(result.data.message);
+        }
+      });
     },
     setHasRead() {
       if (_.isEmpty(this.ids)) {
         this.$message({
           type: "info",
-          message: "请选择指定目标！"
+          message: this.$t("validate.selectNull", {
+            label: this.$t("main.target_Item")
+          })
         });
         return false;
       }
       let ids = this.ids.join();
       services.setNoticeRead({ ids }).then(result => {
-        if (result.data.state === "success") {
+        if (result.data.status === 200) {
           this.$store.dispatch("getSystemNotifyList");
           let oldNoticeCounts = this.$store.getters.loginState.noticeCounts;
           this.$store.dispatch("loginState", {

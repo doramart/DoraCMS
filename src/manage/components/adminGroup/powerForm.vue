@@ -1,11 +1,11 @@
 <template>
     <div class="dr-adminGroupForm">
-        <el-dialog width="35%" size="small" title="分配资源" :visible.sync="roleState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" :title="$t('adminGroup.lb_give_power')" :visible.sync="roleState.show" :close-on-click-modal="false">
             <el-tree :data="treeData" show-checkbox node-key="_id" ref="tree" highlight-current :props="defaultProps">
             </el-tree>
             <span slot="footer" class="dialog-footer">
-                <el-button size="medium" @click="closeTree">取 消</el-button>
-                <el-button size="medium" type="primary" @click="savePower">确 定</el-button>
+                <el-button size="medium" @click="closeTree">{{$t("main.cancelBtnText")}}</el-button>
+                <el-button size="medium" type="primary" @click="savePower">{{$t("main.confirmBtnText")}}</el-button>
             </span>
         </el-dialog>
     </div>
@@ -40,11 +40,11 @@ export default {
       let params = this.roleState.formData;
       params.power = currentArr;
       services.updateAdminGroup(params).then(result => {
-        if (result.data.state === "success") {
+        if (result.data.status === 200) {
           this.$store.dispatch("hideAdminGroupRoleForm");
           this.$store.dispatch("getAdminGroupList");
           this.$message({
-            message: "更新成功,重新登录后权限生效",
+            message: this.$t("adminGroup.lb_updatePower_success"),
             type: "success"
           });
         } else {

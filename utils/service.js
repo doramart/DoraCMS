@@ -1,3 +1,4 @@
+
 /**
  * Created by Administrator on 2015/4/18.
  */
@@ -15,7 +16,7 @@ let crypto = require("crypto");
 //时间格式化
 let moment = require('moment');
 //站点配置
-let settings = require("./settings");
+let settings = require("../configs/settings");
 let siteFunc = require("./siteFunc");
 
 //文件压缩
@@ -26,7 +27,7 @@ let mime = require('./mime').types;
 let iconv = require('iconv-lite');
 let systemService = {
 
-    sendEmail: function (req, sysConfigs, key, obj, callBack = () => { }) {
+    sendEmail: function (req, res, sysConfigs, key, obj, callBack = () => { }) {
 
         let emailTitle = "Hello";
         let emailSubject = "Hello";
@@ -37,28 +38,35 @@ let systemService = {
             let oldLink = obj.password + '$' + obj.email + '$' + settings.session_secret;
             let newLink = systemService.encrypt(oldLink, settings.encrypt_key);
 
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] 通过激活链接找回密码';
-            emailContent = siteFunc.setConfirmPassWordEmailTemp(sysConfigs, obj.userName, newLink);
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_activePwd_title");
+            emailContent = siteFunc.setConfirmPassWordEmailTemp(res, sysConfigs, obj.userName, newLink);
         } else if (key == settings.email_notice_contentMsg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] 用户留言提醒';
-            emailContent = siteFunc.setNoticeToAdminEmailTemp(sysConfigs, obj);
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_recieveMsg_title");
+            emailContent = siteFunc.setNoticeToAdminEmailTemp(res, sysConfigs, obj);
+            toEmail = sysConfigs.siteEmail;
+        } else if (key == settings.email_notice_admin_byContactUs) {
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_recieveMsg_title");
+            emailContent = siteFunc.setNoticeToAdminEmailByContactUsTemp(res, sysConfigs, obj);
             toEmail = sysConfigs.siteEmail;
         } else if (key == settings.email_notice_user_contentMsg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] 有人给您留言啦';
-            emailContent = siteFunc.setNoticeToUserEmailTemp(sysConfigs, obj);
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_notice_haveMsg");
+            emailContent = siteFunc.setNoticeToUserEmailTemp(res, sysConfigs, obj);
             toEmail = obj.replyAuthor.email;
         } else if (key == settings.email_notice_contentBug) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] 有人给您提bug啦';
-            emailContent = siteFunc.setBugToAdminEmailTemp(sysConfigs, obj);
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_notice_askBug");
+            emailContent = siteFunc.setBugToAdminEmailTemp(res, sysConfigs, obj);
             toEmail = sysConfigs.siteEmail;
         } else if (key == settings.email_notice_user_reg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] 恭喜您，注册成功！';
-            emailContent = siteFunc.setNoticeToUserRegSuccess(sysConfigs, obj);
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_notice_reg_success");
+            emailContent = siteFunc.setNoticeToUserRegSuccess(res, sysConfigs, obj);
+            toEmail = obj.email;
+        } else if (key == settings.email_notice_user_byContactUs) {
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_noticeuser_askInfo_success");
+            emailContent = siteFunc.setNoticeToAdminEmailByContactUsTemp(res, sysConfigs, obj);
             toEmail = obj.email;
         }
 
         // 发送邮件
-        // console.log('-----', sysConfigs, '--', sysConfigs.siteEmail);
         let transporter = nodemailer.createTransport({
 
             service: sysConfigs.siteEmailServer,
@@ -79,7 +87,7 @@ let systemService = {
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                console.log('邮件发送失败：' + error);
+                console.log('-----邮件发送失败：-----' + error);
                 callBack('notCurrentEmail');
             } else {
                 console.log('Message sent: ' + info.response);
@@ -143,7 +151,8 @@ let systemService = {
                             "size": stats.size,
                             "date": stats.mtime
                         };
-                        filesList.push(fileInfo);
+                        // 隐藏文件不显示
+                        item.split('.')[0] && filesList.push(fileInfo);
 
                     }
                 });
@@ -175,41 +184,43 @@ let systemService = {
 
         return folderList;
     },
-    deleteFolder: function (req, res, path, callBack) {
-        let files = [];
-        console.log("---del path--" + path);
-        if (fs.existsSync(path)) {
-            console.log("---begin to del--");
-            if (fs.statSync(path).isDirectory()) {
-                let walk = function (path) {
-                    files = fs.readdirSync(path);
-                    files.forEach(function (file, index) {
-                        let curPath = path + "/" + file;
-                        if (fs.statSync(curPath).isDirectory()) { // recurse
-                            walk(curPath);
-                        } else { // delete file
-                            fs.unlinkSync(curPath);
+    deleteFolder: function (req, res, path) {
+        // console.log("---del path--" + path);
+        return new Promise((resolve, reject) => {
+            let files = [];
+            if (fs.existsSync(path)) {
+                // console.log("---begin to del--");
+                if (fs.statSync(path).isDirectory()) {
+                    let walk = function (path) {
+                        files = fs.readdirSync(path);
+                        files.forEach(function (file, index) {
+                            let curPath = path + "/" + file;
+                            if (fs.statSync(curPath).isDirectory()) { // recurse
+                                walk(curPath);
+                            } else { // delete file
+                                fs.unlinkSync(curPath);
+                            }
+                        });
+                        fs.rmdirSync(path);
+                    };
+                    walk(path);
+                    // console.log("---del folder success----");
+                    resolve();
+                } else {
+                    fs.unlink(path, function (err) {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            // console.log('del file success');
+                            resolve();
                         }
                     });
-                    fs.rmdirSync(path);
-                };
-                walk(path);
-                console.log("---del folder success----");
-                callBack && callBack();
-            } else {
-                fs.unlink(path, function (err) {
-                    if (err) {
-                        console.log(err)
-                    } else {
-                        console.log('del file success');
-                        callBack && callBack();
-                    }
-                });
-            }
+                }
 
-        } else {
-            res.end("success");
-        }
+            } else {
+                resolve();
+            }
+        })
     },
     reNameFile: function (req, res, path, newPath) {
         if (fs.existsSync(path)) {
@@ -228,28 +239,32 @@ let systemService = {
 
     },
     readFile: function (req, res, path) { // 文件读取
-        if (fs.existsSync(path)) {
-            fs.readFile(path, "binary", function (error, data) {
-                if (error) {
-                    console.log(err)
-                } else {
-                    //处理中文乱码问题
-                    let buf = new Buffer(data, 'binary');
-                    let newData = iconv.decode(buf, 'utf-8');
-                    return res.json({
-                        fileData: newData
-                    })
-                }
-            });
-        } else {
-            res.end(settings.system_illegal_param);
-        }
+        return new Promise((resolve, reject) => {
+            if (fs.existsSync(path)) {
+                fs.readFile(path, "binary", function (error, data) {
+                    if (error) {
+                        console.log(err)
+                        reject(err);
+                    } else {
+                        //处理中文乱码问题
+                        let buf = new Buffer(data, 'binary');
+                        let newData = iconv.decode(buf, 'utf-8');
+                        resolve(newData);
+                    }
+                });
+            } else {
+                reject(settings.system_illegal_param);
+            }
+        })
     },
     writeFile: function (req, res, path, content, cb) {
         if (fs.existsSync(path)) {
             //写入文件
             let newContent = iconv.encode(content, 'utf-8');
             fs.writeFileSync(path, newContent);
+            return 200;
+        } else {
+            return 500;
         }
     },
 
@@ -425,6 +440,12 @@ let systemService = {
         oldPsd += decipher.update(data, "hex", "utf8");
         oldPsd += decipher.final("utf8");
         return oldPsd;
+    },
+
+    getKeyArrByTokenId: function (tokenId) {
+        var newLink = this.decrypt(tokenId, settings.encrypt_key);
+        var keyArr = newLink.split('$');
+        return keyArr;
     }
 
 };

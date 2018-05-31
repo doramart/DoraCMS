@@ -23,7 +23,7 @@
         </div>
       </div>
       <div v-else>
-          暂无数据
+          {{$t('main.noMessages')}}
       </div>
   </div>
 </template>

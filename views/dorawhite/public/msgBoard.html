@@ -1,0 +1,66 @@
+<!--留言板模块-->
+<div ms-controller="postMessage" id="postMessage">
+    <div class="pannel-box content-message-post" id="msgSendBox">
+        <h2 class="pannel-title">{{lk.lc_document_postMessage}}
+            <small>
+                <a href="javascript:void(0)" ms-on-click="@cancelReply">{{lk.label_messageBoard_cancelReply}}</a>
+            </small>
+        </h2>
+        <div class="give-message">
+            <form name="postMsgForm" ms-validate="@validate">
+                <input id="contentId" type="hidden" value="{{documentInfo._id}}" />
+                <textarea class="form-control" rows="3" name="email" ms-duplex="@content" placeholder="{{lk.lc_please_write_message}}" ms-rules="{required:true,minlength:5,maxlength:200 }"
+                    data-required-message="{{lk.validate_inputNull | inputNotNull(lk.label_messageBoard_message)}}" data-message="{{lk.validate_rangelength | rangelength(5,200,lk.label_messageBoard_message)}}"></textarea>
+                <div class="send-button">
+                    <div class="user-notice">
+                        {% if logined %} {{lk.lc_message_hello}}，{{userInfo.userName}}！ {% else %}
+                        <a href="/users/login">{{lk.lc_login}}</a>&nbsp;{{lk.lc_join_document_postMessage}} {% endif %}
+                        <span class="text-danger" :visible="@showErr" ms-html="@message"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{lk.lc_postMessage}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div :visible="@messageList.length>0" class="pannel-box content-message-list">
+        <h1 class="pannel-title">{{lk.label_messageBoard_messagelist}}（
+            <span ms-text="@messageList.length"></span> ）</h1>
+        <div class="content-list">
+            <ul>
+                <li ms-for="item in @messageList">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 msgList" ms-hover="['active']">
+                            <div class="col-md-1 col-xs-1 user-logo">
+                                <img ms-attr="{src: @getAuthor(@item,'adminAuthor','author').logo}" />
+                            </div>
+                            <div class="col-md-11 col-xs-11" ms-attr="{id: 'msglist_' + @item._id}">
+                                <div class="user-name">
+                                    <div class="name">
+                                        <span ms-text="@getAuthor(@item,'adminAuthor','author').userName"></span>
+                                    </div>
+                                    &nbsp;
+                                    <span class="time" ms-text="@item.date"></span>
+                                    <span class="reply pull-right">
+                                        <a href="javascript:void(0)" ms-on-click="@reply(@item._id,@getAuthor(@item,'adminAuthor','author'),@item.utype)">{{lk.label_messageBoard_reply}}</a>
+                                    </span>
+                                </div>
+                                <div class="user-content">
+                                    <span :visible="@getAuthor(@item,'replyAuthor','adminReplyAuthor')" style="color: #409EFF;margin-right:10px;" ms-text="'@'+@getAuthor(@item,'replyAuthor','adminReplyAuthor').userName"></span>
+                                    <span ms-html="@item.content"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(function () {
+        getPostMessages();
+    })
+</script>

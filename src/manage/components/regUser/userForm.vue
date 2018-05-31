@@ -1,27 +1,27 @@
 <template>
     <div class="dr-regUserForm">
-        <el-dialog width="35%" size="small" title="填写用户信息" :visible.sync="dialogState.show" :close-on-click-modal="false">
+        <el-dialog width="35%" size="small" :title="$t('regUser.form_title')" :visible.sync="dialogState.show" :close-on-click-modal="false">
             <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-                <el-form-item label="用户名" prop="userName">
+                <el-form-item :label="$t('regUser.userName')" prop="userName">
                     <el-input size="small" v-model="dialogState.formData.userName"></el-input>
                 </el-form-item>
-                <el-form-item label="姓名" prop="name">
+                <el-form-item :label="$t('regUser.name')" prop="name">
                     <el-input size="small" v-model="dialogState.formData.name"></el-input>
                 </el-form-item>
-                <el-form-item label="有效" prop="enable">
-                    <el-switch on-text="是" off-text="否" v-model="dialogState.formData.enable"></el-switch>
+                <el-form-item :label="$t('regUser.enable')" prop="enable">
+                    <el-switch :on-text="$t('main.radioOn')" :off-text="$t('main.radioOff')" v-model="dialogState.formData.enable"></el-switch>
                 </el-form-item>
-                <el-form-item label="电话" prop="phoneNum">
+                <el-form-item :label="$t('regUser.phoneNum')" prop="phoneNum">
                     <el-input size="small" v-model.number="dialogState.formData.phoneNum"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱" prop="email">
+                <el-form-item :label="$t('regUser.email')" prop="email">
                     <el-input size="small" v-model="dialogState.formData.email"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" prop="comments">
+                <el-form-item :label="$t('regUser.comments')" prop="comments">
                     <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{dialogState.edit ? '更新' : '保存'}}</el-button>
+                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{dialogState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -43,13 +43,19 @@ export default {
         userName: [
           {
             required: true,
-            message: "请输入用户名",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("regUser.userName")
+            }),
             trigger: "blur"
           },
           {
             validator: (rule, value, callback) => {
               if (!validatorUtil.checkUserName(value)) {
-                callback(new Error("5-12个英文字符!"));
+                callback(
+                  new Error(
+                    this.$t("validate.rangelength", { min: 5, max: 12 })
+                  )
+                );
               } else {
                 callback();
               }
@@ -59,13 +65,17 @@ export default {
         ],
         name: [
           {
-            message: "请输入用户姓名",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("regUser.name")
+            }),
             trigger: "blur"
           },
           {
             validator: (rule, value, callback) => {
               if (!validatorUtil.checkName(value)) {
-                callback(new Error("2-6个中文字符!"));
+                callback(
+                  new Error(this.$t("validate.rangelength", { min: 2, max: 6 }))
+                );
               } else {
                 callback();
               }
@@ -77,13 +87,21 @@ export default {
           {
             type: "number",
             required: true,
-            message: "请输入手机号",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("regUser.phoneNum")
+            }),
             trigger: "blur"
           },
           {
             validator: (rule, value, callback) => {
               if (!validatorUtil.checkPhoneNum(value)) {
-                callback(new Error("请填写正确的手机号码!"));
+                callback(
+                  new Error(
+                    this.$t("validate.inputCorrect", {
+                      label: this.$t("regUser.phoneNum")
+                    })
+                  )
+                );
               } else {
                 callback();
               }
@@ -94,13 +112,21 @@ export default {
         email: [
           {
             required: true,
-            message: "请填写邮箱",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("regUser.email")
+            }),
             trigger: "blur"
           },
           {
             validator: (rule, value, callback) => {
               if (!validatorUtil.checkEmail(value)) {
-                callback(new Error("请填写正确的邮箱!"));
+                callback(
+                  new Error(
+                    this.$t("validate.inputCorrect", {
+                      label: this.$t("regUser.email")
+                    })
+                  )
+                );
               } else {
                 callback();
               }
@@ -110,13 +136,18 @@ export default {
         ],
         comments: [
           {
-            message: "请填写备注",
+            message: this.$t("validate.inputNull", {
+              label: this.$t("main.comments_label")
+            }),
             trigger: "blur"
           },
           {
             min: 5,
             max: 30,
-            message: "请输入5-30个字符",
+            message: this.$t("validate.ranglengthandnormal", {
+              min: 5,
+              max: 30
+            }),
             trigger: "blur"
           }
         ]
@@ -130,16 +161,16 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("---formdatas--", this);
+          // console.log("---formdatas--", this);
           let params = this.dialogState.formData;
           // 更新
           if (this.dialogState.edit) {
             services.updateRegUser(params).then(result => {
-              if (result.data.state === "success") {
+              if (result.data.status === 200) {
                 this.$store.dispatch("hideRegUserForm");
                 this.$store.dispatch("getRegUserList");
                 this.$message({
-                  message: "更新成功",
+                  message: this.$t("main.updateSuccess"),
                   type: "success"
                 });
               } else {

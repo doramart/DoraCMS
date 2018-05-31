@@ -4,6 +4,8 @@
  */
 const express = require('express');
 const router = express.Router();
+router.caseSensitive = true;
+router.strict = true
 //文件上传类
 const formidable = require('formidable'),
     util = require('util'),
@@ -16,7 +18,7 @@ const url = require('url');
 const mime = require('../../utils/mime').types;
 const service = require('../../utils/service');
 //站点配置
-const settings = require("../../utils/settings");
+const settings = require("../../configs/settings");
 let checkPathNum = 0;
 
 function uploadToQiniu(req, res, imgkey) {

@@ -2,27 +2,29 @@
  * Created by Administrator on 2015/5/30.
  */
 
-const settings = require("./settings");
+const settings = require("../configs/settings");
 const shortid = require('shortid');
 const _ = require('lodash');
 const moment = require('moment');
+const cache = require('./middleware/cache')
+const logUtil = require('./middleware/logUtil')
 
 var siteFunc = {
 
-    setConfirmPassWordEmailTemp: function (sysConfigs, name, token) {
+    setConfirmPassWordEmailTemp: function (res, sysConfigs, name, token) {
 
         let siteTitle = sysConfigs.siteName;
-        var html = '<p>您好：' + name + '</p>' +
-            '<p>我们收到您在 <strong>' + siteTitle + '</strong> 的注册信息，请点击下面的链接来激活帐户：</p>' +
-            '<a href="' + sysConfigs.siteDomain + '/users/reset_pass?key=' + token + '">重置密码链接</a>' +
-            '<p>若您没有在 <strong>' + siteTitle + '</strong> 填写过注册信息，说明有人滥用了您的电子邮箱，请忽略或删除此邮件，我们对给您造成的打扰感到抱歉。</p>' +
-            '<p> <strong>' + siteTitle + ' </strong> 谨上。</p>';
-
+        var html = '<p>' + res.__("label_sendActiveEmail_text1") + '：' + name + '</p><br/>'
+            + '<p>' + res.__("label_sendActiveEmail_text2") + '</p><br/>'
+            + '<p><strong>' + siteTitle + '</strong> ' + res.__("label_sendActiveEmail_text2_1") + '</p><br/><br/>'
+            + '<p>' + res.__("label_sendActiveEmail_text3") + '</p><br/>'
+            + '<a href="' + sysConfigs.siteDomain + '/users/reset_pass?key=' + token + '">' + res.__("label_sendActiveEmail_text4") + '</a><br/>'
+            + '<a href="' + sysConfigs.siteDomain + '/users/reset_pass?key=' + token + '">' + sysConfigs.siteDomain + '/users/reset_pass?key=' + token + '</a><br/>'
+            + '<p> <strong>' + siteTitle + ' </strong> </p>';
         return html;
-
     },
 
-    setNoticeToAdminEmailTemp: function (sysConfigs, obj) {
+    setNoticeToAdminEmailTemp: function (res, sysConfigs, obj) {
         let siteTitle = sysConfigs.siteName;
         var msgDate = moment(obj.date).format('YYYY-MM-DD HH:mm:ss');
         var html = '';
@@ -30,7 +32,26 @@ var siteFunc = {
         return html;
     },
 
-    setNoticeToUserEmailTemp: function (sysConfigs, obj) {
+    setNoticeToAdminEmailByContactUsTemp: function (res, sysConfigs, obj) {
+        let siteTitle = sysConfigs.siteName;
+        var msgDate = moment(obj.date).format('YYYY-MM-DD HH:mm:ss');
+        var html = '';
+        html += res.__("lc_sendEmail_user_notice_title") + '<br/><br/>'
+            + res.__("lc_sendEmail_user_success_notice") + '<br/><br/>'
+            + res.__("lc_sendEmail_user_notice_Info") + '<br/><br/>'
+            + '<strong>' + res.__("label_user_email") + ': </strong>' + obj.email + '<br/><br/>'
+            + '<strong>' + res.__("label_user_phoneNum") + ': </strong>' + obj.phoneNum + '<br/><br/>'
+            + '<strong>' + res.__("lc_sendEmail_user_content") + ': </strong><br/><br/>' + obj.comments + '<br/><br/>'
+        return html;
+    },
+
+    setNoticeToUserByContactUsTemp: function (res, sysConfigs, obj) {
+        var html = '';
+        html += res.__("label_sendActiveEmail_text1") + '，<strong>' + obj.name + '</strong>' + res.__("lc_sendEmail_user_success_notice") + '<br/><br/>';
+        return html;
+    },
+
+    setNoticeToUserEmailTemp: function (res, sysConfigs, obj) {
         let siteTitle = sysConfigs.siteName;
         var msgDate = moment(obj.date).format('YYYY-MM-DD HH:mm:ss');
         var html = '';
@@ -44,7 +65,7 @@ var siteFunc = {
         return html;
     },
 
-    setBugToAdminEmailTemp: function (sysConfigs, obj) {
+    setBugToAdminEmailTemp: function (res, sysConfigs, obj) {
         let siteTitle = sysConfigs.siteName;
         var msgDate = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
         var html = '';
@@ -52,10 +73,12 @@ var siteFunc = {
         return html;
     },
 
-    setNoticeToUserRegSuccess: function (sysConfigs, obj) {
+    setNoticeToUserRegSuccess: function (res, sysConfigs, obj) {
         let siteTitle = sysConfigs.siteName;
         var html = '';
-        html += '亲爱的 ' + obj.userName + ' （' + obj.email + ') ，恭喜您成为 <strong>' + siteTitle + '</strong> 的新用户！ 您现在可以 <a href="' + sysConfigs.siteDomain + '/users/login" target="_blank">点击登录</a>';
+        html += obj.userName + ' （' + obj.email + ') ' + res.__("label_sendRegEmail_text1") + '<br><br>'
+            + '<p>' + siteTitle + ' ' + res.__("label_sendRegEmail_text3") + '</p><br>'
+            + '<p>' + res.__("label_sendRegEmail_text2") + ' ' + res.__("label_sendRegEmail_text4") + ' <a href="' + sysConfigs.siteDomain + '/users/login" target="_blank">' + res.__("label_sendRegEmail_text5") + '</a></p><br><br>';
         return html;
     },
 
@@ -142,6 +165,135 @@ var siteFunc = {
     UserException: function (message) {
         this.message = message;
         this.name = "UserException";
+    },
+
+    // 封装api返回的数据
+    renderApiData(res, responseCode, responseMessage, data = {}, type = "getlist") {
+
+        if (type == 'getlist') {
+            responseMessage = res.__("validate_error_getSuccess", { success: responseMessage })
+        }
+
+        let sendData = {
+            status: responseCode,
+            message: responseMessage,
+            server_time: (new Date()).getTime(),
+            data
+        }
+        return sendData;
+    },
+
+    renderApiErr(req, res, responseCode, responseMessage, type = 'save') {
+        if (typeof responseMessage == 'object') {
+            responseMessage = responseMessage.message;
+        }
+        if (type == 'save') {
+            responseMessage = res.__("resdata_savedata_error", { error: responseMessage })
+        } else if (type == 'delete') {
+            responseMessage = res.__("resdata_deldata_error", { error: responseMessage })
+        } else if (type == 'update') {
+            responseMessage = res.__("resdata_updatedata_error", { error: responseMessage })
+        } else if (type == 'getlist') {
+            responseMessage = res.__("resdata_getlist_error", { error: responseMessage })
+        } else if (type == 'checkform') {
+            responseMessage = res.__("resdata_checkformdata_error", { error: responseMessage })
+        }
+        let errorData = {
+            status: responseCode,
+            message: responseMessage,
+            server_time: (new Date()).getTime(),
+            data: {}
+        }
+        // 记录错误日志
+        logUtil.error(responseMessage, req);
+        return errorData;
+    },
+
+    getSiteLocalKeys(res) {
+        return new Promise((resolve, reject) => {
+            cache.get(settings.session_secret + '_localkeys', async (localRenderData) => {
+                if (!_.isEmpty(localRenderData)) {
+                    resolve(localRenderData)
+                } else {
+                    const targetLocalJson = require('../locales/zh-CN.json');
+                    let renderKeys = [];
+                    for (let lockey in targetLocalJson) {
+                        renderKeys[lockey] = res.__(lockey);
+                    }
+                    let timeSet = process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 : 1000;
+                    cache.set(settings.session_secret + '_localkeys', renderKeys, timeSet);
+                    resolve(renderKeys)
+                }
+            })
+        })
+    },
+    renderLocalStr() {
+        let str = [' ', '  '];
+        if (settings.lang == 'en') {
+            str = ['  ', '    ']
+        }
+        return str;
+    },
+
+    getStrLength(str) {
+        let charCode = -1;
+        const len = str.length;
+        let realLength = 0;
+        let zhChar = 0, enChar = 0;
+        for (let i = 0; i < len; i++) {
+            charCode = str.charCodeAt(i)
+            if (charCode >= 0 && charCode <= 128) {
+                realLength += 1;
+                enChar++
+            } else {
+                realLength += 2;
+                zhChar++
+            }
+        }
+        return {
+            length: realLength,
+            enChar,
+            zhChar
+        }
+    },
+
+    setTempParentId(arr, key) {
+        for (var i = 0; i < arr.length; i++) {
+            var pathObj = arr[i];
+            pathObj.parentId = key;
+        }
+        return arr;
+    },
+
+    getTempBaseFile: function (path) {
+        var thisType = (path).split('.')[1];
+        var basePath;
+        if (thisType == 'html') {
+            basePath = settings.SYSTEMTEMPFORDER;
+        } else if (thisType == 'json') {
+            basePath = process.cwd();
+        } else {
+            basePath = settings.TEMPSTATICFOLDER;
+        }
+        return basePath;
+    },
+
+    // 扫描某路径下文件夹是否存在
+    checkExistFile(tempFilelist, forderArr) {
+
+        let filterForderArr = [], distPath = false;
+        for (let i = 0; i < forderArr.length; i++) {
+            const forder = forderArr[i];
+            let currentForder = _.filter(tempFilelist, (fileObj) => {
+                return fileObj.name == forder;
+            })
+            filterForderArr = filterForderArr.concat(currentForder);
+        }
+        if (filterForderArr.length > 0 && (tempFilelist.length >= forderArr.length) && (filterForderArr.length == tempFilelist.length)) {
+            distPath = true;
+        }
+
+        return distPath;
     }
 
 };

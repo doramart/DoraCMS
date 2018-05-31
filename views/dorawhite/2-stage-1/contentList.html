@@ -1,0 +1,16 @@
+{% extends "../public/defaultTemp.html" %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main-container">
+            <div class="row">
+                <div class="col-md-12 left-frame">
+                    <div class="column-wrap">
+                        <h1 alt="{{siteInfo.altkey}}{{cateInfo.name}}">{{cateInfo.name}}</h1>
+                    </div>
+                    {% include "../public/sysItemListTemp.html" %} {% include "../public/pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

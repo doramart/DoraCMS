@@ -1,0 +1,27 @@
+<!--最新文章模块-->
+<div class="pannel-box recent-content-list">
+    <h2 class="pannel-title">{{lk.lc_new_document}}</h2>
+    <div class="content-list">
+        <ul class="row">
+            {% if newItemListData.docs.length > 0 %} {% for item in newItemListData.docs %}
+            <li class="list-img">
+                <div class="row">
+                    <div class="col-md-5 ">
+                        <a href="/details/{{item._id}}.html" class="contentImg">
+                            <img src="{{item.sImg}}" alt="{{item.title}}">
+                        </a>
+                    </div>
+                    <div class="col-md-7">
+                        <a href="/details/{{item._id}}.html" target="_blank" class="title">
+                            {{item.stitle | cutwords(80)}}
+                        </a>
+                        <span class="date">{{item.date | formatDateForMini('date')}}</span>
+                    </div>
+                </div>
+            </li>
+            {% endfor %} {% else %}
+            <p class="text-center">暂无内容...</p>
+            {% endif%}
+        </ul>
+    </div>
+</div>

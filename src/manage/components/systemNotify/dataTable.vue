@@ -3,14 +3,14 @@
         <el-table align="center" v-loading="loading" ref="multipleTable" :data="dataList" tooltip-effect="dark" style="width: 100%" :row-style="setRowState" @selection-change="handleSystemNotifySelectionChange">
             <el-table-column type="selection" width="55">
             </el-table-column>
-            <el-table-column prop="notify.title" label="标题">
+            <el-table-column prop="notify.title" :label="$t('systemNotify.title')">
             </el-table-column>
-            <el-table-column prop="notify.content" label="内容">
+            <el-table-column prop="notify.content" :label="$t('systemNotify.content')">
                 <template slot-scope="scope">
                     <span v-html="scope.row.notify.content"></span>
                 </template>
             </el-table-column>
-            <el-table-column prop="date" label="发生时间">
+            <el-table-column prop="date" :label="$t('systemNotify.date')">
             </el-table-column>
         </el-table>
     </div>

@@ -1,13 +1,15 @@
 // 备份DB数据
 require('shelljs/global');
-const setting = require("../utils/settings");
-
+const settings = require("../configs/settings");
+const isDev = process.env.NODE_ENV == 'development' ? true : false;
 const moment = require("moment");
-const time = moment().format("YYYYMMDD-HHmmss");
 
 
-if(setting.HOST.match(/127.0.0.1|localhost/)){
-    exec(`mongodump --gzip --archive=./data/DoraDbData.${time}.gz --db ${setting.DB} `).stdout;
-}else{
-    exec(`mongodump --gzip -h ${setting.HOST} --port ${setting.PORT} -u ${setting.USERNAME} -p ${setting.PASSWORD}  --archive=./data/DoraDbData.${time}.gz --db ${setting.DB} `).stdout;
-}
+let databackforder = process.cwd() + '/databak/';
+
+let dataPath = databackforder + moment().format('YYYYMMDDHHmmss').toString();;
+
+let cmdstr = isDev ? 'mongodump -d ' + settings.DB + ' -o "' + dataPath + '"' : 'mongodump -u ' + settings.USERNAME + ' -p ' + settings.PASSWORD + ' -d ' + settings.DB + ' -o "' + dataPath + '"';
+
+exec(cmdstr).stdout;
+

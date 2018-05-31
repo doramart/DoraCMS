@@ -4,16 +4,16 @@
  */
 var mongoose = require('mongoose');
 var shortid = require('shortid');
+var settings = require('../../../configs/settings');
 var Schema = mongoose.Schema;
 var User = require('./User');
 var Notify = require('./Notify');
 var moment = require('moment')
-moment.locale('zh-cn');
+moment.locale((settings.lang).toLowerCase());
 
 var UserNotifySchema = new Schema({
     _id: {
         type: String,
-        
         'default': shortid.generate
     },
     isRead: { type: Boolean, default: false },

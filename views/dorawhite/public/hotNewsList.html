@@ -1,0 +1,19 @@
+{% if hotItemListData.docs.length > 0 %}
+<div class="pannel-box hot-content-list">
+    <h2 class="pannel-title">{{lk.lc_hotDocuments}}</h2>
+    <div class="content-list">
+        <ul>
+            {% for item in hotItemListData.docs %}
+            <li>
+                <span class="triangle"></span>
+                <div class="con">
+                    <a href="/details/{{item._id}}.html" target="_blank">
+                        {{item.title}}
+                    </a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif%}

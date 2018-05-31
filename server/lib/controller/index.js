@@ -12,3 +12,4 @@ exports.SystemConfig = require('./systemConfig');
 exports.DataOptionLog = require('./dataOptionLog');
 exports.SystemOptionLog = require('./systemOptionLog');
 exports.Ads = require('./ads');
+exports.ContentTemplate = require('./contentTemplate');

@@ -25,9 +25,9 @@
                             </div>
                             <div class="info-pannel">
                                 <ul>
-                                    <li><label>上次登录时间：</label>{{renderLogs.ip}}</li>
-                                    <li><label>上次登录IP：</label>{{renderLogs.date}}</li>
-                                    <li><label>我的权限：</label><el-button size="mini" type="text" @click="showMyResource">查看</el-button></li>
+                                    <li><label>{{$t('main.lastLoginTime')}}：</label>{{renderLogs.ip}}</li>
+                                    <li><label>{{$t('main.lastLoginIp')}}：</label>{{renderLogs.date}}</li>
+                                    <li><label>{{$t('main.myPower')}}：</label><el-button size="mini" type="text" @click="showMyResource">{{$t('main.seeDetails')}}</el-button></li>
                                 </ul>
                             </div>
                             <div style="clear:both;"></div>
@@ -39,45 +39,45 @@
                 <div class="data-statistics">
                     <el-row :gutter="10">
                         <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
-                            <StaticPannel icon="fa-user" :num="basicInfo.adminUserCount" type="primary" text="管理员总数"/>
+                            <StaticPannel icon="fa-user" :num="basicInfo.adminUserCount" type="primary" :text="$t('main.adminUserTotalNum')"/>
                         </el-col>
                         <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
-                            <StaticPannel icon="fa-users" :num="basicInfo.regUserCount" type="success" text="注册用户"/>
+                            <StaticPannel icon="fa-users" :num="basicInfo.regUserCount" type="success" :text="$t('main.regUserTotalNum')"/>
                         </el-col>
                         <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
-                            <StaticPannel icon="fa-file-text-o" :num="basicInfo.contentCount" type="warning" text="文档总数"/>
+                            <StaticPannel icon="fa-file-text-o" :num="basicInfo.contentCount" type="warning" :text="$t('main.contentsTotalNum')"/>
                         </el-col>
                         <el-col :xs="6" :sm="6" :md="6" :lg="6" :xl="6">
-                            <StaticPannel icon="fa-comments-o" :num="basicInfo.messageCount" type="danger" text="留言总数"/>
+                            <StaticPannel icon="fa-comments-o" :num="basicInfo.messageCount" type="danger" :text="$t('main.messagesTotalNum')"/>
                         </el-col>
                     </el-row>
                 </div>
                 <div class="grid-content bg-purple">
                     <el-card class="box-card pannel-box">
                         <div slot="header" class="clearfix">
-                            <span>快捷操作</span>
+                            <span>{{$t('main.shortcutOption')}}</span>
                         </div>
                         <div class="box-body">
                             <ul class="row quick-opt">
                                 <li>
                                     <el-button size="small" type="primary" plain round @click="getToPage('adminUser')">
-                                        <i class="fa fa-fw fa-user"></i> 添加管理员</el-button>
+                                        <i class="fa fa-fw fa-user"></i> {{$t('main.addAdminUser')}}</el-button>
                                 </li>
                                 <li>
                                     <el-button size="small" type="success" plain round @click="getToPage('addContent')">
-                                        <i class="fa fa-fw fa-file-text-o"></i> 添加文档</el-button>
+                                        <i class="fa fa-fw fa-file-text-o"></i> {{$t('main.addContents')}}</el-button>
                                 </li>
                                 <li>
                                     <el-button size="small" type="info" plain round @click="getToPage('adminResource')">
-                                        <i class="fa fa-fw fa-th-list"></i> 资源管理</el-button>
+                                        <i class="fa fa-fw fa-th-list"></i> {{$t('main.sourceManage')}}</el-button>
                                 </li>
                                 <li>
                                     <el-button size="small" type="warning" plain round @click="getToPage('systemConfig')">
-                                        <i class="fa fa-fw fa-cog"></i> 系统配置</el-button>
+                                        <i class="fa fa-fw fa-cog"></i> {{$t('main.systemConfigs')}}</el-button>
                                 </li>
                                 <li>
                                     <el-button size="small" type="danger" plain round @click="getToPage('backUpData')">
-                                        <i class="fa fa-fw fa-database"></i> 数据备份</el-button>
+                                        <i class="fa fa-fw fa-database"></i> {{$t('main.databak')}}</el-button>
                                 </li>
                             </ul>
                         </div>
@@ -90,7 +90,7 @@
                 <div class="grid-content bg-purple-light">
                     <el-card class="box-card pannel-box">
                         <div slot="header" class="clearfix">
-                            <span>近期评论</span>
+                            <span>{{$t('main.nearMessages')}}</span>
                         </div>
                         <div class="box-body">
                             <div class="row user-messages">
@@ -99,8 +99,8 @@
                                         <div class="direct-chat-info clearfix">
                                             <span class="direct-chat-name pull-left">
                                                 <a href="#">{{msg.utype =='0'?msg.author.userName:msg.adminAuthor.userName}}</a>
-                                                在
-                                                <a class="direct-chat-contentTitle" :href="'/details/'+msg.contentId._id+'.html'" target="_blank">{{msg.contentId.stitle | cutWords(25)}}</a> 中{{msg.utype =='0'?'说':`回复 `}}
+                                                {{$t('main.messageIn')}}
+                                                <a class="direct-chat-contentTitle" :href="'/details/'+msg.contentId._id+'.html'" target="_blank">{{msg.contentId.stitle | cutWords(25)}}</a> {{msg.utype =='0'?$t('main.messageSaid'):$t('main.messageReply')}}
                                                 <a href="#">{{msg.utype =='1'?(msg.replyAuthor ? msg.replyAuthor.userName : (msg.adminReplyAuthor ? msg.adminReplyAuthor.userName : '')) : ''}}</a>
                                             </span>
                                             <span class="direct-chat-timestamp pull-right">
@@ -112,7 +112,7 @@
                                         <div class="direct-chat-text" v-html="msg.content"></div>
                                     </div>
                                 </div>
-                                <div v-else>暂无数据</div>
+                                <div v-else>{{$t('main.noMessages')}}</div>
                             </div>
                         </div>
                     </el-card>
@@ -122,7 +122,7 @@
                 <div class="grid-content bg-purple">
                     <el-card class="box-card pannel-box">
                         <div slot="header" class="clearfix">
-                            <span>新注册用户</span>
+                            <span>{{$t('main.nearNewUsers')}}</span>
                         </div>
                         <div class="box-body">
                             <ul class="row user-list">
@@ -132,7 +132,7 @@
                                         <span>{{user.userName | cutWords(8)}}</span>
                                     </li>
                                 </div>
-                                <div v-else>暂无数据</div>
+                                <div v-else>{{$t('main.noMessages')}}</div>
                             </ul>
                         </div>
                     </el-card>

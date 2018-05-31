@@ -1,12 +1,12 @@
 // 导入DB数据
 require('shelljs/global');
+const moment = require('moment');
+const setting = require("../configs/settings");
 
-const setting = require("../utils/settings");
+const dbforder = '20180531145629';
 
-const name = "DoraDbData";
-const time = ".20171117";
-if(setting.HOST.match(/127.0.0.1|localhost/)){
-    exec(`mongorestore  --gzip --archive=./data/${name + time}.gz `).stdout;
-}else{
-    exec(`mongorestore -h ${setting.HOST} --port ${setting.PORT} -u ${setting.USERNAME} -p ${setting.PASSWORD}  --gzip --archive=./data/${name + time}.gz `).stdout;
+if (process.env.NODE_ENV == 'production') {
+    exec(`mongorestore -d ${setting.DB} -h ${setting.HOST} --port ${setting.PORT} -u ${setting.USERNAME} -p ${setting.PASSWORD} --drop ./databak/${dbforder}/${setting.DB}`).stdout;
+} else {
+    exec(`mongorestore -h 127.0.0.1:27017 -d ${setting.DB} --drop ./databak/${dbforder}/${setting.DB}`).stdout;
 }

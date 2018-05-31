@@ -18,8 +18,8 @@ const serverTitleMixin = {
                 return item.name == 'keywords'
             }) || [];
             this.$ssrContext.title = meta.title || meta
-            desObj[0] && (this.$ssrContext.description = desObj[0].content || '前端俱乐部')
-            keyObj[0] && (this.$ssrContext.keywords = keyObj[0].content || '前端俱乐部')
+            desObj[0] && (this.$ssrContext.description = desObj[0].content || '前端开发俱乐部')
+            keyObj[0] && (this.$ssrContext.keywords = keyObj[0].content || '前端开发俱乐部')
         }
     }
 }

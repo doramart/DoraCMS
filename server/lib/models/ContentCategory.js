@@ -5,11 +5,13 @@
 var mongoose = require('mongoose');
 var shortid = require('shortid');
 var Schema = mongoose.Schema;
+var moment = require('moment')
+var TemplateItems = require('./TemplateItems');
 
 var ContentCategorySchema = new Schema({
     _id: {
         type: String,
-        
+
         'default': shortid.generate
     },
     uid: {
@@ -18,6 +20,7 @@ var ContentCategorySchema = new Schema({
     },
     name: String,
     keywords: String,
+    type: { type: String, default: "1" }, // 类别类型默认1,2 为快讯
     sortId: {
         type: Number,
         default: 1
@@ -34,6 +37,7 @@ var ContentCategorySchema = new Schema({
         type: Date,
         default: Date.now
     },
+    contentTemp: { type: String, ref: "TemplateItems" }, // 内容模板
     defaultUrl: {
         type: String,
         default: ""
@@ -49,47 +53,12 @@ var ContentCategorySchema = new Schema({
     comments: String
 });
 
+ContentCategorySchema.set('toJSON', { getters: true, virtuals: true });
+ContentCategorySchema.set('toObject', { getters: true, virtuals: true });
 
-ContentCategorySchema.statics = {
-
-    //更新大类模板，子类模板同步更新
-    updateCategoryTemps: function (req, res, cateId) {
-        if (shortid.isValid(cateId)) {
-            var cateQuery = {
-                'sortPath': {
-                    $regex: new RegExp(cateId, 'i')
-                }
-            };
-            ContentCategory.update(cateQuery, {
-                $set: {
-                    contentTemp: req.body.contentTemp
-                }
-            }, {
-                multi: true
-            }, function (err) {
-                if (err) {
-                    res.end(err);
-                }
-            })
-        } else {
-            res.end(settings.system_illegal_param);
-        }
-    },
-    //根据Id查询类别信息
-    getCateInfoById: function (cateId, callBack) {
-        ContentCategory.findOne({
-            "_id": cateId
-        }).populate('contentTemp').exec(function (err, doc) {
-            if (err) {
-                res.end(err);
-            } else {
-
-                callBack(doc);
-            }
-        })
-    }
-
-};
+ContentCategorySchema.path('date').get(function (v) {
+    return moment(v).format("YYYY-MM-DD HH:mm:ss");
+});
 
 
 var ContentCategory = mongoose.model("ContentCategory", ContentCategorySchema);

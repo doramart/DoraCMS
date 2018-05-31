@@ -22,6 +22,9 @@ module.exports = {
             test: /\.css$/,
             loader: ExtractTextPlugin.extract(['css-loader', 'postcss-loader'])
         }, {
+            test: /\.scss/,
+            loader: ExtractTextPlugin.extract(['css-loader', 'postcss-loader', 'sass-loader'])
+        }, {
             test: /\.less/,
             loader: ExtractTextPlugin.extract(['css-loader', 'postcss-loader', 'less-loader'])
         }]
@@ -33,7 +36,6 @@ module.exports = {
             }
         }),
         new ExtractTextPlugin('static/css/[name].[hash:7].css'),
-        // new BundleAnalyzerPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             minChunks: function (module, count) {
@@ -65,19 +67,11 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             chunks: [
-                'manifest', 'vendor', 'element', 'app',
-            ],
-            filename: 'server.html',
-            template: 'src/template/server.html',
-            inject: true
-        }),
-        new HtmlWebpackPlugin({
-            chunks: [
                 'manifest', 'vendor', 'element', 'admin',
             ],
             filename: 'admin.html',
             template: 'src/template/admin.html',
-            manageCates: '<%= manageCates%>',
+            manageCates: '{{manageCates}}',
             inject: true
         })
     ]

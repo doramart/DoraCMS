@@ -1,0 +1,35 @@
+{% extends "./public/defaultTemp.html" %} {% block content %} {% import "./public/adsPannel.html" as adsPannel %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main-container">
+            <div class="row">
+                <div class="col-md-8 left-frame">
+                    <div class="row slider-box">
+                        <div class="col-md-10">
+                            {{adsPannel.slider(adsList,'rk49YAOcb')}}
+                        </div>
+                        <div class="col-md-2 top-rec-contents">
+                            {% if reCommendListData.docs.length > 0 %} {% set currentRec = reCommendListData.docs.slice(0, 3) %} {% for item in currentRec
+                            %}
+                            <div class="rec-li">
+                                <div class="contentImg">
+                                    <a href="/details/{{item._id}}.html">
+                                        <img src="{{item.sImg}}" alt="{{item.title}}" />
+                                    </a>
+                                </div>
+                                <a class="title" href="/details/{{item._id}}.html">{{item.title | cutwords(15)}}</a>
+                            </div>
+                            {% endfor %} {% endif %}
+                        </div>
+                    </div>
+                    {% include "./public/itemListTemp.html" %}
+                </div>
+                <div class="col-md-4 right-frame">
+                    {{adsPannel.slider(adsList,'SJllJUAdcZ')}} {% include "./public/hotNewsList.html" %} {% include "./public/reCommendList.html"
+                    %} {% include "./public/newMessageBoard.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

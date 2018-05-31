@@ -1,0 +1,22 @@
+<!--文章推荐模块-->
+{% if reCommendListData.docs.length > 0 %}
+<div class="pannel-box rec-content-list">
+    <h2 class="pannel-title">{{lk.lc_rec_document}}</h2>
+    <div class="content-list">
+        <div class="row">
+            {% for item in reCommendListData.docs %}
+
+            <div class="col-md-6 list-img">
+                <a href="/details/{{item._id}}.html" class="continue-reading">
+                    <img src="{{item.sImg}}" alt="{{item.title}}">
+                </a>
+                <a href="/details/{{item._id}}.html" target="_blank" class="title">
+                    {{item.stitle | cutwords(40)}}
+                </a>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+{% endif%}
