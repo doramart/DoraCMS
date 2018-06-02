@@ -35,8 +35,8 @@ module.exports = {
     assetsCdn: true, // 静态资源使用cnd.请在build完成后将 elemt.*.js 上传的七牛的融合cdn
 
     // redis配置
-    openRedis: process.env.NODE_ENV == 'production' ? true : false, //是否开启,若为true 则下面的信息必须配置正确完整
-    redis_host: '10.0.0.1',
+    openRedis: true, //是否开启,若为true 则下面的信息必须配置正确完整
+    redis_host: '127.0.0.1',
     redis_port: 6379,
     redis_psd: 'your redis password',
     redis_db: 0,
