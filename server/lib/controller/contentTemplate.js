@@ -227,23 +227,27 @@ class ContentTemplate {
     }
 
     async updateFileInfo(req, res, next) {
-        let fileContent = req.query.code;
-        let filePath = req.query.path;
-        if (filePath && filePath.indexOf('../') >= 0 || !fileContent) {
-            res.send(siteFunc.renderApiErr(req, res, 500, 'no power', 'getlist'))
-        } else {
-            let path = siteFunc.getTempBaseFile(filePath) + filePath;
-            if (path) {
-                let writeState = service.writeFile(req, res, path, fileContent);
-                if (writeState == 200) {
-                    res.send(siteFunc.renderApiData(res, 200, 'ContentTemplateFileUpdate', {}, 'update'));
-                } else {
-                    res.send(siteFunc.renderApiErr(req, res, 500, 'no path file', 'getlist'))
-                }
-            } else {
+        //req.query.code and path of undefined.use  form can read
+        const form = new formidable.IncomingForm();
+        form.parse(req, async (err, fields, files) => {
+            let fileContent = fields.code;
+            let filePath = fields.path;
+            if (filePath && filePath.indexOf('../') >= 0 || !fileContent) {
                 res.send(siteFunc.renderApiErr(req, res, 500, 'no power', 'getlist'))
+            } else {
+                let path = siteFunc.getTempBaseFile(filePath) + filePath;
+                if (path) {
+                    let writeState = service.writeFile(req, res, path, fileContent);
+                    if (writeState == 200) {
+                        res.send(siteFunc.renderApiData(res, 200, 'ContentTemplateFileUpdate', {}, 'update'));
+                    } else {
+                        res.send(siteFunc.renderApiErr(req, res, 500, 'no path file', 'getlist'))
+                    }
+                } else {
+                    res.send(siteFunc.renderApiErr(req, res, 500, 'no power', 'getlist'))
+                }
             }
-        }
+        })
 
     }
 
