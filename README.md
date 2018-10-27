@@ -1,6 +1,6 @@
 # doracms 2.1.0
 
-![DoraCMS](http://7xkrk4.com1.z0.glb.clouddn.com/doracms2.jpg "DoraCMS")
+![DoraCMS](https://cdn.html-js.cn/doracms2.1.jpg "DoraCMS")
 
 ## 2.1.1版本更新
 
