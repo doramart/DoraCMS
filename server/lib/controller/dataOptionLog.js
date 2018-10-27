@@ -47,12 +47,12 @@ class DataItem {
         }
     }
 
-    async backUpData(req, res, next) {
+    async backUpData(req, res) {
         let date = new Date();
         let ms = moment(date).format('YYYYMMDDHHmmss').toString();
         const systemConfigs = await SystemConfigModel.find({});
 
-        if (_.isEmpty(systemConfigs)) {
+        if (_.isEmpty(systemConfigs) && !_.isEmpty(req)) {
             res.send(siteFunc.renderApiData(res, 200, res.__("resdata_checkSysConfig_error"), {}, 'getlist'));
         }
         let databackforder = isDev ? process.cwd() + '/databak/' : systemConfigs[0].databackForderPath;
@@ -81,7 +81,7 @@ class DataItem {
                         console.log('archiver has been finalized and the output file descriptor has closed.');
                         // 操作记录入库
                         let optParams = {
-                            logs: res.__("label_databack"),
+                            logs: "Data backup",
                             path: dataPath,
                             fileName: ms + '.zip'
                         }
@@ -91,16 +91,15 @@ class DataItem {
                                 console.log('备份失败：', err);
 
                             }
-
-                            res.send(siteFunc.renderApiData(res, 200, 'dataOptionLog', {}, 'getlist'));
-
+                            if (!_.isEmpty(req)) {
+                                res.send(siteFunc.renderApiData(res, 200, 'dataOptionLog', {}, 'getlist'));
+                            }
                         });
                     });
 
                     output.on('end', function () {
                         console.log('Data has been drained');
                     });
-
 
                     archive.on('error', function (err) {
                         throw err;

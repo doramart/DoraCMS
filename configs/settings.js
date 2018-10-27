@@ -35,12 +35,12 @@ module.exports = {
     assetsCdn: true, // 静态资源使用cnd.请在build完成后将 elemt.*.js 上传的七牛的融合cdn
 
     // redis配置
-    openRedis: true, //是否开启,若为true 则下面的信息必须配置正确完整
+    openRedis: true, // 测试或生产环境必须开启
     redis_host: '127.0.0.1',
     redis_port: 6379,
     redis_psd: 'your redis password',
     redis_db: 0,
-    redis_ttl: 24 * 30, // 过期时间30天
+    redis_ttl: 12, // 12 小时
 
     // 站点基础信息配置
     DORACMSAPI: 'http://api.html-js.cn', // 系统服务提供商

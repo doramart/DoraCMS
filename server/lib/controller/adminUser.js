@@ -70,14 +70,14 @@ class AdminUser {
         try {
             let adminUserCount = await AdminUserModel.count();
             let regUserCount = await UserModel.count();
-            let regUsers = await UserModel.find({}, { password: 0, email: 0 }).limit(20).sort({ date: -1 });
+            let regUsers = await UserModel.find({}, { password: 0, email: 0 }).limit(10).sort({ date: -1 });
             let contentCount = await ContentModel.count();
             let messageCount = await MessageModel.count();
             let logQuery = { type: 'login' };
             let reKey = new RegExp(req.session.adminUserInfo.userName, 'i')
             logQuery.logs = { $regex: reKey }
             let loginLogs = await SystemOptionLogModel.find(logQuery).sort({ date: -1 }).skip(1).limit(1);
-            let messages = await MessageModel.find().limit(10).sort({ date: -1 }).populate([{
+            let messages = await MessageModel.find().limit(8).sort({ date: -1 }).populate([{
                 path: 'contentId',
                 select: 'stitle _id'
             }, {
@@ -159,8 +159,6 @@ class AdminUser {
     }
 
     async loginAction(req, res, next) {
-        const systemConfigs = await SystemConfigModel.find({});
-        const { siteName, siteEmail, siteDomain, showImgCode } = systemConfigs[0];
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
             let {
@@ -168,6 +166,9 @@ class AdminUser {
                 password
             } = fields;
             try {
+                const systemConfigs = await SystemConfigModel.find({});
+                const { siteName, siteEmail, siteDomain, showImgCode } = systemConfigs[0];
+
                 let errMsg = '';
                 if (!validatorUtil.checkUserName(fields.userName)) {
                     errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_userName") })
@@ -180,15 +181,12 @@ class AdminUser {
                 if (errMsg) {
                     throw new siteFunc.UserException(errMsg);
                 }
-            } catch (err) {
-                console.log(err.message, err);
-                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
-            }
-            const userObj = {
-                userName: fields.userName,
-                password: fields.password
-            }
-            try {
+
+                const userObj = {
+                    userName: fields.userName,
+                    password: fields.password
+                }
+
                 let user = await AdminUserModel.findOne(userObj).populate([{
                     path: 'group',
                     select: 'power _id enable name'
@@ -222,24 +220,19 @@ class AdminUser {
                             siteEmail,
                             siteDomain
                         };
-                        try {
-                            let writeState = await axios.post(settings.DORACMSAPI + '/system/checkSystemInfo', authParams);
-                            if (writeState.status == 200 && writeState.data == 'success') {
-                                await AdminUserModel.update({ '_id': req.session.adminUserInfo._id }, { $set: { auth: true } })
-                            }
-                        } catch (authError) {
 
-                            res.send(siteFunc.renderApiData(res, 200, 'adminUser', { adminPower: req.session.adminPower }, 'getlist'))
-
+                        let writeState = await axios.post(settings.DORACMSAPI + '/system/checkSystemInfo', authParams);
+                        if (writeState.status == 200 && writeState.data == 'success') {
+                            await AdminUserModel.update({ '_id': req.session.adminUserInfo._id }, { $set: { auth: true } })
                         }
+
                     }
 
-                    res.send(siteFunc.renderApiData(res, 200, 'adminUser', { adminPower: req.session.adminPower }, 'getlist'))
+                    res.send(siteFunc.renderApiData(res, 200, 'adminUser', { adminPower: req.session.adminPower }, 'login'))
 
                 } else {
 
-
-                    res.send(siteFunc.renderApiErr(req, res, 500, res.__("validate_login_notSuccess"), 'save'));
+                    res.send(siteFunc.renderApiErr(req, res, 500, res.__("validate_login_notSuccess"), 'login'));
                 }
 
             } catch (err) {
@@ -254,25 +247,21 @@ class AdminUser {
         const form = new formidable.IncomingForm();
         form.parse(req, async (err, fields, files) => {
             try {
+
                 checkFormData(req, res, fields);
-            } catch (err) {
-                console.log(err.message, err);
-                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
-            }
 
-            const userObj = {
-                userName: fields.userName,
-                name: fields.name,
-                email: fields.email,
-                phoneNum: fields.phoneNum,
-                password: fields.password,
-                confirm: fields.confirm,
-                group: fields.group,
-                enable: fields.enable,
-                comments: fields.comments
-            }
+                const userObj = {
+                    userName: fields.userName,
+                    name: fields.name,
+                    email: fields.email,
+                    phoneNum: fields.phoneNum,
+                    password: fields.password,
+                    confirm: fields.confirm,
+                    group: fields.group,
+                    enable: fields.enable,
+                    comments: fields.comments
+                }
 
-            try {
                 let user = await AdminUserModel.find().or([{ userName: fields.userName }])
                 if (!_.isEmpty(user)) {
 
@@ -296,24 +285,21 @@ class AdminUser {
         form.parse(req, async (err, fields, files) => {
             try {
                 checkFormData(req, res, fields);
-            } catch (err) {
-                console.log(err.message, err);
-                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
-            }
 
-            const userObj = {
-                userName: fields.userName,
-                name: fields.name,
-                email: fields.email,
-                phoneNum: fields.phoneNum,
-                password: fields.password,
-                confirm: fields.confirm,
-                group: fields.group,
-                enable: fields.enable,
-                comments: fields.comments
-            }
-            const item_id = fields._id;
-            try {
+                const userObj = {
+                    userName: fields.userName,
+                    name: fields.name,
+                    email: fields.email,
+                    phoneNum: fields.phoneNum,
+                    password: fields.password,
+                    confirm: fields.confirm,
+                    group: fields.group,
+                    enable: fields.enable,
+                    comments: fields.comments
+                }
+                const item_id = fields._id;
+
+
                 await AdminUserModel.findOneAndUpdate({
                     _id: item_id
                 }, {

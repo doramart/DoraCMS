@@ -1,0 +1,76 @@
+ //自定义样式
+ .dr-toolbar {
+     margin: 10px auto;
+     height: 30px;
+ }
+
+ .dr-searchInput {
+     width: 200px;
+     display: inline-block;
+ }
+
+ .dr-select-box {
+     display: inline-block;
+ }
+
+ .dr-toolbar-right {
+     width: 100%;
+     display: block;
+     text-align: right;
+ }
+
+ .el-button--small {
+     padding: 7px 6px !important;
+ }
+
+ .el-button--mini {
+     padding: 7px !important;
+ }
+
+ .el-input-number--small {
+     line-height: 32px !important;
+ }
+
+ .el-table a:link,
+ .el-table a:visited {
+     color: #5a5e66;
+     text-decoration: none;
+ }
+
+ .el-card__header {
+     padding: 10px 10px;
+ }
+
+ .dr-datatable {
+     padding: 15px;
+ }
+
+ .dash-box {
+     background: #fff;
+     -webkit-box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+     border-color: rgba(0, 0, 0, 0.05);
+     .dash-title {
+         font-size: 16px;
+         color: rgba(0, 0, 0, 0.45);
+         margin: 0;
+         padding: 15px;
+         font-weight: 400;
+         border-bottom: 1px solid #eee;
+         background: rgba(0, 0, 0, 0.003);
+         -webkit-box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
+         box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
+     }
+     .dash-content {
+         padding: 15px;
+     }
+ }
+
+ @media screen and (max-width:768px) {
+     .el-dialog {
+         width: 90% !important;
+     }
+     .el-message-box {
+         width: 80%;
+     }
+ }

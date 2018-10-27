@@ -187,15 +187,15 @@
             },
             onValidateAll: function (reasons) {
                 if (reasons.length > 0) {
-                    console.log('有表单没有通过', reasons)
                     postArticelVM.showErr = true;
                     postArticelVM.message = reasons[0].message;
                 } else {
-                    console.log('全部通过');
                     if (!postArticelVM.sImg) {
-                        toastr.error('请添加缩略图');
-                    } else if (postArticelVM.categories.length == 0 || postArticelVM.tags.length == 0) {
-                        toastr.error('请选择类别或标签');
+                        layer.msg("{{lk.validate_userContent_sImg}}", { icon: 2 });
+                    } else if (postArticelVM.categories.length == 0) {
+                        layer.msg("{{lk.validate_userContent_category}}", { icon: 2 });
+                    } else if (postArticelVM.tags.length == 0) {
+                        layer.msg("{{lk.validate_userContent_tags}}", { icon: 2 });
                     } else {
                         var params = {
                             title: postArticelVM.title,
@@ -212,12 +212,12 @@
                             data: JSON.stringify(params),
                             url: '/api/content/addOne',
                             success: function (data) {
-                                console.log('success:', data)
                                 if (data.status == 200) {
-                                    toastr.success("添加成功!");
-                                    window.location.href = "/users/userContents"
+                                    layer.msg("{{lk.sys_layer_option_success}}", { icon: 1, anim: 1 }, function () {
+                                        window.location.href = "/users/userContents"
+                                    });
                                 } else {
-                                    toastr.error(data.message);
+                                    layer.msg(data.message, { icon: 2 });
                                 }
                             },
                             error: function (d) {

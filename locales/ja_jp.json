@@ -112,6 +112,9 @@
     "validate_del_adminUser_notice": "管理員のコメントを削除してから、この操作をしてください",
     "validate_forbid_more_req": "：多数のアクセスが確認されました。　しばらくたってからご利用ください。",
     "validate_message_add_err": "この文章に対してコメントしてください",
+    "validate_userContent_sImg": "サムネイルを選択してください",
+    "validate_userContent_category": "カテゴリを選択してください",
+    "validate_userContent_tags": "ラベルを選択してください",
     "resdata_getlist_error": "{{label}} を取得する 失敗した: {{error}} ",
     "resdata_deldata_error": "データを削除することができませんでした: {{error}} ",
     "resdata_savedata_error": "データを保存することができませんでした: {{error}} ",
@@ -187,6 +190,7 @@
     "label_findpwd": "パスワードを取り戻す",
     "label_option_notice": "操作のヒント",
     "label_backto_index": "トップページに戻る",
+    "label_page_404": "ご訪問のページは存在しませんので、後ほどやり直してください！",
     "label_findPwd_top_notice": "メールアドレスを入力してください、新しいパスワードのリンクを含むメールを受け取ることができます。",
     "label_resetpwd_sendEmail": "送信",
     "label_sendEmail_activePwd_title": "パスワードを取り戻す",
@@ -224,5 +228,11 @@
     "label_tempconfig_tree_users_temp": "ユーザーテンプレート",
     "label_tempconfig_tree_styles_temp": "スタイル",
     "label_tempconfig_tree_script_temp": "スクリプト",
-    "label_tempconfig_tree_script_tempUnit": "テンプレートユニット"
+    "label_tempconfig_tree_script_tempUnit": "テンプレートユニット",
+    "sys_layer_confirm_title": "ヒント",
+    "sys_layer_confirm_btn_yes": "確定する",
+    "sys_layer_confirm_btn_no": "取り消す",
+    "sys_layer_confirm_logOut": "登録を確認しますか？",
+    "sys_layer_confirm_delete": "この記録の削除を確認しますか？",
+    "sys_layer_option_success": "操作成功！"
 }

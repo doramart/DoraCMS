@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const utils = require('./utils')
 
 module.exports = {
     devtool: '#source-map',
@@ -7,6 +8,13 @@ module.exports = {
         rules: [{
             test: /\.scss$/,
             loader: 'style-loader!css-loader!postcss-loader!sass-loader'
+        }, {
+            test: /\.svg$/,
+            loader: 'svg-sprite-loader',
+            include: [utils.resolve('src/manage/icons')],
+            options: {
+                symbolId: 'icon-[name]'
+            }
         }, {
             test: /\.css$/,
             loader: 'style-loader!css-loader!postcss-loader'
@@ -16,8 +24,10 @@ module.exports = {
         }, {
             test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
             loader: 'url-loader',
+            exclude: [utils.resolve('src/manage/icons')],
             query: {
-                name: '[name].[hash:7].[ext]'
+                limit: 10000,
+                name: 'static/img/[name].[hash:7].[ext]'
             }
         }]
     },

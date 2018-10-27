@@ -1,7 +1,6 @@
 /*
 前后台公用js*/
 $(function () {
-
     //用户注销
     $('#userLoginOut').click(function () {
         loginOut();
@@ -22,19 +21,72 @@ $(function () {
         }
     });
 
+})
+
+layer.config({
+    extend: 'blue/layer.css', //加载您的扩展样式,它自动从theme目录下加载这个文件
+    skin: 'layui-layer-blue'  //layui-layer-orange这个就是上面我们定义css 的class
 });
 
+function getAjaxData(url, success = () => { }, type = 'get', params = {}) {
+    layer.load(1, { shade: [0.3, '#000'] });
+    let baseParams = {
+        url: url,
+        type: type.toLocaleUpperCase(),
+        success: function (result) {
+            layer.closeAll();
+            if (result.status === 500) {
+                layer.msg(result.message, { icon: 2, shade: [0.001, '#000'] });
+            } else if (result.status === 401) {
+                layer.confirm(result.message, {
+                    title: getSysValueByKey('sys_layer_confirm_title'),
+                    btn: getSysValueByKey('sys_layer_confirm_btn_yes'),
+                    yes: function (index) {
+                        layer.close(index);
+                    }
+                })
+            } else {
+                success && success(result);
+            }
+        },
+        error: function (d) {
+            console.log('error:', d)
+            layer.msg(d.message, { icon: 2 });
+        }
+    };
+    if (type == 'post') {
+        baseParams = Object.assign({}, baseParams, {
+            contentType: 'application/json; charset=utf-8',
+            traditional: true,
+            data: JSON.stringify(params),
+        })
+    }
+    $.ajax(baseParams);
+}
+
+function getSysValueByKey(key) {
+    let currentKeys = $('#sysKeys').val();
+    if (currentKeys) {
+        let sysLcList = JSON.parse($('#sysKeys').val());
+        return sysLcList[key];
+    } else {
+        return '';
+    }
+}
 
 function loginOut() {
-    $.ajax({
-        url: "/users/logout",
-        method: "GET",
-        success: function (result) {
-            if (result.status === 200) {
-                window.location = "/"
-            } else {
-                alert("未知异常，请稍后重试");
-            }
+    layer.confirm(getSysValueByKey('sys_layer_confirm_logOut'), {
+        title: getSysValueByKey('sys_layer_confirm_title'),
+        btn: getSysValueByKey('sys_layer_confirm_btn_yes'),
+        yes: function (index) {
+            layer.close(index);
+            getAjaxData('/users/logOut', (data) => {
+                if (data.status == 200) {
+                    layer.msg(data.message, { icon: 1 }, function () {
+                        window.location = "/"
+                    });
+                }
+            })
         }
     })
 }
@@ -88,9 +140,9 @@ avalon.filters.formatDateByType = function (date, type) {
 }
 
 
-toastr.options = { debug: false, positionClass: 'toast-top-center', timeOut: '2000', showMethod: "fadeIn", hideMethod: "fadeOut" }
 var searchVm = avalon.define({
     $id: 'headerCtr',
+    lsk: [],
     searchkey: '',
     message: '',
     activeSearch: false,
@@ -160,26 +212,15 @@ var adminLoginVm = avalon.define({
                     password: CryptoJS.MD5('dora' + adminLoginVm.password).toString(),
                     imageCode: adminLoginVm.imageCode
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8', // 很重要
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: 'api/admin/doLogin',
-                    success: function (data) {
-                        console.log('success:', data)
-                        if (data.status == 200) {
-                            window.location.href = "/manage";
-                        } else {
-                            adminLoginVm.showErr = true;
-                            adminLoginVm.message = data.message;
-                            adminLoginVm.reSetImgCode();
-                        }
-                    },
-                    error: function (d) {
-                        console.log('error:', d)
+                getAjaxData('/api/admin/doLogin', (data) => {
+                    if (data.status == 200) {
+                        window.location.href = "/manage";
+                    } else {
+                        adminLoginVm.showErr = true;
+                        adminLoginVm.message = data.message;
+                        adminLoginVm.reSetImgCode();
                     }
-                })
+                }, 'post', params)
             }
         }
     }
@@ -211,26 +252,16 @@ var confirmEmailVm = avalon.define({
                 var params = {
                     email: confirmEmailVm.email
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8',
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: '/users/sentConfirmEmail',
-                    success: function (data) {
-                        console.log('success:', data)
-                        if (data.status == 200) {
-                            toastr.success(data.message);
+                getAjaxData('/users/sentConfirmEmail', (data) => {
+                    if (data.status == 200) {
+                        layer.msg(data.message, { icon: 1, anim: 1 }, function () {
                             window.location.href = "/";
-                        } else {
-                            confirmEmailVm.showErr = true;
-                            confirmEmailVm.message = data.message;
-                        }
-                    },
-                    error: function (d) {
-                        console.log('error:', d)
+                        });
+                    } else {
+                        confirmEmailVm.showErr = true;
+                        confirmEmailVm.message = data.message;
                     }
-                })
+                }, 'post', params);
             }
         }
     }
@@ -269,25 +300,14 @@ var loginVm = avalon.define({
                     email: loginVm.email,
                     password: loginVm.password
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8', // 很重要
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: '/users/doLogin',
-                    success: function (data) {
-                        console.log('success:', data)
-                        if (data.status == 200) {
+                getAjaxData('/users/doLogin', (data) => {
+                    if (data.status == 200) {
+                        layer.msg(data.message, { icon: 1 }, function () {
                             window.location.href = "/ ";
-                        } else {
-                            loginVm.showErr = true;
-                            loginVm.message = data.message;
-                        }
-                    },
-                    error: function (d) {
-                        console.log('error:', d)
+                        });
                     }
-                })
+                }, 'post', params);
+
             }
         }
     }
@@ -300,17 +320,9 @@ var loginVm = avalon.define({
  */
 
 function getPostMessages() {
-    $.ajax({
-        type: "GET",
-        url: '/api/message/getList?pageSize=100&contentId=' + $('#contentId').val(),
-        success: function (data) {
-            console.log('success:', data)
-            if (data.status == 200) {
-                postMsgVm.messageList = data.data.docs;
-            }
-        },
-        error: function (d) {
-            console.log('error:', d)
+    getAjaxData('/api/message/getList?pageSize=100&contentId=' + $('#contentId').val(), (data) => {
+        if (data.status == 200) {
+            postMsgVm.messageList = data.data.docs;
         }
     })
 }
@@ -372,27 +384,13 @@ var postMsgVm = avalon.define({
                     var params = postMsgVm.$model;
                     params.contentId = $('#contentId').val();
                     delete params.messageList;
-                    $.ajax({
-                        type: 'POST',
-                        contentType: 'application/json; charset=utf-8', // 很重要
-                        traditional: true,
-                        data: JSON.stringify(params),
-                        url: '/users/message/post',
-                        success: function (data) {
-                            console.log('success:', data)
-                            if (data.status == 200) {
-                                $("#postMessage").prepend($('#msgSendBox'));
-                                postMsgVm.reSetData();
-                                getPostMessages();
-                            } else {
-                                postMsgVm.showErr = true;
-                                postMsgVm.message = data.message;
-                            }
-                        },
-                        error: function (d) {
-                            console.log('error:', d)
+                    getAjaxData('/users/message/post', (data) => {
+                        if (data.status == 200) {
+                            $("#postMessage").prepend($('#msgSendBox'));
+                            postMsgVm.reSetData();
+                            getPostMessages();
                         }
-                    })
+                    }, 'post', params);
                 } else {
                     window.location.href = "/users/login";
                 }
@@ -409,22 +407,17 @@ var postMsgVm = avalon.define({
  * 
  */
 function getUserRelevantList(api, dctype, current) {
-    $.ajax({
-        type: "GET",
-        url: '/users/' + api + '?current=' + current,
-        success: function (data) {
-            console.log('data', data);
-            if (data.status == 200) {
-                if (dctype == 'myContents') {
-                    myContentsVm.myContentList = data.data.docs;
-                    myContentsVm.contentTotalPage = data.data.pageInfo.totalPage;
-                } else if (dctype == 'myMessages') {
-                    myContentsVm.myMessageList = data.data.docs;
-                    myContentsVm.messageTotalPage = data.data.pageInfo.totalPage;
-                } else if (dctype == 'myJoinTopics') {
-                    myContentsVm.myJoinTopicsList = data.data.docs;
-                    myContentsVm.joinTopicsTotalPage = data.data.pageInfo.totalPage;
-                }
+    getAjaxData('/users/' + api + '?current=' + current, (data) => {
+        if (data.status == 200) {
+            if (dctype == 'myContents') {
+                myContentsVm.myContentList = data.data.docs;
+                myContentsVm.contentTotalPage = data.data.pageInfo.totalPage;
+            } else if (dctype == 'myMessages') {
+                myContentsVm.myMessageList = data.data.docs;
+                myContentsVm.messageTotalPage = data.data.pageInfo.totalPage;
+            } else if (dctype == 'myJoinTopics') {
+                myContentsVm.myJoinTopicsList = data.data.docs;
+                myContentsVm.joinTopicsTotalPage = data.data.pageInfo.totalPage;
             }
         }
     })
@@ -448,23 +441,34 @@ var myContentsVm = avalon.define({
     joinTopicPageClick: function (e, cur) {
         getUserRelevantList('getUserReplies', 'myJoinTopics', cur)
     },
-    deleteNotify: function (id) {
-        initCheckModal(myContentsVm, '确认删除该条记录吗？', function () {
-            $.ajax({
-                type: "GET",
-                data: { ids: id },
-                url: '/users/delUserNotify',
-                success: function (data) {
-                    console.log('data', data);
-                    if (data.status == 200) {
-                        toastr.success("恭喜，删除成功!");
-                        getUserRelevantList('getUserNotifys', 'myMessages', 1)
-                    } else {
-                        toastr.error(data.message);
-                    }
+    showMessageDetails: function (e, el) {
+        e.preventDefault();
+        var targetDom = e.target;
+        $(targetDom).toggleClass('fa-angle-down');
+        $(targetDom).parent().next().toggleClass('show');
+        if (!el.isRead) {
+            getAjaxData('/users/setNoticeRead?ids=' + el.id, (data) => {
+                if (data.status == 200) {
+                    getUserRelevantList('getUserNotifys', 'myMessages', 1)
                 }
-            })
-        });
+            });
+        }
+    },
+    deleteNotify: function (id) {
+        layer.confirm(getSysValueByKey('sys_layer_confirm_delete'), {
+            title: getSysValueByKey('sys_layer_confirm_title'),
+            btn: getSysValueByKey('sys_layer_confirm_btn_yes'),
+            yes: function (index) {
+                layer.close(index);
+                getAjaxData('/users/delUserNotify?ids=' + id, (data) => {
+                    if (data.status == 200) {
+                        layer.msg(getSysValueByKey('sys_layer_option_success'), { icon: 1 }, function () {
+                            getUserRelevantList('getUserNotifys', 'myMessages', 1)
+                        });
+                    }
+                })
+            }
+        })
     }
 })
 
@@ -501,26 +505,14 @@ var regVm = avalon.define({
                     password: regVm.password,
                     confirmPassword: regVm.confirmPassword
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8', // 很重要
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: '/users/doReg',
-                    success: function (data) {
-                        console.log('success:', data)
-                        if (data.status == 200) {
-                            toastr.success("{{lk.lc_reg_success_tip}}");
+                getAjaxData('/users/doReg', (data) => {
+                    if (data.status == 200) {
+                        layer.msg(data.message, { icon: 1 }, function () {
                             window.location.href = "/";
-                        } else {
-                            regVm.showErr = true;
-                            regVm.message = data.message;
-                        }
-                    },
-                    error: function (d) {
-                        console.log('error:', d)
+                        });
                     }
-                })
+                }, 'post', params)
+
             }
         }
     }
@@ -557,26 +549,13 @@ var reSetPsdVm = avalon.define({
                     confirmPassword: reSetPsdVm.confirmPassword,
                     password: reSetPsdVm.password
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8', // 很重要
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: '/users/updateNewPsd',
-                    success: function (data) {
-                        console.log('success:', data)
-                        if (data.status == 200) {
-                            toastr.success(data.message);
+                getAjaxData('/users/updateNewPsd', (data) => {
+                    if (data.status == 200) {
+                        layer.msg(data.message, { icon: 1 }, function () {
                             window.location.href = "/users/login";
-                        } else {
-                            reSetPsdVm.showErr = true;
-                            reSetPsdVm.message = data.message;
-                        }
-                    },
-                    error: function (d) {
-                        console.log('error:', d)
+                        });
                     }
-                })
+                }, 'post', params);
             }
         }
     }
@@ -614,26 +593,13 @@ var sendEmailInfoVm = avalon.define({
                     phoneNum: sendEmailInfoVm.phoneNum,
                     comments: sendEmailInfoVm.comments
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8', // 很重要
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: '/users/postEmailToAdminUser',
-                    success: function (data) {
-                        if (data.status == 200) {
-                            toastr.success(data.message);
-                            setTimeout(function () {
-                                window.location.href = "/";
-                            }, 2000)
-                        } else {
-                            toastr.error(data.message);
-                        }
-                    },
-                    error: function (d) {
-                        toastr.error(d);
+                getAjaxData('/users/postEmailToAdminUser', (data) => {
+                    if (data.status == 200) {
+                        layer.msg(data.message, { icon: 1 }, function () {
+                            window.location.href = "/";
+                        });
                     }
-                })
+                }, 'post', params);
             }
         }
     }
@@ -667,25 +633,12 @@ var setPsdVm = avalon.define({
                     confirmPassword: setPsdVm.confirmPassword,
                     password: setPsdVm.password
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8', // 很重要
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: '/users/updateInfo',
-                    success: function (data) {
-                        console.log('success:', data)
-                        if (data.status == 200) {
-                            toastr.success("更新成功!");
-                        } else {
-                            setPsdVm.showErr = true;
-                            setPsdVm.message = data.message;
-                        }
-                    },
-                    error: function (d) {
-                        console.log('error:', d)
+                getAjaxData('/users/updateInfo', (data) => {
+                    if (data.status == 200) {
+                        layer.msg(data.message, { icon: 1 });
                     }
-                })
+                }, 'post', params);
+
             }
         }
     }
@@ -726,24 +679,11 @@ var userInfoVm = avalon.define({
                     phoneNum: userInfoVm.phoneNum,
                     comments: userInfoVm.comments
                 }
-                $.ajax({
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8', // 很重要
-                    traditional: true,
-                    data: JSON.stringify(params),
-                    url: '/users/updateInfo',
-                    success: function (data) {
-                        console.log('success:', data)
-                        if (data.status == 200) {
-                            toastr.success(data.message);
-                        } else {
-                            toastr.error(data.message);
-                        }
-                    },
-                    error: function (d) {
-                        console.log('error:', d)
+                getAjaxData('/users/updateInfo', (data) => {
+                    if (data.status == 200) {
+                        layer.msg(data.message, { icon: 1 });
                     }
-                })
+                }, 'post', params)
             }
         }
     }
@@ -759,8 +699,9 @@ var userNavVm = avalon.define({
     currentPath: window.location.pathname
 })
 
-/**
- * 
- * userAddContent avalon controller
- * 
- */
+    /**
+     * 
+     * userAddContent avalon controller
+     * 
+     */
+// });

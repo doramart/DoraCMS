@@ -39,7 +39,8 @@
                             <div class="search-pannel">
                                 <div :class="['input-area',(@activeSearch? 'active':'')]">
                                     <div class="el-input el-input--small">
-                                        <input ms-on-keydown="@searchOpt" type="text" class="form-control" ms-duplex="@searchkey" placeholder="{{lk.lc_please_write_key}}">
+                                        <input ms-on-keydown="@searchOpt" type="text" class="form-control" ms-duplex="@searchkey"
+                                            placeholder="{{lk.lc_please_write_key}}">
                                     </div>
                                     <i ms-click='@searchMe' class="fa fa-search"></i>
                                 </div>
@@ -54,7 +55,8 @@
                                 </li>
                                 {% else %}
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{userInfo.userName}}
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                        aria-haspopup="true" aria-expanded="false">{{userInfo.userName}}
                                         <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">

@@ -26,6 +26,8 @@ var SystemConfigSchema = new Schema({
     mongodbInstallPath: String,
     databackForderPath: String,
     showImgCode: { type: Boolean, default: false }, // 是否显示验证码
+    bakDatabyTime: { type: Boolean, default: false }, // 是否自动备份数据
+    bakDataRate: { type: String, default: '1' }, // 数据备份频率
     poseArticlScore: { type: Number, default: 1 },
     postMessageScore: { type: Number, default: 1 },
     shareArticlScore: { type: Number, default: 1 }

@@ -6,14 +6,23 @@ const SWPrecachePlugin = require('sw-precache-webpack-plugin')
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const srcDir = path.resolve(__dirname, '../dist/').replace(/\\/g, "\/")
 const prefixMulti = {}
-prefixMulti[srcDir] = ''
+prefixMulti[srcDir] = '';
+const utils = require('./utils')
 
 module.exports = {
     devtool: false,
     module: {
         rules: [{
+            test: /\.svg$/,
+            loader: 'svg-sprite-loader',
+            include: [utils.resolve('src/manage/icons')],
+            options: {
+                symbolId: 'icon-[name]'
+            }
+        }, {
             test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
             loader: 'url-loader',
+            exclude: [utils.resolve('src/manage/icons')],
             query: {
                 limit: 10000,
                 name: 'static/img/[name].[hash:7].[ext]'

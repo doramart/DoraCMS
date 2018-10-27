@@ -36,14 +36,14 @@
             {% endif %}
 
             {% if pageInfo.current != 1 %}
-                <li><a href="{{localUrl}}—1.html{{param}}">«</a></li>
+                <li><a href="{{localUrl}}/1.html{{param}}">«</a></li>
             {% endif %}
 
             {% if page_start > 1 %}
                 <li><a>...</a></li>
             {% endif %}
 
-            {% for i in range(page_start, page_end) -%}
+            {% for i in range(page_start, page_end + 1) -%}
                 {% if i ==  pageInfo.current%}
                 <li class="active"><a>{{i}}</a></li>
                 {% else %}    

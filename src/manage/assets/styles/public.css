@@ -48,3 +48,12 @@ a:visited {
 .el-card__header {
     padding: 10px 10px;
 }
+
+@media screen and (max-width:768px) {
+    .el-dialog {
+        width: 90% !important;
+    }
+    .el-message-box {
+        width: 80%;
+    }
+}

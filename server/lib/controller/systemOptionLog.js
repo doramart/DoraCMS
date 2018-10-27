@@ -25,7 +25,8 @@ class SystemOptionLog {
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
-                    pageSize: Number(pageSize) || 10
+                    pageSize: Number(pageSize) || 10,
+                    type
                 }
             }
             res.send(siteFunc.renderApiData(res, 200, 'systemOptionLogs', renderData, 'save'))

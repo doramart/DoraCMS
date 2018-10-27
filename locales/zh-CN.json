@@ -112,6 +112,9 @@
     "validate_del_adminUser_notice": "请删除该管理员留言后在执行该操作",
     "validate_forbid_more_req": "您的操作太频繁，请歇会吧！",
     "validate_message_add_err": "请针对指定文章进行评论",
+    "validate_userContent_sImg": "请选择缩略图",
+    "validate_userContent_category": "请选择类别",
+    "validate_userContent_tags": "请选择标签",
     "resdata_getlist_error": "获取 {{label}} 失败: {{error}} ",
     "resdata_deldata_error": "删除数据失败: {{error}} ",
     "resdata_savedata_error": "保存数据失败: {{error}} ",
@@ -187,6 +190,7 @@
     "label_findpwd": "找回密码",
     "label_option_notice": "操作提示",
     "label_backto_index": "返回首页",
+    "label_page_404": "您访问的页面不存在，请稍后重试！",
     "label_findPwd_top_notice": "请输入您的电子邮箱地址。您会收到一封包含创建新密码链接的电子邮件",
     "label_resetpwd_sendEmail": "发送邮件",
     "label_sendEmail_activePwd_title": "通过激活链接找回密码",
@@ -224,5 +228,11 @@
     "label_tempconfig_tree_users_temp": "用户模板",
     "label_tempconfig_tree_styles_temp": "样式",
     "label_tempconfig_tree_script_temp": "脚本",
-    "label_tempconfig_tree_script_tempUnit": "模板单元"
+    "label_tempconfig_tree_script_tempUnit": "模板单元",
+    "sys_layer_confirm_title": "提示",
+    "sys_layer_confirm_btn_yes": "确定",
+    "sys_layer_confirm_btn_no": "取消",
+    "sys_layer_confirm_logOut": "您确认要退出吗？",
+    "sys_layer_confirm_delete": "确认删除该条记录吗？",
+    "sys_layer_option_success": "操作成功！"
 }

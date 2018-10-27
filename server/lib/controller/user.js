@@ -254,7 +254,6 @@ class User {
                 let newPsd = service.encrypt(fields.password, settings.encrypt_key);
                 let errMsg = '';
                 // app过来的注册暂时不校验用户名
-                // console.log('------from-----', from);
                 if (from != 'app' && !validatorUtil.checkUserName(fields.userName)) {
                     errMsg = res.__("validate_rangelength", { min: 2, max: 5, label: res.__("label_user_userName") });
                 }
@@ -386,13 +385,13 @@ class User {
                         //  校验链接是否过期
                         let now = new Date().getTime();
                         let oneDay = 1000 * 60 * 60 * 24;
-                        let lk = await siteFunc.getSiteLocalKeys(res);
+                        let localKeys = await siteFunc.getSiteLocalKeys(res);
                         if (!user.retrieve_time || now - user.retrieve_time > oneDay) {
                             let renderData = {
                                 infoType: "warning",
                                 infoContent: res.__("label_resetpwd_link_timeout"),
                                 staticforder: defaultTemp.alias,
-                                lk
+                                lk: localKeys.renderKeys
                             }
                             res.render(noticeTempPath, renderData);
                         } else {
@@ -400,11 +399,12 @@ class User {
                             res.render(reSetPwdTempPath, renderData);
                         }
                     } else {
+                        let localKeys = await siteFunc.getSiteLocalKeys(res);
                         res.render(noticeTempPath, {
                             infoType: "warning",
                             infoContent: res.__("label_resetpwd_error_message"),
                             staticforder: defaultTemp.alias,
-                            lk: await siteFunc.getSiteLocalKeys(res)
+                            lk: localKeys.renderKeys
                         });
                     }
                 } else {

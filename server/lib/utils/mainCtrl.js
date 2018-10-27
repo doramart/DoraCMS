@@ -22,6 +22,7 @@ const {
     ContentTemplate
 } = require('../controller');
 const settings = require("../../../configs/settings");
+const logUtil = require("../../../utils/middleware/logUtil");
 const siteFunc = require("../../../utils/siteFunc");
 const _ = require('lodash');
 
@@ -43,7 +44,7 @@ let mainCtrl = {
             key,
             altkey,
             configs: configs[0] || [],
-            version: 2.1,
+            version: 'v2.1.1',
             lang: settings.lang
         }
     },
@@ -91,6 +92,7 @@ let mainCtrl = {
 
     // 获取单个文档
     async getOneDocument(req, res, next) {
+        req.query.state = true;
         return await Content.getOneContent(req, res, next);
     },
 
@@ -165,16 +167,16 @@ let mainCtrl = {
                     pageData.tagList = await mainCtrl.getTagList(req, res, next);
                 } else if (md.action == 'get_content_detail') {
                     pageData.pageType = 'detail';
-                    pageData.documentInfo = await mainCtrl.getOneDocument(req, res, next);
-                    const { title, discription, tags } = pageData.documentInfo;
-                    let tagArr = ['doracms'];
-                    if (tags) {
-                        tagArr = tags.map((item, index) => {
-                            return item ? item.name : 'doracms'
-                        })
+                    let docInfo = await mainCtrl.getOneDocument(req, res, next);
+                    // 查询不到文档
+                    if (_.isEmpty(docInfo)) {
+                        continue;
+                    } else {
+                        pageData.documentInfo = docInfo;
+                        const { title, discription, tags } = pageData.documentInfo;
+                        req.query.title = title;
+                        req.query.des = discription;
                     }
-                    req.query.title = title;
-                    req.query.des = discription;
                 } else if (md.action == 'get_random_content') {
                     pageData.randomListData = await mainCtrl.getRandomDocumentList(req, res, next);
                 } else if (md.action == 'get_content_messages') {
@@ -214,10 +216,11 @@ let mainCtrl = {
                 pageData.cateInfo = await mainCtrl.getCategoryInfoById(req, res, next);
                 if (req.query.isIndex) {
                     pageData.pageType = "index";
-                    pageData.siteInfo.title = pageData.siteInfo.title
+                    !_.isEmpty(pageData.siteInfo) && (pageData.siteInfo.title = pageData.siteInfo.title)
                 } else {
                     pageData.pageType = "cate";
-                    pageData.siteInfo.title = pageData.siteInfo.title + '|' + pageData.cateInfo.name;
+                    let cateName = _.isEmpty(pageData.cateInfo) ? '' : ('|' + pageData.cateInfo.name);
+                    !_.isEmpty(pageData.siteInfo) && (pageData.siteInfo.title = pageData.siteInfo.title + cateName);
                 }
             }
 
@@ -233,34 +236,45 @@ let mainCtrl = {
 
             // 针对分类页和内容详情页动态添加meta
             let defaultTempItems = defaultTemp.data.items;
-            let siteDomain = pageData.siteInfo.configs.siteDomain;
-            let ogUrl = siteDomain;
-            let ogImg = siteDomain + "/themes/" + defaultTemp.data.alias + "/images/mobile_logo2.jpeg"
-            if (pageData.pageType == 'cate') {
-                let { defaultUrl, _id, contentTemp } = pageData.cateInfo
-                ogUrl = siteDomain + '/' + defaultUrl + '___' + _id;
-                req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, contentTemp, 'cate');
-            } else if (pageData.pageType == 'search' || pageData.pageType == 'tag') {
-                req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, '', 'cate');
-            } else if (pageData.pageType == 'detail') {
-                ogUrl = siteDomain + '/details/' + pageData.documentInfo._id + '.html';
-                if (pageData.documentInfo.sImg && (pageData.documentInfo.sImg).indexOf('defaultImg.jpg') < 0) {
-                    ogImg = siteDomain + pageData.documentInfo.sImg;
+            if (!_.isEmpty(pageData.siteInfo)) {
+                let siteDomain = pageData.siteInfo.configs.siteDomain;
+                let ogUrl = siteDomain;
+                let ogImg = siteDomain + "/themes/" + defaultTemp.data.alias + "/images/mobile_logo2.jpeg"
+                if (pageData.pageType == 'cate') {
+                    if (!_.isEmpty(pageData.cateInfo)) {
+                        let { defaultUrl, _id, contentTemp } = pageData.cateInfo
+                        ogUrl = siteDomain + '/' + defaultUrl + '___' + _id;
+                        req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, contentTemp, 'cate');
+                    }
+                } else if (pageData.pageType == 'search' || pageData.pageType == 'tag') {
+                    req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, '', 'cate');
+                } else if (pageData.pageType == 'detail') {
+                    if (!_.isEmpty(pageData.documentInfo)) {
+                        ogUrl = siteDomain + '/details/' + pageData.documentInfo._id + '.html';
+                        if (pageData.documentInfo.sImg && (pageData.documentInfo.sImg).indexOf('defaultImg.jpg') < 0) {
+                            ogImg = siteDomain + pageData.documentInfo.sImg;
+                        }
+                        let parentCateTemp = pageData.documentInfo.categories[0].contentTemp;
+                        req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, parentCateTemp, 'detail');
+                    } else {
+                        throw new siteFunc.UserException(404);
+                    }
                 }
-                let parentCateTemp = pageData.documentInfo.categories[0].contentTemp;
-                req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, parentCateTemp, 'detail');
+                pageData.ogData = {
+                    url: ogUrl,
+                    img: ogImg
+                };
             }
-            pageData.ogData = {
-                url: ogUrl,
-                img: ogImg
-            };
-            // 读取国际化文件信息
-            pageData.lk = await siteFunc.getSiteLocalKeys(res);
 
-            // console.log('---defaultTemp----', defaultTemp.data.items);
+            // 读取国际化文件信息
+            let localKeys = await siteFunc.getSiteLocalKeys(res);
+            pageData.lk = localKeys.renderKeys;
+            pageData.lsk = JSON.stringify(localKeys.sysKeys);
+
             res.render(settings.SYSTEMTEMPFORDER + defaultTemp.data.alias + '/' + req.query.tempPage, pageData);
         } catch (error) {
-            console.log('---error---', error);
+            logUtil.error(error, req);
+            if (error) next();
         }
     }
 

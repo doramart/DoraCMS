@@ -17,7 +17,15 @@ function isLogined(req) {
     return req.session.logined;
 }
 
-function checkUserSession(req, res, next) {
+function checkUserSessionForPage(req, res, next) {
+    if (!_.isEmpty(req.session.user)) {
+        next()
+    } else {
+        res.redirect('/');
+    }
+}
+
+function checkUserSessionForApi(req, res, next) {
     if (!_.isEmpty(req.session.user)) {
         next()
     } else {
@@ -60,7 +68,7 @@ router.post('/doReg', User.regAction);
 
 
 //用户中心
-router.get('/userCenter', checkUserSession, (req, res, next) => {
+router.get('/userCenter', checkUserSessionForPage, (req, res, next) => {
     req.query.title = "用户中心";
     req.query.tempPage = 'users/userCenter.html';
     next()
@@ -68,14 +76,14 @@ router.get('/userCenter', checkUserSession, (req, res, next) => {
 
 
 // 修改用户密码页面
-router.get('/setUserPsd', checkUserSession, (req, res, next) => {
+router.get('/setUserPsd', checkUserSessionForPage, (req, res, next) => {
     req.query.title = "修改密码";
     req.query.tempPage = 'users/userSetPsd.html';
     next()
 }, generalFun.getDataForUserCenter);
 
 // 用户相关主界面
-router.get('/userContents', checkUserSession, (req, res, next) => {
+router.get('/userContents', checkUserSessionForPage, (req, res, next) => {
     req.query.title = "我的发布";
     req.query.tempPage = 'users/userContents.html';
     next()
@@ -83,23 +91,15 @@ router.get('/userContents', checkUserSession, (req, res, next) => {
 
 
 // 用户投稿主界面
-router.get('/userAddContent', checkUserSession, (req, res, next) => {
+router.get('/userAddContent', checkUserSessionForPage, (req, res, next) => {
     req.query.title = "投稿";
     req.query.tempPage = 'users/userAddContent.html';
     next()
 }, generalFun.getDataForUserCenter);
 
 
-// 用户退出
-router.get('/logout', function (req, res, next) {
-    req.session.destroy();
-    res.clearCookie(settings.auth_cookie_name, { path: '/' });
-    res.send({ status: 200 });
-});
-
-
 //查找指定注册用户
-router.get('/userInfo', checkUserSession, function (req, res, next) {
+router.get('/userInfo', checkUserSessionForApi, function (req, res, next) {
 
     res.send({
         status: 200,
@@ -111,7 +111,7 @@ router.get('/userInfo', checkUserSession, function (req, res, next) {
 
 
 // 用户留言
-router.post('/message/post', checkUserSession, Message.postMessages)
+router.post('/message/post', checkUserSessionForApi, Message.postMessages)
 
 //-------------------------------------留言模块结束
 
@@ -129,25 +129,25 @@ router.get('/userNotify/batchDel', function (req, res) {
 
 
 // 修改用户信息
-router.post('/updateInfo', checkUserSession, User.updateUser);
+router.post('/updateInfo', checkUserSessionForApi, User.updateUser);
 
 // 获取用户通知信息
-router.get('/getUserNotifys', checkUserSession, (req, res, next) => { req.query.user = req.session.user._id; next() }, UserNotify.getUserNotifys);
+router.get('/getUserNotifys', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, UserNotify.getUserNotifys);
 
 // 设置用户消息为已读
-router.get('/setNoticeRead', checkUserSession, (req, res, next) => { req.query.user = req.session.user._id; next() }, UserNotify.setMessageHasRead);
+router.get('/setNoticeRead', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, UserNotify.setMessageHasRead);
 
 // 删除用户消息
-router.get('/delUserNotify', checkUserSession, UserNotify.delUserNotify);
+router.get('/delUserNotify', checkUserSessionForApi, UserNotify.delUserNotify);
 
 // 获取用户参与话题
-router.get('/getUserReplies', checkUserSession, (req, res, next) => { req.query.user = req.session.user._id; next() }, Message.getMessages);
+router.get('/getUserReplies', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, Message.getMessages);
 
 // 获取用户发布文章
-router.get('/getUserContents', checkUserSession, (req, res, next) => { req.query.user = req.session.user._id; next() }, Content.getContents);
+router.get('/getUserContents', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, Content.getContents);
 
 // 用户注销
-router.get('/logOut', checkUserSession, User.logOut);
+router.get('/logOut', checkUserSessionForApi, User.logOut);
 
 // 找回密码
 router.get('/confirmEmail', generalFun.getDataForResetPsdPage)

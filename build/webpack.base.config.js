@@ -3,13 +3,14 @@ const webpack = require('webpack')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+
 const config = {
     performance: {
         maxEntrypointSize: 300000,
         hints: isProd ? 'warning' : false
     },
     entry: {
-        admin: './src/admin.js'
+        admin: './src/manage/admin.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
@@ -23,12 +24,8 @@ const config = {
             path.join(__dirname, '../node_modules')
         ],
         alias: {
-            '@': path.join(__dirname, '..', 'src'),
-            'scss_vars': '@/manage/assets/styles/vars.scss',
-            '~src': path.resolve(__dirname, '../src'),
-            '~server': path.resolve(__dirname, '../server'),
-            '~mixins': path.resolve(__dirname, '../src/mixins'),
-            '~utils': path.resolve(__dirname, '../src/utils')
+            '@': path.join(__dirname, '../src/manage'),
+            '~server': path.resolve(__dirname, '../server')
         }
     },
     resolveLoader: {

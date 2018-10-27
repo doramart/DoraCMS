@@ -24,6 +24,7 @@ const { service, authSession, siteFunc } = require('./utils');
 const authUser = require('./utils/middleware/authUser');
 const logUtil = require('./utils/middleware/logUtil');
 const nunjucksFilter = require('./utils/middleware/nunjucksFilter');
+const addTask = require('./utils/middleware/task');
 const { AdminResource } = require('./server/lib/controller');
 
 
@@ -87,8 +88,12 @@ let env = nunjucks.configure(path.join(__dirname, 'views'), { // 设置模板文
     autoescape: true,
     express: app
 });
+
 // nunjucks过滤器
 nunjucksFilter(env);
+
+// 初始化定时任务
+addTask();
 
 app.set('view engine', 'html');
 
@@ -220,7 +225,7 @@ app.get('*', (req, res) => {
     let Page404 = `
         <div style="text-align:center">
             <h3 style="width: 25%;font-size: 12rem;color: #409eff;margin: 0 auto;margin-top: 10%;">404</h3>
-            <div style="font-size: 15px;color: #878d99;">您访问的页面不存在，或请稍后重试！ &nbsp;<a href="/">返回首页</a></div>
+            <div style="font-size: 15px;color: #878d99;">${res.__("label_page_404")} &nbsp;<a href="/">${res.__("label_backto_index")}</a></div>
         </div>
     `
     res.send(Page404)

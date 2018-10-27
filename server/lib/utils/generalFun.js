@@ -42,7 +42,6 @@ let generalFun = {
             { action: 'get_content_detail' },
             { action: 'get_random_content' },
             { action: 'get_document_new_list' },
-            // { action: 'get_content_messages' },
             { action: 'get_site_info', params: { modal: 'simple' } }
         ];
         await mainCtrl.getPageData(req, res, next);

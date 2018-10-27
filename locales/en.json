@@ -112,6 +112,9 @@
     "validate_del_adminUser_notice": "Please delete this admin's comments then do this actions.",
     "validate_forbid_more_req": "Your operation is too frequent. Please take a break！",
     "validate_message_add_err": "Please comment to a specific article",
+    "validate_userContent_sImg": "Please choose thumbnails",
+    "validate_userContent_category": "Please select categories",
+    "validate_userContent_tags": "Please select tags",
     "resdata_getlist_error": "Get {{label}} Failure: {{error}} ",
     "resdata_deldata_error": "Delete Data Failure: {{error}} ",
     "resdata_savedata_error": "Save Data Failure: {{error}} ",
@@ -187,6 +190,7 @@
     "label_findpwd": "Retrieve the password",
     "label_option_notice": "Operate tips",
     "label_backto_index": "Back to Homepage",
+    "label_page_404": "The page you visited does not exist. Please try again later.",
     "label_findPwd_top_notice": "Please enter your email and you'll get an email about how to setup new password.",
     "label_resetpwd_sendEmail": "Send email",
     "label_sendEmail_activePwd_title": "Retrieve the password via active links",
@@ -224,5 +228,11 @@
     "label_tempconfig_tree_users_temp": "User Template",
     "label_tempconfig_tree_styles_temp": "Styles",
     "label_tempconfig_tree_script_temp": "Scripts",
-    "label_tempconfig_tree_script_tempUnit": "Template unit"
+    "label_tempconfig_tree_script_tempUnit": "Template unit",
+    "sys_layer_confirm_title": "Notice",
+    "sys_layer_confirm_btn_yes": "Confirm",
+    "sys_layer_confirm_btn_no": "Cancel",
+    "sys_layer_confirm_logOut": "Are you sure you want to login out?",
+    "sys_layer_confirm_delete": "Are you sure you want to delete this record?",
+    "sys_layer_option_success": "Successful operation!"
 }

@@ -56,19 +56,6 @@ router.post('/content/updateOne', checkUserSession, (req, res, next) => {
 }, Content.updateContent)
 
 
-// 机器人添加快讯🤖
-router.post('/content/robot/addOne', (req, res, next) => {
-  // req.query.contentType = '2';
-  next();
-}, Content.addContent)
-
-// 机器人添加推特🤖
-router.post('/content/robot/addTwiter', (req, res, next) => {
-  // req.query.contentType = '3';
-  next();
-}, Content.addContent)
-
-
 //文章二维码生成
 router.get('/qrImg', (req, res, next) => {
   let detailLink = req.query.detailLink;

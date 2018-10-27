@@ -4,15 +4,15 @@ const formidable = require('formidable');
 const shortid = require('shortid');
 const validator = require('validator')
 
-const { service, validatorUtil,   siteFunc } = require('../../../utils');
+const { service, validatorUtil, siteFunc } = require('../../../utils');
 
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
         errMsg = res.__("validate_error_params");
     }
-    if (!validatorUtil.checkName(fields.label, 2, 10)) {
-        errMsg = res.__("validate_rangelength", { min: 2, max: 10, label: res.__("label_resourceName") });
+    if (!validatorUtil.checkResourceName(fields.label, 2, 30)) {
+        errMsg = res.__("validate_rangelength", { min: 2, max: 30, label: res.__("label_resourceName") });
     }
     if (!fields.type) {
         errMsg = res.__("validate_inputNull", { label: res.__("label_resourceType") });

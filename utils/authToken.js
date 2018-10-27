@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
     const authorization = req.session.adminlogined;
     if (!authorization) {
-        res.send({ state: 'error', err: 'tokenExpiredError' });// 登录超时
+        res.send({ state: 'error', err: 'tokenExpiredError', data: { pageInfo: {}, docs: [] } });// 登录超时
     } else {
         next();
     }

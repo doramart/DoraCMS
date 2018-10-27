@@ -88,9 +88,7 @@ item为子元素集合
 					if (data.data.docs.length > 0) {
 						appendNewsVm.appendDocumentList = (appendNewsVm.appendDocumentList).concat(data.data.docs);
 					}
-				} else {
-					toastr.error('加载失败，请稍后重试！')
-				}
+				} 
 			},
 			error: function (d) {
 				console.log('error:', d)

@@ -13,6 +13,11 @@ module.exports = {
         }
         return newParams;
     },
+
+    // 校验资源名称 必须是英文
+    checkResourceName(str, min = 2, max = 6) {
+        return /^[a-zA-Z]+$/.test(str) && validator.isLength(str, min, max);
+    },
     // 校验用户名
     checkUserName(str) {
         return /^[a-zA-Z][a-zA-Z0-9_]{4,11}$/.test(str);

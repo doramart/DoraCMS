@@ -168,7 +168,7 @@ var siteFunc = {
     },
 
     // 封装api返回的数据
-    renderApiData(res, responseCode, responseMessage, data = {}, type = "getlist") {
+    renderApiData(res, responseCode, responseMessage, data = {}, type = "") {
 
         if (type == 'getlist') {
             responseMessage = res.__("validate_error_getSuccess", { success: responseMessage })
@@ -183,7 +183,7 @@ var siteFunc = {
         return sendData;
     },
 
-    renderApiErr(req, res, responseCode, responseMessage, type = 'save') {
+    renderApiErr(req, res, responseCode, responseMessage, type = '') {
         if (typeof responseMessage == 'object') {
             responseMessage = responseMessage.message;
         }
@@ -216,13 +216,18 @@ var siteFunc = {
                     resolve(localRenderData)
                 } else {
                     const targetLocalJson = require('../locales/zh-CN.json');
-                    let renderKeys = [];
+                    let renderKeys = {};
+                    // 记录针对组件的国际化信息
+                    let sysKeys = {};
                     for (let lockey in targetLocalJson) {
                         renderKeys[lockey] = res.__(lockey);
+                        if (lockey.indexOf('_layer_') > 0) {
+                            sysKeys[lockey] = res.__(lockey);
+                        }
                     }
                     let timeSet = process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 : 1000;
-                    cache.set(settings.session_secret + '_localkeys', renderKeys, timeSet);
-                    resolve(renderKeys)
+                    cache.set(settings.session_secret + '_localkeys', { renderKeys, sysKeys }, timeSet);
+                    resolve({ renderKeys, sysKeys })
                 }
             })
         })

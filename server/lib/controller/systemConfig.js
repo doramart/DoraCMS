@@ -1,10 +1,14 @@
 const BaseComponent = require('../prototype/baseComponent');
 const SystemConfigModel = require("../models").SystemConfig;
+const DataOptionLog = require("./dataOptionLog");
+
 const formidable = require('formidable');
 const { service, validatorUtil, siteFunc } = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
 const settings = require('../../../configs/settings');
+const schedule = require('node-schedule');
+const _ = require('lodash');
 
 function checkFormData(req, res, fields) {
     let errMsg = '';
@@ -116,7 +120,9 @@ class SystemConfig {
                 siteEmailPwd: service.encrypt(fields.siteEmailPwd, settings.encrypt_key),
                 poseArticlScore: fields.poseArticlScore,
                 postMessageScore: fields.postMessageScore,
-                shareArticlScore: fields.shareArticlScore
+                shareArticlScore: fields.shareArticlScore,
+                bakDatabyTime: fields.bakDatabyTime,
+                bakDataRate: fields.bakDataRate
             }
             const item_id = fields._id;
             try {
@@ -126,6 +132,11 @@ class SystemConfig {
                     const newAdminUser = new SystemConfigModel(systemObj);
                     await newAdminUser.save();
                 }
+                if (fields.bakDatabyTime) {
+                    (new SystemConfig()).addBakDataTask(req, res, fields.bakDataRate);
+                } else {
+                    (new SystemConfig()).cancelBakDataTask();
+                }
                 res.send(siteFunc.renderApiData(res, 200, 'systemConfig', {}, 'update'))
             } catch (err) {
 
@@ -133,6 +144,30 @@ class SystemConfig {
             }
         })
 
+    }
+
+    async addBakDataTask(req = {}, res = {}, bakDataRate) {
+        if (!_.isEmpty(global.bakDataTask)) {
+            global.bakDataTask.cancel();
+        }
+        let taskRule = '0 59 23 * * *';
+        if (bakDataRate == '3') { // 每周三次
+            var rule = new schedule.RecurrenceRule();
+            rule.dayOfWeek = [0, 3, 6];
+            rule.hour = 23;
+            rule.minute = 59;
+            taskRule = rule;
+        } else if (bakDataRate == '7') { // 每周
+            taskRule = '0 59 23 * * 1';
+        }
+        global.bakDataTask = schedule.scheduleJob(taskRule, function () {
+            DataOptionLog.backUpData(req, res);
+        });
+    }
+
+    async cancelBakDataTask() {
+        console.log('---取消定时器---');
+        global.bakDataTask.cancel();
     }
 
 }
