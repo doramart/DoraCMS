@@ -2,6 +2,7 @@
  * Created by Administrator on 2015/4/29.
  * 系统支持功能
  */
+
 const express = require('express');
 const router = express.Router();
 router.caseSensitive = true;

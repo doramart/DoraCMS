@@ -3,7 +3,7 @@
         <el-table align="center" v-loading="loading" ref="multipleTable" :data="dataList" tooltip-effect="dark" style="width: 100%" @selection-change="handleContentSelectionChange">
             <el-table-column type="selection" width="55">
             </el-table-column>
-            <el-table-column prop="isTop" :label="$t('contents.rec')" width="55" show-overflow-tooltip>
+            <el-table-column prop="isTop" :label="$t('contents.rec')" width="200" show-overflow-tooltip>
                 <template slot-scope="scope">
                     <i @click="topContent(scope.$index, dataList)" :class="scope.row.isTop === 1 ? 'fa fa-star' : 'fa fa-star-o'" :style="scope.row.isTop === 1 ? yellow : gray"></i>
                 </template>
