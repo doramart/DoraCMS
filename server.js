@@ -20,12 +20,16 @@ const _ = require("lodash");
 const resolve = file => path.resolve(__dirname, file);
 
 const settings = require("./configs/settings");
-const { service, authSession, siteFunc } = require("./utils");
+const {
+	service, authSession, siteFunc
+} = require("./utils");
 const authUser = require("./utils/middleware/authUser");
 const logUtil = require("./utils/middleware/logUtil");
 const nunjucksFilter = require("./utils/middleware/nunjucksFilter");
 const addTask = require("./utils/middleware/task");
-const { AdminResource } = require("./server/lib/controller");
+const {
+	AdminResource
+} = require("./server/lib/controller");
 
 
 
@@ -40,28 +44,29 @@ const app = express();
 
 // 定义setLocale中间件
 let languages = settings.languages;
+
 function setLocale(req, res, next) {
 	var locale;
 	//配置i18n
 	i18n.configure({
-		locales: languages,  //声明包含的语言
+		locales: languages, //声明包含的语言
 		register: res,
-		directory: __dirname + "/locales",  //翻译json文件的路径
-		defaultLocale: settings.lang,   //默认的语言，即为上述标准4
+		directory: __dirname + "/locales", //翻译json文件的路径
+		defaultLocale: settings.lang, //默认的语言，即为上述标准4
 		indent: "\t"
 	});
 	//客户端可以通过修改cookie进行语言切换控制
 	if (req.cookies["locale"]) {
 		locale = req.cookies["locale"];
-	}
-	else if (req.acceptsLanguages()) {
+	} else if (req.acceptsLanguages()) {
 		locale = req.acceptsLanguages()[0];
 	}
+
+	// 强制设置语言
 	if (!~languages.indexOf(locale)) {
 		locale = settings.lang;
 	}
-	// 强制设置语言
-	locale = settings.lang;
+
 	// 设置i18n对这个请求所使用的语言
 	res.setLocale(locale);
 	next();
@@ -80,7 +85,9 @@ if (!isProd) {
 }
 
 // 设置静态文件缓存时间
-const serve = (path, cache) => express.static(resolve(path), { maxAge: cache && isProd ? 60 * 60 * 24 * 30 : 0 });
+const serve = (path, cache) => express.static(resolve(path), {
+	maxAge: cache && isProd ? 60 * 60 * 24 * 30 : 0
+});
 
 // 引用 nunjucks 模板引擎
 let env = nunjucks.configure(path.join(__dirname, "views"), { // 设置模板文件的目录，为views
@@ -98,11 +105,17 @@ addTask();
 app.set("view engine", "html");
 
 app.use(favicon("./favicon.ico"));
-app.use(compression({ threshold: 0 }));
+app.use(compression({
+	threshold: 0
+}));
 // 日志
-app.use(logger("\":method :url\" :status :res[content-length] \":referrer\" \":user-agent\""));
+app.use(logger(
+	"\":method :url\" :status :res[content-length] \":referrer\" \":user-agent\""
+));
 // body 解析中间件
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 // cookie 解析中间件
 app.use(cookieParser(settings.session_secret));
 // session配置
@@ -132,7 +145,9 @@ if (settings.openRedis) {
 			db: "session",
 			host: "localhost",
 			port: 27017,
-			url: !isProd ? settings.URL : "mongodb://" + settings.USERNAME + ":" + settings.PASSWORD + "@" + settings.HOST + ":" + settings.PORT + "/" + settings.DB + ""
+			url: !isProd ? settings.URL : "mongodb://" + settings.USERNAME + ":" +
+				settings.PASSWORD + "@" + settings.HOST + ":" + settings.PORT + "/" +
+				settings.DB + ""
 		})
 	};
 }
@@ -157,7 +172,7 @@ app.use("/users", users);
 app.use("/system", system);
 
 // 机器人抓取
-app.get("/robots.txt", function (req, res, next) {
+app.get("/robots.txt", function(req, res, next) {
 	let stream = fs.createReadStream(path.join(__dirname, "./robots.txt"), {
 		flags: "r"
 	});
@@ -174,10 +189,13 @@ let qnParams = settings.openqn ? {
 	},
 	local: true
 } : {};
-app.use("/ueditor/ue", ueditor(path.join(__dirname, "public"), config = qnParams, function (req, res, next) {
+app.use("/ueditor/ue", ueditor(path.join(__dirname, "public"), config =
+	qnParams,
+function(req, res, next) {
 	var imgDir = "/upload/images/ueditor/"; //默认上传地址为图片
 	var ActionType = req.query.action;
-	if (ActionType === "uploadimage" || ActionType === "uploadfile" || ActionType === "uploadvideo") {
+	if (ActionType === "uploadimage" || ActionType === "uploadfile" ||
+			ActionType === "uploadvideo") {
 		var file_url = imgDir; //默认上传地址为图片
 		/*其他上传格式的地址*/
 		if (ActionType === "uploadfile") {
@@ -202,11 +220,12 @@ app.use("/ueditor/ue", ueditor(path.join(__dirname, "public"), config = qnParams
 
 
 // 后台渲染
-app.get("/manage", authSession, function (req, res) {
+app.get("/manage", authSession, function(req, res) {
 	AdminResource.getAllResource(req, res).then((manageCates) => {
 		let adminPower = req.session.adminPower;
 		console.log("adminPower", adminPower);
-		let currentCates = JSON.stringify(siteFunc.renderNoPowerMenus(manageCates, adminPower));
+		let currentCates = JSON.stringify(siteFunc.renderNoPowerMenus(manageCates,
+			adminPower));
 		if (isProd) {
 			res.render(process.cwd() + "/views/" + "admin.html", {
 				title: "DoraCMS后台管理",
@@ -222,7 +241,8 @@ app.use("/manage", manage);
 
 // 404 页面
 app.get("*", (req, res) => {
-	let Page404 = `
+	let Page404 =
+		`
         <div style="text-align:center">
             <h3 style="width: 25%;font-size: 12rem;color: #409eff;margin: 0 auto;margin-top: 10%;">404</h3>
             <div style="font-size: 15px;color: #878d99;">${res.__("label_page_404")} &nbsp;<a href="/">${res.__("label_backto_index")}</a></div>
@@ -231,13 +251,13 @@ app.get("*", (req, res) => {
 	res.send(Page404);
 });
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
 	var err = new Error(req.originalUrl + " Not Found");
 	err.status = 404;
 	next(err);
 });
 
-app.use(function (err, req, res) {
+app.use(function(err, req, res) {
 	if (err) logUtil.error(err, req);
 	res.status(err.status || 500);
 	res.send(err.message);

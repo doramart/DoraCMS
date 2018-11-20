@@ -1,4 +1,5 @@
 export default {
+	"switch language success": "switch language to english",
 	route: {
 		dashboard: "Dashboard",
 		introduction: "Introduction",

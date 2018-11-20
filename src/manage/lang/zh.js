@@ -1,4 +1,5 @@
 export default {
+	"switch language success": "将语言转换为简体中文",
 	route: {
 		dashboard: "首页",
 		introduction: "简述",
