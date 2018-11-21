@@ -460,11 +460,11 @@ export default {
 	regUser: {
 		form_title: "Refined the user infor",
 		userName: "Username",
-		name: "Name",
+		name: "Real Name",
 		enable: "Enable",
-		phoneNum: "Cell Phone No",
+		phoneNum: "Phone",
 		email: "Email box",
-		comments: "Remark",
+		comments: "Description",
 		date: "Created Time",
 		email: "Email",
 		integral: "Points"
