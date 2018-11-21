@@ -8,3 +8,4 @@ server/config/secret.js
 logs/
 dist/
 databak/
+public/upload
