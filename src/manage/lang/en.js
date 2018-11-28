@@ -429,7 +429,7 @@ export default {
 		bakEr: "Data backup failed."
 	},
 	contentCategory: {
-		form_title: "Enter the category title",
+		form_title: "New Form",
 		cate_name: "Category Name",
 		enabel: "Display",
 		type: "Type",
@@ -453,12 +453,12 @@ export default {
 		reply: "Reply"
 	},
 	contentTag: {
-		form_title: "Enter the tags infor",
+		form_title: "New Form",
 		name: "Name",
 		comments: "Remark"
 	},
 	regUser: {
-		form_title: "Refined the user infor",
+		form_title: "New Form",
 		userName: "Username",
 		name: "Real Name",
 		enable: "Enable",

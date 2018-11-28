@@ -160,6 +160,7 @@ class AdminUser {
 
     async loginAction(req, res, next) {
         const form = new formidable.IncomingForm();
+        console.log(req, res, 'xxx');
         form.parse(req, async (err, fields, files) => {
             let {
                 userName,
