@@ -22,6 +22,7 @@ export default {
 
   methods: {
     handleNodeClick(data) {
+      if(!data.path) return // 文件路径为空情况下,后端 getTempBaseFile=> (path) {var thisType = (path).split('.')[1];} path cant split
       services
         .getTemplateFileInfo({
           filePath: data.path
