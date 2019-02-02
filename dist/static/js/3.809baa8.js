@@ -1,0 +1,1 @@
+webpackJsonp([3],{913:function(e,r,t){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.default={beforeCreate:function(){var e=this.$route,r=e.params,t=e.query,u=r.path;this.$router.replace({path:"/"+u,query:t})},render:function(e){return e()}}},98:function(e,r,t){var u=t(5)(t(913),null,null,null,null);e.exports=u.exports}});
