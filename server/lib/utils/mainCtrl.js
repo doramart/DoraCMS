@@ -140,7 +140,7 @@ let mainCtrl = {
     },
 
     async getPageData(req, res, next) {
-        let _this = this; pageData = { pageType: 'index' }, modules = req.query.modules;
+        let _this = this, pageData = { pageType: 'index' }, modules = req.query.modules;
         try {
             for (let md of modules) {
                 req.query = Object.assign({}, req.query, md.params);
