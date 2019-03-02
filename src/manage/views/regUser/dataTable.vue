@@ -3,13 +3,13 @@
         <el-table align="center" v-loading="loading" ref="multipleTable" :data="dataList" tooltip-effect="dark" style="width: 100%" @selection-change="handleUserSelect">
             <el-table-column type="selection" width="55">
             </el-table-column>
-            <el-table-column prop="userName" :label="$t('regUser.userName')" width="120">
-            </el-table-column>
-            <el-table-column prop="date" :label="$t('regUser.date')" show-overflow-tooltip>
+            <el-table-column prop="userName" :label="$t('regUser.userName')" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="email" :label="$t('regUser.email')" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="integral" :label="$t('regUser.integral')" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="date" :label="$t('regUser.date')" show-overflow-tooltip>
             </el-table-column>
             <el-table-column :label="$t('main.dataTableOptions')" width="150">
                 <template slot-scope="scope">

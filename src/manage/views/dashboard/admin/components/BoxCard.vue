@@ -8,8 +8,8 @@
       <mallki class-name="mallki-text" :text="loginState.userInfo.userName"/>
       <div class="info-pannel">
           <ul>
-              <li><label>{{$t('main.lastLoginTime')}}：</label>{{renderLogs.ip}}</li>
-              <li><label>{{$t('main.lastLoginIp')}}：</label>{{renderLogs.date}}</li>
+              <li><label>{{$t('main.lastLoginTime')}}：</label>{{renderLogs.date}}</li>
+              <li><label>{{$t('main.lastLoginIp')}}：</label>{{renderLogs.ip}}</li>
               <li><label>{{$t('main.myPower')}}：</label><el-button size="mini" type="text" @click="showMyResourceBox">{{$t('main.seeDetails')}}</el-button></li>
           </ul>
       </div>
@@ -57,8 +57,8 @@ export default {
       };
       if (this.basicInfo.loginLogs && this.basicInfo.loginLogs[0]) {
         logs = {
-          ip: this.basicInfo.loginLogs[0].date,
-          date: this.basicInfo.loginLogs[0].logs.split(":")[1]
+          ip: this.basicInfo.loginLogs[0].logs.split(":")[1],
+          date: this.basicInfo.loginLogs[0].date
         };
       }
       return logs;

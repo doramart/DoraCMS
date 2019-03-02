@@ -116,10 +116,9 @@ export default {
       font-size: 48px;
     }
     .card-panel-description {
-      float: right;
+      float: left;
       font-weight: bold;
-      margin: 26px;
-      margin-left: 0px;
+      margin: 26px 0 26px 12px;
       .card-panel-text {
         line-height: 18px;
         color: rgba(0, 0, 0, 0.45);

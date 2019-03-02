@@ -52,19 +52,19 @@
                     </el-form-item>
                     <h2 class="line-gate">{{$t('sysTemConfigs.scoreSet')}}</h2>
                     <el-form-item :label="$t('sysTemConfigs.score_post')" prop="poseArticlScore">
-                        <el-input-number size="small" v-model="systemConfig.configs.poseArticlScore" @change="handleArticlScoreChange" :min="1" :max="50" label="文章发布"></el-input-number>                    
-                    </el-form-item>      
+                        <el-input-number size="small" v-model="systemConfig.configs.poseArticlScore" @change="handleArticlScoreChange" :min="1" :max="50" label="文章发布"></el-input-number>
+                    </el-form-item>
                     <el-form-item :label="$t('sysTemConfigs.score_post_message')" prop="postMessageScore">
-                        <el-input-number size="small" v-model="systemConfig.configs.postMessageScore" @change="handlePostMessageScoreChange" :min="1" :max="50" label="评论发布"></el-input-number>                    
-                    </el-form-item> 
+                        <el-input-number size="small" v-model="systemConfig.configs.postMessageScore" @change="handlePostMessageScoreChange" :min="1" :max="50" label="评论发布"></el-input-number>
+                    </el-form-item>
                     <el-form-item :label="$t('sysTemConfigs.score_share_post')" prop="shareArticlScore">
-                        <el-input-number  size="small" v-model="systemConfig.configs.shareArticlScore" @change="handleShareArticlScoreChange" :min="1" :max="50" label="文章转发"></el-input-number>                    
-                    </el-form-item> 
+                        <el-input-number  size="small" v-model="systemConfig.configs.shareArticlScore" @change="handleShareArticlScoreChange" :min="1" :max="50" label="文章转发"></el-input-number>
+                    </el-form-item>
                     <el-form-item>
                         <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{$t('main.form_btnText_save')}}</el-button>
                         <el-button size="medium" @click="resetForm('ruleForm')">{{$t('main.reSetBtnText')}}</el-button>
                     </el-form-item>
-                    
+
                 </el-form>
             </el-col>
         </el-row>

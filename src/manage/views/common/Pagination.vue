@@ -1,6 +1,6 @@
 <template>
     <div class="block dr-pagination">
-        <div v-if="pageInfo">
+        <div v-if="pageInfo && pageInfo.totalItems > 0">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageInfo.current" :page-size="pageInfo.pageSize" layout="total, prev, pager, next" :total="pageInfo.totalItems">
             </el-pagination>
         </div>
