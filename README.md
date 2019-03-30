@@ -2,6 +2,13 @@
 
 ![DoraCMS](https://www.html-js.cn/upload/images/ueditor/1056072974769197056.jpg "DoraCMS")
 
+演示地址： [前端开发俱乐部](https://www.html-js.cn)
+后台登录： https://www.html-js.cn/dr-admin     测试账号：doracms/123456
+
+开发文档： [前端内容管理框架 DoraCMS2.0 开发文档](https://www.html-js.cn/details/ryn2kSWqZ.html)
+生产部署教程： [DoraCMS2.0 linux部署(生产环境)教程](https://www.html-js.cn/details/ry4-B-hkf.html)
+
+
 ## 2.1.1版本更新
 
 ### 版本更新细节：
@@ -76,12 +83,12 @@
 9、修复了其它bug
 
 
-更新方法： 
+更新方法：
 1、checkout 最新 2.0.5 代码
 
 2、删除 node_modules,重新安装依赖包
 
-3、启动数据库，执行npm run dev 
+3、启动数据库，执行npm run dev
 
 
 ## 说明
@@ -96,12 +103,6 @@ DoraCMS 使用的技术栈：
 
 4、mongodb 3+
 
-演示地址： [前端开发俱乐部](https://www.html-js.cn)
-后台登录： https://www.html-js.cn/dr-admin     测试账号：doracms/123456
-
-开发文档： [前端内容管理框架 DoraCMS2.0 开发文档](https://www.html-js.cn/details/ryn2kSWqZ.html)   
-生产部署教程： [DoraCMS2.0 linux部署(生产环境)教程](https://www.html-js.cn/details/ry4-B-hkf.html)  
-
 
 ## 目录结构
 
@@ -109,9 +110,9 @@ DoraCMS 使用的技术栈：
 ├─build // webpack 相关配置文件
 │
 ├─configs // 配置文件
-│  │  
+│  │
 │  └─logConfig.js  // 日志配置文件
-│ 
+│
 ├─logs // 日志目录
 │
 ├─dist  // webpack 生成文档存放目录
