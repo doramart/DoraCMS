@@ -131,7 +131,7 @@ if (settings.openRedis) {
         store: new MongoStore({
             db: "session",
             host: "localhost",
-            port: 27017,
+            port: settings.PORT,
             url: !isProd ? settings.URL : 'mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + ''
         })
     }
