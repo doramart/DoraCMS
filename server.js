@@ -175,16 +175,18 @@ let qnParams = settings.openqn ? {
     local: true
 } : {};
 app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), config = qnParams, function (req, res, next) {
-    var imgDir = '/upload/images/ueditor/' //默认上传地址为图片
+    var year = new Date().getFullYear();
+    var imgDir = '/upload/images/' + year; // 图片在线管理目录
     var ActionType = req.query.action;
     if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo') {
-        var file_url = imgDir; //默认上传地址为图片
-        /*其他上传格式的地址*/
-        if (ActionType === 'uploadfile') {
-            file_url = '/upload/file/ueditor/'; //附件保存地址
+        if (ActionType === 'uploadimage') {
+            file_url = imgDir; // 图片保存地址
         }
-        if (ActionType === 'uploadvideo') {
-            file_url = '/upload/video/ueditor/'; //视频保存地址
+        else if (ActionType === 'uploadfile') {
+            file_url = '/upload/files/' + year; // 附件保存地址
+        }
+        else if (ActionType === 'uploadvideo') {
+            file_url = '/upload/videos/' + year; // 视频保存地址
         }
         res.ue_up(file_url); //你只要输入要保存的地址 。保存操作交给ueditor来做
         res.setHeader('Content-Type', 'text/html');
@@ -196,7 +198,7 @@ app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), config = qnParams
     // 客户端发起其它请求
     else {
         res.setHeader('Content-Type', 'application/json');
-        res.redirect('/ueditor/ueditor.config.json')
+        res.redirect('/ueditor/ueditor.config.json');
     }
 }));
 
