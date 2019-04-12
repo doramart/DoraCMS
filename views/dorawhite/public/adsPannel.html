@@ -1,12 +1,12 @@
 {% macro slider(adsList, adsId) %} {% if adsList.docs.length > 0%} {% set targetAds = {} %} {% for adsItem in adsList.docs
 %} {% if adsItem._id == adsId %} {% set targetAds = adsItem %} {% endif %} {% endfor %} {% if targetAds.type == '1' %} {%
 if (targetAds.carousel) and (targetAds.items.length > 0) %}
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="height:{{targetAds.height}}px">
     <!-- Indicators -->
     <ol class="carousel-indicators">
         {% for item in targetAds.items %} {% if loop.index0 == 0 %}
         <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-        {{else}}
+        {%else%}}
         <li data-target="#carousel-example-generic" data-slide-to="{{loop.index0}}"></li>
         {% endif %} {%endfor%}
     </ol>
