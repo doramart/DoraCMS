@@ -16,6 +16,7 @@ class UserNotify {
             let pageSize = req.query.pageSize || 10;
             let user = req.query.user;
             let systemUser = req.query.systemUser;
+            let useClient = req.query.useClient;
             let queryObj = {};
             if (user) {
                 queryObj.user = req.query.user;
@@ -36,7 +37,11 @@ class UserNotify {
                     totalPage: Math.ceil(totalItems / pageSize)
                 }
             }
-            res.send(siteFunc.renderApiData(res, 200, 'userNotify', renderData, 'getlist'));
+            if (useClient == '2') {
+                res.send(siteFunc.renderApiData(req, res, 200, 'userNotify', userNotifys, 'getlist'));
+            } else {
+                res.send(siteFunc.renderApiData(req, res, 200, 'userNotify', renderData, 'getlist'));
+            }
 
         } catch (err) {
 
@@ -70,7 +75,7 @@ class UserNotify {
                 await UserNotifyModel.remove({ '_id': userNotifyId });
             }
 
-            res.send(siteFunc.renderApiData(res, 200, 'userNotify', {}, 'delete'));
+            res.send(siteFunc.renderApiData(req, res, 200, 'userNotify', {}, 'delete'));
 
         } catch (err) {
 
@@ -113,7 +118,7 @@ class UserNotify {
         try {
             await UserNotifyModel.update(query, { $set: { 'isRead': true } }, { multi: true });
 
-            res.send(siteFunc.renderApiData(res, 200, res.__("resdata_setnoticeread_success"), {}, 'update'));
+            res.send(siteFunc.renderApiData(req, res, 200, res.__("resdata_setnoticeread_success"), {}, 'update'));
 
         } catch (error) {
 

@@ -1,7 +1,6 @@
-
 /**
  ** 定义获取前端数据入口
-* 
+ * 
  */
 // [documentList] 约定获取文档列表
 const {
@@ -31,21 +30,32 @@ let mainCtrl = {
     // 获取页面基础信息
     async getSiteInfo(req, res, next) {
         let configs = await SystemConfig.getSystemConfigs(req, res, next);
-        const { siteName, siteDiscription, siteKeywords, siteAltKeywords } = configs[0] || [];
+        const {
+            siteName,
+            siteDiscription,
+            siteKeywords,
+            siteAltKeywords,
+            ogTitle
+        } = configs[0] || [];
 
-        let { title, des, keywords } = req.query;
+        let {
+            title,
+            des,
+            keywords
+        } = req.query;
         let pageTitle = title ? (title + ' | ' + siteName) : siteName;
         let discription = des ? des : siteDiscription;
         let key = keywords ? keywords : siteKeywords;
         let altkey = siteAltKeywords || '';
         return {
             title: pageTitle,
+            ogTitle,
             discription,
             key,
             altkey,
             configs: configs[0] || [],
-            version: 'v2.1.1',
-            lang: settings.lang
+            version: 'v2.1.2',
+            lang: req.session.locale,
         }
     },
 
@@ -67,16 +77,7 @@ let mainCtrl = {
 
     // 获取文档列表
     async getDocumentList(req, res, next) {
-        !req.query.type && (req.query.type = '1');
-        return await Content.getContents(req, res, next);
-    },
-
-    // 获取底部自社文档
-    async getSysDocumentList(req, res, next) {
-        req.query.isTop = 0;
-        req.query.typeId = 'rk5yK-bFM';
-        req.query.pageSize = 20;
-        req.query.contentType = 'zj';
+        // !req.query.type && (req.query.type = '1');
         return await Content.getContents(req, res, next);
     },
 
@@ -92,7 +93,7 @@ let mainCtrl = {
 
     // 获取单个文档
     async getOneDocument(req, res, next) {
-        req.query.state = true;
+        // req.query.state = '2';
         return await Content.getOneContent(req, res, next);
     },
 
@@ -104,6 +105,11 @@ let mainCtrl = {
     // 获取用户消息
     async getUserNoticeList(req, res, next) {
         return await UserNotify.getUserNotifys(req, res, next);
+    },
+
+    // 获取用户列表
+    async getUserList(req, res, next) {
+        return await User.getUsers(req, res, next);
     },
 
     // 获取标签数据
@@ -122,9 +128,17 @@ let mainCtrl = {
         return await ContentTemplate.getCurrentTempInfo(req, res, next)
     },
 
+    // 获取帮助内容
+    async getHelpInfo(req, res, next) {
+        if (req.params.lang == 'zh-TW') {
+            req.query.helpLang = '3'
+        }
+        return await HelpCenter.getHelpCenters(req, res, next);
+    },
     // 获取类别或文档详情模板文件
-    getCateOrDetailTemp(defaultTempItems, contentTemp, type) {
-        let fileName = "contentList.html", currentPath = "";
+    getCateOrDetailTemp(defaultTempItems, contentTemp = '', type) {
+        let fileName = "contentList.html",
+            currentPath = "";
         if (type == 'detail') {
             fileName = "detail.html";
         }
@@ -140,24 +154,42 @@ let mainCtrl = {
     },
 
     async getPageData(req, res, next) {
-        let _this = this, pageData = { pageType: 'index' }, modules = req.query.modules;
+
+        let _this = this;
+        req.query.useClient = '1'; // 标记来自pc端
+        let pageData = {
+                pageType: 'index'
+            },
+            modules = req.query.modules;
+
         try {
             for (let md of modules) {
                 req.query = Object.assign({}, req.query, md.params);
                 if (md.action.indexOf('get_document') > -1) {
-                    let queryParams = {}, documentKey = 'documentList';
+                    let queryParams = {},
+                        documentKey = 'documentList';
                     if (md.action == 'get_document_hot_list') {
-                        queryParams = { sortby: 'clickNum', model: 'simple', current: 1 };
+                        queryParams = {
+                            sortby: 'clickNum',
+                            current: 1,
+                            type: '1'
+                        };
                         documentKey = 'hotItemListData';
                     } else if (md.action == 'get_document_new_list') {
-                        queryParams = { model: 'simple' };
+                        queryParams = {
+                            model: 'simple',
+                            current: 1
+                        };
                         documentKey = 'newItemListData';
                     } else if (md.action == 'get_document_rec_list') {
-                        queryParams = { model: 'simple', isTop: 1, current: 1 };
+                        queryParams = {
+                            isTop: 1,
+                            current: 1
+                        };
                         documentKey = 'reCommendListData';
                     }
                     Object.assign(req.query, queryParams);
-                    req.query.state = true;
+                    req.query.state = '2';
                     pageData[documentKey] = await mainCtrl.getDocumentList(req, res, next);
                 } else if (md.action == 'get_category_list') {
                     pageData.cateTypes = await mainCtrl.getCategoryList(req, res, next);
@@ -173,7 +205,11 @@ let mainCtrl = {
                         continue;
                     } else {
                         pageData.documentInfo = docInfo;
-                        const { title, discription, tags } = pageData.documentInfo;
+                        const {
+                            title,
+                            discription,
+                            tags
+                        } = pageData.documentInfo;
                         req.query.title = title;
                         req.query.des = discription;
                     }
@@ -207,7 +243,10 @@ let mainCtrl = {
 
             let defaultTemp = await mainCtrl.getCurrentTempInfo(req, res, next);
             // 登录态
-            pageData.userInfo = req.session.user;
+            // console.log('----req.session.user----', req.session.user)
+            pageData.userInfo = req.session.user ? await User.getOneUserByParams({
+                _id: req.session.user._id
+            }) : {};
             pageData.logined = req.session.logined;
             // 静态目录
             pageData.staticforder = defaultTemp.data.alias;
@@ -242,7 +281,11 @@ let mainCtrl = {
                 let ogImg = siteDomain + "/themes/" + defaultTemp.data.alias + "/images/mobile_logo2.jpeg"
                 if (pageData.pageType == 'cate') {
                     if (!_.isEmpty(pageData.cateInfo)) {
-                        let { defaultUrl, _id, contentTemp } = pageData.cateInfo
+                        let {
+                            defaultUrl,
+                            _id,
+                            contentTemp
+                        } = pageData.cateInfo
                         ogUrl = siteDomain + '/' + defaultUrl + '___' + _id;
                         req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, contentTemp, 'cate');
                     }
@@ -257,7 +300,7 @@ let mainCtrl = {
                         let parentCateTemp = pageData.documentInfo.categories[0].contentTemp;
                         req.query.tempPage = mainCtrl.getCateOrDetailTemp(defaultTempItems, parentCateTemp, 'detail');
                     } else {
-                        throw new siteFunc.UserException(404);
+                        throw new siteFunc.UserException(res.__('label_page_no_power_content'));
                     }
                 }
                 pageData.ogData = {
@@ -267,14 +310,21 @@ let mainCtrl = {
             }
 
             // 读取国际化文件信息
-            let localKeys = await siteFunc.getSiteLocalKeys(res);
+            let localKeys = await siteFunc.getSiteLocalKeys(req.session.locale, res);
             pageData.lk = localKeys.renderKeys;
             pageData.lsk = JSON.stringify(localKeys.sysKeys);
 
             res.render(settings.SYSTEMTEMPFORDER + defaultTemp.data.alias + '/' + req.query.tempPage, pageData);
         } catch (error) {
             logUtil.error(error, req);
-            if (error) next();
+            if (error.message == '404' || error.message == '505') {
+                next();
+            } else {
+                let defaultTemp = await mainCtrl.getCurrentTempInfo(req, res, next);
+                req.query.message = error.message;
+                req.query.errorTemp = defaultTemp.data.alias;
+                await siteFunc.directToErrorPage(req, res, next);
+            }
         }
     }
 

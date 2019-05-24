@@ -123,9 +123,11 @@ export default {
     addTemplateItem: "New template unit",
     delTemplateItem: "Delete template unit",
     getTemplateItemList: "Get the current template folder",
+    uploadTemplate: 'Upload Tempate',
     contentManage: "Document management",
     getContentList: "Get the document",
     delContents: "Delete documents",
+    directContentsToUser: "指定文章给用户",
     contentCategoryManage: "Document class management",
     getContentCategoryList: "Get categories",
     delContentCategory: "Delete classification function",
@@ -135,6 +137,8 @@ export default {
     addContentItem: "Add new documents",
     editContentFunction: "Document editing page",
     updateContentItem: "Update document",
+    updateItemTop: "文档推荐",
+    roofItemTop: "文档置顶",
     getContentItem: "Get a single document",
     tagManage: "Label management",
     getTagList: "Get labels",
@@ -148,7 +152,16 @@ export default {
     userManage: "Member management",
     regUserFunction: "Member management",
     getUserInfo: "View members",
-    delUserInfo: "Delete members"
+    delUserInfo: "Delete members",
+    helpCenterManage: "Help Center Management",
+    helpCenterManage_getList: "Get Help Center List",
+    helpCenterManage_update: "Update Help Center Content",
+    helpCenterManage_add: "Add Help Center Content",
+    helpCenterManage_del: "Delete Help Center Contents",
+    versionManage: "Client Version Configuration",
+    getVersionConfigs: "Get Client Version",
+    updateVersionConfigs: "Update Client Version",
+    // ROUTERLANGEND
   },
   navbar: {
     logOut: 'Log Out',
@@ -304,6 +317,8 @@ export default {
     passwordnotmatching: "The password and the confirmation you typed do not match",
     limitUploadImgType: "Only JPG,PNG,GIF format pics are available",
     limitUploadImgSize: "The pics size can't exceed {size} MB",
+    limitUploadFileType: "上传文件的格式不正确",
+    limitUploadFileSize: "上传文件大小不能超过 {size} MB",
     error_params: "Illegal Parameter, please try again."
   },
   adminUser: {
@@ -466,7 +481,9 @@ export default {
     comments: "Note",
     date: "Registered Time",
     email: "Email",
-    integral: "Points"
+    integral: "Points",
+    group: "role",
+    category: "Industry Classification"
   },
   systemNotify: {
     title: "Title",
@@ -484,6 +501,7 @@ export default {
   topBar: {
     keywords: "{Please Type the keywords}",
     tagName: "Please Type the Tag Name",
+    uuid: "uuid",
     messageContent: "Please Type the Comment",
     regUser: "Please Type the User Name",
     systemModelTypes_all: "All",
@@ -510,5 +528,28 @@ export default {
     right_tree_styles_temp: "Styles",
     right_tree_script_temp: "Scripts",
     right_tree_script_tempUnit: "Template unit"
-  }
+  },
+  siteMessage: {
+    name: "Name",
+    comments: "Introduction",
+  },
+  helpCenter: {
+    name: "Title",
+    type: "Type",
+    time: "CreateTime",
+    updateTime: "UpdateTime",
+    state: "state",
+    user: "Creator",
+    lang: "language",
+    comments: "content",
+  },
+  versionManage: {
+    title: 'title',
+    description: 'Description',
+    version: 'Version',
+    versionName: 'Version Name',
+    forcibly: 'Force Update',
+    url: 'Url'
+  },
+  //LangEnd
 }

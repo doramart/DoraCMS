@@ -13,8 +13,23 @@ module.exports = (env) => {
         return newStr;
     })
 
-    env.addFilter('cutwords', function (str, n) {
-        let newStr = "";
+    env.addFilter('renderKeywords', (str) => {
+        let newStr = str;
+        if (str && str.indexOf(',') >= 0) {
+            newStr = "";
+            let strArr = str.split(',');
+            for (let i = 0; i < strArr.length; i++) {
+                let dotStr = ', ';
+                if (i == strArr.length - 1) {
+                    dotStr = ''
+                }
+                newStr += '#' + strArr[i] + dotStr
+            }
+        }
+        return newStr;
+    })
+
+    env.addFilter('cutwords', function (str, n, dot = true) {
         if (!str) return '';
         var r = /[^\x00-\xff]/g;
         var m;
@@ -26,6 +41,7 @@ module.exports = (env) => {
                 }
             }
         }
+        if (dot)(str = str + '...')
         return str;
     });
 
@@ -53,16 +69,16 @@ module.exports = (env) => {
         let newStr = "";
         if (str && str.split(splitStr[0]).length == 2) {
             let strArr = str.split(splitStr[0]);
-            newStr = strArr[0] + ' ' + label
+            newStr = strArr[0] + ' ' + label.toLowerCase()
         }
         return newStr;
     })
 
     env.addFilter('ranglengthandnormal', function (str, min, max, label = '') {
         let newStr = "";
-        if (str && str.split(splitStr[0]).length == 6) {
+        if (str && str.split(splitStr[0]).length == 7) {
             let strArr = str.split(splitStr[0]);
-            newStr = label + strArr[1] + ' ' + min.toString() + ' ' + strArr[3] + ' ' + max.toString() + ' ' + strArr[5]
+            newStr = strArr[0] + ' ' + label.toLowerCase() + ' ' + strArr[2] + ' ' + min.toString() + ' ' + strArr[4] + ' ' + max.toString() + ' ' + strArr[6]
         }
         return newStr;
     })

@@ -62,7 +62,6 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     externalLink: '外链',
-
     systemManage: "システム管理",
     adminUser: "ユーザ管理",
     getAdminUserList: "ユーザーを照会する",
@@ -123,6 +122,7 @@ export default {
     addTemplateItem: "新たなテンプレートユニット",
     delTemplateItem: "削除テンプレートユニット",
     getTemplateItemList: "を当面のテンプレートファイル",
+    uploadTemplate: 'Upload Tempate',
     contentManage: "ドキュメント管理",
     getContentList: "ドキュメントを手に",
     delContents: "ファイルを削除する",
@@ -148,7 +148,8 @@ export default {
     userManage: "会員管理",
     regUserFunction: "会員管理",
     getUserInfo: "查看会員",
-    delUserInfo: "会員削除"
+    delUserInfo: "会員削除",
+    // ROUTERLANGEND
   },
   navbar: {
     logOut: '退出登录',
@@ -510,5 +511,24 @@ export default {
     right_tree_styles_temp: "スタイル",
     right_tree_script_temp: "スクリプト",
     right_tree_script_tempUnit: "テンプレートユニット"
-  }
+  },
+  helpCenter: {
+    name: "文案标题",
+    type: "类型",
+    time: "创建时间",
+    updateTime: "更新时间",
+    state: "状态",
+    user: "创建者",
+    lang: "语言",
+    comments: "文案内容",
+  },
+  versionManage: {
+    title: '标题',
+    description: '描述',
+    version: '版本号',
+    versionName: '版本名称',
+    forcibly: '是否强制更新',
+    url: '更新地址'
+  },
+  //LangEnd
 }

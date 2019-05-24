@@ -9,7 +9,6 @@ var Schema = mongoose.Schema;
 var User = require('./User');
 var Notify = require('./Notify');
 var moment = require('moment')
-moment.locale((settings.lang).toLowerCase());
 
 var UserNotifySchema = new Schema({
     _id: {

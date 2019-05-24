@@ -31,13 +31,13 @@ function checkUserSession(req, res, next) {
 router.get('/getImgCode', User.getImgCode);
 
 // 查询文档列表
-router.get('/content/getList', (req, res, next) => { req.query.state = true; next() }, Content.getContents);
+router.get('/content/getList', (req, res, next) => { req.query.state = '2'; next() }, Content.getContents);
 
 // 查询简单的文档列表
-router.get('/content/getSimpleListByParams', (req, res, next) => { req.query.state = true; next() }, Content.getContents)
+router.get('/content/getSimpleListByParams', (req, res, next) => { req.query.state = '2'; next() }, Content.getContents)
 
 // 查询文档详情
-router.get('/content/getContent', (req, res, next) => { req.query.state = true; next() }, Content.getOneContent)
+router.get('/content/getContent', (req, res, next) => { req.query.state = '2'; next() }, Content.getOneContent)
 
 // 更新喜欢文档
 router.get('/content/updateLikeNum', checkUserSession, Content.updateLikeNum)
@@ -46,7 +46,6 @@ router.get('/content/updateLikeNum', checkUserSession, Content.updateLikeNum)
 // 添加或更新文章
 router.post('/content/addOne', checkUserSession, (req, res, next) => {
   req.query.role = 'user';
-
   next();
 }, Content.addContent)
 

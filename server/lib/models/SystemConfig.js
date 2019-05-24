@@ -15,6 +15,7 @@ var SystemConfigSchema = new Schema({
     },
     date: { type: Date, default: Date.now },
     siteName: { type: String, default: '前端开发俱乐部' },
+    ogTitle: { type: String, default: '' },
     siteDomain: { type: String, default: 'http://www.html-js.cn' },
     siteDiscription: { type: String, default: '前端开发' },
     siteKeywords: String,

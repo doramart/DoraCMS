@@ -1,114 +1,185 @@
 <template>
-    <div class="templateConfig">
-        <el-row class="dr-datatable">
-            <el-col :span="24">
-                <ConfigForm :dialogState="formState" :forderlist="templateItemForderList"></ConfigForm>
-                <div class="temp-dashboard">
-                   <el-row :gutter="20">
-                    <template>
-                    <el-tabs v-model="activeName" @tab-click="handleClick">
-                      <el-tab-pane label="模板配置" name="tempConfig">
+  <div class="templateConfig">
+    <el-row class="dr-datatable">
+      <el-col
+        :span="24"
+        v-loading="loadingPage"
+        element-loading-text="模板上传中，请勿切换页面！"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
+        <ConfigForm :dialogState="formState" :forderlist="templateItemForderList"></ConfigForm>
+        <div class="temp-dashboard">
+          <el-row :gutter="20">
+            <template>
+              <el-tabs v-model="activeName" @tab-click="handleClick">
+                <el-tab-pane label="模板配置" name="tempConfig">
+                  <el-row :gutter="20">
+                    <el-col :span="12">
+                      <div class="mytheme">
                         <el-row :gutter="20">
-                          <el-col :span="12">
-                            <div class="mytheme">  
-                              <el-row :gutter="20">
-                                <el-col :span="10">
-                                  <div class="theme-image">
-                                    <img :src="currentTheme.sImg" />
-                                  </div>
-                                  </el-col>
-                                <el-col :span="14">
-                                  <div class="theme-info">
-                                    <ul>
-                                      <li><label>名称:</label>{{currentTheme.name}}&nbsp;<el-tag type="success" size="mini">当前主题</el-tag></li>
-                                      <li><label>作者:</label>{{currentTheme.author}}</li>
-                                      <li><label>版本号:</label><el-tag type="info" size="mini">{{currentTheme.version}}</el-tag></li>
-                                      <li><label>介绍:</label>{{currentTheme.comment}}</li>
-                                    </ul>
-                                  </div>
-                                </el-col>
-                              </el-row>
+                          <el-col :span="10">
+                            <div class="theme-image">
+                              <img :src="currentTheme.sImg">
                             </div>
                           </el-col>
-                          <el-col :span="12">
-                            <div class="grid-content bg-purple">
-                              <el-button size="mini" type="primary" icon="el-icon-plus" @click="addNewTemp">模板配置</el-button>
-                              <el-table
-                                :data="currentTheme.items"
-                                style="width: 100%">
-                                <el-table-column
-                                  prop="name"
-                                  label="标题"
-                                  width="180">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="forder"
-                                  label="关键字"
-                                  width="180">
-                                </el-table-column>
-                                <el-table-column
-                                  prop="comment"
-                                  label="备注">
-                                </el-table-column>
-                                 <el-table-column :label="$t('main.dataTableOptions')" width="150" fixed="right">
-                                    <template slot-scope="scope">
-                                        <span v-if="!scope.row.isDefault">
-                                            <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="deleteTemplateItem(scope.$index, currentTheme.items)"></el-button>
-                                        </span>
-                                    </template>
-                                </el-table-column>
-                              </el-table>
-                            </div>
-                          </el-col>
-                        </el-row>
-                        <h2 class="line-gate">可用模板</h2>
-                        <el-row :gutter="20">
-                          <el-col :span="4" v-for="item in templateConfigList" :key="item._id">
-                            <div class="myTemplist">
-                              <img :src="item.sImg" />
-                            </div>
-                            <div class="theme-info temp-info">
+                          <el-col :span="14">
+                            <div class="theme-info">
                               <ul>
-                                <li>{{item.name}}</li>
-                                <li><label>作者:</label>{{item.author}}</li>
-                                <li><label>版本号:</label><el-tag type="info" size="mini">{{item.version}}</el-tag></li>
-                                <li class="opt" v-if="!item.using">
-                                  <el-button size="mini" @click="installTempOption(item._id,'enable')">启用</el-button>
-                                  <el-button size="mini" type="danger" @click="installTempOption(item._id,'uninstall')">卸载</el-button>
+                                <li>
+                                  <label>名称:</label>
+                                  {{currentTheme.name}}&nbsp;
+                                  <el-tag type="success" size="mini">当前主题</el-tag>
+                                </li>
+                                <li>
+                                  <label>作者:</label>
+                                  {{currentTheme.author}}
+                                </li>
+                                <li>
+                                  <label>版本号:</label>
+                                  <el-tag type="info" size="mini">{{currentTheme.version}}</el-tag>
+                                </li>
+                                <li>
+                                  <label>介绍:</label>
+                                  {{currentTheme.comment}}
                                 </li>
                               </ul>
                             </div>
                           </el-col>
                         </el-row>
-                      </el-tab-pane>
-                      <el-tab-pane label="模板市场" name="tempShop">
-                        <el-row :gutter="20">
-                          <el-col :span="4" v-for="item in tempShoplist.docs" :key="item._id">
-                            <div class="myTemplist">
-                              <img :src="item.sImg" />
-                            </div>
-                            <div class="theme-info temp-info">
-                              <ul>
-                                <li>{{item.name}}</li>
-                                <li><label>作者:</label>{{item.author}}</li>
-                                <li><label>版本号:</label><el-tag type="info" size="mini">{{item.version}}</el-tag></li>
-                                <li class="opt" v-if="item.author == 'doracms'">
-                                  <el-button size="mini" type="primary" @click="installTempOption(item._id,'install')">安装</el-button>
-                                  <el-button size="mini"  @click="viewTheme(item._id)">预览</el-button>
-                                </li>
-                              </ul>
-                            </div>
-                          </el-col>
-                        </el-row>
-                        <!-- <Pagination :pageInfo="tempShoplist.pageInfo" pageType="tempShop"></Pagination> -->
-                      </el-tab-pane>
-                    </el-tabs>
-                  </template>
-                </el-row>
-                </div>
-            </el-col>
-        </el-row>
-    </div>
+                      </div>
+                    </el-col>
+                    <el-col :span="12">
+                      <div class="grid-content bg-purple">
+                        <el-button
+                          size="mini"
+                          type="primary"
+                          icon="el-icon-plus"
+                          @click="addNewTemp"
+                        >模板配置</el-button>
+                        <el-table :data="currentTheme.items" style="width: 100%">
+                          <el-table-column prop="name" label="标题" width="180"></el-table-column>
+                          <el-table-column prop="forder" label="关键字" width="180"></el-table-column>
+                          <el-table-column prop="comment" label="备注"></el-table-column>
+                          <el-table-column
+                            :label="$t('main.dataTableOptions')"
+                            width="150"
+                            fixed="right"
+                          >
+                            <template slot-scope="scope">
+                              <span v-if="!scope.row.isDefault">
+                                <el-button
+                                  size="mini"
+                                  type="danger"
+                                  plain
+                                  icon="el-icon-delete"
+                                  @click="deleteTemplateItem(scope.$index, currentTheme.items)"
+                                ></el-button>
+                              </span>
+                            </template>
+                          </el-table-column>
+                        </el-table>
+                      </div>
+                    </el-col>
+                  </el-row>
+                  <h2 class="line-gate">可用模板</h2>
+                  <el-row :gutter="20">
+                    <el-col :span="4" v-for="item in templateConfigList" :key="item._id">
+                      <div class="myTemplist">
+                        <img :src="item.sImg">
+                      </div>
+                      <div class="theme-info temp-info">
+                        <ul>
+                          <li>{{item.name}}</li>
+                          <li>
+                            <label>作者:</label>
+                            {{item.author}}
+                          </li>
+                          <li>
+                            <label>版本号:</label>
+                            <el-tag type="info" size="mini">{{item.version}}</el-tag>
+                          </li>
+                          <li class="opt" v-if="!item.using">
+                            <el-button size="mini" @click="installTempOption(item._id,'enable')">启用</el-button>
+                            <el-button
+                              size="mini"
+                              type="danger"
+                              @click="installTempOption(item._id,'uninstall')"
+                            >卸载</el-button>
+                          </li>
+                        </ul>
+                      </div>
+                    </el-col>
+                  </el-row>
+                </el-tab-pane>
+                <el-tab-pane label="模板市场" name="tempShop">
+                  <el-row :gutter="20">
+                    <el-col :span="4" v-for="item in tempShoplist.docs" :key="item._id">
+                      <div class="myTemplist">
+                        <img :src="item.sImg">
+                      </div>
+                      <div class="theme-info temp-info">
+                        <ul>
+                          <li>{{item.name}}</li>
+                          <li>
+                            <label>作者:</label>
+                            {{item.author}}
+                          </li>
+                          <li>
+                            <label>版本号:</label>
+                            <el-tag type="info" size="mini">{{item.version}}</el-tag>
+                          </li>
+                          <li class="opt" v-if="item.author == 'doracms'">
+                            <el-button
+                              size="mini"
+                              type="primary"
+                              @click="installTempOption(item._id,'install')"
+                            >安装</el-button>
+                            <el-button size="mini" :disabled="true">预览</el-button>
+                          </li>
+                        </ul>
+                      </div>
+                    </el-col>
+                  </el-row>
+                  <!-- <Pagination :pageInfo="tempShoplist.pageInfo" pageType="tempShop"></Pagination> -->
+                </el-tab-pane>
+                <el-tab-pane label="模板导入" name="tempImport">
+                  <el-row>
+                    <el-upload
+                      class="upload-demo"
+                      action="/manage/template/uploadCMSTemplate"
+                      :on-preview="handlePreview"
+                      :on-remove="handleRemove"
+                      :before-upload="beforeUpload"
+                      :before-remove="beforeRemove"
+                      :on-success="uploadSuccess"
+                      multiple
+                      :limit="1"
+                      accept=".zip"
+                      :on-exceed="handleExceed"
+                      :file-list="fileList"
+                    >
+                      <el-button size="small" type="primary">点击上传</el-button>
+                      <div slot="tip" class="el-upload__tip">只能上传zip文件，且不超过5MB</div>
+                    </el-upload>
+                  </el-row>
+                  <hr style="margin:20px 0;">
+                  <el-row>
+                    <el-link
+                      href="https://cdn.html-js.cn/cmsSource20190516172452.zip"
+                      target="_blank"
+                    >
+                      <i class="el-icon-s-cooperation"></i>下载示例模板
+                    </el-link>
+                  </el-row>
+                </el-tab-pane>
+              </el-tabs>
+            </template>
+          </el-row>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 <script>
 import TopBar from "../common/TopBar.vue";
@@ -121,8 +192,10 @@ export default {
   name: "index",
   data() {
     return {
+      fileList: [],
       loadingObj: "",
-      loadingState: true,
+      loadingPage: false,
+      // loadingState: true,
       activeName: "tempConfig",
       tableData: [
         {
@@ -144,6 +217,51 @@ export default {
     // Pagination
   },
   methods: {
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    beforeUpload(file) {
+      this.loadingPage = true;
+      const isZIP = file.type === "application/zip";
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isZIP) {
+        this.loadingPage = false;
+        this.$message.error(this.$t("validate.limitUploadFileType"));
+      }
+      if (!isLt5M) {
+        this.loadingPage = false;
+        this.$message.error(
+          this.$t("validate.limitUploadFileSize", { size: 5 })
+        );
+      }
+      return isZIP && isLt5M;
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 1 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      );
+    },
+    uploadSuccess(res, file) {
+      // console.log("---", res);
+      this.loadingPage = false;
+      this.$store.dispatch("getMyTemplateList");
+      if (res.status == 200) {
+        this.$message({
+          message: "模板导入成功",
+          type: "success"
+        });
+      } else {
+        this.$message.error(res.message);
+      }
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -187,7 +305,7 @@ export default {
           if (result.data.status === 200) {
             this.$store.dispatch("getMyTemplateList");
             this.$message({
-              message: this.$t("templateConfig.install_success"),
+              message: this.$t("main.updateSuccess"),
               type: "success"
             });
           } else {
@@ -319,6 +437,7 @@ export default {
     overflow: hidden;
     img {
       width: 100%;
+      height: 150px;
     }
   }
   .temp-info {

@@ -10,38 +10,78 @@ const MessageModel = require("../models").Message;
 const formidable = require('formidable');
 const shortid = require('shortid');
 const validator = require('validator')
+const jwt = require('jsonwebtoken')
 const _ = require('lodash')
-const { service, validatorUtil, siteFunc } = require('../../../utils');
-
+const {
+    service,
+    validatorUtil,
+    siteFunc
+} = require('../../../utils');
+const cache = require('../../../utils/middleware/cache');
 const settings = require('../../../configs/settings');
 const axios = require('axios');
 const pkgInfo = require('../../../package.json')
+const CryptoJS = require("crypto-js");
+
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
         errMsg = res.__("validate_error_params");
     }
     if (!validatorUtil.checkUserName(fields.userName)) {
-        errMsg = res.__("validate_rangelength", { min: 5, max: 12, label: res.__("label_user_userName") });
+        errMsg = res.__("validate_rangelength", {
+            min: 5,
+            max: 12,
+            label: res.__("label_user_userName")
+        });
     }
     if (!validatorUtil.checkName(fields.name)) {
-        errMsg = res.__("validate_rangelength", { min: 2, max: 6, label: res.__("label_name") });
+        errMsg = res.__("validate_rangelength", {
+            min: 2,
+            max: 6,
+            label: res.__("label_name")
+        });
     }
     if (fields.password !== fields.confirmPassword) {
         errMsg = res.__("validate_error_pass_atypism");
     }
-    if (fields.phoneNum && !validatorUtil.checkPhoneNum(fields.phoneNum)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_phoneNum") });
+    if (!validatorUtil.checkPhoneNum(fields.phoneNum)) {
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_user_phoneNum")
+        });
+    }
+    if (!fields.countryCode) {
+        errMsg = res.__("validate_selectNull", {
+            label: res.__("label_user_countryCode")
+        });
     }
     if (!validatorUtil.checkEmail(fields.email)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_email") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_user_email")
+        });
     }
     if (fields.comments && !validator.isLength(fields.comments, 5, 30)) {
-        errMsg = res.__("validate_rangelength", { min: 5, max: 30, label: res.__("label_comments") });
+        errMsg = res.__("validate_rangelength", {
+            min: 5,
+            max: 30,
+            label: res.__("label_comments")
+        });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
     }
+}
+
+function getCacheValueByKey(key) {
+    return new Promise((resolve, reject) => {
+        cache.get(key, (targetValue) => {
+            if (targetValue) {
+                resolve(targetValue)
+            } else {
+                resolve('');
+            }
+        })
+    })
 }
 
 class AdminUser {
@@ -51,13 +91,16 @@ class AdminUser {
 
     async getUserSession(req, res, next) {
         try {
-            let noticeCounts = await UserNotifyModel.count({ 'systemUser': req.session.adminUserInfo._id, 'isRead': false });
+            let noticeCounts = await UserNotifyModel.count({
+                'systemUser': req.session.adminUserInfo._id,
+                'isRead': false
+            });
             let renderData = {
                 noticeCounts,
                 loginState: req.session.adminlogined,
                 userInfo: req.session.adminUserInfo
             };
-            res.send(siteFunc.renderApiData(res, 200, 'adminUser', renderData, 'getlist'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'adminUser', renderData, 'getlist'))
 
         } catch (err) {
 
@@ -70,14 +113,29 @@ class AdminUser {
         try {
             let adminUserCount = await AdminUserModel.count();
             let regUserCount = await UserModel.count();
-            let regUsers = await UserModel.find({}, { password: 0, email: 0 }).limit(10).sort({ date: -1 });
-            let contentCount = await ContentModel.count();
+            let regUsers = await UserModel.find({}, {
+                password: 0,
+                email: 0
+            }).limit(10).sort({
+                date: -1
+            });
+            let contentCount = await ContentModel.count({
+                state: '2'
+            });
             let messageCount = await MessageModel.count();
-            let logQuery = { type: 'login' };
+            let logQuery = {
+                type: 'login'
+            };
             let reKey = new RegExp(req.session.adminUserInfo.userName, 'i')
-            logQuery.logs = { $regex: reKey }
-            let loginLogs = await SystemOptionLogModel.find(logQuery).sort({ date: -1 }).skip(1).limit(1);
-            let messages = await MessageModel.find().limit(8).sort({ date: -1 }).populate([{
+            logQuery.logs = {
+                $regex: reKey
+            }
+            let loginLogs = await SystemOptionLogModel.find(logQuery).sort({
+                date: -1
+            }).skip(1).limit(1);
+            let messages = await MessageModel.find().limit(8).sort({
+                date: -1
+            }).populate([{
                 path: 'contentId',
                 select: 'stitle _id'
             }, {
@@ -121,7 +179,7 @@ class AdminUser {
                 resources: newResources
             }
 
-            res.send(siteFunc.renderApiData(res, 200, 'adminUser', renderBasicInfo, 'getlist'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'adminUser', renderBasicInfo, 'getlist'))
 
         } catch (error) {
 
@@ -133,7 +191,9 @@ class AdminUser {
         try {
             let current = req.query.current || 1;
             let pageSize = req.query.pageSize || 10;
-            const adminUsers = await AdminUserModel.find({}, { password: 0 }).sort({
+            const adminUsers = await AdminUserModel.find({}, {
+                password: 0
+            }).sort({
                 date: -1
             }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate({
                 path: 'group',
@@ -149,7 +209,7 @@ class AdminUser {
                 }
             };
 
-            res.send(siteFunc.renderApiData(res, 200, 'adminUser', renderData, 'getlist'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'adminUser', renderData, 'getlist'))
 
         } catch (err) {
 
@@ -167,15 +227,24 @@ class AdminUser {
             } = fields;
             try {
                 const systemConfigs = await SystemConfigModel.find({});
-                const { siteName, siteEmail, siteDomain, showImgCode } = systemConfigs[0];
+                const {
+                    siteName,
+                    siteEmail,
+                    siteDomain,
+                    showImgCode
+                } = systemConfigs[0];
 
                 let errMsg = '';
                 if (!validatorUtil.checkUserName(fields.userName)) {
-                    errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_userName") })
+                    errMsg = res.__("validate_inputCorrect", {
+                        label: res.__("label_user_userName")
+                    })
                 }
 
                 if (showImgCode && (!fields.imageCode || fields.imageCode != req.session.imageCode)) {
-                    errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_imageCode") })
+                    errMsg = res.__("validate_inputCorrect", {
+                        label: res.__("label_user_imageCode")
+                    })
                 }
 
                 if (errMsg) {
@@ -223,12 +292,20 @@ class AdminUser {
 
                         let writeState = await axios.post(settings.DORACMSAPI + '/system/checkSystemInfo', authParams);
                         if (writeState.status == 200 && writeState.data == 'success') {
-                            await AdminUserModel.update({ '_id': req.session.adminUserInfo._id }, { $set: { auth: true } })
+                            await AdminUserModel.update({
+                                '_id': req.session.adminUserInfo._id
+                            }, {
+                                $set: {
+                                    auth: true
+                                }
+                            })
                         }
 
                     }
 
-                    res.send(siteFunc.renderApiData(res, 200, 'adminUser', { adminPower: req.session.adminPower }, 'login'))
+                    res.send(siteFunc.renderApiData(req, res, 200, 'adminUser', {
+                        adminPower: req.session.adminPower
+                    }, 'login'))
 
                 } else {
 
@@ -255,6 +332,7 @@ class AdminUser {
                     name: fields.name,
                     email: fields.email,
                     phoneNum: fields.phoneNum,
+                    countryCode: fields.countryCode,
                     password: fields.password,
                     confirm: fields.confirm,
                     group: fields.group,
@@ -262,7 +340,9 @@ class AdminUser {
                     comments: fields.comments
                 }
 
-                let user = await AdminUserModel.find().or([{ userName: fields.userName }])
+                let user = await AdminUserModel.find().or([{
+                    userName: fields.userName
+                }])
                 if (!_.isEmpty(user)) {
 
                     res.send(siteFunc.renderApiErr(req, res, 500, res.__("validate_hadUse_userName")));
@@ -270,7 +350,9 @@ class AdminUser {
                 } else {
                     const newAdminUser = new AdminUserModel(userObj);
                     await newAdminUser.save();
-                    res.send(siteFunc.renderApiData(res, 200, 'adminUser', { id: newAdminUser._id }, 'save'))
+                    res.send(siteFunc.renderApiData(req, res, 200, 'adminUser', {
+                        id: newAdminUser._id
+                    }, 'save'))
                 }
             } catch (err) {
 
@@ -291,6 +373,7 @@ class AdminUser {
                     name: fields.name,
                     email: fields.email,
                     phoneNum: fields.phoneNum,
+                    countryCode: fields.countryCode,
                     password: fields.password,
                     confirm: fields.confirm,
                     group: fields.group,
@@ -303,9 +386,9 @@ class AdminUser {
                 await AdminUserModel.findOneAndUpdate({
                     _id: item_id
                 }, {
-                        $set: userObj
-                    });
-                res.send(siteFunc.renderApiData(res, 200, 'adminUser', {}, 'update'))
+                    $set: userObj
+                });
+                res.send(siteFunc.renderApiData(req, res, 200, 'adminUser', {}, 'update'))
 
             } catch (err) {
 
@@ -324,7 +407,9 @@ class AdminUser {
             if (errMsg) {
                 throw new siteFunc.UserException(errMsg);
             }
-            let adminUserMsg = await MessageModel.find({ 'adminAuthor': req.query.ids });
+            let adminUserMsg = await MessageModel.find({
+                'adminAuthor': req.query.ids
+            });
             if (!_.isEmpty(adminUserMsg)) {
 
                 res.send(siteFunc.renderApiErr(req, res, 500, res.__("validate_del_adminUser_notice"), 'delete'));
@@ -334,7 +419,7 @@ class AdminUser {
                 _id: req.query.ids
             });
 
-            res.send(siteFunc.renderApiData(res, 200, 'adminUser', {}, 'delete'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'adminUser', {}, 'delete'))
 
         } catch (err) {
 

@@ -50,7 +50,7 @@ class Notify {
                     totalPage: Math.ceil(totalItems / pageSize)
                 }
             };
-            res.send(siteFunc.renderApiData(res, 200, 'notify', renderData, 'getlist'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'notify', renderData, 'getlist'))
         } catch (err) {
 
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
@@ -74,7 +74,7 @@ class Notify {
             }
             await NotifyModel.remove({ _id: req.query.ids });
 
-            res.send(siteFunc.renderApiData(res, 200, 'notify', {}, 'delete'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'notify', {}, 'delete'))
 
         } catch (err) {
 
@@ -114,7 +114,7 @@ class Notify {
                     }
                 }
 
-                res.send(siteFunc.renderApiData(res, 200, 'notify', {}, 'save'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'notify', {}, 'save'))
 
             } catch (err) {
 

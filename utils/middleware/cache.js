@@ -47,3 +47,12 @@ var set = function (key, value, time, callback) {
 };
 
 exports.set = set;
+
+
+var del = (key) => {
+  if (key) {
+    redis.del(key);
+  }
+}
+
+exports.del = del;

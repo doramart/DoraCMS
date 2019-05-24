@@ -1,7 +1,7 @@
-
 /**
  * Created by Administrator on 2015/4/18.
  */
+const axios = require('axios')
 //邮件发送插件
 let nodemailer = require("nodemailer");
 //文件操作对象
@@ -18,16 +18,17 @@ let moment = require('moment');
 //站点配置
 let settings = require("../configs/settings");
 let siteFunc = require("./siteFunc");
-
+const validator = require('validator');
 //文件压缩
 let child = require('child_process');
 let archiver = require('archiver');
 let formidable = require('formidable')
 let mime = require('./mime').types;
 let iconv = require('iconv-lite');
+
 let systemService = {
 
-    sendEmail: function (req, res, sysConfigs, key, obj, callBack = () => { }) {
+    sendEmail: function (req, res, sysConfigs, key, obj = {}, callBack = () => {}) {
 
         let emailTitle = "Hello";
         let emailSubject = "Hello";
@@ -63,6 +64,10 @@ let systemService = {
         } else if (key == settings.email_notice_user_byContactUs) {
             emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_noticeuser_askInfo_success");
             emailContent = siteFunc.setNoticeToAdminEmailByContactUsTemp(res, sysConfigs, obj);
+            toEmail = obj.email;
+        } else if (key == settings.email_sendMessageCode) {
+            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + res.__("label_sendEmail_sendMessageCode_success");
+            emailContent = siteFunc.setNoticeToUserGetMessageCode(res, sysConfigs, obj);
             toEmail = obj.email;
         }
 
@@ -184,7 +189,7 @@ let systemService = {
 
         return folderList;
     },
-    deleteFolder: function (req, res, path) {
+    deleteFolder: function (path) {
         // console.log("---del path--" + path);
         return new Promise((resolve, reject) => {
             let files = [];
@@ -202,16 +207,18 @@ let systemService = {
                             }
                         });
                         fs.rmdirSync(path);
+
                     };
                     walk(path);
-                    // console.log("---del folder success----");
+                    console.log("---del folder success----");
                     resolve();
+
                 } else {
                     fs.unlink(path, function (err) {
                         if (err) {
                             console.log(err)
                         } else {
-                            // console.log('del file success');
+                            console.log('del file success');
                             resolve();
                         }
                     });
@@ -398,33 +405,85 @@ let systemService = {
 
     },
 
-    uploadTemp: function (req, res, callBack) {
-        let form = new formidable.IncomingForm(),
-            files = [],
-            fields = [],
-            docs = [];
-        //存放目录
-        let forderName;
-        form.uploadDir = 'views/web/temp/';
 
-        form.parse(req, function (err, fields, files) {
-            if (err) {
-                res.end(err);
-            } else {
-                fs.rename(files.Filedata.path, 'views/web/temp/' + files.Filedata.name, function (err1) {
-                    if (err1) {
-                        res.end(err1);
-                    } else {
+    checkTempUnzipSuccess(targetForder) {
+        return new Promise((resolve, reject) => {
+            // var params = url.parse(req.url, true);
+            // var targetForder = params.query.tempId;
 
-                        forderName = files.Filedata.name.split('.')[0];
-                        console.log('parsing done');
-                        callBack(forderName);
+            var tempForder = settings.SYSTEMTEMPFORDER + targetForder;
+            var DOWNLOAD_DIR = settings.SYSTEMTEMPFORDER + targetForder + '/tempconfig.json';
+            var DIST_DIR = settings.SYSTEMTEMPFORDER + targetForder + '/dist';
+            var PUBLIC_DIR = settings.SYSTEMTEMPFORDER + targetForder + '/public';
+            var USERS_DIR = settings.SYSTEMTEMPFORDER + targetForder + '/users';
+            var TWOSTAGEDEFAULT_DIR = settings.SYSTEMTEMPFORDER + targetForder + '/2-stage-default';
+
+            let checkTempCount = 0;
+            var tempTask = setInterval(async () => {
+                if (fs.existsSync(DOWNLOAD_DIR) && fs.existsSync(DIST_DIR) && fs.existsSync(PUBLIC_DIR) &&
+                    fs.existsSync(USERS_DIR) && fs.existsSync(TWOSTAGEDEFAULT_DIR)) {
+                    clearInterval(tempTask);
+                    resolve('1');
+                } else {
+                    checkTempCount = checkTempCount + 1;
+                    //请求超时，文件不完整
+                    if (checkTempCount > 10) {
+                        await service.deleteFolder(tempForder);
+                        await service.deleteFolder(tempForder + '.zip');
+                        clearInterval(tempTask);
+                        resolve('0');
                     }
-                });
-            }
-
-        });
+                }
+            }, 3000);
+        })
     },
+
+    checkTempInfo: function (tempInfoData, forderName, callBack) {
+
+        var name = tempInfoData.name;
+        var alias = tempInfoData.alias;
+        var version = tempInfoData.version;
+        var sImg = tempInfoData.sImg;
+        var author = tempInfoData.author;
+        var comment = tempInfoData.comment;
+        var errors;
+
+        if (forderName !== alias) {
+            errors = '模板名称跟文件夹名称不统一';
+        }
+
+        if (!validator.isLength(name, 4, 15)) {
+            errors = '模板名称必须为4-15个字符';
+        }
+
+        var enReg = new RegExp("^[a-zA-Z]+$");
+        if (!enReg.test(alias)) {
+            errors = '模板关键字必须为英文字符';
+        }
+
+        if (!validator.isLength(alias, 4, 15)) {
+            errors = '模板关键字必须为4-15个字符';
+        }
+
+        if (!validator.isLength(version, 2, 15)) {
+            errors = '版本号必须为2-15个字符';
+        }
+
+        if (!validator.isLength(author, 4, 15)) {
+            errors = '作者名称必须为4-15个字符';
+        }
+
+        if (!validator.isLength(comment, 4, 40)) {
+            errors = '模板描述必须为4-30个字符';
+        }
+
+        if (errors) {
+            callBack(errors);
+        } else {
+            callBack('success');
+        }
+    },
+
 
     encrypt: function (data, key) { // 密码加密
         let cipher = crypto.createCipher("bf", key);
@@ -440,6 +499,28 @@ let systemService = {
         oldPsd += decipher.update(data, "hex", "utf8");
         oldPsd += decipher.final("utf8");
         return oldPsd;
+    },
+
+    // APP加密
+    encryptApp(key, iv, data) {
+        var cipher = crypto.createCipheriv('aes-128-cbc', key, iv);
+        var cryped = cipher.update(data, 'utf8', 'binary');
+        cryped += cipher.final('binary');
+        cryped = new Buffer(cryped, 'binary').toString('base64');
+        return cryped;
+    },
+
+    decryptApp(key, iv, crypted) {
+        try {
+            crypted = new Buffer(crypted, 'base64').toString('binary');
+            var decipher = crypto.createDecipheriv('aes-128-cbc', key, iv);
+            var decoded = decipher.update(crypted, 'binary', 'utf8');
+            decoded += decipher.final('utf8');
+            return decoded;
+        } catch (error) {
+            console.log('check token failed!')
+            return '';
+        }
     },
 
     getKeyArrByTokenId: function (tokenId) {

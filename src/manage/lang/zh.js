@@ -122,9 +122,11 @@ export default {
     addTemplateItem: "新增模板单元",
     delTemplateItem: "删除模板单元",
     getTemplateItemList: "获取当前模板文件夹",
+    uploadTemplate: "上传模板",
     contentManage: "文档管理",
     getContentList: "获取文档",
     delContents: "删除文档",
+    directContentsToUser: "指定文章给用户",
     contentCategoryManage: "文档类别管理",
     getContentCategoryList: "获取类别",
     delContentCategory: "删除分类功能",
@@ -134,6 +136,8 @@ export default {
     addContentItem: "添加新文档",
     editContentFunction: "文档编辑页面",
     updateContentItem: "更新文档",
+    updateItemTop: "文档推荐",
+    roofItemTop: "文档置顶",
     getContentItem: "获取单个文档",
     tagManage: "标签管理",
     getTagList: "获取标签",
@@ -147,7 +151,16 @@ export default {
     userManage: "会员管理",
     regUserFunction: "会员管理",
     getUserInfo: "查看会员",
-    delUserInfo: "删除会员"
+    delUserInfo: "删除会员",
+    helpCenterManage: "帮助中心管理",
+    helpCenterManage_getList: "获取帮助中心列表",
+    helpCenterManage_update: "更新帮助中心内容",
+    helpCenterManage_add: "添加帮助中心内容",
+    helpCenterManage_del: "删除帮助中心内容",
+    versionManage: "客户端版本配置",
+    getVersionConfigs: "获取客户端版本",
+    updateVersionConfigs: "更新客户端版本",
+    // ROUTERLANGEND
   },
   navbar: {
     logOut: '退出登录',
@@ -303,6 +316,8 @@ export default {
     passwordnotmatching: "两次输入密码不一致",
     limitUploadImgType: "上传图片只能是 JPG,PNG,GIF 格式",
     limitUploadImgSize: "上传图片大小不能超过 {size} MB",
+    limitUploadFileType: "上传文件的格式不正确",
+    limitUploadFileSize: "上传文件大小不能超过 {size} MB",
     error_params: "参数非法,请重新操作"
   },
   adminUser: {
@@ -311,6 +326,7 @@ export default {
     lb_userGroup: "用户类型",
     lb_name: "姓名",
     lb_phoneNum: "手机号",
+    lb_countryCode: "国家码",
     lb_password: "密码",
     lb_confirmPassword: "确认密码",
     lb_email: "邮箱",
@@ -362,6 +378,7 @@ export default {
     comments: "文档详情",
     flashComments: "快讯摘要",
     rec: "推荐",
+    roofPlacement: "置顶",
     date: "创建时间",
     commentNum: "评论数",
     clickNum: "点击",
@@ -399,6 +416,8 @@ export default {
     dis: "广告描述",
     textLink: "文本链接",
     link: "链接",
+    appLink: "app链接",
+    appLinkType: "app链接类型",
     upload: "上传",
     textContent: "文字内容",
     enable: "有效",
@@ -465,7 +484,9 @@ export default {
     comments: "备注",
     date: "注册时间",
     email: "邮箱",
-    integral: "积分"
+    integral: "积分",
+    group: "角色",
+    category: "行业分类"
   },
   systemNotify: {
     title: "标题",
@@ -483,6 +504,7 @@ export default {
   topBar: {
     keywords: "请输入关键字",
     tagName: "请输入标签名称",
+    uuid: "请输入流水号",
     messageContent: "请输入留言内容",
     regUser: "请输入用户名",
     systemModelTypes_all: "全部",
@@ -509,6 +531,28 @@ export default {
     right_tree_styles_temp: "样式",
     right_tree_script_temp: "脚本",
     right_tree_script_tempUnit: "模板单元"
-
-  }
+  },
+  siteMessage: {
+    name: "名称",
+    comments: "简介",
+  },
+  helpCenter: {
+    name: "文案标题",
+    type: "类型",
+    time: "创建时间",
+    updateTime: "更新时间",
+    state: "状态",
+    user: "创建者",
+    lang: "语言",
+    comments: "文案内容",
+  },
+  versionManage: {
+    title: '标题',
+    description: '描述',
+    version: '版本号',
+    versionName: '版本名称',
+    forcibly: '是否强制更新',
+    url: '更新地址'
+  },
+  //LangEnd
 }

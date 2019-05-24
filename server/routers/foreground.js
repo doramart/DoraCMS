@@ -78,7 +78,7 @@ router.get("/sitemap.xml", (req, res, next) => {
 router.get("/sitemap.html", generalFun.getDataForSiteMap);
 
 router.get(
-  "/",
+  ["/", "/zh-CN", "/zh-TW"],
   (req, res, next) => {
     next();
   },

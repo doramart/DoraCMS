@@ -39,7 +39,7 @@ class DataItem {
                     pageSize: Number(pageSize) || 10
                 }
             }
-            res.send(siteFunc.renderApiData(res, 200, 'dataOptionLog', renderData, 'getlist'));
+            res.send(siteFunc.renderApiData(req, res, 200, 'dataOptionLog', renderData, 'getlist'));
         } catch (err) {
 
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
@@ -53,7 +53,7 @@ class DataItem {
         const systemConfigs = await SystemConfigModel.find({});
 
         if (_.isEmpty(systemConfigs) && !_.isEmpty(req)) {
-            res.send(siteFunc.renderApiData(res, 200, res.__("resdata_checkSysConfig_error"), {}, 'getlist'));
+            res.send(siteFunc.renderApiData(req, res, 200, res.__("resdata_checkSysConfig_error"), {}, 'getlist'));
         }
         let databackforder = isDev ? process.cwd() + '/databak/' : systemConfigs[0].databackForderPath;
         let mongoBinPath = systemConfigs[0].mongodbInstallPath;
@@ -92,7 +92,7 @@ class DataItem {
 
                             }
                             if (!_.isEmpty(req)) {
-                                res.send(siteFunc.renderApiData(res, 200, 'dataOptionLog', {}, 'getlist'));
+                                res.send(siteFunc.renderApiData(req, res, 200, 'dataOptionLog', {}, 'getlist'));
                             }
                         });
                     });
@@ -129,7 +129,7 @@ class DataItem {
                 _id: req.query.ids
             });
             if (currentItem && currentItem.path) {
-                await service.deleteFolder(req, res, currentItem.path);
+                await service.deleteFolder(currentItem.path);
             } else {
                 res.send(siteFunc.renderApiErr(req, res, 500, 'nodata', 'getlist'));
 
@@ -137,7 +137,7 @@ class DataItem {
             await DataOptionLogModel.remove({
                 _id: req.query.ids
             });
-            res.send(siteFunc.renderApiData(res, 200, 'dataOptionLog', {}, 'delete'));
+            res.send(siteFunc.renderApiData(req, res, 200, 'dataOptionLog', {}, 'delete'));
 
         } catch (err) {
 

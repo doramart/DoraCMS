@@ -14,20 +14,26 @@
                                     <label for="">{{lk.lc_documentCate}}</label>
                                     <select class="form-control" onchange="selectCateOnChange(this)">
                                         <option value="0" selected>{{lk.lc_please_select_documentCate}}</option>
-                                        {% if cateTypes.length > 0 %} {% for item in cateTypes %} {% if item.parentId == '0' %} {%if item.type == '1'%}
+                                        {% if cateTypes.length > 0 %} {% for item in cateTypes %}
+                                        {% if item.parentId == '0' %} {%if item.type == '1'%}
                                         <option value="{{item._id}}">{{item.name}}</option>
                                         {% endif %} {% endif %} {% endfor %} {% endif %}
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="">{{lk.lc_documentTitle}}</label>
-                                    <input type="text" class="form-control" name="title" ms-duplex="@title" placeholder="{{lk.lc_please_documentTitle}}" ms-rules="{required:true, minlength：5,maxlength:50 }"
-                                        data-required-message="{{lk.lc_please_documentTitle_null_tips}}" data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(5,50,lk.lc_please_documentTitle)}}">
+                                    <input type="text" class="form-control" name="title" ms-duplex="@title"
+                                        placeholder="{{lk.lc_please_documentTitle}}"
+                                        ms-rules="{required:true, minlength：5,maxlength:50 }"
+                                        data-required-message="{{lk.lc_please_documentTitle_null_tips}}"
+                                        data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(5,50,lk.lc_please_documentTitle)}}">
                                 </div>
                                 <div class="form-group">
                                     <label for="">{{lk.lc_documentDis}}</label>
-                                    <input type="text" class="form-control" name="discription" ms-duplex="@discription" placeholder="{{lk.lc_pleace_documentDis}}"
-                                        ms-rules="{required:true, minlength：5,maxlength:300 }" data-required-message="{{lk.lc_pleace_documentDis_null_tips}}"
+                                    <input type="text" class="form-control" name="discription" ms-duplex="@discription"
+                                        placeholder="{{lk.lc_pleace_documentDis}}"
+                                        ms-rules="{required:true, minlength：5,maxlength:300 }"
+                                        data-required-message="{{lk.lc_pleace_documentDis_null_tips}}"
                                         data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(5,300,lk.lc_documentDis)}}">
                                 </div>
                                 <div class="form-group">
@@ -39,7 +45,8 @@
                         </div>
                         <div class="col-md-4 right-frame">
                             <div class="right-form">
-                                <button type="submit" class="btn btn-primary sub-content">{{lk.lc_commitUserConent}}</button>
+                                <button type="submit"
+                                    class="btn btn-primary sub-content">{{lk.lc_commitUserConent}}</button>
                                 <div class="form-group thumbImg">
                                     <label for="">{{lk.lc_small_images}}</label>
                                     <div id="uploader-demo">
@@ -73,6 +80,7 @@
     function selectTagOnChange(obj) {
         postArticelVM.tags = obj.value;
     }
+
     function selectCateOnChange(obj) {
         postArticelVM.categories = obj.value;
     }
@@ -89,12 +97,13 @@
             swf: '/plugins/webuploader/Uploader.swf',
 
             // 文件接收服务端。
-            server: '/system/upload?type=images',
-
+            server: '/api/v0/upload/files?type=images',
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-            pick: '#filePicker',
-
+            pick: {
+                id: '#filePicker',
+                multiple: false
+            },
             // 只允许选择图片文件。
             accept: {
                 title: 'Images',
@@ -105,11 +114,11 @@
         // 当有文件添加进来的时候
         uploader.on('fileQueued', function (file) {
             var $li = $(
-                '<div id="' + file.id + '" class="file-item thumbnail">' +
-                '<img>' +
+                    '<div id="' + file.id + '" class="file-item thumbnail">' +
+                    '<img>' +
 
-                '</div>'
-            ),
+                    '</div>'
+                ),
                 $img = $li.find('img');
 
 
@@ -146,7 +155,7 @@
         // 文件上传成功，给item添加成功class, 用样式标记上传成功。
         uploader.on('uploadSuccess', function (file, response) {
             $('#' + file.id).addClass('upload-state-done');
-            postArticelVM.sImg = response._raw
+            postArticelVM.sImg = response.data.path;
         });
 
         // 文件上传失败，显示上传出错。
@@ -191,11 +200,17 @@
                     postArticelVM.message = reasons[0].message;
                 } else {
                     if (!postArticelVM.sImg) {
-                        layer.msg("{{lk.validate_userContent_sImg}}", { icon: 2 });
+                        layer.msg("{{lk.validate_userContent_sImg}}", {
+                            icon: 2
+                        });
                     } else if (postArticelVM.categories.length == 0) {
-                        layer.msg("{{lk.validate_userContent_category}}", { icon: 2 });
+                        layer.msg("{{lk.validate_userContent_category}}", {
+                            icon: 2
+                        });
                     } else if (postArticelVM.tags.length == 0) {
-                        layer.msg("{{lk.validate_userContent_tags}}", { icon: 2 });
+                        layer.msg("{{lk.validate_userContent_tags}}", {
+                            icon: 2
+                        });
                     } else {
                         var params = {
                             title: postArticelVM.title,
@@ -210,14 +225,19 @@
                             contentType: 'application/json; charset=utf-8', // 很重要
                             traditional: true,
                             data: JSON.stringify(params),
-                            url: '/api/content/addOne',
+                            url: '/api/v0/content/addOne',
                             success: function (data) {
                                 if (data.status == 200) {
-                                    layer.msg("{{lk.sys_layer_option_success}}", { icon: 1, anim: 1 }, function () {
+                                    layer.msg("{{lk.sys_layer_option_success}}", {
+                                        icon: 1,
+                                        anim: 1
+                                    }, function () {
                                         window.location.href = "/users/userContents"
                                     });
                                 } else {
-                                    layer.msg(data.message, { icon: 2 });
+                                    layer.msg(data.message, {
+                                        icon: 2
+                                    });
                                 }
                             },
                             error: function (d) {
@@ -230,5 +250,4 @@
             }
         }
     })
-
 </script> {% endblock %}

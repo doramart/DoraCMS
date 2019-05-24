@@ -11,8 +11,8 @@ function checkFormData(req, res, fields) {
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
         errMsg = res.__("validate_error_params");
     }
-    if (!validatorUtil.checkResourceName(fields.label, 2, 30)) {
-        errMsg = res.__("validate_rangelength", { min: 2, max: 30, label: res.__("label_resourceName") });
+    if (!validatorUtil.checkResourceName(fields.label, 2, 100)) {
+        errMsg = res.__("validate_rangelength", { min: 2, max: 100, label: res.__("label_resourceName") });
     }
     if (!fields.type) {
         errMsg = res.__("validate_inputNull", { label: res.__("label_resourceType") });
@@ -46,7 +46,7 @@ class AdminResource {
                 }
             };
 
-            res.send(siteFunc.renderApiData(res, 200, 'adminResource', renderData, 'getlist'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'adminResource', renderData, 'getlist'))
 
         } catch (err) {
 
@@ -88,7 +88,7 @@ class AdminResource {
             const newAdminResource = new AdminResourceModel(groupObj);
             try {
                 await newAdminResource.save();
-                res.send(siteFunc.renderApiData(res, 200, 'adminResource', { id: newAdminResource._id }, 'save'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'adminResource', { id: newAdminResource._id }, 'save'))
             } catch (err) {
 
                 res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
@@ -125,7 +125,7 @@ class AdminResource {
                 }, {
                         $set: userObj
                     });
-                res.send(siteFunc.renderApiData(res, 200, 'adminResource', {}, 'update'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'adminResource', {}, 'update'))
             } catch (err) {
 
                 res.send(siteFunc.renderApiErr(req, res, 500, err, 'update'));
@@ -146,7 +146,7 @@ class AdminResource {
             await AdminResourceModel.remove({
                 _id: req.query.ids
             });
-            res.send(siteFunc.renderApiData(res, 200, 'adminResource', {}, 'delete'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'adminResource', {}, 'delete'))
 
         } catch (err) {
 

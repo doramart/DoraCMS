@@ -49,6 +49,21 @@ const getters = {
   templateConfigList: state => state.app.myTemplates.templateList,
   templateConfigFormState: state => state.app.myTemplates.formState,
   templateItemForderList: state => state.app.myTemplates.templateItemForderList,
-  tempShoplist: state => state.app.tempShoplist
+  tempShoplist: state => state.app.tempShoplist,
+  
+  siteMessageFormState: state => state.app.siteMessage.formState,
+  siteMessageList: state => state.app.siteMessage.list,
+  
+  helpCenterFormState: state => state.app.helpCenter.formState,
+  helpCenterList: state => state.app.helpCenter.list,
+
+  directUserFormState: state => state.app.directUser.formState,
+  directSpecialFormState: state => state.app.directSpecial.formState,
+
+  versionManageFormState: state => state.app.versionManage.formState,
+  versionManage: state => state.app.versionManage,
+  versionManageIos: state => state.app.versionManageIos,
+  
+  //StoreGetterEnd
 }
 export default getters

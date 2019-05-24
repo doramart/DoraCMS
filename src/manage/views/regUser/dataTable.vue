@@ -1,24 +1,63 @@
 <template>
-    <div>
-        <el-table align="center" v-loading="loading" ref="multipleTable" :data="dataList" tooltip-effect="dark" style="width: 100%" @selection-change="handleUserSelect">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column prop="userName" :label="$t('regUser.userName')" width="120">
-            </el-table-column>
-            <el-table-column prop="date" :label="$t('regUser.date')" show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column prop="email" :label="$t('regUser.email')" show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column prop="integral" :label="$t('regUser.integral')" show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column :label="$t('main.dataTableOptions')" width="150">
-                <template slot-scope="scope">
-                    <el-button size="mini" type="primary" plain round @click="editUserInfo(scope.$index, dataList)"><i class="fa fa-edit"></i></el-button>
-                    <el-button size="mini" type="danger" plain round icon="el-icon-delete" @click="deleteUser(scope.$index, dataList)"></el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
+  <div>
+    <el-table
+      align="center"
+      v-loading="loading"
+      ref="multipleTable"
+      :data="dataList"
+      tooltip-effect="dark"
+      style="width: 100%"
+      @selection-change="handleUserSelect"
+    >
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="userName" :label="$t('regUser.userName')" width="120"></el-table-column>
+      <el-table-column prop="phoneNum" :label="$t('regUser.phoneNum')" width="180">
+        <template slot-scope="scope">
+          <div v-if="scope.row.countryCode&&scope.row.phoneNum">{{scope.row.countryCode + ' ' + scope.row.phoneNum}}</div>
+          <div v-else-if="scope.row.deviceId">{{scope.row.deviceId}}</div>
+          <div v-else></div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="group" :label="$t('regUser.group')">
+        <template slot-scope="scope">
+          <span v-if="scope.row.group == '0'">普通用户</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="enable" :label="$t('regUser.enable')" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <i
+            :class="scope.row.enable ? 'fa fa-check-circle' : 'fa fa-minus-circle'"
+            :style="scope.row.enable ? green : red"
+          ></i>
+        </template>
+      </el-table-column>
+      <el-table-column prop="date" :label="$t('regUser.date')" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="email" :label="$t('regUser.email')" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="integral" :label="$t('regUser.integral')" show-overflow-tooltip></el-table-column>
+      <el-table-column :label="$t('main.dataTableOptions')" width="150">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="primary"
+            plain
+            round
+            @click="editUserInfo(scope.$index, dataList)"
+          >
+            <i class="fa fa-edit"></i>
+          </el-button>
+          <el-button
+            :disabled="lockDel"
+            size="mini"
+            type="danger"
+            plain
+            round
+            icon="el-icon-delete"
+            @click="deleteUser(scope.$index, dataList)"
+          ></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
@@ -30,6 +69,9 @@ export default {
   },
   data() {
     return {
+      green: { color: "#13CE66" },
+      red: { color: "#FF4949" },
+      lockDel: true,
       loading: false,
       tableData3: this.$store.getters.regUserList.docs,
       multipleSelection: []

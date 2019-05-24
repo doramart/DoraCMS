@@ -3,9 +3,13 @@ const isProd = process.env.NODE_ENV === 'production'
 const settings = require('../../../configs/settings');
 
 if (!isProd) {
-    mongoose.connect('mongodb://' + settings.HOST + ':' + settings.PORT + '/' + settings.DB, { useMongoClient: true });
+    mongoose.connect('mongodb://' + settings.HOST + ':' + settings.PORT + '/' + settings.DB, {
+        useMongoClient: true
+    });
 } else {
-    mongoose.connect('mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + '', { useMongoClient: true });
+    mongoose.connect('mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + '', {
+        useMongoClient: true
+    });
 }
 
 mongoose.Promise = global.Promise;
@@ -42,3 +46,7 @@ exports.Ads = require('./Ads');
 exports.AdsItems = require('./AdsItems');
 exports.ContentTemplate = require('./ContentTemplate');
 exports.TemplateItems = require('./TemplateItems');
+exports.SiteMessage = require('./SiteMessage');
+exports.HelpCenter = require('./HelpCenter');
+exports.VersionManage = require('./VersionManage');
+//DoraModelEnd

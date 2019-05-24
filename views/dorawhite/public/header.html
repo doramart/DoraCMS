@@ -11,13 +11,20 @@
 <input type="hidden" value="{{logined}}" id="logined">
 <input type="hidden" value="{{tokenId}}" id="tokenId">
 <header class="clearfix" id="header" ms-controller="headerCtr">
+  {% if siteInfo.lang == 'zh-TW' %}
+  {% set homelink = '/zh-TW' %}
+  {% set endStr = '_zh-TW' %}
+  {% else %}
+  {% set homelink = '/zh-CN' %}
+  {% set endStr = '' %}
+  {% endif %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 header-box">
                 <div class="row header-main">
                     <div class="col-sm-2 col-md-2">
                         <div class="site-name ">
-                            <a href="/" id="logo">
+                            <a href="{{homelink}}" id="logo">
                                 <img src="/themes/{{staticforder}}/images/logo.png" alt="{{siteInfo.title}}" />
                             </a>
                             </a>

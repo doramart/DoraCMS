@@ -2,11 +2,12 @@ import Axios from "axios";
 
 export function reqJsonData(url, params = {}, method = 'post') {
     if (method === 'get') {
-        return Axios.get('/' + url, { params })
+        return Axios.get('/' + url, {
+            params
+        })
     } else if (method === 'post') {
         return Axios.post('/' + url, params)
     }
-
 }
 export default {
 
@@ -138,6 +139,9 @@ export default {
         return reqJsonData('manage/contentCategory/deleteCategory', params, 'get')
     },
 
+    redictContentToUsers(params) {
+        return reqJsonData('manage/content/redictContentToUsers', params)
+    },
     contentList(params) {
         return reqJsonData('manage/content/getList', params, 'get')
     },
@@ -152,6 +156,14 @@ export default {
 
     updateContent(params) {
         return reqJsonData('manage/content/updateOne', params)
+    },
+
+    updateContentToTop(params) {
+        return reqJsonData('manage/content/topContent', params)
+    },
+
+    roofContent(params) {
+        return reqJsonData('manage/content/roofContent', params)
     },
 
     deleteContent(params) {
@@ -264,7 +276,84 @@ export default {
 
     delAds(params) {
         return reqJsonData('manage/ads/delete', params, 'get')
-    }
+    },
+
+    siteMessageList(params) {
+        return reqJsonData('manage/siteMessage/getList', params, 'get')
+    },
+
+    addSiteMessage(params) {
+        return reqJsonData('manage/siteMessage/addOne', params)
+    },
+
+    updateSiteMessage(params) {
+        return reqJsonData('manage/siteMessage/updateOne', params)
+    },
+
+    deleteSiteMessage(params) {
+        return reqJsonData('manage/siteMessage/delete', params, 'get')
+    },
+    
+    helpCenterList(params) {
+        return reqJsonData('manage/helpCenter/getList', params, 'get')
+    },
+
+    addHelpCenter(params) {
+        return reqJsonData('manage/helpCenter/addOne', params)
+    },
+
+    updateHelpCenter(params) {
+        return reqJsonData('manage/helpCenter/updateOne', params)
+    },
+
+    deleteHelpCenter(params) {
+        return reqJsonData('manage/helpCenter/delete', params, 'get')
+    },
+
+    versionManageList(params) {
+        return reqJsonData('manage/versionManage/getList', params, 'get')
+    },
+
+    addVersionManage(params) {
+        return reqJsonData('manage/versionManage/addOne', params)
+    },
+
+    updateVersionManage(params) {
+        return reqJsonData('manage/versionManage/updateOne', params)
+    },
+
+    deleteVersionManage(params) {
+        return reqJsonData('manage/versionManage/delete', params, 'get')
+    },
+
+    //StoreAppServiceEnd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

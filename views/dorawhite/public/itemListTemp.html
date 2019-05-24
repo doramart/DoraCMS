@@ -13,9 +13,11 @@ item为子元素集合
 		<div class="row">
 			<div class="col-xs-5 col-sm-3 col-md-4">
 				{% if item.categories %} {% if item.categories.length > 1 %}
-				<a target="_blank" class="item-category" href="{{'/'+(item.categories)[item.categories.length-1].defaultUrl+ '___'+(item.categories)[item.categories.length-1]._id}}">{{(item.categories)[item.categories.length-1].name}}</a>
+				<a target="_blank" class="item-category"
+					href="{{'/'+(item.categories)[item.categories.length-1].defaultUrl+ '___'+(item.categories)[item.categories.length-1]._id}}">{{(item.categories)[item.categories.length-1].name}}</a>
 				{% elif item.categories == 1 %}
-				<a target="_blank" class="item-category" href="{{'/'+(item.categories)[0].defaultUrl+ '___'+(item.categories)[0]._id}}">{{(item.categories)[0].name}}</a>
+				<a target="_blank" class="item-category"
+					href="{{'/'+(item.categories)[0].defaultUrl+ '___'+(item.categories)[0]._id}}">{{(item.categories)[0].name}}</a>
 				{% endif%} {% endif%}
 				<a href="/details/{{item._id}}.html " target="_blank " class="contentImg ">
 					<img src="{{item.sImg}} " class="img-responsive " alt="{{item.title}} " />
@@ -24,30 +26,33 @@ item为子元素集合
 			<div class="col-xs-7 col-sm-9 col-md-8 discription ">
 				<h2 class="post-title" alt="{{siteInfo.altkey}}{{item.title}}">
 					<a href="/details/{{item._id}}.html " target="_blank ">
-						{% if targetSearchKey %} {{item.title | hightWords(targetSearchKey) | safe }} {% else %} {{item.title}} {% endif %}
+						{% if targetSearchKey %} {{item.title | hightWords(targetSearchKey) | safe }} {% else %}
+						{{item.title}} {% endif %}
 					</a>
 				</h2>
 				<div class="post-content ">
-					{% if targetSearchKey %} {{item.discription | cutwords(200) | hightWords(targetSearchKey) | safe }} {% else %} {{item.discription
+					{% if targetSearchKey %} {{item.discription | cutwords(200) | hightWords(targetSearchKey) | safe }}
+					{% else %} {{item.discription
 					| cutwords(200)}} {% endif %}
 				</div>
-				<ul class="post-meta ">
-					{% if item.author %} {% set renderAuthor = item.author %} {% else %} {% set renderAuthor = item.uAuthor %} {% endif %}
+				<ul class="post-meta post-meta-actions" ms-controller="rcStatic">
+					{% if item.author %} {% set renderAuthor = item.author %} {% else %}
+					{% set renderAuthor = item.uAuthor %} {% endif %}
 					<li class="author">
 						<a class="logo">
 							<img src="{{renderAuthor.logo}}" alt="{{renderAuthor.userName}}">
 						</a>
 						<span>{{renderAuthor.userName}}</span>
 					</li>
-					<li>
-						<i class="fa fa-clock-o " aria-hidden="true "></i>&nbsp; {{item.updateDate}}
-					</li>
-					<li>
-						<i class="fa fa-eye " aria-hidden="true "></i>&nbsp;{{item.clickNum}}
-					</li>
-					<li>
-						<i class="fa fa-comment " aria-hidden="true "></i>&nbsp;{{item.commentNum}}
-					</li>
+					<li><i ms-on-click="@askLike($event,'1','{{item._id}}')" class="fa fa-thumbs-up"
+							aria-hidden="true"></i>
+						<span id="{{'thumbs_'+item._id}}">{{item.likeNum}}</span></li>
+					<li><i ms-on-click="@askLike($event,'2','{{item._id}}')" class="fa fa-thumbs-down"
+							aria-hidden="true"></i>
+						<span id="{{'despises_'+item._id}}">{{item.despiseNum}}</span></li>
+					<li><i ms-on-click="@askLike($event,'3','{{item._id}}')" class="fa fa-comment"
+							aria-hidden="true"></i>
+						<span id="{{'comments_'+item._id}}">{{item.commentNum}}</span></li>
 				</ul>
 			</div>
 		</div>

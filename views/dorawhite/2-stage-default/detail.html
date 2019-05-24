@@ -15,18 +15,21 @@
                             </h2>
                             <ul class="post-meta content-author">
                                 <li class="author-name">
-                                    {% if documentInfo.author %} {{documentInfo.author.userName}} {% else %} {{documentInfo.uAuthor.userName}} {% endif %}
+                                    {% if documentInfo.author %} {{documentInfo.author.userName}} {% else %}
+                                    {{documentInfo.uAuthor.userName}} {% endif %}
                                 </li>
                                 <li>
                                     {% set cateInfo = (documentInfo.categories[0]) %}
                                     <span class="dot">&nbsp;•&nbsp;</span>
-                                    <a href="/{{cateInfo.defaultUrl}}___{{cateInfo._id}}" target="_blank">{{(documentInfo.categories[documentInfo.categories.length-1]).name}}</a>
+                                    <a href="/{{cateInfo.defaultUrl}}___{{cateInfo._id}}"
+                                        target="_blank">{{(documentInfo.categories[documentInfo.categories.length-1]).name}}</a>
                                 </li>
                                 <li>
                                     <span class="dot">&nbsp;•&nbsp;</span> {{documentInfo.date}}
                                 </li>
                                 <li>
-                                    <span class="dot">&nbsp;•&nbsp;</span>{{lk.lc_document_readNum}}&nbsp;&nbsp;{{documentInfo.clickNum}}
+                                    <span
+                                        class="dot">&nbsp;•&nbsp;</span>{{lk.lc_document_readNum}}&nbsp;&nbsp;{{documentInfo.clickNum}}
                                 </li>
                             </ul>
                             <div class="post-content">
@@ -62,16 +65,19 @@
                             </h2>
                             <ul class="post-meta content-author">
                                 <li class="author-name">
-                                    {% if documentInfo.author %} {{documentInfo.author.userName}} {% else %} {{documentInfo.uAuthor.userName}} {% endif %}
+                                    {% if documentInfo.author %} {{documentInfo.author.userName}} {% else %}
+                                    {{documentInfo.uAuthor.userName}} {% endif %}
                                 </li>
                                 <li>
-                                    <span class="dot">&nbsp;•&nbsp;</span> {{(documentInfo.categories[documentInfo.categories.length-1]).name}}
+                                    <span class="dot">&nbsp;•&nbsp;</span>
+                                    {{(documentInfo.categories[documentInfo.categories.length-1]).name}}
                                 </li>
                                 <li>
                                     <span class="dot">&nbsp;•&nbsp;</span> {{documentInfo.date}}
                                 </li>
                                 <li>
-                                    <span class="dot">&nbsp;•&nbsp;</span>{{lk.lc_document_readNum}}&nbsp;&nbsp;{{documentInfo.clickNum}}
+                                    <span
+                                        class="dot">&nbsp;•&nbsp;</span>{{lk.lc_document_readNum}}&nbsp;&nbsp;{{documentInfo.clickNum}}
                                 </li>
                             </ul>
                             <div class="post-content">

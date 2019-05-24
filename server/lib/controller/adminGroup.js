@@ -39,7 +39,7 @@ class AdminGroup {
                     pageSize: Number(pageSize) || 10
                 }
             };
-            let renderSendData = siteFunc.renderApiData(res, 200, 'adminGroup', adminGroupData)
+            let renderSendData = siteFunc.renderApiData(req, res, 200, 'adminGroup', adminGroupData)
             res.send(renderSendData);
         } catch (err) {
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
@@ -63,7 +63,7 @@ class AdminGroup {
             const newAdminGroup = new AdminGroupModel(groupObj);
             try {
                 await newAdminGroup.save();
-                res.send(siteFunc.renderApiData(res, 200, 'adminGroup', { id: newAdminGroup._id }, 'save'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'adminGroup', { id: newAdminGroup._id }, 'save'))
             } catch (err) {
                 res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
             }
@@ -87,7 +87,7 @@ class AdminGroup {
             const item_id = fields._id;
             try {
                 await AdminGroupModel.findOneAndUpdate({ _id: item_id }, { $set: userObj });
-                res.send(siteFunc.renderApiData(res, 200, 'adminGroup', {}, 'update'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'adminGroup', {}, 'update'))
             } catch (err) {
 
                 res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
@@ -105,7 +105,7 @@ class AdminGroup {
                 throw new siteFunc.UserException(errMsg);
             }
             await AdminGroupModel.remove({ _id: req.query.ids });
-            res.send(siteFunc.renderApiData(res, 200, 'adminGroup', {}, 'delete'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'adminGroup', {}, 'delete'))
 
         } catch (err) {
 

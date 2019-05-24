@@ -5,6 +5,15 @@ const validator = require("validator");
 
 module.exports = {
 
+    // 校验字符中是否有特殊字符
+    isRegularCharacter(str = "") {
+        var pattern = new RegExp("`~@#$^&*()=|{}';'\\[\\].<>/~！@#￥……&*（）——|{}【】‘”“'");
+        if (pattern.test(str)) {
+            return false;
+        } else {
+            return true;
+        }
+    },
     validateWords(str) {
         let pattern = new RegExp("[<>#$%^*+*]");
         let newParams = "";
@@ -16,7 +25,7 @@ module.exports = {
 
     // 校验资源名称 必须是英文
     checkResourceName(str, min = 2, max = 6) {
-        return /^[a-zA-Z]+$/.test(str) && validator.isLength(str, min, max);
+        return validator.isLength(str, min, max);
     },
     // 校验用户名
     checkUserName(str) {
@@ -36,7 +45,8 @@ module.exports = {
     },
     // 校验手机号
     checkPhoneNum(str) {
-        return str && validator.isMobilePhone(str.toString(), 'zh-CN');
+        return str && validator.isNumeric(str.toString());
+        // return str && validator.isMobilePhone(str.toString(), 'zh-CN');
     },
     // 校验QQ号
     checkQqNum(str) {

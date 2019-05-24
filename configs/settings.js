@@ -10,7 +10,7 @@ module.exports = {
     cache_maxAge: Math.floor(Date.now() / 1000) + 24 * 60 * 60, //1 hours
     serverPort: 8080,
     lang: 'zh-CN', // 设置默认语言
-    languages: ['zh-CN', 'ja_jp', 'en'], // 可选语言
+    languages: ['zh-CN', 'zh-TW'], // 可选语言
 
     // 密码盐
     encrypt_key: 'dora',
@@ -35,12 +35,11 @@ module.exports = {
     assetsCdn: true, // 静态资源使用cnd.请在build完成后将 elemt.*.js 上传的七牛的融合cdn
 
     // redis配置
-    openRedis: true, // 测试或生产环境必须开启
-    redis_host: '127.0.0.1',
+    redis_host: process.env.NODE_ENV == 'production' ? '172.18.162.196' : '127.0.0.1',
     redis_port: 6379,
     redis_psd: 'your redis password',
     redis_db: 0,
-    redis_ttl: 12, // 12 小时
+    redis_ttl: 12, // 过期时间12小时
 
     // 站点基础信息配置
     DORACMSAPI: 'http://api.html-js.cn', // 系统服务提供商
@@ -57,6 +56,7 @@ module.exports = {
     email_notice_contentBug: 'notice_contentBug',
     email_notice_user_contentMsg: 'notice_user_contentMsg',
     email_notice_user_reg: 'notice_user_reg',
+    email_sendMessageCode: 'email_sendMessageCode', // 发送邮箱验证码
 
     // 信息提示相关
     system_illegal_param: '非法参数',
@@ -66,6 +66,3 @@ module.exports = {
     system_error_imageType: '文件格式不正确，请重新上传',
     system_error_upload: '上传失败，请稍后重试'
 };
-
-
-

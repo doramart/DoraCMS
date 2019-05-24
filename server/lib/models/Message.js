@@ -7,7 +7,6 @@ var shortid = require('shortid');
 var settings = require('../../../configs/settings');
 var Schema = mongoose.Schema;
 var moment = require('moment')
-moment.locale((settings.lang).toLowerCase());
 var AdminUser = require('./AdminUser');
 var User = require('./User');
 var Content = require('./Content');
@@ -40,21 +39,23 @@ var MessageSchema = new Schema({
         type: String,
         ref: 'AdminUser'
     },   // 被回复者ID
+    state: { type: Boolean, default: false }, // 是否被举报
     utype: { type: String, default: '0' }, // 评论者类型 0,普通用户，1,管理员
     relationMsgId: String, // 关联的留言Id
     date: { type: Date, default: Date.now }, // 留言时间
-    praiseNum: { type: Number, default: 0 }, // 被赞次数
-    hasPraise: { type: Boolean, default: false }, //  当前是否已被点赞
+    praise_num: { type: Number, default: 0 }, // 被赞次数
+    had_praise: { type: Boolean, default: false }, //  当前是否已被点赞
     praiseMembers: String, // 点赞用户id集合
     content: { type: String, default: "输入评论内容..." }// 留言内容
 });
 
+MessageSchema.index({ contentId: 1 }); // 添加索引
 
 MessageSchema.set('toJSON', { getters: true, virtuals: true });
 MessageSchema.set('toObject', { getters: true, virtuals: true });
 
 MessageSchema.path('date').get(function (v) {
-    return moment(v).startOf('hour').fromNow();
+    return moment(v).format("YYYY-MM-DD HH:mm:ss");
 });
 
 var Message = mongoose.model("Message", MessageSchema);

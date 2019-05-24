@@ -29,7 +29,7 @@ class SystemOptionLog {
                     type
                 }
             }
-            res.send(siteFunc.renderApiData(res, 200, 'systemOptionLogs', renderData, 'save'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'systemOptionLogs', renderData, 'save'))
         } catch (err) {
 
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
@@ -54,7 +54,7 @@ class SystemOptionLog {
                 await SystemOptionLogModel.remove({ '_id': { $in: targetIds } });
             }
 
-            res.send(siteFunc.renderApiData(res, 200, 'systemOptionLogs', {}, 'delete'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'systemOptionLogs', {}, 'delete'))
 
         } catch (err) {
 

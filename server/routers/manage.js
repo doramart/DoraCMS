@@ -17,7 +17,12 @@ const {
   UserNotify,
   Notify,
   Ads,
-  ContentTemplate
+  ContentTemplate,
+  SiteMessage,
+  HelpCenter,
+  VersionManage,
+
+  //MgRoutersController
 } = require('../lib/controller');
 const {
   service,
@@ -27,6 +32,7 @@ const {
   validatorUtil
 } = require('../../utils');
 
+const generalFun = require("../lib/utils/generalFun");
 
 // 管理员退出
 router.get('/logout', (req, res) => {
@@ -43,7 +49,12 @@ router.get('/getUserSession', (req, res, next) => {
   if (req.session.adminlogined) {
     next()
   } else {
-    res.send({ data: { state: false, userInfo: {} } });
+    res.send({
+      data: {
+        state: false,
+        userInfo: {}
+      }
+    });
   }
 }, AdminUser.getUserSession)
 
@@ -122,7 +133,12 @@ router.post('/content/addOne', authToken, authPower, Content.addContent)
 
 router.post('/content/updateOne', authToken, authPower, Content.updateContent)
 
+router.post('/content/topContent', authToken, authPower, Content.updateContentToTop)
+
+router.post('/content/roofContent', authToken, authPower, Content.roofPlacement)
 router.get('/content/deleteContent', authToken, authPower, Content.delContent)
+// 给文章分配用户
+router.post('/content/redictContentToUsers', authToken, authPower, Content.redictContentToUsers)
 
 /**
  * tag管理
@@ -177,26 +193,38 @@ router.get('/systemOptionLog/getList', authToken, authPower, SystemOptionLog.get
 router.get('/systemOptionLog/deleteLogItem', authToken, authPower, SystemOptionLog.delSystemOptionLogs);
 
 // 清空日志
-router.get('/systemOptionLog/deleteAllLogItem', authToken, authPower, (req, res, next) => { req.query.ids = 'all'; next() }, SystemOptionLog.delSystemOptionLogs);
+router.get('/systemOptionLog/deleteAllLogItem', authToken, authPower, (req, res, next) => {
+  req.query.ids = 'all';
+  next()
+}, SystemOptionLog.delSystemOptionLogs);
 
 
 /**
  * 系统消息
  */
 
-router.get('/systemNotify/getList', authToken, authPower, (req, res, next) => { req.query.systemUser = req.session.adminUserInfo._id; next() }, UserNotify.getUserNotifys);
+router.get('/systemNotify/getList', authToken, authPower, (req, res, next) => {
+  req.query.systemUser = req.session.adminUserInfo._id;
+  next()
+}, UserNotify.getUserNotifys);
 
 //删除操作日志
 router.get('/systemNotify/deleteNotifyItem', authToken, authPower, UserNotify.delUserNotify);
 
 // 设为已读消息
-router.get('/systemNotify/setHasRead', authToken, authPower, (req, res, next) => { req.query.systemUser = req.session.adminUserInfo._id; next() }, UserNotify.setMessageHasRead);
+router.get('/systemNotify/setHasRead', authToken, authPower, (req, res, next) => {
+  req.query.systemUser = req.session.adminUserInfo._id;
+  next()
+}, UserNotify.setMessageHasRead);
 
 /**
  * 系统公告
  */
 
-router.get('/systemAnnounce/getList', authToken, authPower, (req, res, next) => { req.query.type = '1'; next() }, Notify.getNotifys);
+router.get('/systemAnnounce/getList', authToken, authPower, (req, res, next) => {
+  req.query.type = '1';
+  next()
+}, Notify.getNotifys);
 
 // 删除公告
 router.get('/systemAnnounce/deleteItem', authToken, authPower, Notify.delNotify);
@@ -250,10 +278,32 @@ router.get('/template/getTempsFromShop', authToken, authPower, ContentTemplate.g
 // 安装模板
 router.get('/template/installTemp', authToken, authPower, ContentTemplate.installTemp);
 
+
+//上传自定义模板
+router.post('/template/uploadCMSTemplate', authToken, authPower, ContentTemplate.uploadCMSTemplate);
+
+
 // 启用模板
 router.get('/template/enableTemp', authToken, authPower, ContentTemplate.enableTemp);
 
 // 卸载模板
 router.get('/template/uninstallTemp', authToken, authPower, ContentTemplate.uninstallTemp);
 
+router.post('/siteMessage/updateOne', authToken, authPower, SiteMessage.updateSiteMessage);
+
+router.get('/siteMessage/delete', authToken, authPower, SiteMessage.delSiteMessage);
+
+router.get('/helpCenter/getList', authToken, authPower, HelpCenter.getHelpCenters);
+
+router.post('/helpCenter/addOne', authToken, authPower, HelpCenter.addHelpCenter);
+
+router.post('/helpCenter/updateOne', authToken, authPower, HelpCenter.updateHelpCenter);
+
+router.get('/helpCenter/delete', authToken, authPower, HelpCenter.delHelpCenter);
+
+router.get('/versionManage/getList', authToken, authPower, VersionManage.getVersionManages);
+
+router.post('/versionManage/updateOne', authToken, authPower, VersionManage.updateVersionData);
+
+//ManageRouters
 module.exports = router

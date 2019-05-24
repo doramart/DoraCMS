@@ -1,17 +1,22 @@
+
 /**
  * 过滤url中的非法请求
  */
-import url from 'url';
-import filters from '../filters'
+const url = require('url');
+
 
 module.exports = (req, res, next) => {
 
     let oldParams = url.parse(req.url).search;
-    let basePath = process.env.NODE_ENV == 'development' ? '' : '/oas/static';
-    if (/[- <>.!@#$%^*()+/*]/.test(oldParams)) {
+    let deCodeParams = decodeURIComponent(oldParams);
+    if (/[ <>@$^*()*]/.test(deCodeParams)) {
         console.log('包含特殊字符，不允许访问!');
-        let newParams = filters.validateWords(oldParams);
-        res.redirect(basePath + url.parse(req.url).pathname + newParams);
+        var pattern = new RegExp("[ <>@$^*()/*]");
+        var newParams = "";
+        for (var i = 0; i < deCodeParams.length; i++) {
+            newParams += deCodeParams.substr(i, 1).replace(pattern, '');
+        }
+        res.redirect(url.parse(req.url).pathname + newParams);
     } else {
         next();
     }

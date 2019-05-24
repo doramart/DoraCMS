@@ -7,23 +7,23 @@ export function renderTreeData(result) {
   let newResult = result;
   let treeData = newResult.docs;
   let childArr = _.filter(treeData, (doc) => {
-      return doc.parentId != '0'
+    return doc.parentId != '0'
   });
 
   for (let i = 0; i < childArr.length; i++) {
-      let child = childArr[i];
-      for (let j = 0; j < treeData.length; j++) {
-          let treeItem = treeData[j];
-          if (treeItem._id == child.parentId || treeItem.id == child.parentId) {
-              if (!treeItem.children) treeItem.children = [];
-              treeItem.children.push(child);
-              break;
-          }
+    let child = childArr[i];
+    for (let j = 0; j < treeData.length; j++) {
+      let treeItem = treeData[j];
+      if (treeItem._id == child.parentId || treeItem.id == child.parentId) {
+        if (!treeItem.children) treeItem.children = [];
+        treeItem.children.push(child);
+        break;
       }
+    }
   }
 
   newResult.docs = _.filter(treeData, (doc) => {
-      return doc.parentId == '0'
+    return doc.parentId == '0'
   });
   return newResult;
 }
@@ -60,7 +60,8 @@ const app = {
           group: '',
           email: '',
           comments: '',
-          phoneNum: ''
+          phoneNum: '',
+          countryCode: '',
         }
       },
       userList: {
@@ -163,6 +164,7 @@ const app = {
     systemConfig: {
       configs: {
         siteName: '',
+        ogTitle: '',
         siteDomain: '',
         siteDiscription: '',
         siteKeywords: '',
@@ -208,10 +210,12 @@ const app = {
       formState: {
         edit: false,
         formData: {
+          targetUser: '',
           title: '',
           stitle: '',
           type: '1',
           categories: [],
+          keywords: '',
           sortPath: '',
           tags: [],
           keywords: '',
@@ -220,17 +224,15 @@ const app = {
           author: {},
           uAuthor: '',
           markDownComments: '',
-          state: true,
+          state: '1',
           isTop: 0,
+          roofPlacement: '0',
           clickNum: 0,
           comments: '',
+          simpleComments: '',
           commentNum: 0,
           likeNum: 0,
-          likeUserIds: '',
-          from: '1',
-          postValue: 3,
-          translate: '',
-          twiterAuthor: ''
+          dismissReason: '',
 
         }
       },
@@ -260,6 +262,17 @@ const app = {
       addTag: {
         state: '',
         err: {}
+      }
+    },
+    directUser: {
+      formState: {
+        show: false,
+        edit: false,
+        formData: {
+          name: '',
+          alias: '',
+          targetUser: ''
+        }
       }
     },
     contentMessage: {
@@ -298,6 +311,9 @@ const app = {
           name: '',
           userName: '',
           group: '',
+          watchers: [],
+          followers: [],
+          category: [],
           email: '',
           comments: '',
           phoneNum: '',
@@ -353,6 +369,8 @@ const app = {
         formData: {
           title: '',
           link: '',
+          appLink: '',
+          appLinkType: '',
           width: '',
           height: '',
           alt: '',
@@ -365,7 +383,73 @@ const app = {
       regUserCount: 0,
       contentCount: 0,
       messageCount: 0
-    }
+    },
+    siteMessage: {
+      formState: {
+        show: false,
+        edit: false,
+        formData: {
+          content: '',
+          isRead: false,
+          user: {},
+          type: '1'
+        }
+      },
+      list: {
+        pageInfo: {},
+        docs: []
+      }
+    },
+    helpCenter: {
+      formState: {
+        show: false,
+        edit: false,
+        formData: {
+          name: '',
+          type: '',
+          lang: '1',
+          user: {},
+          comments: ''
+        }
+      },
+      list: {
+        pageInfo: {},
+        docs: []
+      }
+    },
+    versionManage: {
+      configs: {
+        title: '',
+        description: '',
+        version: '',
+        versionName: '',
+        forcibly: false,
+        url: ''
+      }
+    },
+    versionManageIos: {
+      configs: {
+        title: '',
+        description: '',
+        version: '',
+        versionName: '',
+        forcibly: false,
+        url: ''
+      }
+    },
+    //StoreAppInitState
+
+
+
+
+
+
+
+
+
+
+
+
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -409,10 +493,10 @@ const app = {
         },
         state: false
       }, {
-          userInfo: params.userInfo,
-          state: params.loginState || false,
-          noticeCounts: params.noticeCounts
-        });
+        userInfo: params.userInfo,
+        state: params.loginState || false,
+        noticeCounts: params.noticeCounts
+      });
     },
     [types.ADMINUSERFORMSTATE](state, formState) {
       state.adminUser.formState.show = formState.show;
@@ -428,7 +512,8 @@ const app = {
           group: '',
           email: '',
           comments: '',
-          phoneNum: ''
+          phoneNum: '',
+          countryCode: '',
         }
       }
 
@@ -512,6 +597,7 @@ const app = {
     [types.SYSTEMCONFIG_CONFIGLIST](state, config) {
       state.systemConfig.configs = Object.assign({
         siteName: '',
+        ogTitle: '',
         siteDomain: '',
         siteDiscription: '',
         siteKeywords: '',
@@ -550,10 +636,12 @@ const app = {
     [types.CONTENT_FORMSTATE](state, formState) {
       state.content.formState.edit = formState.edit;
       state.content.formState.formData = Object.assign({
+        targetUser: '',
         title: '',
         stitle: '',
         type: '1',
         categories: [],
+        keywords: '',
         sortPath: '',
         tags: [],
         keywords: '',
@@ -562,17 +650,14 @@ const app = {
         author: {},
         uAuthor: '',
         markDownComments: '',
-        state: true,
+        state: '1',
         isTop: 0,
+        roofPlacement: '0',
         clickNum: 0,
         comments: '',
+        simpleComments: '',
         commentNum: 0,
-        likeNum: 0,
-        likeUserIds: '',
-        from: '1',
-        postValue: 3,
-        translate: '',
-        twiterAuthor: ''
+        likeNum: 0
       }, formState.formData);
 
     },
@@ -582,6 +667,17 @@ const app = {
     [types.CONTENT_ONE](state, content) {
       state.content.content = content
     },
+    [types.DIRECTUSERFORMSTATE](state, formState) {
+      state.directUser.formState.show = formState.show;
+      state.directUser.formState.edit = formState.edit;
+      state.directUser.formState.type = formState.type;
+      state.directUser.formState.formData = Object.assign({
+        name: '',
+        alias: '',
+        targetUser: ''
+      }, formState.formData);
+    },
+
     [types.CONTENTTAG_FORMSTATE](state, formState) {
       state.contentTag.formState.show = formState.show;
       state.contentTag.formState.edit = formState.edit;
@@ -682,24 +778,88 @@ const app = {
         sImg: '',
       }, formState.formData);
     },
+    [types.SITEMESSAGE_FORMSTATE](state, formState) {
+      state.siteMessage.formState.show = formState.show;
+      state.siteMessage.formState.edit = formState.edit;
+      state.siteMessage.formState.type = formState.type;
+      state.siteMessage.formState.formData = Object.assign({
+        content: '',
+        isRead: false,
+        user: {},
+        type: '1'
+      }, formState.formData);
+    },
+    [types.SITEMESSAGE_LIST](state, list) {
+      state.siteMessage.list = list
+    },
+
+    [types.HELPCENTER_FORMSTATE](state, formState) {
+      state.helpCenter.formState.show = formState.show;
+      state.helpCenter.formState.edit = formState.edit;
+      state.helpCenter.formState.type = formState.type;
+      state.helpCenter.formState.formData = Object.assign({
+        name: '',
+        type: '',
+        lang: '1',
+        comments: ''
+      }, formState.formData);
+    },
+    [types.HELPCENTER_LIST](state, list) {
+      state.helpCenter.list = list
+    },
+
+    [types.VERSIONMANAGE_FORMSTATE](state, config) {
+      state.versionManage.configs = Object.assign({
+        title: '',
+        description: '',
+        version: '',
+        versionName: '',
+        forcibly: false,
+        url: ''
+      }, config)
+    },
+
+    [types.VERSIONMANAGEIOS_FORMSTATE](state, config) {
+      state.versionManageIos.configs = Object.assign({
+        title: '',
+        description: '',
+        version: '',
+        versionName: '',
+        forcibly: false,
+        url: ''
+      }, config)
+    },
     [types.MAIN_SITEBASIC_INFO](state, list) {
       state.basicInfo = list
-    }
+    },
+    //StoreAppMutations
   },
   actions: {
-    toggleSideBar({ commit }) {
+    toggleSideBar({
+      commit
+    }) {
       commit('TOGGLE_SIDEBAR')
     },
-    closeSideBar({ commit }, { withoutAnimation }) {
+    closeSideBar({
+      commit
+    }, {
+      withoutAnimation
+    }) {
       commit('CLOSE_SIDEBAR', withoutAnimation)
     },
-    toggleDevice({ commit }, device) {
+    toggleDevice({
+      commit
+    }, device) {
       commit('TOGGLE_DEVICE', device)
     },
-    setLanguage({ commit }, language) {
+    setLanguage({
+      commit
+    }, language) {
       commit('SET_LANGUAGE', language)
     },
-    setSize({ commit }, size) {
+    setSize({
+      commit
+    }, size) {
       commit('SET_SIZE', size)
     },
     increment: ({
@@ -936,6 +1096,25 @@ const app = {
         formData: params.formData
       })
     },
+    showDirectUserForm: ({
+      commit
+    }, params = {
+      edit: false,
+      formData: {}
+    }) => {
+      commit(types.DIRECTUSERFORMSTATE, {
+        show: true,
+        edit: params.edit,
+        formData: params.formData
+      })
+    },
+    hideDirectUserForm: ({
+      commit
+    }) => {
+      commit(types.DIRECTUSERFORMSTATE, {
+        show: false
+      })
+    },
     getContentList({
       commit
     }, params = {}) {
@@ -951,7 +1130,6 @@ const app = {
         commit(types.CONTENT_ONE, result.data.data)
       })
     },
-
     showContentTagForm: ({
       commit
     }, params = {
@@ -1109,7 +1287,86 @@ const app = {
       services.getSiteBasicInfo(params).then((result) => {
         commit(types.MAIN_SITEBASIC_INFO, result.data.data)
       })
-    }
+    },
+    showSiteMessageForm: ({
+      commit
+    }, params = {
+      edit: false,
+      formData: {}
+    }) => {
+      commit(types.SITEMESSAGE_FORMSTATE, {
+        show: true,
+        edit: params.edit,
+        formData: params.formData
+      })
+    },
+
+    hideSiteMessageForm: ({
+      commit
+    }) => {
+      commit(types.SITEMESSAGE_FORMSTATE, {
+        show: false
+      })
+    },
+
+    getSiteMessageList({
+      commit
+    }, params = {}) {
+      services.siteMessageList(params).then((result) => {
+        commit(types.SITEMESSAGE_LIST, result.data.data)
+      })
+    },
+
+    showHelpCenterForm: ({
+      commit
+    }, params = {
+      edit: false,
+      formData: {}
+    }) => {
+      commit(types.HELPCENTER_FORMSTATE, {
+        show: true,
+        edit: params.edit,
+        formData: params.formData
+      })
+    },
+
+    hideHelpCenterForm: ({
+      commit
+    }) => {
+      commit(types.HELPCENTER_FORMSTATE, {
+        show: false
+      })
+    },
+
+    getHelpCenterList({
+      commit
+    }, params = {}) {
+      services.helpCenterList(params).then((result) => {
+        commit(types.HELPCENTER_LIST, result.data.data)
+      })
+    },
+
+    getVersionInfo({
+      commit
+    }, params = {
+      client: '0'
+    }) {
+      services.versionManageList(params).then((config) => {
+        let currentConfig = (config.data && config.data.data.docs) ? config.data.data.docs[0] : {};
+        commit(types.VERSIONMANAGE_FORMSTATE, currentConfig)
+      })
+    },
+    getIosVersionInfo({
+      commit
+    }, params = {
+      client: '1'
+    }) {
+      services.versionManageList(params).then((config) => {
+        let currentConfig = (config.data && config.data.data.docs) ? config.data.data.docs[0] : {};
+        commit(types.VERSIONMANAGEIOS_FORMSTATE, currentConfig)
+      })
+    },
+    //StoreAppActions
   }
 }
 

@@ -1,4 +1,5 @@
-<script src="/themes/{{staticforder}}/js/avalon-ms-pager.js?version={{siteInfo.version}}" type="text/javascript"></script>
+<script src="/themes/{{staticforder}}/js/avalon-ms-pager.js?version={{siteInfo.version}}" type="text/javascript">
+</script>
 <div class="my-contents" ms-controller="my-contents">
     {% include "./modal.html" %}
     <!-- Nav tabs -->
@@ -36,7 +37,8 @@
                 <div ms-for="(index,el) in @myContentList">
                     <div class="discription ">
                         <h2 class="post-title ">
-                            <a ms-if="@el.state" ms-attr="{href:'/details/'+el._id+'.html'}" target="_blank " ms-text="@el.title"></a>
+                            <a ms-if="@el.state" ms-attr="{href:'/details/'+el._id+'.html'}" target="_blank "
+                                ms-text="@el.title"></a>
                             <a ms-if="!@el.state" ms-text="@el.title"></a>
                         </h2>
                         <div class="post-content" ms-html="@el.discription"></div>
@@ -57,79 +59,92 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center"><wbr ms-widget="{is:'ms-pager', onPageClick: @contentPageClick, totalPages:@contentTotalPage}" /></div>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="myMessages">
-            <div :if="@myMessageList.length == 0">
-                <div class="no-contents">
-                    <div class="um-profile-note">
-                        <i class="fa fa-frown-o"></i>
-                        <span>{{lk.lc_no_myMessage}}</span>
+            <div class="text-center">
+                <wbr ms-widget="{is:'ms-pager', onPageClick: @contentPageClick, totalPages:@contentTotalPage}" /></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="myMessages">
+                <div :if="@myMessageList.length == 0">
+                    <div class="no-contents">
+                        <div class="um-profile-note">
+                            <i class="fa fa-frown-o"></i>
+                            <span>{{lk.lc_no_myMessage}}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="myMessageList" :if="@myMessageList.length > 0">
-                <div ms-for="(index,el) in @myMessageList">
-                    <ul>
-                        <li>
-                            <div :class="['notify-title',(@el.isRead?'isRead':'noRead')]"><i class="fa fa-angle-right"
-                                    ms-on-click="showMessageDetails($event,el)"></i><span ms-html="@el.notify.title"></span></div>
-                            <span class="notify-content" ms-html="@el.notify.content"></span>
-                            <div class="opt pull-right">
-                                <button ms-on-click="@deleteNotify(el._id)" type="button" class="btn btn-danger btn-xs">删除</button>
+                <div class="myMessageList" :if="@myMessageList.length > 0">
+                    <div ms-for="(index,el) in @myMessageList">
+                        <ul>
+                            <li>
+                                <div :class="['notify-title',(@el.isRead?'isRead':'noRead')]"><i
+                                        class="fa fa-angle-right" ms-on-click="showMessageDetails($event,el)"></i><span
+                                        ms-html="@el.notify.title"></span></div>
+                                <span class="notify-content" ms-html="@el.notify.content"></span>
+                                <div class="opt pull-right">
+                                    <button ms-on-click="@deleteNotify(el._id)" type="button"
+                                        class="btn btn-danger btn-xs">删除</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <wbr ms-widget="{is:'ms-pager', onPageClick: @messagePageClick, totalPages:@messageTotalPage}" /></div>
+
+                </div>
+                <div role="tabpanel" class="tab-pane" id="myJoinTopics">
+                    <div :if="@myJoinTopicsList.length == 0">
+                        <div class="no-contents">
+                            <div class="um-profile-note">
+                                <i class="fa fa-frown-o"></i>
+                                <span>{{lk.lc_no_myJoinComment}}</span>
                             </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="text-center"><wbr ms-widget="{is:'ms-pager', onPageClick: @messagePageClick, totalPages:@messageTotalPage}" /></div>
-
-        </div>
-        <div role="tabpanel" class="tab-pane" id="myJoinTopics">
-            <div :if="@myJoinTopicsList.length == 0">
-                <div class="no-contents">
-                    <div class="um-profile-note">
-                        <i class="fa fa-frown-o"></i>
-                        <span>{{lk.lc_no_myJoinComment}}</span>
+                        </div>
                     </div>
+                    <div class="myJoinTopicsList" :if="@myJoinTopicsList.length > 0">
+                        <div>
+                            <ul class="replyList">
+                                <li ms-for="(index,el) in @myJoinTopicsList">
+                                    <time ms-text="@el.date"></time>
+                                    <h4>
+                                        <a href="#">{{userInfo.userName}}</a>&nbsp;发表在&nbsp;
+                                        <a ms-attr="{href:'/details/'+el.contentId._id+'.html'}" class=""
+                                            ms-text="@el.contentId.title"></a>
+                                    </h4>
+                                    <blockquote ms-text="@el.content"></blockquote>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <wbr ms-widget="{is:'ms-pager', onPageClick: @joinTopicPageClick, totalPages:@joinTopicsTotalPage}" /></div>
+                    </div>
+                    <!-- <div role="tabpanel" class="tab-pane" id="settings">...</div> -->
                 </div>
+
             </div>
-            <div class="myJoinTopicsList" :if="@myJoinTopicsList.length > 0">
-                <div>
-                    <ul class="replyList">
-                        <li ms-for="(index,el) in @myJoinTopicsList">
-                            <time ms-text="@el.date"></time>
-                            <h4>
-                                <a href="#">{{userInfo.userName}}</a>&nbsp;发表在&nbsp;
-                                <a ms-attr="{href:'/details/'+el.contentId._id+'.html'}" class="" ms-text="@el.contentId.title"></a>
-                            </h4>
-                            <blockquote ms-text="@el.content"></blockquote>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="text-center"><wbr ms-widget="{is:'ms-pager', onPageClick: @joinTopicPageClick, totalPages:@joinTopicsTotalPage}" /></div>
-        </div>
-        <!-- <div role="tabpanel" class="tab-pane" id="settings">...</div> -->
-    </div>
 
-</div>
-
-<script>
-    $(function () {
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            var targetId = e.target.hash;
-            if (targetId.indexOf('myMessages') >= 0) {
-                // 获取用户消息列表
-                getUserRelevantList('getUserNotifys', 'myMessages', 1)
-            } else if (targetId.indexOf('home') >= 0) {
-                getUserRelevantList('getUserContents', 'myContents', 1)
-            } else if (targetId.indexOf('myJoinTopics') >= 0) {
-                getUserRelevantList('getUserReplies', 'myJoinTopics', 1)
-            }
-        })
-    })
-    // 获取用户投稿列表
-    getUserRelevantList('getUserContents', 'myContents', 1);
-
-</script>
+            <script>
+                $(function () {
+                    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                        var targetId = e.target.hash;
+                        if (targetId.indexOf('myMessages') >= 0) {
+                            // 获取用户消息列表
+                            getUserRelevantList('/user/getUserNotifys', 'myMessages', 1, {
+                                ids: $('#userId').val()
+                            })
+                        } else if (targetId.indexOf('home') >= 0) {
+                            getUserRelevantList('/user/getUserContents', 'myContents', 1, {
+                                userId: $('#userId').val()
+                            })
+                        } else if (targetId.indexOf('myJoinTopics') >= 0) {
+                            getUserRelevantList('/user/getUserReplies', 'myJoinTopics', 1, {
+                                userId: $('#userId').val()
+                            })
+                        }
+                    })
+                })
+                // 获取用户投稿列表
+                getUserRelevantList('/user/getUserContents', 'myContents', 1, {
+                    userId: $('#userId').val()
+                });
+            </script>

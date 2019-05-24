@@ -2,20 +2,34 @@ const BaseComponent = require('../prototype/baseComponent');
 const AdsModel = require("../models").Ads;
 const AdsItemsModel = require("../models").AdsItems;
 const formidable = require('formidable');
-const { service, validatorUtil, siteFunc } = require('../../../utils');
+const {
+    service,
+    validatorUtil,
+    siteFunc
+} = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
+const _ = require('lodash')
 
 function checkFormData(req, res, fields) {
     let errMsg = '';
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
+        console.log('---fields--', fields);
         errMsg = res.__("validate_error_params");
     }
     if (!validator.isLength(fields.name, 2, 15)) {
-        errMsg = res.__("validate_rangelength", { min: 2, max: 15, label: res.__("label_ads_name") });
+        errMsg = res.__("validate_rangelength", {
+            min: 2,
+            max: 15,
+            label: res.__("label_ads_name")
+        });
     }
     if (!validator.isLength(fields.comments, 5, 30)) {
-        errMsg = res.__("validate_rangelength", { min: 5, max: 30, label: res.__("label_comments") });
+        errMsg = res.__("validate_rangelength", {
+            min: 5,
+            max: 30,
+            label: res.__("label_comments")
+        });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
@@ -33,13 +47,23 @@ class Ads {
             let pageSize = req.query.pageSize || 10;
             let model = req.query.model; // 查询模式 full/simple
             let state = req.query.state;
+            let useClient = req.query.useClient;
+            let targetName = req.query.name;
             let queryObj = {};
             if (model === 'full') {
                 pageSize = '1000'
             }
-            if (state) queryObj.state = state
+            if (state) queryObj.state = state;
 
-            const Ads = await AdsModel.find(queryObj).sort({ date: -1 }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
+            if (useClient == '2') {
+                queryObj = {
+                    name: targetName
+                };
+            }
+
+            const Ads = await AdsModel.find(queryObj).sort({
+                date: -1
+            }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([{
                 path: 'items'
             }]).exec();
             const totalItems = await AdsModel.count();
@@ -51,11 +75,15 @@ class Ads {
                     pageSize: Number(pageSize) || 10
                 }
             };
-            let renderData = siteFunc.renderApiData(res, 200, 'ads', adsData, 'getlist')
+            let renderData = siteFunc.renderApiData(req, res, 200, 'ads', adsData, 'getlist')
             if (modules && modules.length > 0) {
                 return renderData.data;
             } else {
-                res.send(renderData);
+                if (useClient == '2') {
+                    res.send(siteFunc.renderApiData(req, res, 200, 'ads', Ads, 'getlist'));
+                } else {
+                    res.send(renderData);
+                }
             }
         } catch (err) {
 
@@ -66,17 +94,33 @@ class Ads {
 
     async getOneAd(req, res, next) {
         try {
+            let targetName = req.query.name;
             let targetId = req.query.id;
-            let state = req.query.state, queryObj = { _id: targetId };
+            let useClient = req.query.useClient;
+            let state = req.query.state,
+                queryObj = {
+                    _id: targetId
+                };
             if (state) queryObj.state = state
+
+            if (useClient == '2') {
+                queryObj = {
+                    name: targetName
+                };
+            }
             const ad = await AdsModel.findOne(queryObj).populate([{
                 path: 'items'
             }]).exec();
             let adsData = {
-                doc: ad || {}
+                doc: ad
+            };
+            let renderAdsData = siteFunc.renderApiData(req, res, 200, 'ads', adsData);
+            if (useClient == '2') {
+                res.send(siteFunc.renderApiData(req, res, 200, 'ads', ad))
+            } else {
+                res.send(renderAdsData)
             }
-            let renderAdsData = siteFunc.renderApiData(res, 200, 'ads', adsData)
-            res.send(renderAdsData)
+
         } catch (err) {
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
         }
@@ -87,31 +131,39 @@ class Ads {
         form.parse(req, async (err, fields, files) => {
             try {
                 checkFormData(req, res, fields);
-            } catch (err) {
-                console.log(err.message, err);
-                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
-            }
-            const adObj = {
-                name: fields.name,
-                state: fields.state,
-                height: fields.height,
-                carousel: fields.carousel,
-                type: fields.type,
-                comments: fields.comments
-            }
-            let itemIdArr = [], adsItems = fields.items;
-            if (adsItems.length > 0) {
-                for (let i = 0; i < adsItems.length; i++) {
-                    const newAdItem = new AdsItemsModel(adsItems[i]);
-                    let newItem = await newAdItem.save();
-                    itemIdArr.push(newItem._id);
+
+                let oldAds = await AdsModel.findOne({
+                    name: fields.name
+                });
+
+                if (!_.isEmpty(oldAds)) {
+                    throw new siteFunc.UserException(res.__("validate_error_params"));
                 }
-            }
-            adObj.items = itemIdArr;
-            const newAds = new AdsModel(adObj);
-            try {
+
+                const adObj = {
+                    name: fields.name,
+                    state: fields.state,
+                    height: fields.height,
+                    carousel: fields.carousel,
+                    type: fields.type,
+                    comments: fields.comments
+                }
+                let itemIdArr = [],
+                    adsItems = fields.items;
+                if (adsItems.length > 0) {
+                    for (let i = 0; i < adsItems.length; i++) {
+                        const newAdItem = new AdsItemsModel(adsItems[i]);
+                        let newItem = await newAdItem.save();
+                        itemIdArr.push(newItem._id);
+                    }
+                }
+                adObj.items = itemIdArr;
+                const newAds = new AdsModel(adObj);
+
                 await newAds.save();
-                res.send(siteFunc.renderApiData(res, 200, 'ads', { id: newAds._id }, 'save'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'ads', {
+                    id: newAds._id
+                }, 'save'))
             } catch (err) {
 
                 res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
@@ -124,28 +176,37 @@ class Ads {
         form.parse(req, async (err, fields, files) => {
             try {
                 checkFormData(req, res, fields);
-            } catch (err) {
-                console.log(err.message, err);
-                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
-            }
 
-            const userObj = {
-                name: fields.name,
-                state: fields.state,
-                height: fields.height,
-                carousel: fields.carousel,
-                type: fields.type,
-                comments: fields.comments
-            }
-            const item_id = fields._id;
-            let itemIdArr = [], adsItems = fields.items;
-            try {
+                let oldAds = await AdsModel.findOne({
+                    name: fields.name
+                });
+
+                if (_.isEmpty(oldAds)) {
+                    throw new siteFunc.UserException(res.__("validate_error_params"));
+                }
+
+                const userObj = {
+                    name: fields.name,
+                    state: fields.state,
+                    height: fields.height,
+                    carousel: fields.carousel,
+                    type: fields.type,
+                    comments: fields.comments
+                }
+                const item_id = fields._id;
+                let itemIdArr = [],
+                    adsItems = fields.items;
                 if (adsItems.length > 0) {
                     for (let i = 0; i < adsItems.length; i++) {
-                        let targetItem = adsItems[i], currentId = '';
+                        let targetItem = adsItems[i],
+                            currentId = '';
                         if (targetItem._id) {
                             currentId = targetItem._id;
-                            await AdsItemsModel.findOneAndUpdate({ _id: targetItem._id }, { $set: targetItem });
+                            await AdsItemsModel.findOneAndUpdate({
+                                _id: targetItem._id
+                            }, {
+                                $set: targetItem
+                            });
                         } else {
                             const newAdItem = new AdsItemsModel(targetItem);
                             let newItem = await newAdItem.save();
@@ -155,8 +216,12 @@ class Ads {
                     }
                 }
                 userObj.items = itemIdArr;
-                await AdsModel.findOneAndUpdate({ _id: item_id }, { $set: userObj });
-                res.send(siteFunc.renderApiData(res, 200, 'ads', {}, 'update'))
+                await AdsModel.findOneAndUpdate({
+                    _id: item_id
+                }, {
+                    $set: userObj
+                });
+                res.send(siteFunc.renderApiData(req, res, 200, 'ads', {}, 'update'))
 
             } catch (err) {
 
@@ -168,7 +233,8 @@ class Ads {
 
     async delAds(req, res, next) {
         try {
-            let errMsg = '', targetIds = req.query.ids;
+            let errMsg = '',
+                targetIds = req.query.ids;
             if (!siteFunc.checkCurrentId(targetIds)) {
                 errMsg = res.__("validate_error_params");
             } else {
@@ -179,11 +245,19 @@ class Ads {
             }
             for (let i = 0; i < targetIds.length; i++) {
                 let currentId = targetIds[i];
-                let targetAd = await AdsModel.findOne({ _id: currentId });
-                await AdsItemsModel.remove({ '_id': { $in: targetAd.items } });
-                await AdsModel.remove({ _id: currentId });
+                let targetAd = await AdsModel.findOne({
+                    _id: currentId
+                });
+                await AdsItemsModel.remove({
+                    '_id': {
+                        $in: targetAd.items
+                    }
+                });
+                await AdsModel.remove({
+                    _id: currentId
+                });
             }
-            res.send(siteFunc.renderApiData(res, 200, 'ads', {}, 'delete'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'ads', {}, 'delete'))
 
         } catch (err) {
 

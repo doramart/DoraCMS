@@ -1,36 +1,87 @@
 <template>
-    <div class="dr-adminGroupForm">
-        <el-dialog :xs="20" :sm="20" :md="6" :lg="6" :xl="6" size="small" :title="(formState.edit?$t('main.modify'):$t('main.addNew'))+(adsType == '1'?$t('ads.typePic'):$t('ads.textLink'))" :visible.sync="formState.show" :close-on-click-modal="false">
-            <el-form v-if="adsType == '1'" :model="formState.formData" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
-                <el-form-item :label="$t('ads.dis')" prop="alt">
-                    <el-input size="small" v-model="formState.formData.alt"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('ads.link')" prop="link">
-                    <el-input size="small" v-model="formState.formData.link"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('ads.upload')" prop="sImg">
-                    <el-upload class="avatar-uploader" action="/system/upload?type=images" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                        <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-                </el-form-item>
-            </el-form>
-            <el-form v-if="adsType == '0'" :model="formState.formData" :rules="rules1" ref="ruleForm1" label-width="80px" class="demo-ruleForm">
-                <el-form-item :label="$t('ads.textContent')" prop="title">
-                    <el-input size="small" v-model="formState.formData.title"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('ads.link')" prop="link">
-                    <el-input size="small" v-model="formState.formData.link"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="smmediumall" type="primary" @click="submitForm('ruleForm1')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-    </div>
+  <div class="dr-adminGroupForm">
+    <el-dialog
+      :xs="20"
+      :sm="20"
+      :md="6"
+      :lg="6"
+      :xl="6"
+      size="small"
+      :title="(formState.edit?$t('main.modify'):$t('main.addNew'))+(adsType == '1'?$t('ads.typePic'):$t('ads.textLink'))"
+      :visible.sync="formState.show"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        v-if="adsType == '1'"
+        :model="formState.formData"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="80px"
+        class="demo-ruleForm"
+      >
+        <el-form-item :label="$t('ads.dis')" prop="alt">
+          <el-input size="small" v-model="formState.formData.alt"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('ads.link')" prop="link">
+          <el-input size="small" v-model="formState.formData.link"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('ads.appLink')" prop="appLink">
+          <el-input size="small" v-model="formState.formData.appLink"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('ads.appLinkType')" prop="appLinkType">
+          <el-select v-model="formState.formData.appLinkType" placeholder="请选择app链接类型">
+            <el-option
+              v-for="item in linkTypeOpts"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('ads.upload')" prop="sImg">
+          <el-upload
+            class="avatar-uploader"
+            action="/api/v0/upload/files?type=images"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="medium"
+            type="primary"
+            @click="submitForm('ruleForm')"
+          >{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+        </el-form-item>
+      </el-form>
+      <el-form
+        v-if="adsType == '0'"
+        :model="formState.formData"
+        :rules="rules1"
+        ref="ruleForm1"
+        label-width="80px"
+        class="demo-ruleForm"
+      >
+        <el-form-item :label="$t('ads.textContent')" prop="title">
+          <el-input size="small" v-model="formState.formData.title"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('ads.link')" prop="link">
+          <el-input size="small" v-model="formState.formData.link"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="smmediumall"
+            type="primary"
+            @click="submitForm('ruleForm1')"
+          >{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 <script>
 import services from "../../store/services.js";
@@ -42,6 +93,10 @@ export default {
   },
   data() {
     return {
+      linkTypeOpts: [
+        { value: "0", label: "文章" },
+        { value: "1", label: "链接" }
+      ],
       rules1: {
         title: [
           {
@@ -109,7 +164,7 @@ export default {
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      this.formState.formData.sImg = res;
+      this.formState.formData.sImg = res.data.path;
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";

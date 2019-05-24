@@ -6,6 +6,9 @@
                     <el-form-item :label="$t('sysTemConfigs.site_name')" prop="siteName">
                         <el-input size="small" v-model="systemConfig.configs.siteName"></el-input>
                     </el-form-item>
+          <el-form-item label="详情标题" prop="ogTitle">
+            <el-input size="small" v-model="systemConfig.configs.ogTitle"></el-input>
+          </el-form-item>
                     <el-form-item :label="$t('sysTemConfigs.site_domain')" prop="siteDomain">
                         <el-input size="small" v-model="systemConfig.configs.siteDomain">
                         </el-input>
@@ -174,10 +177,10 @@ export default {
           },
           {
             min: 6,
-            max: 20,
+            max: 100,
             message: this.$t("validate.ranglengthandnormal", {
               min: 6,
-              max: 20
+              max: 100
             }),
             trigger: "blur"
           }
@@ -366,6 +369,20 @@ export default {
     transition: height 0.2s;
     font-size: 14px;
     padding: 10px 0;
+  }
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 // set function parseTime,formatTime to filter
 export { parseTime, formatTime } from '@/utils'
-
+import moment from 'moment';
 
 function pluralize(time, label) {
   if (time === 1) {
@@ -18,6 +18,10 @@ export function cutWords(str, length) {
     newStr = str;
   }
   return newStr;
+}
+
+export function formatStringDate(str){
+  return moment(str).format("YYYY-MM-DD HH:mm:ss");
 }
 
 export function timeAgo(time) {

@@ -30,5 +30,10 @@ module.exports = (req, res, next) => {
             return next();
         }
 
-    }).catch(err => console.log(err));
+    }).catch((err) => {
+        res.send({
+            status: 500,
+            message: res.__('label_systemnotice_nopower')
+        });
+    });
 }

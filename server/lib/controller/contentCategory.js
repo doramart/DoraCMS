@@ -1,8 +1,13 @@
 const BaseComponent = require('../prototype/baseComponent');
 const ContentCategoryModel = require("../models").ContentCategory;
 const ContentModel = require("../models").Content;
+const UserModel = require("../models").User;
 const formidable = require('formidable');
-const { service, validatorUtil, siteFunc } = require('../../../utils');
+const {
+    service,
+    validatorUtil,
+    siteFunc
+} = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
 const _ = require('lodash');
@@ -12,19 +17,36 @@ function checkFormData(req, res, fields) {
     if (fields._id && !siteFunc.checkCurrentId(fields._id)) {
         errMsg = res.__("validate_error_params");
     }
+
+    if (!validatorUtil.isRegularCharacter(fields.name)) {
+        errMsg = res.__("validate_error_field", {
+            label: res.__("label_cate_name")
+        });
+    }
     if (!validator.isLength(fields.name, 2, 20)) {
-        errMsg = res.__("validate_rangelength", { min: 2, max: 20, label: res.__("label_cate_name") });
+        errMsg = res.__("validate_rangelength", {
+            min: 2,
+            max: 20,
+            label: res.__("label_cate_name")
+        });
     }
     if (!fields.defaultUrl) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_cate_seourl") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_cate_seourl")
+        });
     }
     if (fields.comments && !validator.isLength(fields.comments, 4, 100)) {
-        errMsg = res.__("validate_rangelength", { min: 4, max: 100, label: res.__("label_comments") });
+        errMsg = res.__("validate_rangelength", {
+            min: 4,
+            max: 100,
+            label: res.__("label_comments")
+        });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
     }
 }
+
 
 class ContentCategory {
     constructor() {
@@ -39,6 +61,9 @@ class ContentCategory {
             let parentId = req.query.parentId; // 分类ID
             let enable = req.query.enable;
             let type = req.query.type;
+            let useClient = req.query.useClient,
+                files = '';
+            let searchkey = req.query.searchkey;
             let queryObj = {};
 
             if (parentId) {
@@ -50,26 +75,55 @@ class ContentCategory {
             if (type) {
                 queryObj['type'] = type;
             }
+            if (searchkey) {
+                let reKey = new RegExp(searchkey, 'i')
+                queryObj.name = {
+                    $regex: reKey
+                }
+            }
             if (model === 'full') {
                 pageSize = '1000'
             }
 
-            const ContentCategories = await ContentCategoryModel.find(queryObj).sort({ sortId: 1 }).exec();
+            let contentCategories = [];
+
+            if (useClient == '2') {
+                if (!parentId) {
+                    queryObj.parentId = {
+                        $ne: '0'
+                    }
+                }
+                files = 'name keywords parentId enable date comments sImg';
+                contentCategories = await ContentCategoryModel.find(queryObj, files).sort({
+                    sortId: 1
+                }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize));
+            } else {
+                contentCategories = await ContentCategoryModel.find(queryObj, files).sort({
+                    sortId: 1
+                });
+            }
+
             const totalItems = await ContentCategoryModel.count(queryObj);
 
             let cateData = {
-                docs: ContentCategories,
+                docs: contentCategories,
                 pageInfo: {
                     totalItems,
                     current: Number(current) || 1,
                     pageSize: Number(pageSize) || 10
                 }
             };
-            let renderCateData = siteFunc.renderApiData(res, 200, 'contentCategory', cateData);
+            let renderCateData = siteFunc.renderApiData(req, res, 200, 'contentCategory', cateData);
             if (modules && modules.length > 0) {
                 return renderCateData.data.docs;
             } else {
-                res.send(renderCateData);
+                if (req.query.useClient == '1') {
+                    res.send(renderCateData);
+                } else if (req.query.useClient == '2') {
+                    res.send(siteFunc.renderApiData(req, res, 200, 'contentCategory', contentCategories))
+                } else {
+                    res.send(renderCateData);
+                }
             }
         } catch (err) {
 
@@ -82,8 +136,11 @@ class ContentCategory {
         try {
             let contentId = req.query.contentId;
             let typeId = req.query.typeId;
-            let cates = [], parents = [];
-            let contentObj = await ContentModel.findOne({ '_id': contentId }, 'categories').populate([{
+            let cates = [],
+                parents = [];
+            let contentObj = await ContentModel.findOne({
+                '_id': contentId
+            }, 'categories').populate([{
                 path: 'categories',
                 select: 'name _id'
             }]).exec();
@@ -120,7 +177,9 @@ class ContentCategory {
 
     async getCategoryInfoById(req, res, next) {
         let typeId = req.query.typeId;
-        return await ContentCategoryModel.findOne({ _id: typeId }).populate('contentTemp').exec();
+        return await ContentCategoryModel.findOne({
+            _id: typeId
+        }).populate('contentTemp').exec();
     }
 
     async getAllCategories(req, res, next) {
@@ -133,38 +192,43 @@ class ContentCategory {
         form.parse(req, async (err, fields, files) => {
             try {
                 checkFormData(req, res, fields);
-            } catch (err) {
-                console.log(err.message, err);
-                res.send(siteFunc.renderApiErr(req, res, 500, err, 'checkform'));
-            }
 
-            const groupObj = {
-                name: fields.name,
-                keywords: fields.keywords,
-                sortId: fields.sortId,
-                parentId: fields.parentId,
-                enable: fields.enable,
-                defaultUrl: fields.defaultUrl,
-                contentTemp: fields.contentTemp,
-                comments: fields.comments,
-                type: fields.type
-            }
 
-            const newContentCategory = new ContentCategoryModel(groupObj);
-            try {
+                const groupObj = {
+                    name: fields.name,
+                    keywords: fields.keywords,
+                    sortId: fields.sortId,
+                    parentId: fields.parentId,
+                    enable: fields.enable,
+                    defaultUrl: fields.defaultUrl,
+                    contentTemp: fields.contentTemp,
+                    comments: fields.comments,
+                    type: fields.type
+                }
+
+                const newContentCategory = new ContentCategoryModel(groupObj);
+
                 let cateObj = await newContentCategory.save();
                 // 更新sortPath defaultUrl
                 let newQuery = {};
                 if (fields.parentId == '0') {
                     newQuery.sortPath = '0,' + cateObj._id
                 } else {
-                    let parentObj = await ContentCategoryModel.findOne({ '_id': fields.parentId }, 'sortPath defaultUrl');
+                    let parentObj = await ContentCategoryModel.findOne({
+                        '_id': fields.parentId
+                    }, 'sortPath defaultUrl');
                     newQuery.sortPath = parentObj.sortPath + "," + cateObj._id;
                     newQuery.defaultUrl = parentObj.defaultUrl + '/' + fields.defaultUrl
                 }
-                await ContentCategoryModel.findOneAndUpdate({ _id: cateObj._id }, { $set: newQuery });
+                await ContentCategoryModel.findOneAndUpdate({
+                    _id: cateObj._id
+                }, {
+                    $set: newQuery
+                });
 
-                res.send(siteFunc.renderApiData(res, 200, 'contentCategory', { id: cateObj._id }, 'save'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'contentCategory', {
+                    id: cateObj._id
+                }, 'save'))
             } catch (err) {
 
                 res.send(siteFunc.renderApiErr(req, res, 500, err, 'save'));
@@ -196,8 +260,12 @@ class ContentCategory {
             }
             const item_id = fields._id;
             try {
-                await ContentCategoryModel.findOneAndUpdate({ _id: item_id }, { $set: cateObj });
-                res.send(siteFunc.renderApiData(res, 200, 'contentCategory', {}, 'update'))
+                await ContentCategoryModel.findOneAndUpdate({
+                    _id: item_id
+                }, {
+                    $set: cateObj
+                });
+                res.send(siteFunc.renderApiData(req, res, 200, 'contentCategory', {}, 'update'))
 
             } catch (err) {
 
@@ -216,8 +284,10 @@ class ContentCategory {
             if (errMsg) {
                 throw new siteFunc.UserException(errMsg);
             }
-            await ContentCategoryModel.remove({ _id: req.query.ids });
-            res.send(siteFunc.renderApiData(res, 200, 'contentCategory', {}, 'delete'))
+            await ContentCategoryModel.remove({
+                _id: req.query.ids
+            });
+            res.send(siteFunc.renderApiData(req, res, 200, 'contentCategory', {}, 'delete'))
 
         } catch (err) {
 

@@ -4,10 +4,22 @@ router.caseSensitive = true
 router.strict = true
 const fs = require('fs')
 const path = require('path')
-const { authSession } = require('../../utils');
+const {
+    authSession
+} = require('../../utils');
 const generalFun = require("../lib/utils/generalFun");
 const settings = require('../../configs/settings');
-const { AdminUser, ContentCategory, Content, ContentTag, User, Message, SystemConfig, UserNotify, Ads } = require('../lib/controller');
+const {
+    AdminUser,
+    ContentCategory,
+    Content,
+    ContentTag,
+    User,
+    Message,
+    SystemConfig,
+    UserNotify,
+    Ads
+} = require('../lib/controller');
 const moment = require('moment');
 const shortid = require('shortid');
 const _ = require('lodash')
@@ -21,18 +33,7 @@ function checkUserSessionForPage(req, res, next) {
     if (!_.isEmpty(req.session.user)) {
         next()
     } else {
-        res.redirect('/');
-    }
-}
-
-function checkUserSessionForApi(req, res, next) {
-    if (!_.isEmpty(req.session.user)) {
-        next()
-    } else {
-        res.send({
-            status: 500,
-            message: res.__("label_notice_asklogin")
-        });
+        res.redirect('/users/login');
     }
 }
 
@@ -48,8 +49,6 @@ router.get('/login', function (req, res, next) {
     }
 }, generalFun.getDataForUserLoginAndReg);
 
-// 用户登录提交请求
-router.post('/doLogin', User.loginAction);
 
 //用户注册
 router.get('/reg', function (req, res, next) {
@@ -61,10 +60,6 @@ router.get('/reg', function (req, res, next) {
         next()
     }
 }, generalFun.getDataForUserLoginAndReg);
-
-
-// 用户注册
-router.post('/doReg', User.regAction);
 
 
 //用户中心
@@ -82,6 +77,38 @@ router.get('/setUserPsd', checkUserSessionForPage, (req, res, next) => {
     next()
 }, generalFun.getDataForUserCenter);
 
+
+router.get('/personInfo', checkUserSessionForPage, (req, res, next) => {
+    req.query.title = "编辑用户信息";
+    req.query.tempPage = 'users/personInfo.html';
+    next()
+}, generalFun.getDataForUserCenter);
+
+//忘记密码
+// router.get('/forgotPsd', (req, res, next) => {
+//     if (req.session.user) {
+//         res.redirect('/');
+//     } else {
+//         next();
+//     }
+// }, (req, res, next) => {
+//     req.query.title = "忘记密码";
+//     req.query.tempPage = 'users/userForgotPsd.html';
+//     next()
+// }, generalFun.getDataForForgotPsd);
+
+//忘记密码通过邮箱
+// router.get('/forgotPsdByEmail', (req, res, next) => {
+//     if (req.session.user) {
+//         res.redirect('/');
+//     } else {
+//         next();
+//     }
+// }, (req, res, next) => {
+//     req.query.title = "忘记密码";
+//     req.query.tempPage = 'users/userForgotPsdByEmail.html';
+//     next()
+// }, generalFun.getDataForForgotPsd);
 // 用户相关主界面
 router.get('/userContents', checkUserSessionForPage, (req, res, next) => {
     req.query.title = "我的发布";
@@ -94,76 +121,46 @@ router.get('/userContents', checkUserSessionForPage, (req, res, next) => {
 router.get('/userAddContent', checkUserSessionForPage, (req, res, next) => {
     req.query.title = "投稿";
     req.query.tempPage = 'users/userAddContent.html';
+    req.query.contentType = 'normal';
     next()
 }, generalFun.getDataForUserCenter);
 
+router.get('/editContent/:id', checkUserSessionForPage, async (req, res, next) => {
 
-//查找指定注册用户
-router.get('/userInfo', checkUserSessionForApi, function (req, res, next) {
-
-    res.send({
-        status: 200,
-        data: {
-            userInfo: req.session.user
+    let contentId = req.params.id;
+    if (!shortid.isValid(contentId)) {
+        res.redirect("/users/userCenter");
+    } else {
+        let contentInfo = await ContentBiz.getOneContentByParams({
+            _id: contentId,
+            uAuthor: req.session.user._id,
+            state: '0'
+        });
+        if (!_.isEmpty(contentInfo)) {
+            req.query.title = "编辑创作";
+            req.query.contentId = contentId;
+            req.query.contentType = contentInfo.type == '1' ? 'normal' : 'special';
+            req.query.tempPage = 'users/userAddContent.html';
+            next()
+        } else {
+            res.redirect("/users/userCenter");
         }
-    })
-});
+
+    }
+
+}, generalFun.getDataForUserCenter);
 
 
-// 用户留言
-router.post('/message/post', checkUserSessionForApi, Message.postMessages)
 
-//-------------------------------------留言模块结束
-
-
-//-------------------------------------消息通知模块开始
-router.get('/userNotify/setHasRead', function (req, res) {
-
-});
-
-//     批量删除消息
-router.get('/userNotify/batchDel', function (req, res) {
-
-
-});
-
-
-// 修改用户信息
-router.post('/updateInfo', checkUserSessionForApi, User.updateUser);
-
-// 获取用户通知信息
-router.get('/getUserNotifys', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, UserNotify.getUserNotifys);
-
-// 设置用户消息为已读
-router.get('/setNoticeRead', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, UserNotify.setMessageHasRead);
-
-// 删除用户消息
-router.get('/delUserNotify', checkUserSessionForApi, UserNotify.delUserNotify);
-
-// 获取用户参与话题
-router.get('/getUserReplies', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, Message.getMessages);
-
-// 获取用户发布文章
-router.get('/getUserContents', checkUserSessionForApi, (req, res, next) => { req.query.user = req.session.user._id; next() }, Content.getContents);
-
-// 用户注销
-router.get('/logOut', checkUserSessionForApi, User.logOut);
 
 // 找回密码
 router.get('/confirmEmail', generalFun.getDataForResetPsdPage)
-
-//提交验证邮箱
-router.post('/sentConfirmEmail', (req, res, next) => {
-    // console.log('-------sentConfirmEmail--------');
-    next();
-}, User.sentConfirmEmail);
 
 //点击找回密码链接跳转页面
 router.get('/reset_pass', User.reSetPass);
 
 router.post('/updateNewPsd', User.updateNewPsd);
 
-// 发送邮件给管理员
-router.post('/postEmailToAdminUser', User.postEmailToAdminUser);
+
 
 module.exports = router;

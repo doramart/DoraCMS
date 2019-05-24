@@ -1,53 +1,129 @@
 <template>
-    <div class="dr-contentForm">
-        <el-form :model="formState.formData" :rules="formState.formData.type=='2'?flashRules:(formState.formData.type=='3'?twiterRules:rules)" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-            <el-form-item :label="$t('contents.categories')" prop="categories">
-                <el-cascader size="small" expand-trigger="hover" :options="contentCategoryList.docs" v-model="formState.formData.categories" @change="handleChangeCategory" :props="categoryProps">
-                </el-cascader>
-            </el-form-item>
-            <el-form-item :label="$t('contents.type')" prop="type">
-                <el-radio class="radio" v-model="formState.formData.type" label="1">{{$t('contents.type_normal')}}</el-radio>
-            </el-form-item>
-            <div v-if="formState.formData.type == 1">
-              <el-form-item :label="$t('contents.title')" prop="title">
-                  <el-input size="small" v-model="formState.formData.title"></el-input>
-              </el-form-item>
-              <el-form-item :label="$t('contents.stitle')" prop="stitle">
-                  <el-input size="small" v-model="formState.formData.stitle"></el-input>
-              </el-form-item>
-              <el-form-item :label="$t('contents.from')" prop="from">
-                  <el-radio class="radio" v-model="formState.formData.from" label="1">{{$t('contents.from_1')}}</el-radio>
-                  <el-radio class="radio" v-model="formState.formData.from" label="2">{{$t('contents.from_2')}}</el-radio>
-                  <el-radio class="radio" v-model="formState.formData.from" disabled label="3">{{$t('contents.from_3')}}</el-radio>
-              </el-form-item>
-              <el-form-item :label="$t('contents.enable')" prop="state">
-                  <el-switch :on-text="$t('main.radioOn')" :off-text="$t('main.radioOff')" v-model="formState.formData.state"></el-switch>
-              </el-form-item>
-              <el-form-item :label="$t('contents.tagOrKey')" prop="tags">
-                <el-select size="small" v-model="formState.formData.tags" multiple filterable allow-create :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})">
-                    <el-option v-for="item in contentTagList.docs" :key="item._id" :label="item.name" :value="item._id">
-                    </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item :label="$t('contents.sImg')" prop="sImg">
-                  <el-upload class="avatar-uploader" action="/system/upload?type=images" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                      <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar">
-                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  </el-upload>
-              </el-form-item>
-            </div>
-            <el-form-item :label="$t('contents.discription')" prop="discription">
-                <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
-            </el-form-item>
-            <el-form-item :label="$t('contents.comments')" prop="comments">
-                <Ueditor @ready="editorReady" ref="ueditor"></Ueditor>
-            </el-form-item>
-            <el-form-item class="dr-submitContent">
-                <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-                <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
-            </el-form-item>
-        </el-form>
-    </div>
+  <div class="dr-contentForm">
+    <el-form
+      :model="formState.formData"
+      :rules="rules"
+      ref="ruleForm"
+      label-width="120px"
+      class="demo-ruleForm"
+    >
+      <!-- <el-form-item :label="$t('contents.type')" prop="type">
+        <el-radio
+          class="radio"
+          :disabled="formState.edit"
+          v-model="formState.formData.type"
+          label="1"
+        >{{$t('contents.type_normal')}}</el-radio>
+        <el-radio
+          class="radio"
+          :disabled="formState.edit"
+          v-model="formState.formData.type"
+          label="2"
+        >{{$t('contents.type_special')}}</el-radio>
+      </el-form-item>-->
+      <el-form-item :label="$t('contents.enable')" prop="state">
+        <el-select size="small" v-model="formState.formData.state" placeholder="审核文章">
+          <el-option
+            v-for="item in contentState"
+            :key="'kw_'+item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
+        <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
+      </el-form-item>
+      <el-form-item label="指定用户" prop="targetUser">
+        <el-select
+          size="small"
+          v-model="formState.formData.targetUser"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入要分配的用户名"
+          :remote-method="remoteUserMethod"
+          :loading="userLoading"
+        >
+          <el-option
+            v-for="item in selectUserList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="$t('contents.title')" prop="title">
+        <el-input size="small" v-model="formState.formData.title"></el-input>
+      </el-form-item>
+
+      <el-form-item :label="$t('contents.categories')" prop="categories">
+        <el-cascader
+          size="small"
+          expand-trigger="hover"
+          :options="contentCategoryList.docs"
+          v-model="formState.formData.categories"
+          @change="handleChangeCategory"
+          :props="categoryProps"
+        ></el-cascader>
+      </el-form-item>
+
+      <div v-if="formState.formData.type == '1'">
+        <el-form-item :label="$t('contents.stitle')" prop="stitle">
+          <el-input size="small" v-model="formState.formData.stitle"></el-input>
+        </el-form-item>
+
+        <el-form-item label="关键字" prop="keywords">
+          <el-input size="small" v-model="formState.formData.keywords"></el-input>
+        </el-form-item>
+
+        <el-form-item label="标签" prop="tags">
+          <el-select
+            size="small"
+            v-model="formState.formData.tags"
+            multiple
+            filterable
+            allow-create
+            :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
+          >
+            <el-option
+              v-for="item in contentTagList.docs"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </div>
+      <el-form-item class="upSimg" :label="$t('contents.sImg')" prop="sImg">
+        <el-upload
+          class="avatar-uploader"
+          action="/api/v0/upload/files?type=images"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item :label="$t('contents.discription')" prop="discription">
+        <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
+      </el-form-item>
+      <el-form-item :label="$t('contents.comments')" prop="comments">
+        <Ueditor @ready="editorReady" ref="ueditor"></Ueditor>
+      </el-form-item>
+
+      <el-form-item class="dr-submitContent">
+        <el-button
+          size="medium"
+          type="primary"
+          @click="submitForm('ruleForm')"
+        >{{formState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+        <el-button size="medium" @click="backToList">{{$t('main.back')}}</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <style lang="scss">
@@ -109,16 +185,24 @@ export default {
   },
   data() {
     return {
+      contentState: [
+        { value: "0", label: "退回" },
+        { value: "1", label: "待审核" },
+        { value: "2", label: "审核通过" },
+        { value: "3", label: "审核不通过" }
+      ],
+      selectUserList: [],
+      loading: false,
+      userLoading: false,
+      selectSpecialList: [],
       content: "",
+      simpleComments: "",
       isflash: false,
       config: {
         initialFrameWidth: null,
         initialFrameHeight: 320
       },
       imageUrl: "",
-      flashPostConfig: {
-        panneState: true
-      },
       categoryProps: {
         value: "_id",
         label: "name",
@@ -126,6 +210,15 @@ export default {
       },
       currentType: "1",
       rules: {
+        sImg: [
+          {
+            required: true,
+            message: this.$t("validate.selectNull", {
+              label: "缩略图"
+            }),
+            trigger: "blur"
+          }
+        ],
         title: [
           {
             required: true,
@@ -153,24 +246,6 @@ export default {
             min: 2,
             max: 50,
             message: this.$t("validate.rangelength", { min: 2, max: 50 }),
-            trigger: "blur"
-          }
-        ],
-        categories: [
-          {
-            validator: (rule, value, callback) => {
-              if (_.isEmpty(value)) {
-                callback(
-                  new Error(
-                    this.$t("validate.selectNull", {
-                      label: this.$t("contents.categories")
-                    })
-                  )
-                );
-              } else {
-                callback();
-              }
-            },
             trigger: "blur"
           }
         ],
@@ -217,120 +292,7 @@ export default {
           },
           {
             min: 5,
-            message: this.$t("validate.rangelength", { min: 5, max: 10000 }),
-            trigger: "blur"
-          }
-        ]
-      },
-      flashRules: {
-        categories: [
-          {
-            validator: (rule, value, callback) => {
-              if (_.isEmpty(value)) {
-                callback(
-                  new Error(
-                    this.$t("validate.selectNull", {
-                      label: this.$t("contents.categories")
-                    })
-                  )
-                );
-              } else {
-                callback();
-              }
-            },
-            trigger: "blur"
-          }
-        ],
-        discription: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.flashComments")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            max: 300,
-            message: this.$t("validate.rangelength", { min: 5, max: 300 }),
-            trigger: "blur"
-          }
-        ],
-        comments: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.comments")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            message: this.$t("validate.rangelength", { min: 5, max: 10000 }),
-            trigger: "blur"
-          }
-        ]
-      },
-      twiterRules: {
-        twiterAuthor: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.twiterAuthor")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 2,
-            max: 100,
-            message: this.$t("validate.rangelength", { min: 2, max: 100 }),
-            trigger: "blur"
-          }
-        ],
-        categories: [
-          {
-            validator: (rule, value, callback) => {
-              if (_.isEmpty(value)) {
-                callback(
-                  new Error(
-                    this.$t("validate.selectNull", {
-                      label: this.$t("contents.categories")
-                    })
-                  )
-                );
-              } else {
-                callback();
-              }
-            },
-            trigger: "blur"
-          }
-        ],
-        translate: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.translate")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            max: 300,
-            message: this.$t("validate.rangelength", { min: 5, max: 300 }),
-            trigger: "blur"
-          }
-        ],
-        comments: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("contents.comments")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            message: this.$t("validate.rangelength", { min: 5, max: 10000 }),
+            message: this.$t("validate.rangelength", { min: 5, max: 100000 }),
             trigger: "blur"
           }
         ]
@@ -341,6 +303,38 @@ export default {
     Ueditor
   },
   methods: {
+    remoteUserMethod(query) {
+      if (query !== "") {
+        this.userLoading = true;
+        let _this = this;
+        this.queryUserListByParams({ searchkey: query });
+      } else {
+        this.selectUserList = [];
+      }
+    },
+    queryUserListByParams(params = {}) {
+      let _this = this;
+      services
+        .regUserList(params)
+        .then(result => {
+          let specialList = result.data.data.docs;
+          if (specialList) {
+            _this.selectUserList = specialList.map(item => {
+              return {
+                value: item._id,
+                label: item.userName
+              };
+            });
+            _this.userLoading = false;
+          } else {
+            _this.selectUserList = [];
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          _this.selectUserList = [];
+        });
+    },
     checkFlashPost(currentType) {
       this.$store.dispatch("showContentForm", {
         edit: this.formState.edit,
@@ -369,24 +363,30 @@ export default {
       }
     },
     editorReady(instance) {
+      this.ueditorObj = instance;
       if (this.formState.edit) {
-        instance.setContent(this.formState.formData.comments);
+        setTimeout(() => {
+          instance.setContent(this.formState.formData.comments);
+          this.simpleComments = instance.getPlainTxt();
+        }, 1500);
       } else {
         instance.setContent("");
       }
       instance.addListener("contentChange", () => {
         this.content = instance.getContent();
+        this.simpleComments = instance.getPlainTxt();
         this.$store.dispatch("showContentForm", {
           edit: this.formState.edit,
           formData: Object.assign({}, this.formState.formData, {
-            comments: this.content
+            comments: this.content,
+            simpleComments: this.simpleComments
           })
         });
       });
     },
 
     handleAvatarSuccess(res, file) {
-      let imageUrl = res;
+      let imageUrl = res.data.path;
       this.$store.dispatch("showContentForm", {
         edit: this.formState.edit,
         formData: Object.assign({}, this.formState.formData, {
@@ -418,7 +418,14 @@ export default {
     submitForm(formName, type = "") {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let params = this.formState.formData;
+          let params = Object.assign({}, this.formState.formData, {
+            // simpleComments: this.simpleComments,
+            comments: this.ueditorObj.getContent(),
+            simpleComments: this.ueditorObj.getPlainTxt()
+          });
+          // if (params.keywords && typeof params.keywords == "object") {
+          //   params.keywords = params.keywords.join();
+          // }
           // 更新
           if (this.formState.edit) {
             services.updateContent(params).then(result => {
@@ -451,10 +458,26 @@ export default {
           return false;
         }
       });
+    },
+    updateSimpleContents() {
+      let params = Object.assign({}, this.formState.formData, {
+        comments: this.ueditorObj.getContent(),
+        simpleComments: this.ueditorObj.getPlainTxt()
+      });
+      if (params.simpleComments) {
+        services.updateContent(params).then(result => {
+          if (result.data.status === 200) {
+            console.log("--updateSuccess--");
+            // this.$router.push("/content");
+          } else {
+            this.$message.error(result.data.message);
+          }
+        });
+      }
     }
   },
   computed: {
-    ...mapGetters(["contentCategoryList", "contentTagList"]),
+    ...mapGetters(["contentTagList", "contentCategoryList"]),
     formState() {
       return this.$store.getters.contentFormState;
     }
@@ -463,15 +486,31 @@ export default {
     // 针对手动页面刷新
     let _this = this;
     if (this.$route.params.id) {
-      services.getOneContent(this.$route.params).then(result => {
+      services.getOneContent({ id: this.$route.params.id }).then(result => {
         if (result.data.status === 200) {
           if (result.data.data.doc) {
             let contentObj = result.data.data.doc,
-              categoryIdArr = [];
-            contentObj.categories.map((item, index) => {
-              categoryIdArr.push(item._id);
-            });
-            contentObj.categories = categoryIdArr;
+              categoryIdArr = [],
+              tagsArr = [];
+            // if (contentObj.categories && contentObj.categories[0]) {
+            //   contentObj.categories = contentObj.categories[0]._id;
+            // }
+            if (contentObj.categories) {
+              contentObj.categories.map((item, index) => {
+                item && categoryIdArr.push(item._id);
+              });
+              contentObj.categories = categoryIdArr;
+            }
+            if (contentObj.tags) {
+              contentObj.tags.map((item, index) => {
+                item && tagsArr.push(item._id);
+              });
+              contentObj.tags = tagsArr;
+            }
+            if (contentObj.keywords) {
+              contentObj.keywords = contentObj.keywords.join();
+            }
+
             this.$store.dispatch("showContentForm", {
               edit: true,
               formData: contentObj
@@ -521,6 +560,7 @@ export default {
       }
     }
     this.$store.dispatch("getContentCategoryList");
+    // this.$store.dispatch("getSpecialList");
     this.$store.dispatch("getContentTagList", {
       pageSize: 200
     });

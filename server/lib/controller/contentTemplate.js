@@ -2,7 +2,11 @@ const BaseComponent = require('../prototype/baseComponent');
 const ContentTemplateModel = require("../models").ContentTemplate;
 const TemplateItemsModel = require("../models").TemplateItems;
 const formidable = require('formidable');
-const { service, validatorUtil, siteFunc } = require('../../../utils');
+const {
+    service,
+    validatorUtil,
+    siteFunc
+} = require('../../../utils');
 const cache = require('../../../utils/middleware/cache');
 const settings = require('../../../configs/settings');
 const shortid = require('shortid');
@@ -117,7 +121,9 @@ function getDefaultTempInfo() {
                 resolve(defaultTempData)
             } else {
                 try {
-                    let defaultTemp = await ContentTemplateModel.findOne({ 'using': true }).populate('items').exec();
+                    let defaultTemp = await ContentTemplateModel.findOne({
+                        'using': true
+                    }).populate('items').exec();
                     if (!_.isEmpty(defaultTemp)) {
                         // 缓存1天
                         cache.set(settings.session_secret + '_default_temp', defaultTemp, 1000 * 60 * 60 * 24);
@@ -137,13 +143,25 @@ function checkFormData(req, res, fields) {
     let errMsg = '';
 
     if (!validator.isLength(fields.name, 1, 12)) {
-        errMsg = res.__("validate_rangelength", { min: 1, max: 12, label: res.__("label_tempconfig_name") });
+        errMsg = res.__("validate_rangelength", {
+            min: 1,
+            max: 12,
+            label: res.__("label_tempconfig_name")
+        });
     }
     if (!validator.isLength(fields.forder, 1, 30)) {
-        errMsg = res.__("validate_rangelength", { min: 1, max: 30, label: res.__("label_tempconfig_forder") });
+        errMsg = res.__("validate_rangelength", {
+            min: 1,
+            max: 30,
+            label: res.__("label_tempconfig_forder")
+        });
     }
     if (!validator.isLength(fields.comments, 2, 30)) {
-        errMsg = res.__("validate_rangelength", { min: 2, max: 30, label: res.__("label_comments") });
+        errMsg = res.__("validate_rangelength", {
+            min: 2,
+            max: 30,
+            label: res.__("label_comments")
+        });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
@@ -175,17 +193,21 @@ class ContentTemplate {
     async getMyTemplateList(req, res, next) {
         try {
             let temps = await ContentTemplateModel.find({}).populate('items').exec();
-            let renderData = siteFunc.renderApiData(res, 200, 'ContentTemplate', temps, 'getlist')
+            let renderData = siteFunc.renderApiData(req, res, 200, 'ContentTemplate', temps, 'getlist')
             res.send(renderData);
         } catch (err) {
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
         }
     }
 
+    async getTemplateInfoByParams(params = {}) {
+        return await ContentTemplateModel.findOne(params);
+    }
+
     async getCurrentTempInfo(req, res, next) {
         try {
             let defaultTemp = await getDefaultTempInfo();
-            let renderData = siteFunc.renderApiData(res, 200, 'ContentTemplate', defaultTemp, 'getlist');
+            let renderData = siteFunc.renderApiData(req, res, 200, 'ContentTemplate', defaultTemp, 'getlist');
 
             return renderData;
         } catch (err) {
@@ -196,10 +218,14 @@ class ContentTemplate {
 
     async getContentDefaultTemplate(req, res, next) {
         try {
-            let defaultTemp = await ContentTemplateModel.findOne({ 'using': true }).populate('items').exec();
+            let defaultTemp = await ContentTemplateModel.findOne({
+                'using': true
+            }).populate('items').exec();
             // console.log('--defaultTemp---', defaultTemp);
             let tempTree = setTempData(res, defaultTemp.alias);
-            let renderData = siteFunc.renderApiData(res, 200, 'ContentTemplate', { docs: tempTree }, 'getlist')
+            let renderData = siteFunc.renderApiData(req, res, 200, 'ContentTemplate', {
+                docs: tempTree
+            }, 'getlist')
             res.send(renderData);
         } catch (err) {
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'getlist'))
@@ -208,14 +234,17 @@ class ContentTemplate {
 
     async getFileInfo(req, res, next) {
         let filePath = req.query.filePath;
-        if (filePath && filePath.indexOf('../') >= 0) {
+        if (filePath && (filePath.split('./').length > 1)) {
             res.send(siteFunc.renderApiErr(req, res, 500, 'no power', 'getlist'))
         } else {
             let path = siteFunc.getTempBaseFile(filePath) + filePath;
             if (path) {
                 try {
                     let fileData = await service.readFile(req, res, path);
-                    let renderData = siteFunc.renderApiData(res, 200, 'ContentTemplateFile', { doc: fileData, path: filePath }, 'getlist')
+                    let renderData = siteFunc.renderApiData(req, res, 200, 'ContentTemplateFile', {
+                        doc: fileData,
+                        path: filePath
+                    }, 'getlist')
                     res.send(renderData);
                 } catch (error) {
                     res.send(siteFunc.renderApiErr(req, res, 500, error, 'getlist'))
@@ -227,23 +256,36 @@ class ContentTemplate {
     }
 
     async updateFileInfo(req, res, next) {
-        let fileContent = req.query.code;
-        let filePath = req.query.path;
-        if (filePath && filePath.indexOf('../') >= 0 || !fileContent) {
-            res.send(siteFunc.renderApiErr(req, res, 500, 'no power', 'getlist'))
-        } else {
-            let path = siteFunc.getTempBaseFile(filePath) + filePath;
-            if (path) {
-                let writeState = service.writeFile(req, res, path, fileContent);
-                if (writeState == 200) {
-                    res.send(siteFunc.renderApiData(res, 200, 'ContentTemplateFileUpdate', {}, 'update'));
-                } else {
-                    res.send(siteFunc.renderApiErr(req, res, 500, 'no path file', 'getlist'))
+
+        const form = new formidable.IncomingForm();
+        form.parse(req, async (err, fields, files) => {
+
+            let fileContent = fields.code;
+            let filePath = fields.path;
+            try {
+                if (!fileContent || !filePath) {
+                    throw new siteFunc.UserException(res.__('validate_error_params'));
                 }
-            } else {
-                res.send(siteFunc.renderApiErr(req, res, 500, 'no power', 'getlist'))
+                if (filePath && (filePath.split('./').length > 1)) {
+                    throw new siteFunc.UserException(res.__('validate_error_params'));
+                } else {
+                    let path = siteFunc.getTempBaseFile(filePath) + filePath;
+                    if (path) {
+                        let writeState = service.writeFile(req, res, path, fileContent);
+                        if (writeState == 200) {
+                            res.send(siteFunc.renderApiData(req, res, 200, 'ContentTemplateFileUpdate', {}, 'update'));
+                        } else {
+                            res.send(siteFunc.renderApiErr(req, res, 500, 'no path file', 'getlist'))
+                        }
+                    } else {
+                        res.send(siteFunc.renderApiErr(req, res, 500, 'no power', 'getlist'))
+                    }
+                }
+
+            } catch (error) {
+                res.send(siteFunc.renderApiErr(req, res, 500, error));
             }
-        }
+        })
 
     }
 
@@ -256,8 +298,10 @@ class ContentTemplate {
                 return file.name.indexOf('stage') >= 0;
             });
             // 对返回结果做初步排序
-            newFilePath.sort(function (a, b) { return a.type == "folder" || b.type == "folder" });
-            res.send(siteFunc.renderApiData(res, 200, 'ContentTemplateForder', newFilePath, 'getlist'));
+            newFilePath.sort(function (a, b) {
+                return a.type == "folder" || b.type == "folder"
+            });
+            res.send(siteFunc.renderApiData(req, res, 200, 'ContentTemplateForder', newFilePath, 'getlist'));
         } catch (error) {
             res.send(siteFunc.renderApiErr(req, res, 500, error, 'getlist'))
         }
@@ -283,8 +327,16 @@ class ContentTemplate {
             try {
                 await newContentTemplateItems.save();
                 let defaultTemp = await getDefaultTempInfo();
-                await ContentTemplateModel.findOneAndUpdate({ _id: defaultTemp._id }, { '$push': { items: newContentTemplateItems._id } });
-                res.send(siteFunc.renderApiData(res, 200, 'ContentTemplateItems', { id: newContentTemplateItems._id }, 'save'))
+                await ContentTemplateModel.findOneAndUpdate({
+                    _id: defaultTemp._id
+                }, {
+                    '$push': {
+                        items: newContentTemplateItems._id
+                    }
+                });
+                res.send(siteFunc.renderApiData(req, res, 200, 'ContentTemplateItems', {
+                    id: newContentTemplateItems._id
+                }, 'save'))
 
             } catch (err) {
 
@@ -304,10 +356,18 @@ class ContentTemplate {
             }
 
             let defaultTemp = await getDefaultTempInfo();
-            await ContentTemplateModel.findOneAndUpdate({ _id: defaultTemp._id }, { '$pull': { items: req.query.ids } });
+            await ContentTemplateModel.findOneAndUpdate({
+                _id: defaultTemp._id
+            }, {
+                '$pull': {
+                    items: req.query.ids
+                }
+            });
 
-            await TemplateItemsModel.remove({ _id: req.query.ids });
-            res.send(siteFunc.renderApiData(res, 200, 'contentTemplateItems', {}, 'delete'))
+            await TemplateItemsModel.remove({
+                _id: req.query.ids
+            });
+            res.send(siteFunc.renderApiData(req, res, 200, 'contentTemplateItems', {}, 'delete'))
 
         } catch (err) {
             res.send(siteFunc.renderApiErr(req, res, 500, err, 'delete'));
@@ -323,7 +383,7 @@ class ContentTemplate {
         try {
             let templateList = await axios.get(settings.DORACMSAPI + '/system/template' + linkParams);
             if (templateList.status == 200) {
-                res.send(siteFunc.renderApiData(res, 200, 'contentTemplates', templateList.data, 'getlist'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'contentTemplates', templateList.data, 'getlist'))
             } else {
                 res.send(siteFunc.renderApiErr(req, res, 500, error, 'getlist'));
             }
@@ -356,11 +416,12 @@ class ContentTemplate {
                         if (err) {
                             console.log(err);
                             throw new siteFunc.UserException(err);
-                        }
-                        else {
+                        } else {
                             download_file_httpget(file_url, async () => {
                                 //下载完成后解压缩
-                                let extract = unzip.Extract({ path: DOWNLOAD_DIR });
+                                let extract = unzip.Extract({
+                                    path: DOWNLOAD_DIR
+                                });
                                 extract.on('error', function (err) {
                                     console.log(err);
                                     //解压异常处理
@@ -388,7 +449,7 @@ class ContentTemplate {
 
                                     service.copyForder(fromPath, targetPath);
 
-                                    res.send(siteFunc.renderApiData(res, 200, 'contentTemplates', {}, 'getlist'))
+                                    res.send(siteFunc.renderApiData(req, res, 200, 'contentTemplates', {}, 'getlist'))
 
                                 });
                                 fs.createReadStream(target_path).pipe(extract);
@@ -435,6 +496,155 @@ class ContentTemplate {
 
     }
 
+    async uploadCMSTemplate(req, res, next) {
+
+        let form = new formidable.IncomingForm(),
+            files = [],
+            fields = [],
+            docs = [];
+        //存放目录
+        let forderName;
+        form.uploadDir = settings.SYSTEMTEMPFORDER;
+        form.maxFileSize = 5 * 1024 * 1024; // 最大5MB
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                res.send(siteFunc.renderApiErr(req, res, 500, err));
+            } else {
+                try {
+                    fs.renameSync(files.file.path, settings.SYSTEMTEMPFORDER + files.file.name);
+                    forderName = files.file.name.split('.')[0];
+                    console.log('parsing done');
+                    var target_path = settings.SYSTEMTEMPFORDER + forderName + '.zip';
+                    var DOWNLOAD_DIR = settings.SYSTEMTEMPFORDER + forderName + '/';
+
+                    if (fs.existsSync(DOWNLOAD_DIR)) {
+                        await service.deleteFolder(target_path);
+                        throw new siteFunc.UserException('您已安装该模板');
+                    }
+
+                    var realType = service.getFileMimeType(target_path);
+                    if (realType.fileType != 'zip') {
+                        fs.unlinkSync(target_path);
+                        throw new siteFunc.UserException('文件类型不正确');
+                    }
+
+                    fs.mkdirSync(DOWNLOAD_DIR);
+                    //下载完成后解压缩
+                    var extract = unzip.Extract({
+                        path: DOWNLOAD_DIR
+                    });
+                    extract.on('error', function (err) {
+                        console.log(err);
+                        //解压异常处理
+                        throw new siteFunc.UserException(err);
+                    });
+                    extract.on('finish', async function () {
+                        console.log("解压完成!!");
+                        //解压完成检查文件是否完整
+                        let checkResult = await service.checkTempUnzipSuccess(forderName);
+                        if (checkResult == '1') {
+                            let targetForder = forderName;
+                            var tempForder = settings.SYSTEMTEMPFORDER + targetForder;
+
+                            if (targetForder) {
+                                var jsonPath = tempForder + '/tempconfig.json';
+                                fs.readFile(jsonPath, "binary", async (error, data) => {
+                                    if (error) {
+                                        throw new siteFunc.UserException('文件读取失败');
+                                    } else {
+                                        //处理中文乱码问题
+                                        var buf = new Buffer(data, 'binary');
+                                        var newData = iconv.decode(buf, 'utf-8');
+
+                                        var tempInfoData = eval("(" + newData + ")")[0];
+                                        if (tempInfoData && tempInfoData.name && tempInfoData.alias && tempInfoData.version && tempInfoData.sImg && tempInfoData.author && tempInfoData.comment) {
+
+                                            service.checkTempInfo(tempInfoData, targetForder, async (data) => {
+                                                try {
+                                                    if (data != 'success') {
+                                                        await service.deleteFolder(tempForder);
+                                                        await service.deleteFolder(tempForder + '.zip');
+                                                        throw new siteFunc.UserException(data);
+
+                                                    } else {
+                                                        let oldTemp = await ContentTemplateModel.findOne({
+                                                            $or: [{
+                                                                'name': tempInfoData.name
+                                                            }, {
+                                                                'alias': tempInfoData.alias
+                                                            }]
+                                                        });
+                                                        if (!_.isEmpty(oldTemp)) {
+                                                            throw new siteFunc.UserException("模板名称或key已存在，请修改后重试！");
+                                                        }
+                                                        //复制静态文件到公共目录
+                                                        var fromPath = settings.SYSTEMTEMPFORDER + targetForder + '/dist/';
+                                                        var targetPath = settings.TEMPSTATICFOLDER + targetForder;
+                                                        service.copyForder(fromPath, targetPath);
+
+                                                        var tempItem = new TemplateItemsModel();
+                                                        tempItem.forder = "2-stage-default";
+                                                        tempItem.name = '默认模板';
+                                                        tempItem.isDefault = true;
+                                                        await tempItem.save();
+
+                                                        var tempObj = {
+                                                            name: tempInfoData.name,
+                                                            alias: tempInfoData.alias,
+                                                            version: tempInfoData.version,
+                                                            sImg: '/themes/' + targetForder + tempInfoData.sImg,
+                                                            author: tempInfoData.author,
+                                                            comment: tempInfoData.comment
+                                                        };
+                                                        var newTemp = new ContentTemplateModel(tempObj);
+                                                        newTemp.using = false;
+                                                        newTemp.items.push(tempItem);
+                                                        await newTemp.save();
+
+                                                        await service.deleteFolder(tempForder + '.zip');
+                                                        res.send(siteFunc.renderApiData(req, res, 200, 'upload success', '', 'save'));
+
+                                                    }
+                                                } catch (error) {
+                                                    await service.deleteFolder(tempForder);
+                                                    await service.deleteFolder(tempForder + '.zip');
+                                                    res.send(siteFunc.renderApiErr(req, res, 500, error))
+
+                                                }
+                                            });
+
+                                        } else {
+                                            await service.deleteFolder(tempForder);
+                                            await service.deleteFolder(tempForder + '.zip');
+                                            res.send(siteFunc.renderApiData(req, res, 200, '请正确填写配置文件', '', 'save'));
+                                        }
+
+                                    }
+                                });
+
+                            } else {
+                                res.end('文件不完整，请稍后重试！');
+                            }
+
+                        } else {
+                            throw new siteFunc.UserException(res.__('validate_error_params'));
+                        }
+
+                    });
+                    fs.createReadStream(target_path).pipe(extract);
+
+
+                } catch (error) {
+                    res.send(siteFunc.renderApiErr(req, res, 500, error, 'uploadCMSTemplate'))
+                }
+            }
+
+        });
+
+
+    }
+
+
     async enableTemp(req, res, next) {
         var tempId = req.query.tempId;
 
@@ -443,15 +653,29 @@ class ContentTemplate {
                 throw new siteFunc.UserException(res.__("validate_error_params"));
             }
             // 重置所有模板
-            await ContentTemplateModel.update({}, { $set: { 'using': false } }, { multi: true });
+            await ContentTemplateModel.update({}, {
+                $set: {
+                    'using': false
+                }
+            }, {
+                multi: true
+            });
 
-            await ContentTemplateModel.findOneAndUpdate({ '_id': tempId }, { $set: { 'using': true } });
+            await ContentTemplateModel.findOneAndUpdate({
+                '_id': tempId
+            }, {
+                $set: {
+                    'using': true
+                }
+            });
 
             // 更新缓存
-            let defaultTemp = await ContentTemplateModel.findOne({ 'using': true }).populate('items').exec();
+            let defaultTemp = await ContentTemplateModel.findOne({
+                'using': true
+            }).populate('items').exec();
             cache.set(settings.session_secret + '_default_temp', defaultTemp, 1000 * 60 * 60 * 24);
 
-            res.send(siteFunc.renderApiData(res, 200, 'enableTemplates', {}, 'update'))
+            res.send(siteFunc.renderApiData(req, res, 200, 'enableTemplates', {}, 'update'))
 
         } catch (error) {
             res.send(siteFunc.renderApiErr(req, res, 500, error, 'update'));
@@ -475,18 +699,26 @@ class ContentTemplate {
             if (defaultTemp._id == tempId) {
                 throw new siteFunc.UserException('can not delete using template');
             } else {
-                let targetTemp = await ContentTemplateModel.findOne({ _id: tempId });
+                let targetTemp = await ContentTemplateModel.findOne({
+                    _id: tempId
+                });
                 // console.log('---targetTemp---', targetTemp);
                 if (!_.isEmpty(targetTemp)) {
-                    await TemplateItemsModel.remove({ '_id': { $in: targetTemp.items } });
-                    await ContentTemplateModel.remove({ '_id': targetTemp._id });
+                    await TemplateItemsModel.remove({
+                        '_id': {
+                            $in: targetTemp.items
+                        }
+                    });
+                    await ContentTemplateModel.remove({
+                        '_id': targetTemp._id
+                    });
 
                     //删除模板文件夹
                     var tempPath = settings.SYSTEMTEMPFORDER + targetTemp.alias;
                     var tempStaticPath = settings.TEMPSTATICFOLDER + targetTemp.alias;
-                    await service.deleteFolder(req, res, tempPath);
-                    await service.deleteFolder(req, res, tempStaticPath);
-                    res.send(siteFunc.renderApiData(res, 200, 'uninstallTemp', {}, 'update'))
+                    await service.deleteFolder(tempPath);
+                    await service.deleteFolder(tempStaticPath);
+                    res.send(siteFunc.renderApiData(req, res, 200, 'uninstallTemp', {}, 'update'))
 
                 } else {
                     throw new siteFunc.UserException(res.__("validate_error_params"));

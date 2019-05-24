@@ -3,7 +3,11 @@ const SystemConfigModel = require("../models").SystemConfig;
 const DataOptionLog = require("./dataOptionLog");
 
 const formidable = require('formidable');
-const { service, validatorUtil, siteFunc } = require('../../../utils');
+const {
+    service,
+    validatorUtil,
+    siteFunc
+} = require('../../../utils');
 const shortid = require('shortid');
 const validator = require('validator')
 const settings = require('../../../configs/settings');
@@ -18,32 +22,53 @@ function checkFormData(req, res, fields) {
     if (!fields.siteEmailServer) {
         errMsg = '请选择系统邮箱服务器！';
     }
-    if (!validatorUtil.checkPwd(fields.siteEmailPwd)) {
-        errMsg = '6-12位，只能包含字母、数字和下划线!';
+    if (!validatorUtil.checkPwd(fields.siteEmailPwd, 6, 100)) {
+        errMsg = '6-100位，只能包含字母、数字和下划线!';
     }
     if (!validatorUtil.checkEmail(fields.siteEmail)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_user_email") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_user_email")
+        });
     }
     if (!validator.isLength(fields.siteName, 5, 100)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_name") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_site_name")
+        });
+    }
+    if (!fields.ogTitle && !validator.isLength(fields.ogTitle, 5, 100)) {
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_site_name")
+        });
     }
     if (!validator.isLength(fields.siteDiscription, 5, 200)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_dis") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_site_dis")
+        });
     }
     if (!validator.isLength(fields.siteKeywords, 5, 100)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_keyWords") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_site_keyWords")
+        });
     }
     if (!validator.isLength(fields.siteAltKeywords, 5, 100)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_tags") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_site_tags")
+        });
     }
     if (!validator.isLength(fields.registrationNo, 5, 30)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_site_icp") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_site_icp")
+        });
     }
     if (!validator.isLength(fields.mongodbInstallPath, 5, 100)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_mongoPath") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_mongoPath")
+        });
     }
     if (!validator.isLength(fields.databackForderPath, 5, 100)) {
-        errMsg = res.__("validate_inputCorrect", { label: res.__("label_sysconfig_databakPath") });
+        errMsg = res.__("validate_inputCorrect", {
+            label: res.__("label_sysconfig_databakPath")
+        });
     }
     if (errMsg) {
         throw new siteFunc.UserException(errMsg);
@@ -57,10 +82,12 @@ class SystemConfig {
     async getSystemConfigs(req, res, next) {
         try {
             let modules = req.query.modules;
-            let model = req.query.model, files = null; // 查询模式 full/simple
+            let model = req.query.model,
+                files = null; // 查询模式 full/simple
             if (model === 'simple') {
                 files = {
                     siteName: 1,
+                    ogTitle: 1,
                     siteDomain: 1,
                     siteDiscription: 1,
                     siteKeywords: 1,
@@ -76,7 +103,7 @@ class SystemConfig {
                 docs: systemConfigs
             };
 
-            let renderData = siteFunc.renderApiData(res, 200, 'systemConfig', configData, 'getlist');
+            let renderData = siteFunc.renderApiData(req, res, 200, 'systemConfig', configData, 'getlist');
 
             if (modules && modules.length > 0) {
                 return renderData.data.docs;
@@ -107,6 +134,7 @@ class SystemConfig {
 
             const systemObj = {
                 siteName: fields.siteName,
+                ogTitle: fields.ogTitle,
                 siteDomain: fields.siteDomain,
                 siteDiscription: fields.siteDiscription,
                 siteKeywords: fields.siteKeywords,
@@ -127,7 +155,11 @@ class SystemConfig {
             const item_id = fields._id;
             try {
                 if (item_id) {
-                    await SystemConfigModel.findOneAndUpdate({ _id: item_id }, { $set: systemObj });
+                    await SystemConfigModel.findOneAndUpdate({
+                        _id: item_id
+                    }, {
+                        $set: systemObj
+                    });
                 } else {
                     const newAdminUser = new SystemConfigModel(systemObj);
                     await newAdminUser.save();
@@ -137,7 +169,7 @@ class SystemConfig {
                 } else {
                     (new SystemConfig()).cancelBakDataTask();
                 }
-                res.send(siteFunc.renderApiData(res, 200, 'systemConfig', {}, 'update'))
+                res.send(siteFunc.renderApiData(req, res, 200, 'systemConfig', {}, 'update'))
             } catch (err) {
 
                 res.send(siteFunc.renderApiErr(req, res, 500, err, 'update'));
@@ -170,6 +202,25 @@ class SystemConfig {
         global.bakDataTask.cancel();
     }
 
+    async getAppSwitch(req, res) {
+        try {
+            let client = req.query.client || '1'; // 默认IOS
+
+            let sysState = {
+                hideVip: true,
+                hideWallet: false,
+                hideClassFeature: true,
+                hideClassPrice: true,
+                hideMBT: true,
+                hideMPVC: true,
+                hideEcologyFriend: true,
+            }
+
+            res.send(siteFunc.renderApiData(req, res, 200, 'getAppSwitch', sysState));
+        } catch (error) {
+            res.send(siteFunc.renderApiErr(req, res, 500, error, 'getAppSwitch'));
+        }
+    }
 }
 
 module.exports = new SystemConfig();

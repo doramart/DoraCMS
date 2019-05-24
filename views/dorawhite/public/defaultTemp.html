@@ -18,7 +18,7 @@
     </title>
     <!-- 引入组件库 -->
     <script src="/plugins/jquery/jquery-1.10.2.min.js" type="text/javascript"></script>
-    <link href="/plugins/bootstrap/css1/bootstrap.min.css" rel="stylesheet">
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/avalon.js/2.2.7/avalon.min.js"></script>
@@ -50,7 +50,8 @@
 
 <body>
     {% if pageType != 'adminlogin' %} {% include "./header.html" %} {% endif %}
-    <div class="mainbody">
+    <div class="mainbody" id="{{pageType}}">
+	 <input type="hidden" value="{{siteInfo.lang}}" id="siteLang">
         {% block content %}{% endblock %}
     </div>
     {% if pageType != 'adminlogin' %} {% include "./footer.html" %} {% endif %}

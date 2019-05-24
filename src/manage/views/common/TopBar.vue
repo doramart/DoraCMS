@@ -1,99 +1,209 @@
 <template>
-    <div class="dr-toolbar">
-        <div class="option-button el-col-6">
-            <div v-if="type === 'adminGroup'">
-                <el-button size="small" type="primary" plain @click="addRole" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
-            </div>
-            <div v-else-if="type === 'adminUser'">
-                <el-button size="small" type="primary" plain @click="addUser" round><i class="fa fa-fw fa-plus"></i></el-button>
-            </div>
-            <div v-else-if="type === 'adminResource'">
-                <el-button size="small" type="primary" plain @click="addResource" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
-            </div>
-            <div v-else-if="type === 'content'">
-                <el-button size="small" type="primary" plain @click="addContent('content')" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
-                <el-button size="small" type="danger" plain round @click="branchDelete('content')"><i class="fa fa-fw fa-trash-o"></i></el-button>
-            </div>
-            <div v-else-if="type === 'contentCategory'">
-                <el-button size="small" type="primary" plain @click="addTopCates" round><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
-            </div>
-            <div v-else-if="type === 'contentMessage'">
-                <el-button size="small" type="danger" plain round @click="branchDelete('msg')"><i class="fa fa-fw fa-trash-o"></i></el-button>
-            </div>
-            <div v-else-if="type === 'contentTag'">
-                <el-button size="small" type="primary" plain round @click="addTag"><i class="fa fa-fw fa-plus" aria-hidden="true"></i></el-button>
-            </div>
-            <div v-else-if="type === 'regUser'">
-                <el-button size="small" type="danger" plain round @click="branchDelete('user')"><i class="fa fa-fw fa-trash-o"></i></el-button>
-            </div>
-            <div v-else-if="type === 'backUpData'">
-                <el-button size="small" type="primary" plain round @click="bakUpData" :loading="loadingState"><i class="fa fa-fw fa-cloud-download" aria-hidden="true"></i></el-button>
-            </div>
-            <div v-else-if="type === 'adminTemplate'">
-                <el-button size="small" type="primary" plain round @click="saveTemplate"><i class="fa fa-fw fa-save" aria-hidden="true"></i></el-button>
-            </div>
-            <div v-else-if="type === 'systemOptionLogs'">
-                <el-button size="small" type="danger" plain round @click="branchDelete('systemlogs')"><i class="fa fa-fw fa-trash-o"></i></el-button>
-                <el-tooltip class="item" effect="dark" content="清空所有日志" placement="right-start">
-                    <el-button size="small" type="warning" plain round @click="clearSystemOptionLogs"><i class="fa fa-fw fa-window-restore"></i></el-button>
-                </el-tooltip>
-            </div>
-            <div v-else-if="type === 'systemNotify'">
-                <el-button size="small" type="primary" plain round @click="setHasRead()"><i class="fa fa-fw fa-eye" aria-hidden="true"></i></el-button>
-                <el-button size="small" type="danger" plain round @click="branchDelete('systemnotify')"><i class="fa fa-fw fa-trash-o"></i></el-button>
-            </div>
-            <div v-else-if="type === 'systemAnnounce'">
-                <el-button type="primary" size="small" plain round @click="addSysAnnounce"><i class="fa fa-fw fa-plus"></i></el-button>
-            </div>
-            <div v-else-if="type === 'ads'">
-                <el-button type="primary" size="small" plain round @click="addAds"><i class="fa fa-fw fa-plus"></i></el-button>
-            </div>
-        </div>
-        <div class="el-col-18">
-            <div class="dr-toolbar-right" v-if="type === 'content'">
-                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.keywords')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
-                </el-input>
-                <div class="dr-select-box">
-                  <el-select size="small" @change="changePostOptions" v-model="authPost" placeholder="请选择">
-                    <el-option
-                      v-for="item in authPostOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </div>
-            </div>
-            <div class="dr-toolbar-right" v-else-if="type === 'contentTag'">
-                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.tagName')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
-                </el-input>
-            </div>
-            <div class="dr-toolbar-right" v-else-if="type === 'contentMessage'">
-                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.messageContent')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
-                </el-input>
-            </div>
-            <div class="dr-toolbar-right" v-else-if="type === 'regUser'">
-                <el-input class="dr-searchInput" size="small" :placeholder="$t('topBar.regUser')" v-model="pageInfo.searchkey" suffix-icon="el-icon-search" @keyup.enter.native="searchResult" :on-icon-click="searchResult">
-                </el-input>
-            </div>
-            <div class="dr-toolbar-right" v-else-if="type === 'systemOptionLogs'">
-                <el-select class="dr-searchInput" size="small" v-model="targetSysLogType" :placeholder="$t('main.ask_select_label')" @change="selectSysLogType">
-                    <el-option v-for="item in systemModelTypes" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
-            </div>
-            <div class="dr-toolbar-right" style="text-align:left" v-else-if="type === 'adminTemplate'">
-                <el-tag :v-if="path" type="info" size="small">{{path}}</el-tag>
-            </div>
-            <div class="dr-toolbar-right" v-else>
-              &nbsp;
-            </div>
-        </div>
+  <div class="dr-toolbar">
+    <div class="option-button el-col-6">
+      <div v-if="type === 'adminGroup'">
+        <el-button size="small" type="primary" plain @click="addRole" round>
+          <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'adminUser'">
+        <el-button size="small" type="primary" plain @click="addUser" round>
+          <i class="fa fa-fw fa-plus"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'adminResource'">
+        <el-button size="small" type="primary" plain @click="addResource" round>
+          <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'content'">
+        <el-button size="small" type="primary" plain @click="addContent('content')" round>
+          <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
+        </el-button>
+        <el-button size="small" type="danger" plain round @click="branchDelete('content')">
+          <i class="fa fa-fw fa-trash-o"></i>
+        </el-button>
+        <el-tooltip class="item" effect="dark" content="分配文章到用户" placement="top">
+          <el-button size="small" type="warning" plain @click="directUser('content')" round>
+            <i class="fa fa-fw fa-street-view" aria-hidden="true"></i>
+          </el-button>
+        </el-tooltip>
+      </div>
+      <div v-else-if="type === 'contentCategory'">
+        <el-button size="small" type="primary" plain @click="addTopCates" round>
+          <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'contentMessage'">
+        <el-button size="small" type="danger" plain round @click="branchDelete('msg')">
+          <i class="fa fa-fw fa-trash-o"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'contentTag'">
+        <el-button size="small" type="primary" plain round @click="addTag">
+          <i class="fa fa-fw fa-plus" aria-hidden="true"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'regUser'">
+        <el-button size="small" type="danger" plain round @click="branchDelete('user')">
+          <i class="fa fa-fw fa-trash-o"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'backUpData'">
+        <el-button
+          size="small"
+          type="primary"
+          plain
+          round
+          @click="bakUpData"
+          :loading="loadingState"
+        >
+          <i class="fa fa-fw fa-cloud-download" aria-hidden="true"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'adminTemplate'">
+        <el-button size="small" type="primary" plain round @click="saveTemplate">
+          <i class="fa fa-fw fa-save" aria-hidden="true"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'systemOptionLogs'">
+        <el-button size="small" type="danger" plain round @click="branchDelete('systemlogs')">
+          <i class="fa fa-fw fa-trash-o"></i>
+        </el-button>
+        <el-tooltip class="item" effect="dark" content="清空所有日志" placement="right-start">
+          <el-button size="small" type="warning" plain round @click="clearSystemOptionLogs">
+            <i class="fa fa-fw fa-window-restore"></i>
+          </el-button>
+        </el-tooltip>
+      </div>
+      <div v-else-if="type === 'systemNotify'">
+        <el-button size="small" type="primary" plain round @click="setHasRead()">
+          <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
+        </el-button>
+        <el-button size="small" type="danger" plain round @click="branchDelete('systemnotify')">
+          <i class="fa fa-fw fa-trash-o"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'systemAnnounce'">
+        <el-button type="primary" size="small" plain round @click="addSysAnnounce">
+          <i class="fa fa-fw fa-plus"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'ads'">
+        <el-button type="primary" size="small" plain round @click="addAds">
+          <i class="fa fa-fw fa-plus"></i>
+        </el-button>
+      </div>
+      <div v-else-if="type === 'helpCenter'">
+        <el-button type="primary" size="small" plain round @click="addHelp">
+          <i class="fa fa-fw fa-plus"></i>
+        </el-button>
+      </div>
+      <!-- TOPBARLEFT -->
     </div>
+    <div class="el-col-18">
+      <div class="dr-toolbar-right" v-if="type === 'content'">
+        <el-select
+          class="dr-searchInput"
+          v-model="pageInfo.user"
+          size="small"
+          clearable
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入用户名"
+          @change="changeUserOptions"
+          :remote-method="remoteMethod"
+          :loading="loading"
+        >
+          <el-option
+            v-for="item in selectUserList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+        <el-input
+          class="dr-searchInput"
+          size="small"
+          :placeholder="$t('topBar.keywords')"
+          v-model="pageInfo.searchkey"
+          suffix-icon="el-icon-search"
+          @keyup.enter.native="searchResult"
+          :on-icon-click="searchResult"
+        ></el-input>
+        <div class="dr-select-box">
+          <el-select size="small" @change="changePostOptions" v-model="authPost" placeholder="请选择">
+            <el-option
+              v-for="item in authPostOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div class="dr-toolbar-right" v-else-if="type === 'contentTag'">
+        <el-input
+          class="dr-searchInput"
+          size="small"
+          :placeholder="$t('topBar.tagName')"
+          v-model="pageInfo.searchkey"
+          suffix-icon="el-icon-search"
+          @keyup.enter.native="searchResult"
+          :on-icon-click="searchResult"
+        ></el-input>
+      </div>
+      <div class="dr-toolbar-right" v-else-if="type === 'contentMessage'">
+        <el-input
+          class="dr-searchInput"
+          size="small"
+          :placeholder="$t('topBar.messageContent')"
+          v-model="pageInfo.searchkey"
+          suffix-icon="el-icon-search"
+          @keyup.enter.native="searchResult"
+          :on-icon-click="searchResult"
+        ></el-input>
+      </div>
+      <div class="dr-toolbar-right" v-else-if="type === 'regUser'">
+        <el-input
+          class="dr-searchInput"
+          size="small"
+          placeholder="用户名/手机号/邮箱"
+          v-model="pageInfo.searchkey"
+          suffix-icon="el-icon-search"
+          @keyup.enter.native="searchResult"
+          :on-icon-click="searchResult"
+        ></el-input>
+      </div>
+      <div class="dr-toolbar-right" v-else-if="type === 'systemOptionLogs'">
+        <el-select
+          class="dr-searchInput"
+          size="small"
+          v-model="targetSysLogType"
+          :placeholder="$t('main.ask_select_label')"
+          @change="selectSysLogType"
+        >
+          <el-option
+            v-for="item in systemModelTypes"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </div>
+      <div class="dr-toolbar-right" style="text-align:left" v-else-if="type === 'adminTemplate'">
+        <el-tag :v-if="path" type="info" size="small">{{path}}</el-tag>
+      </div>
+      <!-- TOPBARRIGHT -->
+      <div class="dr-toolbar-right" v-else>&nbsp;</div>
+    </div>
+  </div>
 </template>
 <script>
 import services from "../../store/services.js";
 import _ from "lodash";
+import { setTimeout } from "timers";
 export default {
   props: {
     pageInfo: Object,
@@ -104,6 +214,8 @@ export default {
   },
   data() {
     return {
+      selectUserList: [],
+      loading: false,
       systemModelTypes: [
         {
           value: "all",
@@ -142,11 +254,46 @@ export default {
     };
   },
   methods: {
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        let _this = this;
+        this.queryUserListByParams({ searchkey: query, group: "1" });
+      } else {
+        this.selectUserList = [];
+      }
+    },
+    changeUserOptions(value) {
+      this.$store.dispatch("getContentList", { userId: value });
+    },
+    queryUserListByParams(params = {}) {
+      let _this = this;
+      services
+        .regUserList(params)
+        .then(result => {
+          let specialList = result.data.data.docs;
+          if (specialList) {
+            _this.selectUserList = specialList.map(item => {
+              return {
+                value: item._id,
+                label: item.userName
+              };
+            });
+            _this.loading = false;
+          } else {
+            _this.selectUserList = [];
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          _this.selectUserList = [];
+        });
+    },
     changePostOptions(value) {
       if (value == "0") {
         this.$store.dispatch("getContentList");
       } else if (value == "1") {
-        this.$store.dispatch("getContentList", { state: false });
+        this.$store.dispatch("getContentList", { state: "1" });
       }
     },
     selectSysLogType(type) {
@@ -173,15 +320,19 @@ export default {
         });
       } else if (this.type == "regUser") {
         this.$store.dispatch("getRegUserList", {
-          searchkey
+          searchkey,
+          isTopBar: "1"
         });
-      }
+      } // TOPBARRIGHTSEARCH
     },
     addUser() {
       this.$store.dispatch("showAdminUserForm");
     },
     addRole() {
       this.$store.dispatch("showAdminGroupForm");
+    },
+    addHelp() {
+      this.$store.dispatch("showHelpCenterForm");
     },
     addResource() {
       this.$store.dispatch("showAdminResourceForm", {
@@ -194,6 +345,9 @@ export default {
     addContent() {
       this.$store.dispatch("showContentForm");
       this.$router.push("/addContent");
+    },
+    directUser() {
+      this.$store.dispatch("showDirectUserForm");
     },
     addAds() {
       this.$store.dispatch("adsInfoForm", {
@@ -404,7 +558,8 @@ export default {
           this.$message.error(result.data.message);
         }
       });
-    }
+    },
+    // TOPBARLEFTOPTION
   },
   components: {}
 };
