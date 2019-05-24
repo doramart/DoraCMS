@@ -1033,7 +1033,7 @@ class Content {
                 }
 
                 // 如果是管理员代发,则指定用户
-                if (req.session.adminUserInfo && fields.action == 'substitute' && fields.targetUser) {
+                if (req.session.adminUserInfo && fields.targetUser) {
                     groupObj.uAuthor = fields.targetUser;
                 }
 
@@ -1173,6 +1173,11 @@ class Content {
                     // console.log('--contentObj--', contentObj)
                 } else {
 
+                }
+                
+                // 如果是管理员代发,则指定用户
+                if (req.session.adminUserInfo && fields.targetUser) {
+                    contentObj.uAuthor = fields.targetUser;
                 }
 
                 const item_id = fields._id;

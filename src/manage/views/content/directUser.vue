@@ -81,7 +81,7 @@ export default {
       if (query !== "") {
         this.loading = true;
         let _this = this;
-        this.queryUserListByParams({ searchkey: query, group: "1" });
+        this.queryUserListByParams({ searchkey: query });
       } else {
         this.selectUserList = [];
       }
