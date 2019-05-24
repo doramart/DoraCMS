@@ -1,42 +1,85 @@
 <template>
-    <div class="dr-adminUserForm">
-        <el-dialog :xs="20" :sm="20" :md="6" :lg="6" :xl="6" size="small" :title="$t('adminUser.lb_form_title')" :visible.sync="dialogState.show" :close-on-click-modal="false">
-            <el-form :model="dialogState.formData" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-                <el-form-item :label="$t('adminUser.lb_userName')" prop="userName">
-                    <el-input size="small" v-model="dialogState.formData.userName"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_name')" prop="name">
-                    <el-input size="small" v-model="dialogState.formData.name"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_password')" prop="password">
-                    <el-input size="small" type="password" v-model="dialogState.formData.password"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_confirmPassword')" prop="confirmPassword">
-                    <el-input size="small" type="password" v-model="dialogState.formData.confirmPassword"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_userGroup')" prop="group">
-                    <el-select size="small" v-model="dialogState.formData.group" :placeholder="$t('main.ask_select_label')">
-                        <el-option :key="index" v-for="(group,index) in groups" :label="group.name" :value="group._id"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_phoneNum')" prop="phoneNum">
-                    <el-input size="small" v-model.number="dialogState.formData.phoneNum"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_email')" prop="email">
-                    <el-input size="small" v-model="dialogState.formData.email"></el-input>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_enable')" prop="enable">
-                    <el-switch :on-text="$t('main.radioOn')" :off-text="$t('main.radioOff')" v-model="dialogState.formData.enable"></el-switch>
-                </el-form-item>
-                <el-form-item :label="$t('adminUser.lb_comments')" prop="comments">
-                    <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="medium" type="primary" @click="submitForm('ruleForm')">{{dialogState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-    </div>
+  <div class="dr-adminUserForm">
+    <el-dialog
+      :xs="20"
+      :sm="20"
+      :md="6"
+      :lg="6"
+      :xl="6"
+      size="small"
+      :title="$t('adminUser.lb_form_title')"
+      :visible.sync="dialogState.show"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        :model="dialogState.formData"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="120px"
+        class="demo-ruleForm"
+      >
+        <el-form-item :label="$t('adminUser.lb_userName')" prop="userName">
+          <el-input size="small" v-model="dialogState.formData.userName"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_name')" prop="name">
+          <el-input size="small" v-model="dialogState.formData.name"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_password')" prop="password">
+          <el-input size="small" type="password" v-model="dialogState.formData.password"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_confirmPassword')" prop="confirmPassword">
+          <el-input size="small" type="password" v-model="dialogState.formData.confirmPassword"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_userGroup')" prop="group">
+          <el-select
+            size="small"
+            v-model="dialogState.formData.group"
+            :placeholder="$t('main.ask_select_label')"
+          >
+            <el-option
+              :key="index"
+              v-for="(group,index) in groups"
+              :label="group.name"
+              :value="group._id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_countryCode')" prop="countryCode">
+          <el-select size="small" v-model="dialogState.formData.countryCode" placeholder="国家代码">
+            <el-option
+              v-for="item in countryCode"
+              :key="'kw_'+item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_phoneNum')" prop="phoneNum">
+          <el-input size="small" v-model.number="dialogState.formData.phoneNum"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_email')" prop="email">
+          <el-input size="small" v-model="dialogState.formData.email"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_enable')" prop="enable">
+          <el-switch
+            :on-text="$t('main.radioOn')"
+            :off-text="$t('main.radioOff')"
+            v-model="dialogState.formData.enable"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item :label="$t('adminUser.lb_comments')" prop="comments">
+          <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="medium"
+            type="primary"
+            @click="submitForm('ruleForm')"
+          >{{dialogState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 <script>
 import crypto from "~server/lib/utils/crypto.js";
@@ -50,6 +93,11 @@ export default {
   },
   data() {
     return {
+      countryCode: [
+        { value: "86", label: "中国 +86" },
+        { value: "886", label: "台湾 +886" },
+        { value: "81", label: "日本 +81" }
+      ],
       rules: {
         userName: [
           {
@@ -142,6 +190,15 @@ export default {
               label: this.$t("adminUser.lb_userGroup")
             }),
             trigger: "change"
+          }
+        ],
+        countryCode: [
+          {
+            required: true,
+            message: this.$t("validate.inputNull", {
+              label: this.$t("adminUser.lb_countryCode")
+            }),
+            trigger: "blur"
           }
         ],
         phoneNum: [

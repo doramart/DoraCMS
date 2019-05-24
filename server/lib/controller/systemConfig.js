@@ -35,7 +35,7 @@ function checkFormData(req, res, fields) {
             label: res.__("label_sysconfig_site_name")
         });
     }
-    if (!fields.ogTitle && !validator.isLength(fields.ogTitle, 5, 100)) {
+    if (fields.ogTitle && !validator.isLength(fields.ogTitle, 5, 100)) {
         errMsg = res.__("validate_inputCorrect", {
             label: res.__("label_sysconfig_site_name")
         });
