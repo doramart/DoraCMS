@@ -1,6 +1,6 @@
 # doracms 2.1.2
 
-![DoraCMS](http://7xkrk4.com1.z0.glb.clouddn.com/doracms2.jpg "DoraCMS")
+![DoraCMS](https://www.html-js.cn/upload/images/ueditor/1056072974769197056.jpg "DoraCMS")
 
 ## 2.1.2版本更新
 1、前台接口独立抽取api 
