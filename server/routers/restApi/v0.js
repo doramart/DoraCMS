@@ -2166,38 +2166,4 @@ router.get('/system/getAppVersion', VersionManage.getVersionManages)
 router.get('/system/getAppSwitch', SystemConfig.getAppSwitch)
 
 
-// router.get('/updateAppContent', Content.updateAppContent);
-// router.get('/updateContent', Content.updateContent);
-// router.get('/getAllContents', Content.getAllContents);
-
-// TODO 私用api 提交合并时留意
-router.get('/translate', (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  const Axios = require("axios");
-  const CryptoJS = require("crypto-js");
-  let queryKey = req.query.q || '梨子';
-  let from = req.query.from || 'zh';
-  let to = req.query.to || 'en';
-  // let url = `https://fanyi-api.baidu.com/api/trans/vip/translate`;
-  let salt = (new Date).getTime();
-  const appid = '20190522000300222';
-  let privateKey = '1EcjG7k4uCk8O3IHUpZ8';
-  let signStr = `${appid}${queryKey}${salt}${privateKey}`;
-
-  let translateUrl = `https://fanyi-api.baidu.com/api/trans/vip/translate?q=${encodeURIComponent(queryKey)}&from=${from}&to=${to}&appid=${appid}&salt=${salt}&sign=${CryptoJS.MD5(signStr).toString()}`;
-
-  console.log('translateUrl: ', translateUrl);
-
-  Axios.get(translateUrl, {}).then((data) => {
-    // console.log('--data--', data.data);
-    res.send(data.data)
-  }).catch((err) => {
-    res.send({
-      status: 500,
-      message: 'translate error' + err.message
-    })
-  })
-})
-
-
 module.exports = router
