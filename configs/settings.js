@@ -22,8 +22,8 @@ module.exports = {
     DB: 'doracms2',
     HOST: '127.0.0.1',
     PORT: 27017,
-    USERNAME: 'doracms',
-    PASSWORD: 'password',
+    USERNAME: 'doramart',
+    PASSWORD: 'doramart',
 
     // 七牛配置
     openqn: false, //是否开启,若为true 则下面的信息必须配置正确完整
