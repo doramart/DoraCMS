@@ -23,7 +23,8 @@
 
 10、修复了一些安全性方面的问题
 
-更多升级细节: [更多升级细节](https://www.html-js.cn/details/ryJwj5rTE.html)   
+[更多升级细节](https://www.html-js.cn/details/ryJwj5rTE.html)   
+[使用Docker部署DoraCMS](https://www.html-js.cn/details/Bkw5AepT4.html)   
 
 
 
