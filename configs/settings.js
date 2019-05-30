@@ -37,7 +37,7 @@ module.exports = {
     // redis配置
     redis_host: process.env.NODE_ENV == 'production' ? '172.18.162.196' : '127.0.0.1',
     redis_port: 6379,
-    redis_psd: 'your redis password',
+    redis_psd: 'yourredispassword',
     redis_db: 0,
     redis_ttl: 12, // 过期时间12小时
 
