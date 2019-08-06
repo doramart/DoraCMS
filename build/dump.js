@@ -1,15 +1,28 @@
 // 备份DB数据
-require('shelljs/global');
-const settings = require("../configs/settings");
-const isDev = process.env.NODE_ENV == 'development' ? true : false;
+require('shelljs/global')
+require('module-alias/register')
+const muri = require('muri')
 const moment = require("moment");
-
+const settings = require('@configs/settings');
 
 let databackforder = process.cwd() + '/databak/';
 
-let dataPath = databackforder + moment().format('YYYYMMDDHHmmss').toString();;
+let dataPath = databackforder + moment().format('YYYYMMDDHHmmss').toString();
 
-let cmdstr = isDev ? 'mongodump -d ' + settings.DB + ' -o "' + dataPath + '"' : 'mongodump -u ' + settings.USERNAME + ' -p ' + settings.PASSWORD + ' -d ' + settings.DB + ' -o "' + dataPath + '"';
+const mongoUri = settings.mongo_connection_uri
+const parsedUri = muri(mongoUri)
+const parameters = []
 
-exec(cmdstr).stdout;
+if (parsedUri.auth) {
+    parameters.push(`-u "${parsedUri.auth.user}"`, `-p "${parsedUri.auth.pass}"`)
+}
 
+if (parsedUri.db) {
+    parameters.push(`-d "${parsedUri.db}"`)
+}
+
+parameters.push(`-o "${dataPath}"`)
+
+const cmd = `mongodump ${parameters.join(' ')}`
+
+exec(cmd).stdout;

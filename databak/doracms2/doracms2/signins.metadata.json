@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"doracms2.signins"},{"v":2,"key":{"user":1},"name":"user_1","ns":"doracms2.signins","background":true}],"uuid":"27c7c9031c634a49b4a88fc379f8a2e5"}

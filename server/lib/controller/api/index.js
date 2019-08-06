@@ -1,0 +1,12 @@
+exports.AdminApi = require('./admin');
+exports.UserApi = require('./user');
+exports.ContentApi = require('./content');
+exports.MessageApi = require('./message');
+exports.UserNotifyApi = require('./userNotify');
+exports.ContentCategoryApi = require('./contentCategory');
+exports.ContentTagApi = require('./contentTag');
+exports.SystemConfigApi = require('./systemConfig');
+exports.AdsApi = require('./ads');
+exports.SiteMessageApi = require('./siteMessage');
+exports.VersionManageApi = require('./versionManage');
+exports.ContentTemplateApi = require('./contentTemplate');

@@ -4,7 +4,6 @@
  */
 import CryptoJS from "crypto-js";
 
-// import  {salt_aes_key as AESkey,salt_md5_key as MD5key}  from '../../../configs/settings';
 const AESkey = "doracms_";
 const MD5key = "dora";
 export default {

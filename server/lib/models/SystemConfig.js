@@ -16,7 +16,7 @@ var SystemConfigSchema = new Schema({
     date: { type: Date, default: Date.now },
     siteName: { type: String, default: '前端开发俱乐部' },
     ogTitle: { type: String, default: '' },
-    siteDomain: { type: String, default: 'http://www.html-js.cn' },
+    siteDomain: { type: String, default: 'https://www.html-js.cn' },
     siteDiscription: { type: String, default: '前端开发' },
     siteKeywords: String,
     siteAltKeywords: String, // 标签内的alt关键字
@@ -29,9 +29,6 @@ var SystemConfigSchema = new Schema({
     showImgCode: { type: Boolean, default: false }, // 是否显示验证码
     bakDatabyTime: { type: Boolean, default: false }, // 是否自动备份数据
     bakDataRate: { type: String, default: '1' }, // 数据备份频率
-    poseArticlScore: { type: Number, default: 1 },
-    postMessageScore: { type: Number, default: 1 },
-    shareArticlScore: { type: Number, default: 1 }
 });
 
 var SystemConfig = mongoose.model("SystemConfig", SystemConfigSchema);

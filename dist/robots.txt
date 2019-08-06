@@ -1,5 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /dr-admin
-Disallow: /manage
-Disallow: /users

@@ -4,7 +4,7 @@
  */
 var mongoose = require('mongoose');
 var shortid = require('shortid');
-var settings = require('../../../configs/settings');
+var settings = require('@configs/settings');
 var Schema = mongoose.Schema;
 var moment = require('moment')
 var AdminUser = require('./AdminUser');

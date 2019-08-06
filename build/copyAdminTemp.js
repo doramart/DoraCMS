@@ -1,5 +1,4 @@
 require('shelljs/global')
 
 rm('-rf', './views/admin.html')
-cp('-R', './dist/admin.html', './views/')
-
+cp('-R', './public/admin/admin.html', './views/')

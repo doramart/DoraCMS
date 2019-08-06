@@ -1,0 +1,41 @@
+{% extends "../public/defaultTemp.html" %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main-container">
+
+            {% set firstDocuments = documentList.docs[0] %}
+
+            {% if firstDocuments %}
+            <input type="hidden" value="{{firstDocuments._id}}" id="contentId">
+            <div class="row articel-details">
+
+                <div class="col-md-12 left-frame">
+                    <div class="articel-main">
+                        <article class="post">
+                            <div class="col-md-2">&nbsp;</div>
+                            <div class="col-md-8">
+                                <h2 alt="{{siteInfo.altkey}}{{firstDocuments.title}}" class="post-title">
+                                    {{firstDocuments.title}} {% if firstDocuments.from == '2' %} &nbsp;
+                                    <span class="badge">{{lk.lc_document_share}}</span>
+                                    {% endif %}
+                                </h2>
+
+                                <div class="post-content" style="margin-top: 80px;">
+                                    {{firstDocuments.comments | safe}}
+                                </div>
+                            </div>
+                            <div class="col-md-2">&nbsp;</div>
+
+                            <div class="clearfix"></div>
+                        </article>
+
+                    </div>
+                </div>
+
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

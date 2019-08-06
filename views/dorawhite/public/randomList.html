@@ -1,9 +1,10 @@
 <!--文章推荐模块-->
+{% remote key="randomList",api="content/getRadomContents",query='{"pageSize":6,"isPaging":"0"}' %}
 <div class="pannel-box random-content-list">
     <h2 class="pannel-title">{{lk.lc_random_document}}</h2>
     <div class="content-list">
         <div class="row random-articls">
-            {% if randomListData.docs.length > 0 %} {% for item in randomListData.docs %}
+            {% if randomList.length > 0 %} {% for item in randomList %}
             <div class="col-xs-6 col-md-4">
                 <div class="contentImg">
                     <a href="/details/{{item._id}}.html">

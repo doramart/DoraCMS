@@ -2,64 +2,67 @@
 <div class="pagenation text-center">
     <ul>
         {% if documentList.pageInfo.totalItems > 0 %}
-            {% set localUrl = "" %}
-            {% set param = "" %}
-            {% set pageInfo = documentList.pageInfo %}
+        {% set localUrl = "" %}
+        {% set param = "" %}
+        {% set pageInfo = documentList.pageInfo %}
 
-            {% if pageType == 'index' %}
-            {% set localUrl = "/page" %}
-            {% elif pageType == 'cate' %}
-            {% set localUrl = '/'+ cateInfo.defaultUrl + '___' + cateInfo._id %}
-            {% elif pageType == 'search' %}
-            {% set param = '?searchKey=' + pageInfo.searchKey %}
-            {% set localUrl = '/search/' + pageInfo.searchkey %}
-            {% elif pageType == 'replies' %}
-            {% set localUrl = '/users/userReplies/p' %}
-            {% elif pageType == 'notifies' %}
-            {% set localUrl = '/users/userNotifies/p' %}    
-            {% endif %}
+        {% if pageType == 'index' %}
+        {% set localUrl = "/page" %}
+        {% elif pageType == 'cate' %}
+        {% set localUrl = '/'+ cateInfo.defaultUrl + '___' + cateInfo._id %}
+        {% elif pageType == 'search' %}
+        {% set param = '?searchKey=' + pageInfo.searchkey %}
+        {% set localUrl = '/search/' + pageInfo.searchkey %}
+        {% elif pageType == 'tag' %}
+        {% set param = '?tagKey=' + targetTagName %}
+        {% set localUrl = '/tag/' + targetTagName %}
+        {% elif pageType == 'replies' %}
+        {% set localUrl = '/users/userReplies/p' %}
+        {% elif pageType == 'notifies' %}
+        {% set localUrl = '/users/userNotifies/p' %}
+        {% endif %}
 
-            {% set totalItems = pageInfo.totalItems %}
-            {% set pageSize = pageInfo.pageSize %}
-            {% set totalPage = pageInfo.totalPage%}
+        {% set totalItems = pageInfo.totalItems %}
+        {% set pageSize = pageInfo.pageSize %}
+        {% set totalPage = pageInfo.totalPage%}
 
-            {% if pageInfo.current - 2 > 0 %}
-                {% set page_start = pageInfo.current - 2 %}
-            {% else %}
-                {% set page_start = 1 %}   
-            {% endif %}
+        {% if pageInfo.current - 2 > 0 %}
+        {% set page_start = pageInfo.current - 2 %}
+        {% else %}
+        {% set page_start = 1 %}
+        {% endif %}
 
-            {% if page_start + 4 >= totalPage %}
-                {% set page_end = totalPage %}
-            {% else %}
-                {% set page_end = page_start + 4 %}   
-            {% endif %}
+        {% if page_start + 4 >= totalPage %}
+        {% set page_end = totalPage %}
+        {% else %}
+        {% set page_end = page_start + 4 %}
+        {% endif %}
 
-            {% if pageInfo.current != 1 %}
-                <li><a href="{{localUrl}}/1.html{{param}}">«</a></li>
-            {% endif %}
+        {% if pageInfo.current != 1 %}
+        <li><a href="{{localUrl}}/1.html{{param}}">«</a></li>
+        {% endif %}
 
-            {% if page_start > 1 %}
-                <li><a>...</a></li>
-            {% endif %}
+        {% if page_start > 1 %}
+        <li><a>...</a></li>
+        {% endif %}
 
-            {% for i in range(page_start, page_end + 1) -%}
-                {% if i ==  pageInfo.current%}
-                <li class="active"><a>{{i}}</a></li>
-                {% else %}    
-                <li><a href="{{localUrl}}/{{i}}.html">{{i}}</a></li>
-                {% endif %}
-            {%- endfor %}
+        {% for i in range(page_start, page_end + 1) -%}
+        {% if i ==  pageInfo.current%}
+        <li class="active"><a>{{i}}</a></li>
+        {% else %}
+        <li><a href="{{localUrl}}/{{i}}.html">{{i}}</a></li>
+        {% endif %}
+        {%- endfor %}
 
-            {% if page_end < totalPage %}
-                <li><a>...</a></li>
-            {% endif %}
+        {% if page_end < totalPage %}
+        <li><a>...</a></li>
+        {% endif %}
 
-            {% if pageInfo.current != totalPage %}
-                <li><a href="{{localUrl}}/{{totalPage}}.html{{param}}">»</a></li>
-            {% endif %}
+        {% if pageInfo.current != totalPage %}
+        <li><a href="{{localUrl}}/{{totalPage}}.html{{param}}">»</a></li>
+        {% endif %}
 
         {% endif %}
-        
+
     </ul>
 </div>

@@ -6,11 +6,13 @@
                 <div class="col-md-8 left-frame">
                     <div class="row slider-box">
                         <div class="col-md-10">
-                            {{adsPannel.slider(adsList,'rk49YAOcb')}}
+                            {% remote key="recommend",api="ads/getOne",query='{"name":"recommend"}' %}
+                            {{adsPannel.slider(recommend)}}
                         </div>
                         <div class="col-md-2 top-rec-contents">
-                            {% if reCommendListData.docs.length > 0 %} {% set currentRec = reCommendListData.docs.slice(0, 3) %} {% for item in currentRec
-                            %}
+                            {% remote key="reCommendListTop",api="content/getList",query='{"model":"1","pageSize":3,"isPaging":"0"}' %}
+                            {% if reCommendListTop.length > 0 %}
+                            {% for item in reCommendListTop%}
                             <div class="rec-li">
                                 <div class="contentImg">
                                     <a href="/details/{{item._id}}.html">
@@ -25,7 +27,10 @@
                     {% include "./public/itemListTemp.html" %}
                 </div>
                 <div class="col-md-4 right-frame">
-                    {{adsPannel.slider(adsList,'SJllJUAdcZ')}} {% include "./public/hotNewsList.html" %} {% include "./public/reCommendList.html"
+                    {% remote key="publishCms",api="ads/getOne",query='{"name":"publishCms"}' %}
+                    {{adsPannel.slider(publishCms)}}
+                    {% remote key="qrCode",api="ads/getOne",query='{"name":"qrCode"}' %}
+                    {{adsPannel.slider(qrCode)}} {% include "./public/hotNewsList.html" %} {% include "./public/reCommendList.html"
                     %} {% include "./public/newMessageBoard.html" %}
                 </div>
             </div>

@@ -1,10 +1,11 @@
 <!--文章推荐模块-->
-{% if reCommendListData.docs.length > 0 %}
+{% remote key="reCommendList",api="content/getList",query='{"model":"1","pageSize":10,"isPaging":"0"}' %}
+{% if reCommendList.length > 0 %}
 <div class="pannel-box rec-content-list">
     <h2 class="pannel-title">{{lk.lc_rec_document}}</h2>
     <div class="content-list">
         <div class="row">
-            {% for item in reCommendListData.docs %}
+            {% for item in reCommendList %}
 
             <div class="col-md-6 list-img">
                 <a href="/details/{{item._id}}.html" class="continue-reading">

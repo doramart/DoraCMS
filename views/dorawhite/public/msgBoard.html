@@ -9,8 +9,10 @@
         <div class="give-message">
             <form name="postMsgForm" ms-validate="@validate">
                 <input id="contentId" type="hidden" value="{{documentInfo._id}}" />
-                <textarea class="form-control" rows="3" name="email" ms-duplex="@content" placeholder="{{lk.lc_please_write_message}}" ms-rules="{required:true,minlength:5,maxlength:200 }"
-                    data-required-message="{{lk.validate_inputNull | inputNotNull(lk.label_messageBoard_message)}}" data-message="{{lk.validate_rangelength | rangelength(5,200,lk.label_messageBoard_message)}}"></textarea>
+                <textarea class="form-control" rows="3" name="email" ms-duplex="@content"
+                    placeholder="{{lk.lc_please_write_message}}" ms-rules="{required:true,minlength:5,maxlength:200 }"
+                    data-required-message="{{lk.validate_inputNull | inputNotNull(lk.label_messageBoard_message)}}"
+                    data-message="{{lk.validate_rangelength | rangelength(5,200,lk.label_messageBoard_message)}}"></textarea>
                 <div class="send-button">
                     <div class="user-notice">
                         {% if logined %} {{lk.lc_message_hello}}，{{userInfo.userName}}！ {% else %}
@@ -42,11 +44,14 @@
                                     &nbsp;
                                     <span class="time" ms-text="@item.date"></span>
                                     <span class="reply pull-right">
-                                        <a href="javascript:void(0)" ms-on-click="@reply(@item._id,@getAuthor(@item,'adminAuthor','author'),@item.utype)">{{lk.label_messageBoard_reply}}</a>
+                                        <a href="javascript:void(0)"
+                                            ms-on-click="@reply(@item._id,@getAuthor(@item,'adminAuthor','author'),@item.utype)">{{lk.label_messageBoard_reply}}</a>
                                     </span>
                                 </div>
                                 <div class="user-content">
-                                    <span :visible="@getAuthor(@item,'replyAuthor','adminReplyAuthor')" style="color: #409EFF;margin-right:10px;" ms-text="'@'+@getAuthor(@item,'replyAuthor','adminReplyAuthor').userName"></span>
+                                    <span :visible="@getAuthor(@item,'replyAuthor','adminReplyAuthor')"
+                                        style="color: #409EFF;margin-right:10px;"
+                                        ms-text="'@'+@getAuthor(@item,'replyAuthor','adminReplyAuthor').userName"></span>
                                     <span ms-html="@item.content"></span>
                                 </div>
                             </div>

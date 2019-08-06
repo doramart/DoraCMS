@@ -3,7 +3,7 @@
  * 管理员用户组对象
  */
 var mongoose = require('mongoose');
-var settings = require('../../../configs/settings');
+var settings = require('@configs/settings');
 var Schema = mongoose.Schema;
 var moment = require('moment')
 moment.locale((settings.lang).toLowerCase());

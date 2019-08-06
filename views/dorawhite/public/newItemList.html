@@ -3,7 +3,8 @@
     <h2 class="pannel-title">{{lk.lc_new_document}}</h2>
     <div class="content-list">
         <ul class="row">
-            {% if newItemListData.docs.length > 0 %} {% for item in newItemListData.docs %}
+            {% remote key="newItemList",api="content/getList",query='{"model":"1","pageSize":10,"isPaging":"0"}' %}
+            {% if newItemList.length > 0 %} {% for item in newItemList %}
             <li class="list-img">
                 <div class="row">
                     <div class="col-md-5 ">

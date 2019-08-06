@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"doracms2.classscores"},{"v":2,"key":{"class":1},"name":"class_1","ns":"doracms2.classscores","background":true}],"uuid":"7de3dbb7fe9d4a97ba7848753a592889"}

@@ -1,10 +1,9 @@
-process.env.VUE_ENV = 'server'
 const isProd = process.env.NODE_ENV === 'production'
-global.NODE_ENV = isProd
-
+// 标签渲染初始化开始
+require('./server/bootstrap/index');
+// 标签渲染初始化结束
 const fs = require('fs')
 const path = require('path')
-const url = require("url");
 const favicon = require('serve-favicon')
 const i18n = require('i18n');
 const express = require('express')
@@ -16,119 +15,141 @@ const ueditor = require("ueditor")
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const nunjucks = require('nunjucks')
 const _ = require('lodash')
 const resolve = file => path.resolve(__dirname, file)
-
-const settings = require('./configs/settings');
+const settings = require('@configs/settings');
 const {
-    service,
-    authSession,
-    siteFunc
-} = require('./utils');
-const authUser = require('./utils/middleware/authUser');
-const logUtil = require('./utils/middleware/logUtil');
-const nunjucksFilter = require('./utils/middleware/nunjucksFilter');
-const authPath = require('./utils/middleware/authPath');
-const addTask = require('./utils/middleware/task');
+    siteFunc,
+    logUtil
+} = require('@utils');
 const {
-    AdminResource
-} = require('./server/lib/controller');
+    // WEB_MIDDLEWARE_BEGIN
+    authPath,
+    authUserToken,
+    // WEB_MIDDLEWARE_END
+    // BACKSTATE_MIDDLEWARE_BEGIN
+    authAdminPageToken,
+    // BACKSTATE_MIDDLEWARE_END
+    // API_MIDDLEWARE_BEGIN
+    nodeTask,
+    crossHeader,
+    authAdminToken,
+    authAdminPower,
+    // API_MIDDLEWARE_END
+    nunjucksFilter,
+    internationalization,
+} = require('@middleware')
 
 
+// API_ROUTER_BEGIN
+const restApi = require('./server/routers/api');
+const uploadApi = require('./server/routers/uploadFile');
+// API_ROUTER_END
 
-// api路由开始
-const restApi = require('./server/routers/restApi/v0');
-const uploadApi = require('./server/routers/restApi/uploadFile');
-// api路由结束
-
-// 前端路由开始
+// WEB_ROUTER_BEGIN
 const foreground = require('./server/routers/foreground');
 const users = require('./server/routers/users');
+// WEB_ROUTER_END
+
+// BACKSTATE_ROUTER_BEGIN
 const manage = require('./server/routers/manage');
-const system = require('./server/routers/system');
-// 前端路由结束
+// BACKSTATE_ROUTER_END
 
 const app = express()
 
-// 定义setLocale中间件
-let languages = settings.languages;
-
-function setLocale(req, res, next) {
-    //配置i18n
-    i18n.configure({
-        locales: languages, //声明包含的语言
-        // register: res,
-        directory: __dirname + '/locales', //翻译json文件的路径
-        defaultLocale: settings.lang, //默认的语言，即为上述标准4
-        objectNotation: true,
-        indent: "\t"
-    });
-    next();
-};
-
-
-
-// 由 html-webpack-plugin 生成
-let backend;
+// BACKSTATE_HOT_PUBLISH_BEGIN
+let backend, justServer;
 if (!isProd) {
     require('./build/setup-dev-server')(app, (_template) => {
-        backend = _template.backend
+        backend = _template.backend;
+        justServer = _template.justServer;
     })
 }
+// BACKSTATE_HOT_PUBLISH_END
 
 // 设置静态文件缓存时间
 const serve = (path, cache) => express.static(resolve(path), {
     maxAge: cache && isProd ? 60 * 60 * 24 * 30 : 0
 })
 
-// 引用 nunjucks 模板引擎开始
-let env = nunjucks.configure(path.join(__dirname, 'views'), { // 设置模板文件的目录，为views
-    noCache: process.env.NODE_ENV !== 'production',
-    autoescape: true,
-    express: app
-});
-// 引用 nunjucks 模板引擎结束
+// NUNJUCKS_IMPORT_BEGIN
+nunjucksFilter(app);
+// NUNJUCKS_IMPORT_END
 
-// 初始化定时任务
-addTask();
+// NODE_TASK_BEGIN
+nodeTask();
+// NODE_TASK_END
 
 app.set('view engine', 'html');
 
+// SITE_FAVICON_BEGIN
 app.use(favicon('./favicon.ico'))
+// SITE_FAVICON_END
+
 app.use(compression({
     threshold: 0
 }))
 // 日志
 app.use(logger('":method :url" :status :res[content-length] ":referrer" ":user-agent"'))
+
 // body 解析中间件
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended: true
-}))
+    extended: false
+}));
+
 // cookie 解析中间件
 app.use(cookieParser(settings.session_secret));
-// session配置
-let sessionConfig = {
-    secret: settings.session_secret,
-    store: new RedisStore({
-        port: settings.redis_port,
-        host: settings.redis_host,
-        pass: settings.redis_psd,
-        ttl: 60 * 60 * settings.redis_ttl
-    }),
-    resave: true,
-    saveUninitialized: true
-}
 
+// session配置
+let sessionConfig = {};
+console.log('Redis状态开关：', settings.openRedis);
+if (settings.openRedis) {
+    sessionConfig = {
+        secret: settings.session_secret,
+        store: new RedisStore({
+            port: settings.redis_port,
+            host: settings.redis_host,
+            pass: settings.redis_psd,
+            ttl: 60 * 60 * settings.redis_ttl
+        }),
+        resave: true,
+        saveUninitialized: true
+    }
+} else {
+    sessionConfig = {
+        secret: settings.encrypt_key,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * settings.redis_ttl
+        },
+        resave: false,
+        saveUninitialized: true,
+        store: new MongoStore({
+            db: "session",
+            url: settings.mongo_connection_uri
+        })
+    }
+}
 app.use(session(sessionConfig));
-//添加setLocale中间件，注意必须在配置session之后
-app.use(setLocale);
+
+//添加国际化配置中间件，注意必须在配置session之后
+app.use((req, res, next) => {
+    i18n.configure({
+        locales: settings.languages, //声明包含的语言
+        directory: __dirname + '/server/locales', //翻译json文件的路径
+        defaultLocale: settings.lang, //默认的语言，即为上述标准4
+        objectNotation: true,
+        indent: "\t"
+    });
+    next();
+});
+
 //国际化初始化
 app.use(i18n.init);
 
-// 鉴权用户开始
-app.use(authUser.auth);
-// 鉴权用户结束
+// WEB_AUTHUSER_BEGIN
+app.use(authUserToken);
+// WEB_AUTHUSER_END
 
 // 初始化日志目录开始
 logUtil.initPath();
@@ -136,114 +157,35 @@ logUtil.initPath();
 
 // 设置 express 根目录开始
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'dist')))
-app.use('/server', serve('./dist/server', true))
-app.use('/static', serve('./dist/static', true))
-app.use('/manifest.json', serve('./manifest.json'))
-app.use('/service-worker.js', serve('./dist/service-worker.js'))
+app.use('/admin/static', serve('./admin/static', true))
+app.use('/admin/service-worker.js', serve('./admin/service-worker.js'))
 // 设置 express 根目录结束
 
 // 国际化开始
-app.use(function (req, res, next) {
-
-    let targetLanguage = url.parse(req.originalUrl).pathname;
-    let reqParams = req.query;
-    // 针对移动端
-    if (reqParams.token && reqParams.lang) {
-        let currentLang = reqParams.lang;
-        if ((settings.languages).indexOf(currentLang) < 0) {
-            currentLang = 'zh-CN';
-        }
-        i18n.setLocale(req, currentLang);
-        next();
-    } else { // web端
-        if (targetLanguage) {
-            let languageStr = targetLanguage.split('/')[1];
-            // 访问首页
-            if (languageStr == '') {
-                // 自己以前切换过
-                if (req.session.locale) {
-                    res.redirect('/' + req.session.locale);
-                } else { // 第一次访问
-                    // 获取浏览器语言
-                    let browserLanguage = req.headers["accept-language"];
-                    if (browserLanguage) {
-                        let currentLanguage = browserLanguage.split(',')[0];
-                        if (currentLanguage.indexOf(settings.languages) >= 0) {
-                            req.session.locale = currentLanguage;
-                            res.redirect('/' + currentLanguage);
-                        } else {
-                            req.session.locale = 'zh-CN';
-                        }
-                    } else {
-                        req.session.locale = 'zh-CN';
-                    }
-                    i18n.setLocale(req, req.session.locale);
-                    nunjucksFilter(env, req.session.locale);
-                    next();
-                }
-            } else { // 从别的页面进来的
-                if (languageStr == 'zh-CN') {
-                    req.session.locale = 'zh-CN';
-                } else if (languageStr == 'zh-TW') {
-                    req.session.locale = 'zh-TW';
-                } else {
-                    if (!req.session.locale) {
-                        let browserLanguage = req.headers["accept-language"];
-                        if (browserLanguage) {
-                            let currentLanguage = browserLanguage.split(',')[0];
-                            if (currentLanguage.indexOf(settings.languages) >= 0) {
-                                req.session.locale = currentLanguage;
-                            } else {
-                                req.session.locale = 'zh-CN';
-                            }
-                        } else {
-                            req.session.locale = 'zh-CN';
-                        }
-                    }
-                }
-                if (req.session.locale) {
-                    i18n.setLocale(req, req.session.locale);
-                }
-                // nunjucks过滤器
-                nunjucksFilter(env, req.session.locale);
-                next();
-            }
-
-        } else {
-            // nunjucks过滤器
-            nunjucksFilter(env, req.session.locale);
-            next();
-        }
-    }
-
-});
+app.use(internationalization);
 // 国际化结束
 
-// 入口路由开始
+// WEB_API_ENTRANCE_BEGIN
 app.use('/', authPath, foreground);
-// 入口路由结束
-
-// api入口开始
-app.use('/api/v0', siteFunc.setUserClient, restApi);
-app.use('/api/v0/upload', siteFunc.setUserClient, uploadApi);
-// api入口结束
-
-
-
-// 前端路由入口开始
 app.use('/users', users);
-app.use('/system', system);
+// WEB_API_ENTRANCE_END
 
-// 机器人抓取
+// API_ENTRANCE_BEGIN
+app.use('/api/v0', crossHeader, restApi);
+app.use('/api/v0/upload', crossHeader, uploadApi);
+// API_ENTRANCE_END
+
+
+// WEB_ROBOTS_BEGIN
 app.get('/robots.txt', function (req, res, next) {
     let stream = fs.createReadStream(path.join(__dirname, './robots.txt'), {
         flags: 'r'
     });
     stream.pipe(res);
 });
+// WEB_ROBOTS_END
 
-// 集成ueditor
+// UEDITOR_IMPORT_BEGIN
 let qnParams = settings.openqn ? {
     qn: {
         accessKey: settings.accessKey,
@@ -255,21 +197,21 @@ let qnParams = settings.openqn ? {
 } : {};
 app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), config = qnParams, function (req, res, next) {
     var imgDir = '/upload/images/ueditor/' //默认上传地址为图片
-    var ActionType = req.query.action;
-    if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo') {
+    var actionType = req.query.action;
+    if (actionType === 'uploadimage' || actionType === 'uploadfile' || actionType === 'uploadvideo') {
         var file_url = imgDir; //默认上传地址为图片
         /*其他上传格式的地址*/
-        if (ActionType === 'uploadfile') {
+        if (actionType === 'uploadfile') {
             file_url = '/upload/file/ueditor/'; //附件保存地址
         }
-        if (ActionType === 'uploadvideo') {
+        if (actionType === 'uploadvideo') {
             file_url = '/upload/video/ueditor/'; //视频保存地址
         }
         res.ue_up(file_url); //你只要输入要保存的地址 。保存操作交给ueditor来做
         res.setHeader('Content-Type', 'text/html');
     }
     //客户端发起图片列表请求
-    else if (ActionType === 'listimage') {
+    else if (actionType === 'listimage') {
         res.ue_list(imgDir); // 客户端会列出 dir_url 目录下的所有图片
     }
     // 客户端发起其它请求
@@ -278,31 +220,65 @@ app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), config = qnParams
         res.redirect('/ueditor/ueditor.config.json')
     }
 }));
+// UEDITOR_IMPORT_END
 
+// BACKSTATE_ADMIN_LOGIN_BEGIN
+app.get(
+    "/dr-admin",
+    async (req, res, next) => {
+        if (req.session.adminlogined) {
+            res.redirect("/manage");
+        } else {
+            try {
+                let configs = await reqJsonData('systemConfig/getConfig');
+                let localKeys = await siteFunc.getSiteLocalKeys(req.session.locale, res);
+                let lsk = JSON.stringify(localKeys.sysKeys);
+                res.render(process.cwd() + '/views/' + 'adminUserLogin.html', {
+                    pageType: 'adminlogin',
+                    lk: localKeys.renderKeys,
+                    lsk,
+                    configs
+                })
+            } catch (error) {
+                logUtil.error(error, req);
+            }
+        }
+    }
+);
+// BACKSTATE_ADMIN_LOGIN_END
 
-// 后台渲染开始
-app.get('/manage', authSession, function (req, res) {
-    AdminResource.getAllResource(req, res).then((manageCates) => {
-        let adminPower = req.session.adminPower;
-        // console.log('adminPower', adminPower);
-        let currentCates = JSON.stringify(siteFunc.renderNoPowerMenus(manageCates, adminPower));
-        if (isProd) {
-            res.render(process.cwd() + '/views/' + 'admin.html', {
-                title: 'DoraCMS后台管理系统',
-                manageCates: currentCates
-            })
+// BACKSTATE_PAGE_RENDER_BEGIN
+app.get('/manage', authAdminPageToken, (req, res, next) => {
+
+    if (!_.isEmpty(req.session.adminUserInfo)) {
+        next();
+    } else {
+        res.redirect('/dr-admin');
+    }
+
+}, async (req, res) => {
+    let manageCates = req.session.manageCates
+    let adminPower = req.session.adminPower;
+    let currentCates = JSON.stringify(siteFunc.renderNoPowerMenus(manageCates, adminPower));
+    if (isProd) {
+        res.render(process.cwd() + '/views/' + 'admin.html', {
+            title: 'DoraCMS后台管理系统',
+            manageCates: currentCates
+        })
+    } else {
+        if (justServer) {
+            backend = backend.replace('{{manageCates}}', currentCates);
         } else {
             backend = backend.replace(/\[[^\]]+\]/g, currentCates)
-            res.send(backend)
         }
-    })
+        res.send(backend)
+    }
 });
-app.use('/manage', (req, res, next) => {
-    req.query.useClient = '0';
-    console.log('requset from manager');
-    next()
-}, manage);
-// 后台渲染结束
+// BACKSTATE_PAGE_RENDER_END
+
+// BACKSTATE_API_ENTRANCE_BEGIN
+app.use('/manage', authAdminToken, authAdminPower, manage);
+// BACKSTATE_API_ENTRANCE_END
 
 // 404 页面
 app.get('*', (req, res) => {

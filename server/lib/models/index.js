@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
-const isProd = process.env.NODE_ENV === 'production'
-const settings = require('../../../configs/settings');
+const settings = require('@configs/settings');
+const fs = require('fs');
+const path = require('path');
+var modelsPath = path.resolve(__dirname, './');
 
-if (!isProd) {
-    mongoose.connect('mongodb://' + settings.HOST + ':' + settings.PORT + '/' + settings.DB, {
-        useMongoClient: true
-    });
-} else {
-    mongoose.connect('mongodb://' + settings.USERNAME + ':' + settings.PASSWORD + '@' + settings.HOST + ':' + settings.PORT + '/' + settings.DB + '', {
-        useMongoClient: true
-    });
-}
+mongoose.connect(settings.mongo_connection_uri, {
+    useMongoClient: true
+});
 
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
@@ -29,24 +25,14 @@ db.on('close', function () {
 });
 
 
-exports.AdminUser = require('./AdminUser');
-exports.User = require('./User');
-exports.AdminGroup = require('./AdminGroup');
-exports.AdminResource = require('./AdminResource');
-exports.ContentCategory = require('./ContentCategory');
-exports.Content = require('./Content');
-exports.ContentTag = require('./ContentTag');
-exports.Message = require('./Message');
-exports.UserNotify = require('./UserNotify');
-exports.Notify = require('./Notify');
-exports.SystemConfig = require('./SystemConfig');
-exports.DataOptionLog = require('./DataOptionLog');
-exports.SystemOptionLog = require('./SystemOptionLog');
-exports.Ads = require('./Ads');
-exports.AdsItems = require('./AdsItems');
-exports.ContentTemplate = require('./ContentTemplate');
-exports.TemplateItems = require('./TemplateItems');
-exports.SiteMessage = require('./SiteMessage');
-exports.HelpCenter = require('./HelpCenter');
-exports.VersionManage = require('./VersionManage');
+fs.readdirSync(modelsPath).forEach(function (name) {
+    if (path.extname(name) !== '') {
+        name = path.basename(name, '.js');
+        if (name != 'index') {
+            let currentName = name.substr(0, 1).toUpperCase() + name.slice(1);
+            exports[currentName] = require(path.resolve(modelsPath, name));
+        }
+    }
+});
+
 //DoraModelEnd

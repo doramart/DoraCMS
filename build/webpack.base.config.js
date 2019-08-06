@@ -2,19 +2,23 @@ const path = require('path')
 const webpack = require('webpack')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const config = {
     performance: {
-        maxEntrypointSize: 300000,
-        hints: isProd ? 'warning' : false
+        hints: "warning", // 枚举
+        maxAssetSize: 30000000, // 整数类型（以字节为单位）
+        maxEntrypointSize: 50000000, // 整数类型（以字节为单位）
+        assetFilter: function (assetFilename) {
+            // 提供资源文件名的断言函数
+            return assetFilename.endsWith('.css') || assetFilename.endsWith('.js');
+        }
     },
     entry: {
-        admin: './src/manage/admin.js'
+        admin: './client/manage/admin.js'
     },
     output: {
-        path: path.resolve(__dirname, '../dist'),
-        publicPath: '/',
+        path: path.resolve(__dirname, '../public/admin'),
+        publicPath: '/admin/',
         filename: 'static/js/[name].[chunkhash:7].js',
         chunkFilename: 'static/js/[name].[chunkhash:7].js',
     },
@@ -24,7 +28,7 @@ const config = {
             path.join(__dirname, '../node_modules')
         ],
         alias: {
-            '@': path.join(__dirname, '../src/manage'),
+            '@': path.join(__dirname, '../client/manage'),
             '~server': path.resolve(__dirname, '../server')
         }
     },
@@ -47,11 +51,10 @@ const config = {
         }]
     },
     plugins: [
-        new LodashModuleReplacementPlugin,
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
         })
     ]
-}
+};
 !isProd && config.plugins.push(new FriendlyErrorsPlugin())
 module.exports = config

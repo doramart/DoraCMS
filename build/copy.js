@@ -1,7 +1,6 @@
 require('shelljs/global')
 
-rm('-rf', './dist/')
-mkdir('-p', './dist/')
-cp('-R', 'favicon.ico', './dist/')
-cp('-R', 'robots.txt', './dist/')
-// cp('-R', 'static/ueditor/', './dist/ueditor/')
+rm('-rf', './public/admin/')
+mkdir('-p', './public/admin/')
+cp('-R', 'favicon.ico', './public/')
+cp('-R', 'robots.txt', './public/')

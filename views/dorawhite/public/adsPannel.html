@@ -1,6 +1,8 @@
-{% macro slider(adsList, adsId) %} {% if adsList.docs.length > 0%} {% set targetAds = {} %} {% for adsItem in adsList.docs
-%} {% if adsItem._id == adsId %} {% set targetAds = adsItem %} {% endif %} {% endfor %} {% if targetAds.type == '1' %} {%
-if (targetAds.carousel) and (targetAds.items.length > 0) %}
+{% macro slider(targetAds) %} 
+{% if targetAds %} 
+
+{% if targetAds.type == '1' %} 
+{% if (targetAds.carousel) and (targetAds.items.length > 0) %}
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
     <ol class="carousel-indicators">
@@ -12,7 +14,8 @@ if (targetAds.carousel) and (targetAds.items.length > 0) %}
     </ol>
     <!-- Wrapper for slides -->
     <div class="carousel-inner" role="listbox">
-        {% for item in targetAds.items %} {%set activeImg = ''%} {% if loop.index0 == 0 %} {%set activeImg ='active'%} {% endif %}
+        {% for item in targetAds.items %} {%set activeImg = ''%} {% if loop.index0 == 0 %} {%set activeImg ='active'%}
+        {% endif %}
         <div class="{{'item ' + activeImg}}">
             <a href="{{item.link}}" target="_blank">
                 <img src="{{item.sImg}}" alt="{{item.title}}">
@@ -41,7 +44,7 @@ if (targetAds.carousel) and (targetAds.items.length > 0) %}
             <a href="{{item.link}}" target="_blank">
                 <img src="{{item.sImg}}" alt="{{item.title}}">
             </a>
-            <span>{{item.alt}}</span>
+
         </li>
         {% endfor %}
     </ul>
@@ -52,7 +55,8 @@ if (targetAds.carousel) and (targetAds.items.length > 0) %}
         <img src="{{normalAds.sImg}}" alt="{{normalAds.title}}">
     </a>
 </div>
-{% endif %} {% elif targetAds.type == '0' %}
+{% endif %} 
+{% elif targetAds.type == '0' %}
 <div class="normal-text-ads">
     <ul>
         {% for item in targetAds.items %}
@@ -62,4 +66,6 @@ if (targetAds.carousel) and (targetAds.items.length > 0) %}
         {% endfor %}
     </ul>
 </div>
-{% endif %} {% endif %} {% endmacro %}
+{% endif %}
+{% endif %} 
+{% endmacro %}

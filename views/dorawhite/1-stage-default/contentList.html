@@ -6,18 +6,19 @@
             <div class="column-wrap">
                 <h1>DoraCMS案例展示</h1>
                 <div class="gitstar">
-                    <a aria-label="Star doramart/DoraCMS on GitHub" data-count-aria-label="# stargazers on GitHub" data-count-api="/repos/doramart/DoraCMS#stargazers_count"
-                        data-count-href="/doramart/DoraCMS/stargazers" href="https://github.com/doramart/DoraCMS" class="github-button">Star</a>
+                    <iframe src="https://ghbtns.com/github-btn.html?user=doramart&repo=DoraCMS&type=star&count=true"
+                        frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
                 </div>
             </div>
             <div class="row cmscase-container">
                 <div class="col-md-12">
 
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                        {{adsPannel.slider(adsList,'BkxSmqcaAZ')}}
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        {% remote key="anli",api="ads/getOne",query='{"name":"anli"}' %}
+                        {{adsPannel.slider(anli)}}
                     </div>
-                    <div class="col-md-2"></div>
+                    <div class="col-md-1"></div>
                 </div>
             </div>
         </div>

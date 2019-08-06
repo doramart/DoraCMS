@@ -25,11 +25,10 @@ var UserSchema = new Schema({
         type: Boolean,
         default: true
     }, //用户是否有效
-    
     name: String,
     userName: String,
     password: String,
-    
+
     email: String,
     qq: Number,
     phoneNum: String,
@@ -61,12 +60,12 @@ var UserSchema = new Schema({
     },
     logo: {
         type: String,
-        default: "https://masterchain.oss-cn-hongkong.aliyuncs.com/upload/images/img1547021000228.png"
+        default: "/upload/images/defaultlogo.png"
     },
     group: {
         type: String,
         default: "0"
-    }, // 0 普通用户 1 大师
+    }, // 0 普通用户 
     province: String, // 所在省份
     city: String, // 所在城市
     birth: {
@@ -85,12 +84,12 @@ var UserSchema = new Schema({
         type: String,
         ref: 'Message'
     }], // 评论
-   
+
     favorites: [{
         type: String,
         ref: 'Content'
     }], // 收藏文章或帖子
-    
+
     praiseContents: [{
         type: String,
         ref: 'Content'
@@ -99,9 +98,10 @@ var UserSchema = new Schema({
         type: String,
         ref: 'Message'
     }], // 点赞的评论
-
-    
-    
+    state: {
+        type: String,
+        default: '1' // 1正常，0删除
+    },
     category: {
         type: String,
         ref: 'ContentCategory'
@@ -109,12 +109,12 @@ var UserSchema = new Schema({
     followers: [{
         type: String,
         ref: 'User'
-    }], // 关注我的大师
+    }], // 关注我的创作者
     watchers: [{
         type: String,
         ref: 'User'
-    }], // 我关注的大师
-    
+    }], // 我关注的创作者
+
     watchTags: [{
         type: String,
         ref: 'ContentTag'

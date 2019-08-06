@@ -22,7 +22,8 @@
                 "transform-object-rest-spread",
                 "transform-vue-jsx",
                 "transform-remove-strict-mode",
-                "syntax-dynamic-import"
+                "syntax-dynamic-import",
+                "transform-es2015-modules-commonjs"
             ]
         },
         "development": {

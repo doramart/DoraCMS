@@ -1,12 +1,30 @@
 // 导入DB数据
 require('shelljs/global');
-const moment = require('moment');
-const setting = require("../configs/settings");
+require('module-alias/register')
+const muri = require('muri')
+const settings = require('@configs/settings');
 
-const dbforder = '20180531145629';
+const dbforder = 'doracms2';
 
-if (process.env.NODE_ENV == 'production') {
-    exec(`mongorestore -d ${setting.DB} -h ${setting.HOST} --port ${setting.PORT} -u ${setting.USERNAME} -p ${setting.PASSWORD} --drop ./databak/${dbforder}/${setting.DB}`).stdout;
-} else {
-    exec(`mongorestore -h 127.0.0.1:${setting.PORT} -d ${setting.DB} --drop ./databak/${dbforder}/${setting.DB}`).stdout;
+const mongoUri = settings.mongo_connection_uri
+const parsedUri = muri(mongoUri)
+const parameters = []
+
+if (parsedUri.hosts && parsedUri.hosts.length) {
+    const host = parsedUri.hosts[0]
+    parameters.push(`-h ${host.host}`, `--port ${host.port}`)
 }
+
+if (parsedUri.auth) {
+    parameters.push(`-u "${parsedUri.auth.user}"`, `-p "${parsedUri.auth.pass}"`)
+}
+
+if (parsedUri.db) {
+    parameters.push(`-d "${parsedUri.db}"`)
+}
+
+parameters.push(`--drop ./databak/${dbforder}/${parsedUri.db}`)
+
+const cmd = `mongorestore ${parameters.join(' ')}`
+
+exec(cmd).stdout;

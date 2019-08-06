@@ -1,0 +1,29 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>DoraCMS内容管理系统</title>
+    <meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta name="description" content="前端开发俱乐部">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="author" type="text/plain" href="">
+    <link href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/babel-polyfill/7.0.0-beta.49/polyfill.min.js"></script>
+    <%if(process.env.NODE_ENV == 'production'){%>
+    <script src="/vendor/vendor.dll.js"></script>
+    <%}%>
+</head>
+
+<body>
+    <%if(process.env.NODE_ENV == 'development'){%>
+    <input type="hidden" id="cateValue" value='[__manageCates__]'>
+    <%}else{%>
+    <input type='hidden' id='cateValue' value='<%= htmlWebpackPlugin.options.manageCates%>'>
+    <%}%>
+    <div id="app"></div>
+</body>
+
+</html>

@@ -37,9 +37,19 @@
                 <div ms-for="(index,el) in @myContentList">
                     <div class="discription ">
                         <h2 class="post-title ">
-                            <a ms-if="@el.state" ms-attr="{href:'/details/'+el._id+'.html'}" target="_blank "
+                            <a ms-visible="@el.state=='2'" ms-attr="{href:'/details/'+el._id+'.html'}" target="_blank "
                                 ms-text="@el.title"></a>
-                            <a ms-if="!@el.state" ms-text="@el.title"></a>
+                            <a ms-visible="@el.state != '2'" ms-text="@el.title"></a>
+                            <div class="contentState">
+                                <span ms-visible="@el.state == '0'" style="font-weight:normal;"><a target="_blank"
+                                        ms-attr="{href:'/users/editContent/'+ @el._id}">{{lk.lc_content_state_draft}}</a></span>
+                                <span style="color:orange;"
+                                    ms-visible="@el.state == '1'">{{lk.lc_content_state_wait}}</span>
+                                <span style="color:green;"
+                                    ms-visible="@el.state == '2'">{{lk.lc_content_state_publish}}</span>
+                                <span style="color:red;"
+                                    ms-visible="@el.state == '3'">{{lk.lc_content_state_failed}}</span>
+                            </div>
                         </h2>
                         <div class="post-content" ms-html="@el.discription"></div>
                         <ul class="post-meta ">
@@ -134,10 +144,11 @@
                             })
                         } else if (targetId.indexOf('home') >= 0) {
                             getUserRelevantList('/user/getUserContents', 'myContents', 1, {
-                                userId: $('#userId').val()
+                                userId: $('#userId').val(),
+                                listState: 'all'
                             })
                         } else if (targetId.indexOf('myJoinTopics') >= 0) {
-                            getUserRelevantList('/user/getUserReplies', 'myJoinTopics', 1, {
+                            getUserRelevantList('/user/getMessages', 'myJoinTopics', 1, {
                                 userId: $('#userId').val()
                             })
                         }
@@ -145,6 +156,7 @@
                 })
                 // 获取用户投稿列表
                 getUserRelevantList('/user/getUserContents', 'myContents', 1, {
-                    userId: $('#userId').val()
+                    userId: $('#userId').val(),
+                    listState: 'all'
                 });
             </script>

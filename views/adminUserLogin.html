@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html class="{{pageType}}">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="description" content="{{configs.siteName}}">
+    <meta property="og:type" content="website" />
+    <meta name="author" content="DoraCMS">
+    <title>
+        {{configs.siteName}}
+    </title>
+    <!-- 引入组件库 -->
+    <script src="/plugins/jquery/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/avalon.js/2.2.7/avalon.min.js"></script>
+    <script src="/plugins/layer/layer.js"></script>
+    <link rel="stylesheet" href="/plugins/layer/theme/default/layer.css">
+
+    <!--default theme-->
+    <script src="https://cdn.bootcss.com/crypto-js/3.1.9/crypto-js.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+      <script src="https://cdn.bootcss.com/json3/3.3.2/json3.min.js"></script>
+      <script src="/plugins/promise/promise.js"></script>
+    <![endif]-->
+    <input type="hidden" value="{{lsk}}" id="sysKeys">
+    <style>
+        .adminlogin {
+            height: 100%;
+            background-color: #2d3a4b;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .adminlogin body {
+            background: none;
+        }
+
+        .adminlogin .login-container {
+            background-clip: padding-box;
+            background: transparent;
+        }
+
+        .adminlogin .login-container .admin-logo-title h3 {
+            color: #99a9bf;
+            font-size: 35px;
+            text-align: center;
+            font-weight: normal;
+            margin: 40px 0;
+        }
+
+        .adminlogin .login-container .form-group {
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            color: #454545;
+            margin-bottom: 22px;
+        }
+
+        .adminlogin .login-container .form-group .svg-container {
+            padding: 6px 5px 6px 15px;
+            color: #889aa4;
+            vertical-align: middle;
+            width: 30px;
+            display: inline-block;
+        }
+
+        .adminlogin .login-container .form-group .svg-container i {
+            font-size: 16px;
+        }
+
+        .adminlogin .login-container .form-group .form-control {
+            background: transparent;
+            width: 85%;
+            display: inline-block;
+            height: 47px;
+            -webkit-box-shadow: 0 0 0px 1000px #283443 inset !important;
+            -webkit-text-fill-color: #fff !important;
+            background: transparent;
+            border: 0px;
+            -webkit-appearance: none;
+            border-radius: 0px;
+            padding: 12px 5px 12px 15px;
+            color: #eee;
+            height: 47px;
+            caret-color: #fff;
+        }
+
+        .adminlogin .login-container .form-group .imageCode-input {
+            width: 150px;
+        }
+
+        .adminlogin .login-container .form-group .imageCode-img {
+            width: 115px;
+            height: 100%;
+            position: absolute;
+            right: 0;
+            top: 0;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .adminlogin .login-container .btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-md-12">
+            <div class="col-md-4 col-md-offset-4 min-hight" style="margin-top: 50px;">
+                <!--用户登录模块-->
+                <div class="login-container" ms-controller="adminUserlogin">
+                    <div class="admin-logo-title">
+                        <h3>
+                            <b style="color:#1D8CE0;">Dora</b>CMS</h3>
+                        <small class="text-danger" :visible="@showErr" ms-html="@message"></small>
+                    </div>
+                    <form name="loginForm" ms-validate="@validate">
+                        <div class="form-group">
+                            <span class="svg-container"><i class="fa fa-user"></i></span>
+                            <input type="text" class="form-control" name="userName" ms-duplex="@userName"
+                                placeholder="{{lk.lc_basic_pl_username}}"
+                                ms-rules="{required:true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{4,11}$/ }"
+                                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_userName)}}"
+                                data-message="{{lk.lc_basic_user_writecurrent_username}}">
+                        </div>
+                        <div class="form-group">
+                            <span class="svg-container"><i class="fa fa-lock"></i></span>
+                            <input type="password" class="form-control" name="password"
+                                placeholder="{{lk.lc_password_null_tips}}" ms-duplex="@password"
+                                ms-rules="{required: true,pattern: /(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/}"
+                                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.lc_password)}}"
+                                data-message="{{lk.validate_ranglengthandnormal | ranglengthandnormal(6,12,lk.lc_password)}}">
+                        </div>
+                        {%if configs.showImgCode %}
+                        <div class="form-group">
+                            <span class="svg-container"><i class="fa fa-random"></i></span>
+                            <input type="text" class="form-control imageCode-input" name="imageCode"
+                                placeholder="{{lk.validate_inputNull | inputNotNull(lk.label_user_imageCode)}}"
+                                ms-duplex="@imageCode" ms-rules="{required: true}"
+                                data-required-message="{{lk.validate_inputNull | inputNotNull(lk.label_user_imageCode)}}"
+                                data-message="{{lk.validate_inputCorrect | inputCurrent(lk.label_user_imageCode)}}">
+                            <img ms-attr="{src: @imgCodeUrl}" class="imageCode-img" ms-on-click="reSetImgCode" />
+                        </div>
+                        {% endif %}
+                        <div id="ul-s5">
+                            <button type="submit" class="btn btn-primary">{{lk.lc_login}}</button>&nbsp;
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    /**
+     * 
+     * adminlogin avalon controller
+     * 
+     */
+    layer.config({
+        extend: 'blue/layer.css', //加载您的扩展样式,它自动从theme目录下加载这个文件
+        skin: 'layui-layer-blue' //layui-layer-orange这个就是上面我们定义css 的class
+    });
+    var msgTime = 800;
+
+    function getAjaxData(url, success = () => {}, type = 'get', params = {}, error = () => {}) {
+        layer.load(2, {
+            shade: [0.3, '#000']
+        });
+        var baseParams = {
+            url: url,
+            type: type.toLocaleUpperCase(),
+            success: function (result) {
+                layer.closeAll('loading');
+                if (result.status === 500) {
+                    layer.msg(result.message, {
+                        icon: 2,
+                        shade: [0.001, '#000'],
+                        zIndex: 999999999,
+                        time: msgTime
+                    });
+                    error && error();
+                } else if (result.status === 401) {
+                    layer.confirm(result.message, {
+                        title: getSysValueByKey('sys_layer_confirm_title'),
+                        btn: getSysValueByKey('sys_layer_confirm_btn_yes'),
+                        yes: function (index) {
+                            layer.close(index);
+                        }
+                    })
+                } else {
+                    success && success(result);
+                }
+            },
+            error: function (d) {
+                console.log('error:', d)
+                layer.msg(d.message, {
+                    icon: 2,
+                    time: msgTime
+                });
+            }
+        };
+        if (type == 'post') {
+            baseParams = Object.assign({}, baseParams, {
+                data: params,
+            })
+        } else {
+            if (url.indexOf('?') >= 0) {
+                baseParams.url = url;
+            } else {
+                baseParams.url = url;
+            }
+        }
+        $.ajax(baseParams);
+    }
+
+    var adminLoginVm = avalon.define({
+        $id: 'adminUserlogin',
+        password: '',
+        userName: '',
+        message: '',
+        imageCode: "",
+        showErr: false,
+        imgCodeUrl: "/api/v0/getImgCode",
+        reSetImgCode: function () {
+            adminLoginVm.imgCodeUrl = "/api/v0/getImgCode?" + Math.random();
+        },
+        validate: {
+            onError: function (reasons) {
+                reasons.forEach(function (reason) {
+                    console.log(reason.getMessage())
+                })
+            },
+            onValidateAll: function (reasons) {
+                if (reasons.length) {
+                    console.log('有表单没有通过', reasons)
+                    adminLoginVm.showErr = true;
+                    adminLoginVm.message = reasons[0].message;
+                    layer.msg(reasons[0].message, {
+                        icon: 2,
+                        shade: [0.001, '#000'],
+                        time: 800
+                    });
+                } else {
+                    console.log('全部通过');
+                    var params = {
+                        userName: adminLoginVm.userName,
+                        password: CryptoJS.MD5('dora' + adminLoginVm.password).toString(),
+                        imageCode: adminLoginVm.imageCode
+                    }
+                    getAjaxData('/api/v0/admin/doLogin', function (data) {
+                        if (data.status == 200) {
+                            window.location.href = "/manage";
+                        }
+                    }, 'post', params, function () {
+                        adminLoginVm.reSetImgCode();
+                    })
+                }
+            }
+        }
+    })
+</script>
+
+</html>

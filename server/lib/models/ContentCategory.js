@@ -20,7 +20,7 @@ var ContentCategorySchema = new Schema({
     },
     name: String,
     keywords: String,
-    type: { type: String, default: "1" }, // 类别类型默认1,2 为快讯
+    type: { type: String, default: "1" }, // 类别类型默认1,2单页面
     sortId: {
         type: Number,
         default: 1

@@ -11,16 +11,16 @@ const es2015Preset = require("babel-preset-es2015");
 const autoprefixer = require('gulp-autoprefixer');
 
 var tempforder = "dorawhite";
-var doraWhiteSassPath = './src/index/' + tempforder + '/css/white.scss';
+var doraWhiteSassPath = './client/index/' + tempforder + '/css/white.scss';
 var doraWhiteCssPath = './public/themes/' + tempforder + '/css';
 
 // layer 皮肤
-var doraLayerSassPath = './src/index/' + tempforder + '/css/layer.scss';
+var doraLayerSassPath = './client/index/' + tempforder + '/css/layer.scss';
 var doraLayerCssPath = './public/plugins/layer/theme/blue';
 
-var doraWhiteNormalJs = './src/index/' + tempforder + '/js/dora.front.js';
-var doraWhitePagerJs = './src/index/' + tempforder + '/js/avalon-ms-pager.js';
-var doraWhiteEditor = './src/index/' + tempforder + '/js/ueditor.all.js';
+var doraWhiteNormalJs = './client/index/' + tempforder + '/js/dora.front.js';
+var doraWhitePagerJs = './client/index/' + tempforder + '/js/avalon-ms-pager.js';
+var doraWhiteEditor = './client/index/' + tempforder + '/js/ueditor.all.js';
 var doraWhiteMinJs = './public/themes/' + tempforder + '/js/';
 var editorMinPath = './public/ueditor/';
 
@@ -29,7 +29,7 @@ gulp.task('sass', function () {
     return gulp.src(doraWhiteSassPath)
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer({
-            browsers: ['> 1%', 'iOS >= 7', 'Android >= 4.0', 'ie >= 10'],
+            overrideBrowserslist: ['> 1%', 'iOS >= 7', 'Android >= 4.0', 'ie >= 10'],
             cascade: false
         }))
         .pipe(cssmin())
@@ -44,7 +44,7 @@ gulp.task('layerSass', function () {
     return gulp.src(doraLayerSassPath)
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer({
-            browsers: ['> 1%', 'iOS >= 7', 'Android >= 4.0', 'ie >= 10'],
+            overrideBrowserslist: ['> 1%', 'iOS >= 7', 'Android >= 4.0', 'ie >= 10'],
             cascade: false
         }))
         .pipe(cssmin())

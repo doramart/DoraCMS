@@ -30,11 +30,15 @@ var AdminUserSchema = new Schema({
     },
     logo: {
         type: String,
-        default: "https://masterchain.oss-cn-hongkong.aliyuncs.com/upload/images/img1547021000228.png"
+        default: "/upload/images/defaultlogo.png"
     },
     enable: {
         type: Boolean,
         default: false
+    },
+    state: {
+        type: String,
+        default: '1' // 1正常，0删除
     },
     auth: {
         type: Boolean,

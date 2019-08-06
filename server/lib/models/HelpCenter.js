@@ -1,6 +1,6 @@
 /**
  * Created by Administrator on 2015/4/15.
- * 大师类别对象
+ * 创作者类别对象
  */
 var mongoose = require('mongoose');
 var shortid = require('shortid');

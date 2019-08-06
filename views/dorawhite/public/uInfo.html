@@ -49,15 +49,15 @@
     // 请求用户信息
     $.ajax({
         type: "GET",
-        url: '/users/userInfo',
+        url: '/api/v0/user/userInfo',
         success: function (data) {
             console.log('data', data);
             if (data.status === 200) {
-                userInfoVm.name = data.data.userInfo.name || '';
-                userInfoVm.userName = data.data.userInfo.userName;
-                userInfoVm.email = data.data.userInfo.email;
-                userInfoVm.phoneNum = data.data.userInfo.phoneNum || '';
-                userInfoVm.comments = data.data.userInfo.comments;
+                userInfoVm.name = data.data.name || '';
+                userInfoVm.userName = data.data.userName;
+                userInfoVm.email = data.data.email;
+                userInfoVm.phoneNum = data.data.phoneNum || '';
+                userInfoVm.comments = data.data.comments;
             }
         }
     })

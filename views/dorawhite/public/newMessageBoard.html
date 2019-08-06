@@ -1,9 +1,11 @@
-{% if newMessageList.docs.length > 0 %}
+{% remote key="newMessageList",api="user/getMessages",query='{"pageSize":5,"isPaging":"0"}' %}
+
+{% if newMessageList.length > 0 %}
 <div class="pannel-box rec-message-list">
     <h2 class="pannel-title">{{lk.lc_newComments}}</h2>
     <div class="content-list">
         <ul>
-            {% for item in newMessageList.docs %}
+            {% for item in newMessageList %}
             <li class="message-list">
                 <div class="comment-info">
                     {% if item.author %} {% set getAuthor = item.author %} {% else %}
@@ -15,7 +17,7 @@
                     <span>{{item.date}}</span>
                 </div>
                 <div class="comment-excerpt">
-                    <p>{{item.content | cutwords(100)}}</p>
+                    <p>{{item.content | cutwords(100,false)}}</p>
                 </div>
                 <p class="comment-post">
                     <a href="/details/{{item.contentId._id}}.html"

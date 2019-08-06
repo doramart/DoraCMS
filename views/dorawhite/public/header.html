@@ -3,7 +3,12 @@
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
         document.write("<script src='/plugins/iscroll/iscroll.js'><" + '/' + "script>");
         $(function () {
-            new IScroll('#navWrapper', { scrollX: true, scrollY: false, mouseWheel: true, click: true });
+            new IScroll('#navWrapper', {
+                scrollX: true,
+                scrollY: false,
+                mouseWheel: true,
+                click: true
+            });
         })
     }
 </script>
@@ -11,13 +16,13 @@
 <input type="hidden" value="{{logined}}" id="logined">
 <input type="hidden" value="{{tokenId}}" id="tokenId">
 <header class="clearfix" id="header" ms-controller="headerCtr">
-  {% if siteInfo.lang == 'zh-TW' %}
-  {% set homelink = '/zh-TW' %}
-  {% set endStr = '_zh-TW' %}
-  {% else %}
-  {% set homelink = '/zh-CN' %}
-  {% set endStr = '' %}
-  {% endif %}
+    {% if siteInfo.lang == 'zh-TW' %}
+    {% set homelink = '/zh-TW' %}
+    {% set endStr = '_zh-TW' %}
+    {% else %}
+    {% set homelink = '/zh-CN' %}
+    {% set endStr = '' %}
+    {% endif %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 header-box">
@@ -35,7 +40,8 @@
                             <ul>
                                 {% for cate in cateTypes %} {% if cate.parentId == '0' %}
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" alt="{{siteInfo.altkey}}{{cate.name}}" href="/{{cate.defaultUrl}}___{{cate._id}}">{{cate.name}}</a>
+                                    <a role="menuitem" tabindex="-1" alt="{{siteInfo.altkey}}{{cate.name}}"
+                                        href="/{{cate.defaultUrl}}___{{cate._id}}">{{cate.name}}</a>
                                 </li>
                                 {% endif %} {% endfor %}
                             </ul>
@@ -46,8 +52,8 @@
                             <div class="search-pannel">
                                 <div :class="['input-area',(@activeSearch? 'active':'')]">
                                     <div class="el-input el-input--small">
-                                        <input ms-on-keydown="@searchOpt" type="text" class="form-control" ms-duplex="@searchkey"
-                                            placeholder="{{lk.lc_please_write_key}}">
+                                        <input ms-on-keyup="@onKeyUp" type="text" class="form-control"
+                                            ms-duplex="@searchkey" placeholder="{{lk.lc_please_write_key}}">
                                     </div>
                                     <i ms-click='@searchMe' class="fa fa-search"></i>
                                 </div>
@@ -80,7 +86,8 @@
                                 </li>
                                 {% endif %}
                                 <li>
-                                    <button type="button" ms-on-click="@postArticel" class="btn btn-primary btn-sm navbar-btn">{{lk.lc_myPostArticels}}</button>
+                                    <button type="button" ms-on-click="@postArticel"
+                                        class="btn btn-primary btn-sm navbar-btn">{{lk.lc_myPostArticels}}</button>
                                 </li>
                             </ul>
                         </div>
