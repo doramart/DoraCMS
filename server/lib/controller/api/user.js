@@ -959,8 +959,7 @@ exports.regAction = async (req, res, next) => {
         if (!_.isEmpty(user)) {
             throw new Error(res.__("validate_hadUse_userNameOrEmail"));
         } else {
-            let newUser = new UserModel(userObj);
-            let endUser = await newUser.save();
+            let endUser = await userService.create(userObj);
 
             req.session.user = await userService.item(res, {
                 query: {
