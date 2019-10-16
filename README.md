@@ -180,11 +180,6 @@ npm install nodemon -g  // nodejs 代码监控
 npm install
 ```
 
-### 初始化数据
-```javascript
-npm run init
-```
-
 ### 设置环境变量（以mac为例，修改 .bash_profile文件）
 
 ```javascript
@@ -201,6 +196,13 @@ source ~/.bash_profile
 > 以上步骤做了两件事情：  
 1、设置nodejs环境变量为 development,生产环境记得改为 production  
 2、将mongodb bin 目录添加到全局变量中，便于在终端的任何位置执行mongo脚本,注意改成自己安装mongodb的实际路径  
+
+
+### 初始化数据
+```javascript
+npm run init
+```
+
 
 
 ### 开发模式启动
