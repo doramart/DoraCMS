@@ -311,8 +311,8 @@ exports.update = async (req, res, next) => {
         }
 
         // 如果是管理员代发,则指定用户
-        if (req.session.adminUserInfo && fields.targetContent) {
-            formObj.uAuthor = fields.targetContent;
+        if (req.session.adminUserInfo && fields.targetUser) {
+            formObj.uAuthor = fields.targetUser;
         }
 
         await contentService.update(res, fields._id, formObj);
