@@ -2,13 +2,13 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-08-02 13:54:59
+ * @Last Modified time: 2019-10-23 22:58:15
  */
 
 
 const {
     contentTemplateService,
-    templateItemService
+    templateItemsService
 } = require('@service');
 const formidable = require('formidable');
 const {
@@ -373,7 +373,7 @@ exports.addTemplateItem = async (req, res, next) => {
             throw new Error(errInfo.errors[0].message)
         }
 
-        let newContentTemplateItems = await templateItemService.create(formObj);
+        let newContentTemplateItems = await templateItemsService.create(formObj);
 
         let defaultTemp = await this._getDefaultTempInfo();
         await contentTemplateService.addItems(defaultTemp._id, newContentTemplateItems._id);
@@ -405,7 +405,7 @@ exports.delTemplateItem = async (req, res, next) => {
         let defaultTemp = await this._getDefaultTempInfo();
         await contentTemplateService.removeItems(defaultTemp._id, req.query.ids);
 
-        await templateItemService.removes(res, req.query.ids);
+        await templateItemsService.removes(res, req.query.ids);
 
         renderSuccess(req, res);
 
@@ -477,7 +477,7 @@ exports.installTemp = async (req, res, next) => {
                             extract.on('finish', async () => {
                                 console.log("解压完成!!");
                                 //解压完成处理入库操作
-                                let newTempItem = await templateItemService.create({
+                                let newTempItem = await templateItemsService.create({
                                     forder: "2-stage-default",
                                     name: 'Default',
                                     isDefault: true,
@@ -640,7 +640,7 @@ exports.uploadCMSTemplate = async (req, res, next) => {
                                                     tempItem.forder = "2-stage-default";
                                                     tempItem.name = '默认模板';
                                                     tempItem.isDefault = true;
-                                                    await templateItemService.create(tempItem);
+                                                    await templateItemsService.create(tempItem);
 
                                                     var tempObj = {
                                                         name: tempInfoData.name,
@@ -763,7 +763,7 @@ exports.uninstallTemp = async (req, res, next) => {
             })
             // console.log('---targetTemp---', targetTemp);
             if (!_.isEmpty(targetTemp)) {
-                await templateItemService.removes(res, (targetTemp.items).join(','));
+                await templateItemsService.removes(res, (targetTemp.items).join(','));
                 await contentTemplateService.removes(res, targetTemp._id)
 
                 //删除模板文件夹
