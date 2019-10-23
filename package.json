@@ -25,15 +25,15 @@
     "makePrdDoc": "apidoc -i server/routers/ -o public/apidoc/ && npm run modifyPrdDoc",
     "modifyPrdDoc": "node ./build/renderApiDoc --docv prd",
     "dll": "webpack --config ./build/dll.js"
-    
-    
-    
-    
+
+
+
+
   },
   "dependencies": {
     "archiver": "^1.3.0",
     "async-validator": "^1.11.2",
-    "axios": "^0.16.2",
+    "axios": ">=0.18.1",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "body-parser": "^1.18.2",
     "clipboard": "1.7.1",
