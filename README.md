@@ -1,6 +1,6 @@
 # DoraCMS 2.1.4
 
-![DoraCMS](https://camo.githubusercontent.com/c151576fba6004e6e3e3ae8ffb3ea8eb3df64017/68747470733a2f2f7777772e68746d6c2d6a732e636e2f75706c6f61642f696d616765732f75656469746f722f313034313332353038393333303639363139322e706e67 "DoraCMS")
+![DoraCMS](https://raw.githubusercontent.com/doramart/picGo/master/img/Snipaste_2019-11-16_00-14-09.png "DoraCMS")
 
 ## 2.1.4 版本更新
 
