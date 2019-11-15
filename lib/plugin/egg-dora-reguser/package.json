@@ -1,0 +1,65 @@
+{
+  "name": "egg-dora-reguser",
+  "version": "1.0.6",
+  "description": "regUser",
+  "eggPlugin": {
+    "name": "doraRegUser"
+  },
+  "keywords": [
+    "egg",
+    "eggPlugin",
+    "egg-plugin"
+  ],
+  "dependencies": {
+    "shortid": "^2.2.14",
+    "moment": "^2.24.0",
+    "lodash": "^4.17.15",
+    "xss": "^1.0.6",
+    "jsonwebtoken": "^8.5.1",
+    "validator": "^11.1.0",
+    "trek-captcha": "^0.4.0",
+    "egg-dora-content": "^1.0.0",
+    "egg-dora-contentmessage": "^1.0.0"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg": "^2.16.0",
+    "egg-bin": "^4.11.0",
+    "egg-ci": "^1.11.0",
+    "egg-mock": "^3.21.0",
+    "eslint": "^5.13.0",
+    "eslint-config-egg": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "npm run lint -- --fix && egg-bin pkgfiles && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "egg-bin pkgfiles --check && npm run lint && npm run cov",
+    "pkgfiles": "egg-bin pkgfiles",
+    "autod": "autod"
+  },
+  "files": [
+    "app.js",
+    "agent.js",
+    "config",
+    "app"
+  ],
+  "ci": {
+    "version": "8, 10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doramart/egg-dora-reguser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/doramart/egg-dora-reguser/issues"
+  },
+  "homepage": "https://github.com/doramart/egg-dora-reguser#readme",
+  "author": "doramart",
+  "license": "MIT"
+}

@@ -1,12 +1,12 @@
 // 导入DB数据
 require('shelljs/global');
-require('module-alias/register')
 const muri = require('muri')
-const settings = require('@configs/settings');
+const settings = require('../config/config.local');
 
-const dbforder = 'doracms2';
 
-const mongoUri = settings.mongo_connection_uri
+const mongoUri = settings({
+    baseDir: '.'
+}).mongoose.client.url
 const parsedUri = muri(mongoUri)
 const parameters = []
 
@@ -23,7 +23,7 @@ if (parsedUri.db) {
     parameters.push(`-d "${parsedUri.db}"`)
 }
 
-parameters.push(`--drop ./databak/${dbforder}/${parsedUri.db}`)
+parameters.push(`--drop ./databak/${parsedUri.db}`)
 
 const cmd = `mongorestore ${parameters.join(' ')}`
 

@@ -1,0 +1,14 @@
+<!--信息提示模块-->
+<div class="noticeBoard">
+        <h3>{{__('label_option_notice')}}</h3>
+        {% if infoType == 'info' %}
+        <div class="alert alert-info">{{infoContent}}</div>
+        {% elif infoType == 'success' %}
+        <div class="alert alert-success">{{infoContent}}</div>
+        {% elif infoType == 'danger' %}
+        <div class="alert alert-danger">{{infoContent}}</div>
+        {% elif infoType == 'warning' %}
+        <div class="alert alert-warning">{{infoContent}}</div>
+        {% endif %}
+        <a href="/" class="btn btn-default" role="button">{{__('label_backto_index')}}</a>
+</div>

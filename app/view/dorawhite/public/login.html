@@ -1,0 +1,40 @@
+<!--用户登录模块-->
+<div class="login-box" ms-controller="userEmailLogin">
+    <form name="loginForm" ms-validate="@validate">
+        <h3 class="title">
+            <span>{{__('lc_login')}}</span>
+        </h3>
+        <small style="display:block" class="text-danger text-center" :visible="@showErr" ms-html="@message"></small>
+        <div class="form-group">
+            <label for="">{{__('lc_email')}}</label>
+            <input type="email" class="form-control" name="email" ms-duplex="@email"
+                placeholder="{{__('lc_write_email')}}"
+                ms-rules="{required:true, pattern: /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/ }"
+                data-required-message="{{__('lc_write_current_email')}}"
+                data-message="{{__('lc_write_current_email')}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{__('lc_password')}}</label>
+            <input type="password" class="form-control" name="password" placeholder="{{__('lc_write_password')}}"
+                ms-duplex="@password" ms-rules="{required: true,pattern: /(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/}"
+                data-required-message="{{__('lc_write_current_password')}}"
+                data-message="{{__('lc_write_current_password')}}">
+        </div>
+        <div class="sub-btns" id="ul-s5">
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-primary">{{__('lc_confirm_login')}}</button>
+                </div>
+                <div class="col-md-6">
+                    <button ms-click='@reset' type="button" class="btn btn-default">{{__('lc_reset_login')}}</button>
+                </div>
+            </div>
+        </div>
+        <p class="forget-psd">
+            <a href=" /users/confirmEmail " target="_blank ">{{__('label_resetpwd_forget')}}？</a>
+        </p>
+    </form>
+</div>
+
+<script>
+</script>

@@ -1,0 +1,66 @@
+{
+  "name": "egg-dora-templateconfig",
+  "version": "1.0.8",
+  "description": "templateConfig",
+  "eggPlugin": {
+    "name": "doraTemplateConfig"
+  },
+  "keywords": [
+    "egg",
+    "eggPlugin",
+    "egg-plugin"
+  ],
+  "dependencies": {
+    "await-stream-ready": "^1.0.1",
+    "axios": "^0.19.0",
+    "egg-dora-contenttemp": "^1.0.0",
+    "iconv-lite": "^0.5.0",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "node-unzip-2": "^0.2.8",
+    "shortid": "^2.2.14",
+    "stream-wormhole": "^1.1.0",
+    "xss": "^1.0.6"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg": "^2.16.0",
+    "egg-bin": "^4.11.0",
+    "egg-ci": "^1.11.0",
+    "egg-mock": "^3.21.0",
+    "eslint": "^5.13.0",
+    "eslint-config-egg": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "npm run lint -- --fix && egg-bin pkgfiles && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "egg-bin pkgfiles --check && npm run lint && npm run cov",
+    "pkgfiles": "egg-bin pkgfiles",
+    "autod": "autod"
+  },
+  "files": [
+    "app.js",
+    "agent.js",
+    "config",
+    "app"
+  ],
+  "ci": {
+    "version": "8, 10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doramart/egg-dora-templateconfig.git"
+  },
+  "bugs": {
+    "url": "https://github.com/doramart/egg-dora-templateconfig/issues"
+  },
+  "homepage": "https://github.com/doramart/egg-dora-templateconfig#readme",
+  "author": "doramart",
+  "license": "MIT"
+}

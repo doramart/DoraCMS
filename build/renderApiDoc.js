@@ -1,6 +1,5 @@
 var fs = require('fs');
-var apiDocHtmlPath = './public/apidoc/api_data.json'
-let apiDocPathArr = ['./public/apidoc/api_data.json', './public/apidoc/api_data.js', './public/apidoc/api_project.json', './public/apidoc/api_project.js', './public/shopApidoc/api_data.json', './public/shopApidoc/api_data.js', './public/shopApidoc/api_project.json', './public/shopApidoc/api_project.js'];
+let apiDocPathArr = ['./app/public/apidoc/api_data.json', './app/public/apidoc/api_data.js', './app/public/apidoc/api_project.json', './app/public/apidoc/api_project.js'];
 let docState = "dev"; //  dev 或 prd 可选
 require('shelljs/global')
 let argvs = process.argv;
