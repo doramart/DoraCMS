@@ -64,7 +64,8 @@ https://www.mongodb.com/download-center#community
 ### 安装全局依赖
 ```javascript
 npm install egg-scripts -g   // eggjs 脚本执行
-npm install gulp -g  // 脚本构建
+npm install gulp -g  // 静态资源构建
+npm install apidoc -g  // api文档生成
 ```
 
 
