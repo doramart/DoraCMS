@@ -80,6 +80,9 @@ npm install
 npm run init
 ```
 
+> 网站图片资源可从这里获取
+下载链接: https://pan.baidu.com/s/1th7Qlz4eJGNN3w_Tacl9AQ 提取码: jczt  ，解压后放到项目根目录下 app/public/upload (替换)。
+
 ### 开发模式启动
 ```javascript
 npm install egg-scripts -g   // egg 启动工具
