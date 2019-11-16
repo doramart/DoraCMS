@@ -17,7 +17,7 @@
 ### DoraCMS 2.1.4 使用的技术栈：
 
 ```
-1、nodejs 10.15.0 + eggjs 2
+1、nodejs 12.13.0 + eggjs 2
 2、vue-cli
 3、mongodb 4+
 ```
@@ -106,6 +106,13 @@ npm start
 ### 生产模式停止
 ```javascript
 npm run stop
+```
+
+### 生成api文档
+```javascript
+npm run makePrdDoc
+
+api访问地址： http://localhost:8080/static/apidoc/index.html
 ```
 
 
