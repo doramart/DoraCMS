@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"githubcms.systemnotifies"},{"v":2,"key":{"date":-1},"name":"date_-1","ns":"githubcms.systemnotifies","background":true}],"uuid":"31017bf1189d49ac8cce7939bf8065e3"}
