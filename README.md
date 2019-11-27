@@ -5,7 +5,7 @@
 
 ## DoraCMS 视频简介
 
-[DoraCMS 视频简介](http://cdn.html-js.cn/cms/uploadfiles/video/doracmsintroduction.mp4)  
+[DoraCMS 视频简介](https://www.bilibili.com/video/av77251776/)  
 
 
 
@@ -37,7 +37,7 @@
 
 ## Windows 下开发环境搭建
 
-[Windows 下开发环境搭建](http://cdn.html-js.cn/cms/uploadfiles/video/doracms-for-windows.mp4)  
+[Windows 下开发环境搭建](https://www.bilibili.com/video/av77251989/)  
 
 
 ## MAC OS 开发环境搭建
