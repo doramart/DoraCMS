@@ -28,7 +28,8 @@
 2、vue-cli
 3、mongodb 4+
 ```
-
+  
+文档： [DoraCMS 开发文档](https://www.doracms.com)  
 演示地址： [前端开发俱乐部](https://www.html-js.cn)  
 
 后台登录： https://www.html-js.cn/dr-admin  
