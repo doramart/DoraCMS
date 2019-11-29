@@ -61,7 +61,7 @@ module.exports = app => {
         statisticalCode: {
             type: String,
             default: ''
-        }, // 统计代码
+        }, // 百度统计链接
     });
 
     return mongoose.model("SystemConfig", SystemConfigSchema, 'systemconfigs');

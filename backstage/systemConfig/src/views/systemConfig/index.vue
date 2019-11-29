@@ -65,12 +65,7 @@
               <el-input size="small" v-model="systemConfig.configs.registrationNo"></el-input>
             </el-form-item>
             <el-form-item :label="$t('sysTemConfigs.statisticalCode')" prop="statisticalCode">
-              <el-input
-                :rows="8"
-                type="textarea"
-                size="small"
-                v-model="systemConfig.configs.statisticalCode"
-              ></el-input>
+              <el-input size="small" v-model="systemConfig.configs.statisticalCode"></el-input>
             </el-form-item>
             <el-form-item label="mongoDBPath" prop="mongodbInstallPath">
               <el-input size="small" v-model="systemConfig.configs.mongodbInstallPath"></el-input>

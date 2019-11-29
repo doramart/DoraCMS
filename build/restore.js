@@ -1,4 +1,11 @@
-// 导入DB数据
+/*
+ * @Author: doramart 
+ * @Date: 2019-11-20 14:25:22 
+ * @Description 导入DB数据
+ * @Last Modified by:   doramart 
+ * @Last Modified time: 2019-11-20 14:25:22 
+ */
+
 require('shelljs/global');
 const muri = require('muri')
 const settings = require('../config/config.local');

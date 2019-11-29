@@ -10,7 +10,7 @@
       @selection-change="handleSystemLogsSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="logs" :label="$t('systemOptionLog.actions')" width="200">
+      <el-table-column prop="logs" :label="$t('systemOptionLog.actions')">
         <template slot-scope="scope">
           <el-tag
             size="small"

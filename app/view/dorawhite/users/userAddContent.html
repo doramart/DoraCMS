@@ -129,13 +129,15 @@
             fillChildCateOptions(obj.value);
         }
     }
+
+    var uploader;
     $(function () {
 
         var staticRootPath = "{{staticRootPath}}";
         var staticforder = "{{staticforder}}"
         // 初始化Web Uploader
         var $list = $('#fileList')
-        var uploader = WebUploader.create({
+        uploader = WebUploader.create({
 
             // 选完文件后，是否自动上传。
             auto: true,
@@ -144,7 +146,10 @@
             swf: staticRootPath + '/themes' + staticforder + '/js/plugins/webuploader/Uploader.swf',
 
             // 文件接收服务端。
-            server: '/api/upload/files?type=images',
+            server: '/api/upload/files',
+            formData: {
+                action: 'uploadimage'
+            },
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: {
@@ -252,7 +257,7 @@
         message: '',
         contentObj: UE.getEditor('container', {
             UEDITOR_HOME_URL: '/static/plugins/ueditor/',
-            serverUrl: '/ueditor'
+            serverUrl: '/api/upload/ueditor'
         }),
         sImg: "",
         tags: [],

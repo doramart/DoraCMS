@@ -16,6 +16,7 @@
         ref="ruleForm"
         label-width="120px"
         class="demo-ruleForm"
+        :label-position="device == 'mobile' ? 'top' : 'right'"
       >
         <el-form-item :label="$t('contentTag.name')" prop="name">
           <el-input size="small" v-model="dialogState.formData.name"></el-input>
@@ -41,7 +42,8 @@ import _ from "lodash";
 export default {
   props: {
     dialogState: Object,
-    groups: Array
+    groups: Array,
+    device: String
   },
   data() {
     return {

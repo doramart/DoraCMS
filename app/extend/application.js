@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-09-23 09:25:24 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-01 16:41:04
+ * @Last Modified time: 2019-11-19 14:58:05
  */
 'use strict';
 
@@ -229,7 +229,7 @@ module.exports = {
     },
 
     // 初始化插件路由
-    async initPluginRouter(ctx, pluginConfig = {}, pluginManageController = {}, pluginApiController = {}) {
+    async initPluginRouter(ctx, pluginConfig = {}, pluginManageController = {}, pluginApiController = {}, next = {}) {
 
         let app = this;
         let isFontApi = false;
@@ -295,14 +295,14 @@ module.exports = {
         } else if (isFontApi && !_.isEmpty(pluginApiController) && targetControllerName) {
             if (targetApiItem.authToken) {
                 if (ctx.session.logined) {
-                    await pluginApiController[targetControllerName](ctx, app);
+                    await pluginApiController[targetControllerName](ctx, app, next);
                 } else {
                     ctx.helper.renderFail(ctx, {
                         message: ctx.__('label_notice_asklogin')
                     });
                 }
             } else {
-                await pluginApiController[targetControllerName](ctx, app);
+                await pluginApiController[targetControllerName](ctx, app, next);
             }
         }
 

@@ -16,7 +16,7 @@
     </el-col>
     <el-col :xs="12" :md="18">
       <div class="dr-toolbar-right">
-        <div v-if="device != 'mobile'">
+        <div v-if="device != 'mobile'" style="display:inline-block">
           <el-select
             class="dr-searchInput"
             v-model="pageInfo.uAuthor"
@@ -39,6 +39,7 @@
           </el-select>
           <el-input
             class="dr-searchInput"
+            style="width:180px"
             size="small"
             :placeholder="$t('topBar.keywords')"
             v-model="pageInfo.searchkey"

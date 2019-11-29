@@ -26,8 +26,6 @@ module.exports = appInfo => {
         logger: {
             dir: '/home/doraData/logsdir/doracms',
         },
-        // 文件上传路径
-        upload_path: '/home/doraData/uploadFiles/static',
         // 服务地址配置
         server_path: 'https://www.html-js.cn',
         server_api: 'https://www.html-js.cn/api',

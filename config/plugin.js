@@ -155,6 +155,14 @@ exports.doraMiddleStage = {
 };
 // doraMiddleStagePluginEnd
 
+// doraUploadFilePluginBegin
+exports.doraUploadFile = {
+    enable: true,
+    package: 'egg-dora-uploadfile',
+    
+};
+// doraUploadFilePluginEnd
+
 // PLUGIN_NORMALPLUGIN_END
 
 

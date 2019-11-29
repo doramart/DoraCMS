@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column prop="title" :label="$t('contents.title')" width="350" show-overflow-tooltip>
         <template slot-scope="scope">
-          <div v-if="scope.row.state">
+          <div v-if="scope.row.state =='2'">
             <a :href="'/details/'+scope.row._id+'.html'" target="_blank">{{scope.row.title}}</a>
           </div>
           <div v-else>{{scope.row.title}}</div>

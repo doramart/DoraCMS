@@ -331,8 +331,7 @@ class HomeController extends Controller {
                 ctx.tempPage = 'users/userAddContent.html';
                 ctx.pageType = 'editContent';
                 ctx.title = "编辑创作";
-                ctx.params.contentId = contentId;
-                ctx.params.contentType = contentInfo.type == '1' ? 'normal' : 'special';
+                ctx.contentId = contentId;
                 await this.getPageData(this);
             } else {
                 ctx.redirect("/users/userCenter");

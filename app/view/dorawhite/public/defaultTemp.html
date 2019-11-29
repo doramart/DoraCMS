@@ -40,10 +40,20 @@
       <script src="https://cdn.bootcss.com/json3/3.3.2/json3.min.js"></script>
       <script src="{{staticRootPath}}/themes/{{staticforder}}/js/promise/promise.js"></script>
     <![endif]-->
+
+    {% if siteInfo.configs and siteInfo.configs.statisticalCode %}
     <!-- 百度统计 -->
-    {% if siteInfo.statisticalCode %}
-    {{siteInfo.statisticalCode}}
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "{{siteInfo.configs.statisticalCode}}";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
     {% endif %}
+
     <input type="hidden" value="{{lsk}}" id="sysKeys">
 </head>
 

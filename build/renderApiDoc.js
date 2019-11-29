@@ -1,3 +1,10 @@
+/*
+ * @Author: doramart 
+ * @Date: 2019-11-20 14:25:02 
+ * @Description 修改API文档
+ * @Last Modified by:   doramart 
+ * @Last Modified time: 2019-11-20 14:25:02 
+ */
 var fs = require('fs');
 let apiDocPathArr = ['./app/public/apidoc/api_data.json', './app/public/apidoc/api_data.js', './app/public/apidoc/api_project.json', './app/public/apidoc/api_project.js'];
 let docState = "dev"; //  dev 或 prd 可选

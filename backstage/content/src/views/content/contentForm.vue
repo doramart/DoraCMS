@@ -7,6 +7,7 @@
         ref="ruleForm"
         label-width="120px"
         class="demo-ruleForm"
+        :label-position="device == 'mobile' ? 'top' : 'right'"
       >
         <el-form-item :label="$t('contents.enable')" prop="state">
           <el-select size="small" v-model="formState.formData.state" placeholder="审核文章">
@@ -90,7 +91,7 @@
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
-            :data="{type:'image'}"
+            :data="{action:'uploadimage'}"
           >
             <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -130,9 +131,7 @@
   line-height: 20px !important;
 }
 .dr-contentForm {
-  margin: 15px 0;
-  width: 80%;
-  padding-bottom: 50px;
+  padding: 20px;
   .post-rate {
     .el-rate {
       margin-top: 10px;
@@ -234,7 +233,7 @@ export default {
         // 初始容器宽度
         initialFrameWidth: "100%",
         // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-        serverUrl: "/ueditor",
+        serverUrl: "/api/upload/ueditor",
         // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
         UEDITOR_HOME_URL: this.$root.staticRootPath + "/plugins/ueditor/"
       },
@@ -246,6 +245,15 @@ export default {
       },
       currentType: "1",
       rules: {
+        targetUser: [
+          {
+            required: true,
+            message: this.$t("validate.selectNull", {
+              label: "指定用户"
+            }),
+            trigger: "blur"
+          }
+        ],
         sImg: [
           {
             required: true,
@@ -295,6 +303,13 @@ export default {
           }
         ],
         tags: [
+          {
+            required: true,
+            message: this.$t("validate.inputNull", {
+              label: this.$t("contents.tags")
+            }),
+            trigger: "blur"
+          },
           {
             validator: (rule, value, callback) => {
               if (_.isEmpty(value)) {

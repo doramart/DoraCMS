@@ -16,7 +16,7 @@ export default {
     score_post: "文章发布",
     score_share_post: "文章转发",
     score_post_message: "评论发布",
-    statisticalCode: "统计代码",
+    statisticalCode: "百度统计链接",
     perDate: "每 {label} 天",
   },
   //LangEnd

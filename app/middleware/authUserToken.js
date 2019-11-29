@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-16 14:51:46 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-09-30 09:34:47
+ * @Last Modified time: 2019-11-29 11:18:28
  */
 
 const {
@@ -15,10 +15,15 @@ module.exports = (options, app) => {
 
         try {
 
-            // if (ctx.originalUrl.indexOf('/manage/') < 0 &&
-            //     ctx.originalUrl.indexOf('/admin/') < 0) {
             ctx.session.user = "";
-            let userToken = ctx.cookies.get('api_' + app.config.auth_cookie_name);
+            let userToken = "";
+            let getTokenFromCookie = ctx.cookies.get('api_' + app.config.auth_cookie_name);
+
+            if (ctx.request.method == 'GET') {
+                userToken = ctx.query.token || getTokenFromCookie;
+            } else if (ctx.request.method == 'POST') {
+                userToken = ctx.request.body.token || getTokenFromCookie;
+            }
 
             if (userToken) {
 
@@ -34,7 +39,6 @@ module.exports = (options, app) => {
                             files: getAuthUserFields('session')
                         });
                         if (!_.isEmpty(targetUser)) {
-                            // console.log('user had login');
                             ctx.session.user = targetUser;
                             ctx.session.user.token = userToken;
                             ctx.session.logined = true;
@@ -44,7 +48,7 @@ module.exports = (options, app) => {
                 }
 
             }
-            // }
+
 
             await next();
         } catch (error) {

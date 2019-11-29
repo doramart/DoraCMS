@@ -49,10 +49,9 @@ module.exports = appInfo => {
         logger: {
             dir: path.join(appInfo.baseDir, 'logs'),
         },
-        upload_path: process.cwd() + '/app/public', // 文件上传路径(为了跟ueditor统一，不加upload))
         server_path: 'http://localhost:8080',
         server_api: 'http://localhost:8080/api',
-        
+
 
     }
 };

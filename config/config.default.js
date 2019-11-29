@@ -220,6 +220,16 @@ module.exports = appInfo => {
     },
     // doraMiddleStagePluginEnd
 
+    // doraUploadFilePluginBegin
+    uploadFileRouter: {
+      uploadFileFormat: {
+        "upload_path": process.cwd() + '/app/public',
+        "static_root_path": 'cms' // 针对云存储可设置
+      },
+      match: [ctx => ctx.path.startsWith('/manage/uploadFile'), ctx => ctx.path.startsWith('/api/upload/files'), ctx => ctx.path.startsWith('/api/upload/ueditor')],
+    },
+    // doraUploadFilePluginEnd
+
     // CONFIG_NORMALPLUGIN_END
 
 

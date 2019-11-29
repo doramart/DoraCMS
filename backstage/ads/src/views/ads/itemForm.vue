@@ -45,7 +45,7 @@
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
-            :data="{type:'image'}"
+            :data="{action:'uploadimage'}"
           >
             <img v-if="formState.formData.sImg" :src="formState.formData.sImg" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>

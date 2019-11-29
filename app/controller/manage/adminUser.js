@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-13 17:34:24
+ * @Last Modified time: 2019-11-24 12:12:53
  */
 const Controller = require('egg').Controller;
 const {
@@ -410,12 +410,11 @@ class AdminUserController extends Controller {
         });
         let adminPower = ctx.session.adminUserInfo.group.power;
         let currentCates = await siteFunc.renderNoPowerMenus(manageCates, adminPower, false);
-
         if (!_.isEmpty(currentCates)) {
 
             let powerPathMaps = [];
             for (const cateItem of currentCates) {
-                if (cateItem.parentID != 0 && cateItem.enable) {
+                if (cateItem.parentId != 0 && cateItem.enable) {
                     powerPathMaps.push(cateItem.routePath);
                 }
             }

@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="contentTag">
     <div class="main-container">
-      <TagForm :dialogState="formState"></TagForm>
+      <TagForm :device="device" :dialogState="formState"></TagForm>
       <el-row class="dr-datatable">
         <el-col :span="24">
           <TopBar type="contentTag" :pageInfo="contentTagList.pageInfo"></TopBar>
