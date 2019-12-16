@@ -5,9 +5,9 @@
   "main": "buildModules.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "installModules": "node ./installModules",
-    "buildDevModules": "export NODE_ENV=production && node ./buildModules",
-    "buildPrdModules": "export NODE_ENV=production && node ./buildModules --type prd"
+    "installModules": "cross-env NODE_ENV=development && node ./installModules",
+    "buildDevModules": "cross-env NODE_ENV=production && node ./buildModules",
+    "buildPrdModules": "cross-env NODE_ENV=production && node ./buildModules --type prd"
   },
   "author": "",
   "license": "ISC",
