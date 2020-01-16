@@ -5,7 +5,6 @@
             <img src="{{ userInfo.logo}}" alt="">
         </div>
         <span>{{userInfo.userName}}</span>
-        <span style="font-size:12px !important;">{{__('lc_basic_myScore_label}}:&nbsp;{{userInfo.integral')}}</span>
     </div>
     <ul class="user-menu-options">
         <li :class="[@currentPath.indexOf('userCenter')>0 && 'active']">

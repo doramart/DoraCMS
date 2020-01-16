@@ -16,15 +16,15 @@
             <input type="text" class="form-control" name="userName" ms-duplex="@userName"
                 placeholder="{{__('lc_basic_pl_username')}}"
                 ms-rules="{required:true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{4,11}$/ }"
-                data-required-message="{{__('validate_inputNull',[__('lc_userName)])}}"
-                data-message="{{__('lc_basic_user_writecurrent_username''))}}">
+                data-required-message="{{__('validate_inputNull',[__('lc_userName')])}}"
+                data-message="{{__('lc_basic_user_writecurrent_username')}}">
         </div>
         <div class="form-group">
             <label for="">{{__('lc_basic_user_name')}}</label>
             <input type="text" class="form-control" name="name" ms-duplex="@name"
                 placeholder="{{__('lc_basic_pl_name')}}"
                 ms-rules="{required:true,minlength:2,maxlength:6, pattern: /[\u4e00-\u9fa5]/ }"
-                data-required-message="{{__('validate_inputNull',[__('lc_basic_user_name)])}}"
+                data-required-message="{{__('validate_inputNull',[__('lc_basic_user_name')])}}"
                 data-message="{{__('validate_ranglengthandnormal',[__('lc_basic_user_name'),2,6])}}">
         </div>
         <div class="form-group">
