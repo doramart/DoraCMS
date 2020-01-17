@@ -7,6 +7,7 @@ const captcha = require('trek-captcha')
 const path = require('path')
 const fs = require('fs')
 const qr = require('qr-image')
+const moment = require('moment')
 
 class HomeController extends Controller {
 
