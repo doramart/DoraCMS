@@ -141,6 +141,7 @@ class HomeController extends Controller {
             xml += "</url>";
         });
         xml += "</urlset>";
+        this.ctx.set('Content-Type', 'application/xml');
         this.ctx.body = xml;
     }
 
