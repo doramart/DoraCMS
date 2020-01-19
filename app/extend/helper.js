@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-15 14:23:19 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-09 19:31:53
+ * @Last Modified time: 2020-01-19 21:59:51
  */
 
 require('module-alias/register')
@@ -317,8 +317,8 @@ module.exports = {
             if (fs.existsSync(path)) {
                 fs.readFile(path, "binary", function (error, data) {
                     if (error) {
-                        console.log(err)
-                        reject(err);
+                        console.log(error)
+                        reject(error);
                     } else {
                         //处理中文乱码问题
                         let buf = new Buffer(data, 'binary');
