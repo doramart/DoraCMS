@@ -141,6 +141,7 @@ export default {
         ],
         comments: [
           {
+            required: true,
             message: this.$t("validate.inputNull", {
               label: this.$t("main.comments_label")
             }),

@@ -16,7 +16,7 @@
           <div
             v-if="scope.row.countryCode&&scope.row.phoneNum"
           >{{scope.row.countryCode + ' ' + scope.row.phoneNum}}</div>
-          <div v-else-if="scope.row.deviceId">{{scope.row.deviceId}}</div>
+          <div v-else-if="scope.row.phoneNum">{{scope.row.phoneNum}}</div>
           <div v-else></div>
         </template>
       </el-table-column>

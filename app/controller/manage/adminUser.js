@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-24 12:12:53
+ * @Last Modified time: 2020-01-21 23:41:43
  */
 const Controller = require('egg').Controller;
 const {
@@ -215,8 +215,23 @@ class AdminUserController extends Controller {
             service
         } = this;
         try {
-            let targetIds = ctx.query.ids;
-            await ctx.service.adminUser.safeDelete(ctx, targetIds);
+            let targetId = ctx.query.ids;
+            // TODO 目前只针对删除单一管理员逻辑
+            let oldUser = await ctx.service.adminUser.item(ctx, {
+                query: {
+                    _id: targetId
+                }
+            });
+            let leftAdminUser = await ctx.service.adminUser.count();
+            if (!_.isEmpty(oldUser)) {
+                if (oldUser._id === ctx.session.adminUserInfo._id ||
+                    leftAdminUser == 1) {
+                    throw new Error("当前场景不允许删除该管理员用户");
+                }
+            } else {
+                throw new Error(ctx.__('validate_error_params'));
+            }
+            await ctx.service.adminUser.removes(ctx, targetId);
             ctx.helper.renderSuccess(ctx);
 
         } catch (err) {

@@ -48,10 +48,10 @@
           ></el-switch>
         </el-form-item>
         <el-form-item :label="$t('regUser.phoneNum')" prop="phoneNum">
-          <el-input size="small" v-model.number="dialogState.formData.phoneNum"></el-input>
+          <el-input size="small" v-model="dialogState.formData.phoneNum"></el-input>
         </el-form-item>
         <el-form-item :label="$t('regUser.email')" prop="email">
-          <el-input size="small" v-model="dialogState.formData.email"></el-input>
+          <el-input :disabled="true" size="small" v-model="dialogState.formData.email"></el-input>
         </el-form-item>
         <el-form-item :label="$t('regUser.comments')" prop="comments">
           <el-input size="small" type="textarea" v-model="dialogState.formData.comments"></el-input>

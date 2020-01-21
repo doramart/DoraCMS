@@ -275,6 +275,7 @@ export default {
         ],
         comments: [
           {
+            required: true,
             message: this.$t("validate.inputNull", {
               label: this.$t("adminUser.lb_comments")
             }),
@@ -319,7 +320,7 @@ export default {
       return (isJPG || isPNG || isGIF) && isLt2M;
     },
     confirm() {
-      this.$store.dispatch("hideAdminUserForm");
+      this.$store.dispatch("adminUser/hideAdminUserForm");
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -345,8 +346,8 @@ export default {
             // 新增
             addAdminUser(params).then(result => {
               if (result.status === 200) {
-                this.$store.dispatch("hideAdminUserForm");
-                this.$store.dispatch("getAdminUserList");
+                this.$store.dispatch("adminUser/hideAdminUserForm");
+                this.$store.dispatch("adminUser/getAdminUserList");
                 this.$message({
                   message: this.$t("main.addSuccess"),
                   type: "success"
