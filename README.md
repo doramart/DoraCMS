@@ -143,7 +143,7 @@ http://localhost:8080/dr-admin
 ```
 
 ## 技术交流群
-<img width="650" src="http://cdn.html-js.cn/contactbywechatqq.jpg" alt="">
+<img width="650" src="http://cdn.html-js.cn/contactbywechatqq1.jpg" alt="">
 
 
 ### 捐赠
