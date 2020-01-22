@@ -12,11 +12,6 @@ exports.mongoose = {
     package: 'egg-mongoose',
 };
 
-exports.validate = {
-    enable: true,
-    package: 'egg-validate',
-};
-
 exports.session = true;
 
 exports.redis = {
@@ -162,6 +157,14 @@ exports.doraUploadFile = {
     
 };
 // doraUploadFilePluginEnd
+
+// doraValidatePluginBegin
+exports.doraValidate = {
+    enable: true,
+    package: 'egg-dora-validate',
+    
+};
+// doraValidatePluginEnd
 
 // PLUGIN_NORMALPLUGIN_END
 
