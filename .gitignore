@@ -13,6 +13,6 @@ app/public/apidoc
 app/ext
 app/controller/ext
 dist/*
-
+app/public/upload
 
 
