@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-15 14:23:19 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-01-19 21:57:08
+ * @Last Modified time: 2020-02-02 12:04:14
  */
 
 require('module-alias/register')
@@ -534,8 +534,8 @@ module.exports = {
             errors = '版本号必须为2-15个字符';
         }
 
-        if (!validator.isLength(author, 4, 15)) {
-            errors = '作者名称必须为4-15个字符';
+        if (!validator.isLength(author, 2, 15)) {
+            errors = '作者名称必须为2-15个字符';
         }
 
         if (!validator.isLength(comment, 4, 40)) {
