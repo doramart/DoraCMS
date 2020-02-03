@@ -6,7 +6,8 @@
       :md="4"
       :lg="4"
       :xl="4"
-      title="分配用户"
+      title="绑定编辑"
+      width="40%"
       :visible.sync="dialogState.show"
       :close-on-click-modal="false"
     >
@@ -18,16 +19,19 @@
         class="demo-ruleForm"
       >
         <p class="notice-tip">
-          您已选中
-          <span style="color:red">{{ids.length}}</span> 篇文章做指定用户操作。操作无法撤回，请谨慎操作
+          在添加文档之前，您需要绑定一个默认编辑
+          <span v-if="targetEditor">
+            （当前编辑：
+            <span style="color:red;font-weight:bold">{{targetEditor.userName}}）</span>
+          </span>
         </p>
-        <el-form-item label="目标用户" prop="targetUser">
+        <el-form-item label="绑定编辑" prop="targetUser">
           <el-select
             v-model="dialogState.formData.targetUser"
             filterable
             remote
             reserve-keyword
-            placeholder="请输入要分配的用户名"
+            placeholder="搜索编辑的用户名"
             :remote-method="remoteMethod"
             :loading="loading"
           >
@@ -40,24 +44,21 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button
-            size="medium"
-            type="primary"
-            @click="submitForm('ruleForm')"
-          >{{dialogState.edit ? $t('main.form_btnText_update') : $t('main.form_btnText_save')}}</el-button>
+          <el-button size="medium" type="primary" @click="submitForm('ruleForm')">绑定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
   </div>
 </template>
 <script>
-import { redictContentToUsers, regUserList } from "@/api/content";
+import { updateContentEditor, regUserList } from "@/api/content";
 import _ from "lodash";
 export default {
   props: {
     dialogState: Object,
     groups: Array,
-    ids: Array
+    ids: Array,
+    targetEditor: Object
   },
   data() {
     return {
@@ -118,7 +119,7 @@ export default {
             ids: this.ids ? this.ids.join() : "",
             targetUser: params.targetUser
           };
-          redictContentToUsers(currentParams)
+          updateContentEditor(currentParams)
             .then(result => {
               if (result.status === 200) {
                 this.$message({
@@ -127,6 +128,7 @@ export default {
                 });
                 this.$store.dispatch("content/hideDirectUserForm");
                 this.$store.dispatch("content/getContentList");
+                this.$store.dispatch("adminUser/getUserInfo");
               } else {
                 this.$message.error(result.message);
               }

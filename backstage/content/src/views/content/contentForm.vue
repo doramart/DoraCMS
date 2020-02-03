@@ -22,26 +22,7 @@
         <el-form-item v-if="formState.formData.state == '3'" label="驳回原因" prop="dismissReason">
           <el-input size="small" v-model="formState.formData.dismissReason"></el-input>
         </el-form-item>
-        <el-form-item label="指定用户" prop="targetUser">
-          <el-select
-            size="small"
-            v-model="formState.formData.targetUser"
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入要分配的用户名"
-            :remote-method="remoteUserMethod"
-            :loading="userLoading"
-            @change="changeTargetUser"
-          >
-            <el-option
-              v-for="item in selectUserList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+
         <el-form-item :label="$t('contents.title')" prop="title">
           <el-input size="small" v-model="formState.formData.title"></el-input>
         </el-form-item>
@@ -363,26 +344,6 @@ export default {
     VueUeditorWrap
   },
   methods: {
-    changeTargetUser(value) {
-      let targetUserInfo = _.filter(this.selectUserList, item => {
-        return item.value == value;
-      });
-      if (!_.isEmpty(targetUserInfo)) {
-        localStorage.setItem(
-          "contentAuthor",
-          JSON.stringify(targetUserInfo[0])
-        );
-      }
-    },
-    remoteUserMethod(query) {
-      if (query !== "") {
-        this.userLoading = true;
-        let _this = this;
-        this.queryUserListByParams({ searchkey: query });
-      } else {
-        this.selectUserList = [];
-      }
-    },
     queryUserListByParams(params = {}) {
       let _this = this;
       regUserList(params)
@@ -500,6 +461,17 @@ export default {
             comments: this.ueditorObj.getContent(),
             simpleComments: this.ueditorObj.getPlainTxt()
           });
+
+          if (
+            !_.isEmpty(this.adminUserInfo) &&
+            !_.isEmpty(this.adminUserInfo.targetEditor)
+          ) {
+            params.targetUser = this.adminUserInfo.targetEditor._id;
+          } else {
+            this.$message.error("在添加文档之前，您需要指定一个默认编辑！");
+            this.$router.push(this.$root.adminBasePath + "/content");
+            return false;
+          }
           // 更新
           if (this.formState.edit) {
             updateContent(params).then(result => {
@@ -535,7 +507,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentTagList", "contentCategoryList"]),
+    ...mapGetters(["contentTagList", "contentCategoryList", "adminUserInfo"]),
     formState() {
       return this.$store.getters.contentFormState;
     },
@@ -550,6 +522,7 @@ export default {
   },
   mounted() {
     initEvent(this);
+    this.$store.dispatch("adminUser/getUserInfo");
     // 针对手动页面刷新
     let _this = this;
     if (this.$route.params.id) {

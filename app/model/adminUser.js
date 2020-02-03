@@ -48,6 +48,10 @@ module.exports = app => {
         group: {
             type: String,
             ref: 'AdminGroup'
+        },
+        targetEditor: {
+            type: String,
+            ref: 'User'
         }
     });
 

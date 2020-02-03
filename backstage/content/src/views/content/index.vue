@@ -1,7 +1,11 @@
 <template>
   <div :class="classObj" class="content">
     <div class="main-container">
-      <DirectUser :dialogState="directUserFormState" :ids="selectlist" />
+      <DirectUser
+        :targetEditor="adminUserInfo.targetEditor"
+        :dialogState="directUserFormState"
+        :ids="selectlist"
+      />
       <el-row class="dr-datatable">
         <el-col :span="24">
           <TopBar
@@ -50,7 +54,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentList", "directUserFormState"]),
+    ...mapGetters(["contentList", "directUserFormState", "adminUserInfo"]),
     classObj() {
       return {
         hideSidebar: !this.sidebarOpened,
@@ -63,6 +67,7 @@ export default {
   mounted() {
     initEvent(this);
     this.$store.dispatch("content/getContentList");
+    this.$store.dispatch("adminUser/getUserInfo");
   }
 };
 </script>

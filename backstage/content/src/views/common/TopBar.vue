@@ -7,7 +7,7 @@
       <el-button size="small" type="danger" plain round @click="branchDelete('content')">
         <svg-icon icon-class="icon_delete" />
       </el-button>
-      <el-tooltip class="item" effect="dark" content="分配文章到用户" placement="top">
+      <el-tooltip class="item" effect="dark" content="绑定编辑" placement="top">
         <el-button size="small" type="warning" plain @click="directUser('content')" round>
           <svg-icon icon-class="direct_user" />
         </el-button>
