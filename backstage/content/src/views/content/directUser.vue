@@ -22,7 +22,7 @@
           在添加文档之前，您需要绑定一个默认编辑
           <span v-if="targetEditor">
             （当前编辑：
-            <span style="color:red;font-weight:bold">{{targetEditor.userName}}）</span>
+            <span style="color:red;font-weight:bold">{{targetEditor.userName}}</span>）
           </span>
         </p>
         <el-form-item label="绑定编辑" prop="targetUser">
