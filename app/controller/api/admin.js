@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-27 17:16:32 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-13 16:40:34
+ * @Last Modified time: 2020-02-03 13:23:29
  */
 const Controller = require('egg').Controller;
 const jwt = require('jsonwebtoken')
@@ -82,8 +82,11 @@ class AdminController extends Controller {
                 populate: [{
                     path: 'group',
                     select: 'power _id enable name'
+                }, {
+                    path: 'targetEditor',
+                    select: 'userName _id'
                 }],
-                files: 'enable password _id email userName'
+                files: 'enable password _id email userName logo'
             })
 
             if (!_.isEmpty(user)) {

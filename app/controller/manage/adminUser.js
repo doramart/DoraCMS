@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-01-22 10:33:02
+ * @Last Modified time: 2020-02-03 13:19:53
  */
 const Controller = require('egg').Controller;
 const {
@@ -389,10 +389,24 @@ class AdminUserController extends Controller {
                 })
             }
 
+            let adminUserInfo = await ctx.service.adminUser.item(ctx, {
+                query: {
+                    _id: ctx.session.adminUserInfo._id
+                },
+                populate: [{
+                    path: 'group',
+                    select: 'power _id enable name'
+                }, {
+                    path: 'targetEditor',
+                    select: 'userName _id'
+                }],
+                files: 'enable password _id email userName logo'
+            })
+
             let renderData = {
                 noticeCounts,
                 loginState: true,
-                userInfo: ctx.session.adminUserInfo
+                userInfo: adminUserInfo
             };
 
             ctx.helper.renderSuccess(ctx, {

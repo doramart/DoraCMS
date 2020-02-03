@@ -9,6 +9,14 @@ export function redictContentToUsers(data) {
   })
 }
 
+export function updateContentEditor(data) {
+  return request({
+    url: '/manage/content/updateContentEditor',
+    data,
+    method: 'post'
+  })
+}
+
 export function contentList(params) {
   return request({
     url: '/manage/content/getList',
