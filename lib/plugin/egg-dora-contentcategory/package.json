@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-contentcategory",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "contentCategory",
   "eggPlugin": {
     "name": "doraContentCategory"

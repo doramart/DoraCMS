@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-27 17:16:32 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-03 13:23:29
+ * @Last Modified time: 2020-02-04 16:08:53
  */
 const Controller = require('egg').Controller;
 const jwt = require('jsonwebtoken')
@@ -11,6 +11,7 @@ const _ = require('lodash');
 const {
     adminUserRule
 } = require('@validate')
+
 
 class AdminController extends Controller {
 
@@ -138,6 +139,7 @@ class AdminController extends Controller {
 
         }
     }
+
 }
 
 module.exports = AdminController;

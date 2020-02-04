@@ -5,7 +5,7 @@ module.exports = appInfo => {
 
     return {
         // 插件路径
-        admin_root_path: 'https://cdn.html-js.cn/cms/plugins/static/admin',
+        admin_root_path: '/static',
         // 数据库连接
         mongoose: {
             client: {
@@ -19,7 +19,7 @@ module.exports = appInfo => {
         // 静态目录
         static: {
             prefix: '/static',
-            dir: [path.join(appInfo.baseDir, 'app/public'), '/home/doraData/uploadFiles/static'],
+            dir: [path.join(appInfo.baseDir, 'app/public'), path.join(appInfo.baseDir, 'backstage/dist'), '/home/doraData/uploadFiles/static'],
             maxAge: 31536000,
         },
         // 日志路径

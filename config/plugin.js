@@ -159,7 +159,7 @@ exports.doraUploadFile = {
 // doraUploadFilePluginEnd
 
 // doraValidatePluginBegin
-exports.doraValidate = {
+exports.validate = {
     enable: true,
     package: 'egg-dora-validate',
     
