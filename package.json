@@ -57,6 +57,11 @@
     "autod": "autod",
     "pkgfiles": "egg-bin pkgfiles",
     "init": "node ./build/restore",
+    
+    
+    
+    
+    
     "makePrdDoc": "apidoc -i lib/plugin -e node_modules -o app/public/apidoc/ && npm run modifyPrdDoc",
     "modifyPrdDoc": "node ./build/renderApiDoc --docv prd",
     "start": "egg-scripts start --daemon --title=doracms2",

@@ -1995,3 +1995,16 @@ header {
         margin: 62px auto 0;
     }
 }
+
+@media screen and (max-width: 5000px) {
+
+    .header-main {
+        width: 1199px;
+        margin: 0 auto;
+    }
+
+    .mainbody {
+        width: 1199px;
+        margin: 62px auto 0;
+    }
+}

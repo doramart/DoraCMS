@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-versionmanage",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "versionManage",
   "eggPlugin": {
     "name": "doraVersionManage"

@@ -29,7 +29,8 @@ module.exports = appInfo => {
             // 'helpCenter',
             // 'renderCms',
             // 'cmsTemplate',
-            // 'plugin'
+            // 'plugin',
+            // 'uploadFile'
         ],
         // DEV_CONFIG_MODULES_END
         mongoose: {
@@ -51,7 +52,7 @@ module.exports = appInfo => {
         },
         server_path: 'http://localhost:8080',
         server_api: 'http://localhost:8080/api',
-
+        
 
     }
 };

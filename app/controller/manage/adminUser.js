@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-03 13:19:53
+ * @Last Modified time: 2020-02-04 12:24:12
  */
 const Controller = require('egg').Controller;
 const {
@@ -489,7 +489,7 @@ class AdminUserController extends Controller {
                     let pluginStr = `dora${pathItem.charAt(0).toUpperCase() + pathItem.slice(1)}`;
 
                     if (plugins.indexOf(pluginStr) >= 0 && this.app.config[pluginStr].adminUrl) {
-                        let adminUrlItem = this.app.config[pluginStr].adminUrl;
+                        let adminUrlItem = this.app.config.admin_root_path + this.app.config[pluginStr].adminUrl;
                         if (adminUrlItem instanceof Array) {
                             for (const routerItem of adminUrlItem) {
                                 renderMap.push({
