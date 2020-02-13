@@ -326,8 +326,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let params = Object.assign({}, this.dialogState.formData);
-          params.password = crypto.MD5(params.password);
-          params.confirmPassword = crypto.MD5(params.confirmPassword);
+          if (params.password) {
+            params.password = crypto.MD5(params.password);
+            params.confirmPassword = crypto.MD5(params.confirmPassword);
+          }
           // 更新
           if (this.dialogState.edit) {
             updateAdminUser(params).then(result => {
