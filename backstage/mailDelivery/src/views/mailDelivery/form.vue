@@ -178,8 +178,8 @@ export default {
       loading: false,
       expireTimeOption: {
         disabledDate(date) {
-          return false;
-          // return date.getTime() <= new Date().getTime();
+          // return false;
+          return date.getTime() <= new Date().getTime();
         }
       },
       rules: {
