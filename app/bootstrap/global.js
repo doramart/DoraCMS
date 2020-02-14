@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-18 17:04:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-09-22 17:15:14
+ * @Last Modified time: 2020-02-08 10:17:45
  */
 
 const _ = require('lodash');
@@ -111,16 +111,4 @@ global.getContentListFields = (type = '') => {
   }
   // console.log('--files----', files)
   return files;
-}
-
-global.emailTypeKey = {
-  email_findPsd: 'findPsd',
-  email_reg_active: 'reg_active',
-  email_notice_contentMsg: 'notice_contentMsg',
-  email_notice_admin_byContactUs: 'notice_site_messages',
-  email_notice_user_byContactUs: 'notice_user_site_messages',
-  email_notice_contentBug: 'notice_contentBug',
-  email_notice_user_contentMsg: 'notice_user_contentMsg',
-  email_notice_user_reg: 'notice_user_reg',
-  email_sendMessageCode: 'email_sendMessageCode', // 发送邮箱验证码
 }

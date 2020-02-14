@@ -70,7 +70,7 @@
         width="120"
       >
         <template slot-scope="scope">
-          <span>{{(scope.row.categories&&scope.row.categories[0])?scope.row.categories[0].name:''}}</span>
+          <span>{{(scope.row.categories&&scope.row.categories[scope.row.categories.length-1])?scope.row.categories[scope.row.categories.length-1].name:''}}</span>
         </template>
       </el-table-column>
 

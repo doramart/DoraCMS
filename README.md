@@ -142,6 +142,23 @@ http://localhost:8080/dr-admin
 登录账号：doramart/123456    doracms/123456
 ```
 
+### 清空数据
+```javascript
+启动mongodb（执行mongodb安装目录下mongod.exe），cmd窗口打开mongo.exe
+// 查看数据库列表
+show dbs
+// 查看集合列表
+show collections
+// 使用数据库doracms2
+use doracms2
+// 清除所有文章信息
+db.contents.find()
+db.contents.remove({})
+// 清除所有留言信息
+db.messages.find()
+db.messages.remove({})
+```
+
 ## 技术交流群
 <img width="650" src="http://cdn.html-js.cn/contactbywechatqq1.jpg" alt="">
 

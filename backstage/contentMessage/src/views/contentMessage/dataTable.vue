@@ -10,7 +10,14 @@
       @selection-change="handleMsgSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="contentId.stitle" :label="$t('contentMessage.stitle')" width="200"></el-table-column>
+      <el-table-column prop="contentId.stitle" :label="$t('contentMessage.stitle')" width="200">
+        <template slot-scope="scope">
+          <a
+            :href="'/details/'+scope.row.contentId._id+'.html'"
+            target="_blank"
+          >{{scope.row.contentId.stitle}}</a>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="content"
         :label="$t('contentMessage.content')"

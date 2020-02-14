@@ -17,6 +17,18 @@
     <el-col :xs="12" :md="18">
       <div class="dr-toolbar-right">
         <div v-if="device != 'mobile'" style="display:inline-block">
+          <el-cascader
+            placeholder="请选择类别"
+            class="cateSelect"
+            size="small"
+            expandTrigger="hover"
+            :options="contentCategoryList.docs"
+            v-model="pageInfo.categories"
+            @change="handleChangeCategory"
+            :props="categoryProps"
+            clearable
+            change-on-select
+          ></el-cascader>
           <el-select
             class="dr-searchInput"
             v-model="pageInfo.uAuthor"
@@ -63,6 +75,7 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from "vuex";
 import { deleteContent, regUserList } from "@/api/content";
 export default {
   props: {
@@ -77,6 +90,7 @@ export default {
       selectUserList: [],
       searchkey: "",
       authPost: "0",
+      categories: "",
       authPostOptions: [
         {
           value: "0",
@@ -86,10 +100,32 @@ export default {
           value: "1",
           label: "待审核"
         }
-      ]
+      ],
+      categoryProps: {
+        value: "_id",
+        label: "name",
+        children: "children"
+      }
     };
   },
+  computed: {
+    ...mapGetters(["contentCategoryList"])
+  },
   methods: {
+    handleChangeCategory(value) {
+      let _this = this;
+      if (value && value.length > 0) {
+        let categories = this.pageInfo ? this.pageInfo.categories : "";
+        this.$store.dispatch(
+          "content/getContentList",
+          Object.assign({}, _this.pageInfo, {
+            categories: value[value.length - 1]
+          })
+        );
+      } else {
+        this.$store.dispatch("content/getContentList", _this.pageInfo);
+      }
+    },
     addContent() {
       this.$store.dispatch("content/showContentForm");
       this.$router.push(this.$root.adminBasePath + "/content/addContent");
@@ -179,7 +215,7 @@ export default {
         });
     },
     changeUserOptions(value) {
-      this.$store.dispatch("content/getContentList", { userId: value });
+      this.$store.dispatch("content/getContentList", { uAuthor: value });
     },
     changePostOptions(value) {
       if (value == "0") {
@@ -190,8 +226,14 @@ export default {
     }
     // TOPBARLEFTOPTION
   },
-  components: {}
+  components: {},
+  mounted() {
+    this.$store.dispatch("contentCategory/getContentCategoryList");
+  }
 };
 </script>
 <style lang="scss">
+.cateSelect {
+  margin-right: 10px;
+}
 </style>

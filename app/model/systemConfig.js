@@ -27,6 +27,10 @@ module.exports = app => {
             type: String,
             default: ''
         },
+        siteLogo: {
+            type: String,
+            default: '/static/themes/dorawhite/images/logo.png'
+        }, // 站点logo
         siteDomain: {
             type: String,
             default: 'https://www.html-js.cn'

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-04 12:24:12
+ * @Last Modified time: 2020-02-13 16:17:55
  */
 const Controller = require('egg').Controller;
 const {
@@ -181,8 +181,6 @@ class AdminUserController extends Controller {
                     formObj.password = fields.password;
                 }
             }
-
-
 
             let oldResource = await ctx.service.adminUser.item(ctx, {
                 query: {

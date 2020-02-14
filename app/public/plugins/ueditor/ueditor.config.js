@@ -361,13 +361,13 @@
 
         // xss 过滤是否开启,inserthtml等操作
         ,
-        xssFilterRules: true
+        xssFilterRules: false
         //input xss过滤
         ,
         inputXssFilter: false
         //output xss过滤
         ,
-        outputXssFilter: true
+        outputXssFilter: false
         // xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
         ,
         whitList: {

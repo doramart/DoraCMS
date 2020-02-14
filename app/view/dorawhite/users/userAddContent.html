@@ -75,6 +75,13 @@
                                         {% endfor %}
                                     </select>
                                 </div>
+
+                                
+                                <div class="form-group wordFile">
+                                    <label for="">{{__('lc_upload_word')}}</label>
+                                    <input type="file" id="wordFileList" name="wordFileList" onchange="handleWordFile()"></input>
+                                </div>
+
                             </div>
                         </div>
                     </form>
@@ -392,4 +399,36 @@
             }
         })
     }
+
+
+    /**
+    * $icon: 文件上传中loading图标
+    * fs: 上传的文件（$("#file")[0].files）
+    * max_size: 文件大小的最大值（1024 * 1024 * 100为100M）
+    */
+    function handleWordFile() {
+        let formData = new FormData();
+        var file1 = $('#wordFileList')[0].files[0];
+        formData.append('files', file1);
+
+        $.ajax({
+            url: "/api/content/getWordHtmlContent",
+            data: formData,
+            type: "POST",
+            // contentType: "multipart/form-data",        
+            contentType: false,         /* 不可缺 */
+            processData: false,         // 默认为true，默认情况下，发送的数据将被转换为对象，设为false不希望进行转换
+            cache: false,
+            success: function(result){
+                console.log(result);
+                if(result.status == 200){
+                    (postArticelVM.contentObj).setContent(result.data);
+                }
+            }
+        });
+    }
+
+
+    
+
 </script> {% endblock %}

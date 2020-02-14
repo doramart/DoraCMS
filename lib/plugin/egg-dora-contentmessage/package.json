@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-contentmessage",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "contentMessage",
   "eggPlugin": {
     "name": "doraContentMessage"
@@ -15,7 +15,8 @@
     "moment": "^2.24.0",
     "lodash": "^4.17.15",
     "xss": "^1.0.6",
-    "egg-dora-reguser": "^1.0.0"
+    "egg-dora-reguser": "^1.0.0",
+    "egg-dora-mailtemplate": "^1.0.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",

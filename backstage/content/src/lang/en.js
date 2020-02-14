@@ -22,6 +22,7 @@ export default {
     sImg: "Thumbnail",
     postValue: "Recommend Index",
     discription: "Content abstract",
+    uploadWord: "Upload Word",
     comments: "Contents Detail",
     flashComments: "News-Flash Summary",
     rec: "Recommend",

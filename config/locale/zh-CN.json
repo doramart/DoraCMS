@@ -80,6 +80,7 @@
 	"lc_pleace_documentDis_null_tips": "文章摘要不能为空",
 	"lc_contentDetails": "详情",
 	"lc_commitUserConent": "提交发布",
+        "lc_upload_word": "上传Word文件",
 	"lc_small_images": "缩略图",
 	"lc_content_tag": "标签",
 	"lc_select_documentTag": "请选择标签",

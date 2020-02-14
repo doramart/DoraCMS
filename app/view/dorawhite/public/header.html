@@ -1,7 +1,8 @@
 <!--头部模板-->
 <script>
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        document.write("<script src='{{staticRootPath}}/themes/{{staticforder}}/js/iscroll/iscroll.js'><" + '/' + "script>");
+        document.write("<script src='{{staticRootPath}}/themes/{{staticforder}}/js/iscroll/iscroll.js'><" + '/' +
+            "script>");
         $(function () {
             new IScroll('#navWrapper', {
                 scrollX: true,
@@ -30,7 +31,7 @@
                     <div class="col-sm-2 col-md-2">
                         <div class="site-name ">
                             <a href="{{homelink}}" id="logo">
-                                <img src="{{staticRootPath}}/themes/{{staticforder}}/images/logo.png" alt="{{siteInfo.title}}" />
+                                <img src="{{siteInfo.siteLogo}}" alt="{{siteInfo.title}}" />
                             </a>
                             </a>
                         </div>

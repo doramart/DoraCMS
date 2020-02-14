@@ -30,7 +30,9 @@ module.exports = appInfo => {
             // 'renderCms',
             // 'cmsTemplate',
             // 'plugin',
-            // 'uploadFile'
+            // 'uploadFile',
+            // 'mailTemplate',
+            // 'mailDelivery',
         ],
         // DEV_CONFIG_MODULES_END
         mongoose: {

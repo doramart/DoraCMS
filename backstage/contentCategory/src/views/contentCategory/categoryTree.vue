@@ -71,15 +71,11 @@ export default {
     },
 
     remove(store, data) {
-      this.$confirm(
-        this.$t("main.del_notice"),
-        this.$t("main.scr_modal_title"),
-        {
-          confirmButtonText: this.$t("main.confirmBtnText"),
-          cancelButtonText: this.$t("main.cancelBtnText"),
-          type: "warning"
-        }
-      )
+      this.$confirm("您确认要删除该类别吗？", this.$t("main.scr_modal_title"), {
+        confirmButtonText: this.$t("main.confirmBtnText"),
+        cancelButtonText: this.$t("main.cancelBtnText"),
+        type: "warning"
+      })
         .then(() => {
           return deleteContentCategory({
             ids: data._id
@@ -106,11 +102,11 @@ export default {
 
     renderContent(h, { node, data, store }) {
       return (
-        <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
+        <span style="flex: 1; display: flex; align-items: center; justify-content: right; font-size: 14px; padding-right: 8px;">
           <span>
             <span>{node.label}</span>
           </span>
-          <span style="float: right; margin-right: 20px">
+          <span style="float: left; margin-left: 20px">
             <el-button type="text" on-click={() => this.append(store, data)}>
               <svg-icon icon-class="icon_add" />
             </el-button>

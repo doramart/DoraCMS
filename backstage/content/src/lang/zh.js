@@ -1,5 +1,5 @@
 export default {
-  topBar:{
+  topBar: {
     keywords: "请输入关键字",
   },
   contents: {
@@ -22,6 +22,7 @@ export default {
     sImg: "缩略图",
     postValue: "推荐指数",
     discription: "内容摘要",
+    uploadWord: "上传Word文档",
     comments: "文档详情",
     flashComments: "快讯摘要",
     rec: "推荐",

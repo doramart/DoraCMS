@@ -4,6 +4,7 @@ export default {
     site_domain: "系统域名",
     site_email: "系统邮箱",
     site_email_password: "系统邮箱密码",
+    site_logo: "站点Logo",
     site_name: "站点名称",
     site_dis: "站点描述",
     site_verify_code: "显示验证码",

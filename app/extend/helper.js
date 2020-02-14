@@ -2,12 +2,11 @@
  * @Author: doramart 
  * @Date: 2019-08-15 14:23:19 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-02 12:04:14
+ * @Last Modified time: 2020-02-13 17:37:07
  */
 
 require('module-alias/register')
-//邮件发送插件
-let nodemailer = require("nodemailer");
+
 //文件操作对象
 let fs = require('fs');
 let stat = fs.stat;
@@ -17,7 +16,6 @@ let crypto = require("crypto");
 const validator = require('validator');
 let iconv = require('iconv-lite');
 const {
-    siteFunc,
     cache
 } = require('@utils');
 const Axios = require("axios");
@@ -58,7 +56,7 @@ module.exports = {
 
     clearRedisByType(str, cacheKey) {
         console.log('cacheStr', str);
-        let currentKey = this.ctx.session_secret + cacheKey + str;
+        let currentKey = this.app.config.session_secret + cacheKey + str;
         cache.set(currentKey, '', 2000);
     },
     renderSuccess(ctx, {
@@ -95,80 +93,6 @@ module.exports = {
 
     },
 
-    sendEmail(sysConfigs, key, obj = {}, callBack = () => {}) {
-
-        let emailTitle = "Hello";
-        let emailSubject = "Hello";
-        let emailContent = "Hello";
-        let toEmail;
-        if (key == emailTypeKey.email_findPsd) {
-            toEmail = obj.email;
-            let oldLink = obj.password + '$' + obj.email + '$' + this.ctx.session_secret;
-            let newLink = this.encrypt(oldLink, this.app.config.encrypt_key);
-
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_activePwd_title");
-            emailContent = siteFunc.setConfirmPassWordEmailTemp(this.ctx, sysConfigs, obj.userName, newLink);
-        } else if (key == emailTypeKey.email_notice_contentMsg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_recieveMsg_title");
-            emailContent = siteFunc.setNoticeToAdminEmailTemp(this.ctx, sysConfigs, obj);
-            toEmail = sysConfigs.siteEmail;
-        } else if (key == emailTypeKey.email_notice_admin_byContactUs) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_recieveMsg_title");
-            emailContent = siteFunc.setNoticeToAdminEmailByContactUsTemp(this.ctx, sysConfigs, obj);
-            toEmail = sysConfigs.siteEmail;
-        } else if (key == emailTypeKey.email_notice_user_contentMsg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_notice_haveMsg");
-            emailContent = siteFunc.setNoticeToUserEmailTemp(this.ctx, sysConfigs, obj);
-            toEmail = obj.replyAuthor.email;
-        } else if (key == emailTypeKey.email_notice_contentBug) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_notice_askBug");
-            emailContent = siteFunc.setBugToAdminEmailTemp(this.ctx, sysConfigs, obj);
-            toEmail = sysConfigs.siteEmail;
-        } else if (key == emailTypeKey.email_notice_user_reg) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_notice_reg_success");
-            emailContent = siteFunc.setNoticeToUserRegSuccess(this.ctx, sysConfigs, obj);
-            toEmail = obj.email;
-        } else if (key == emailTypeKey.email_notice_user_byContactUs) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_noticeuser_askInfo_success");
-            emailContent = siteFunc.setNoticeToAdminEmailByContactUsTemp(this.ctx, sysConfigs, obj);
-            toEmail = obj.email;
-        } else if (key == emailTypeKey.email_sendMessageCode) {
-            emailSubject = emailTitle = '[' + sysConfigs.siteName + '] ' + this.ctx.__("label_sendEmail_sendMessageCode_success");
-            emailContent = siteFunc.setNoticeToUserGetMessageCode(this.ctx, sysConfigs, obj);
-            toEmail = obj.email;
-        }
-
-        // 发送邮件
-        let transporter = nodemailer.createTransport({
-
-            service: sysConfigs.siteEmailServer,
-            auth: {
-                user: sysConfigs.siteEmail,
-                pass: this.decrypt(sysConfigs.siteEmailPwd, this.app.config.encrypt_key)
-            }
-
-        });
-
-        let mailOptions = {
-            from: sysConfigs.siteEmail, // sender address
-            to: toEmail, // list of receivers
-            subject: emailSubject, // Subject line
-            text: emailTitle, // plaintext body
-            html: emailContent // html body
-        };
-
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log('-----邮件发送失败：-----' + error);
-                callBack('notCurrentEmail');
-            } else {
-                console.log('Message sent: ' + info.response);
-                callBack();
-            }
-        });
-
-
-    },
     scanFolder(basePath, path) { //文件夹列表读取
         // 记录原始路径
         let oldPath = path;

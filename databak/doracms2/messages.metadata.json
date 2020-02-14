@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"githubcms.messages"},{"v":2,"key":{"contentId":1},"name":"contentId_1","ns":"githubcms.messages","background":true}],"uuid":"9ab2081200de44b18df503a14da29492"}
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"githubcms.messages"},{"v":2,"key":{"contentId":1},"name":"contentId_1","ns":"githubcms.messages","background":true}],"uuid":"ee6241d9392c4b398ac592466cc7d059"}

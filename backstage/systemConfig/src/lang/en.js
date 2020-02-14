@@ -5,6 +5,7 @@ export default {
     site_email: "Site Email",
     site_email_password: "The Password for Site Mail",
     site_name: "Site Name",
+    site_logo: "站点Logo",
     site_dis: "Description For This Site",
     site_verify_code: "Display the verify code",
     site_keyWords: "Keywords for Site",

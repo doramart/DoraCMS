@@ -43,14 +43,16 @@ export default {
     renderPageList(current = 1, pageSize = 10) {
       let searchkey = this.pageInfo ? this.pageInfo.searchkey : "";
       let state = this.pageInfo ? this.pageInfo.state : "";
-      let user = this.pageInfo ? this.pageInfo.user : "";
+      let uAuthor = this.pageInfo ? this.pageInfo.uAuthor : "";
+      let categories = this.pageInfo ? this.pageInfo.categories : "";
       let targetCurrent = current;
       this.$store.dispatch("content/getContentList", {
         current: targetCurrent,
         pageSize,
         searchkey,
         state,
-        userId: user
+        uAuthor,
+        categories
       });
       //ComponentPaginationEnd
     },

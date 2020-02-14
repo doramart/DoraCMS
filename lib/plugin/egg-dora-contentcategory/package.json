@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-contentcategory",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "contentCategory",
   "eggPlugin": {
     "name": "doraContentCategory"
@@ -15,6 +15,7 @@
     "moment": "^2.24.0",
     "lodash": "^4.17.15",
     "xss": "^1.0.6",
+    "egg-dora-content": "^1.0.0",
     "egg-dora-contenttemp": "^1.0.0",
     "egg-dora-templateconfig": "^1.0.0"
   },

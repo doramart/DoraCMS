@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-07-07 13:07:27 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-08 09:55:36
+ * @Last Modified time: 2020-02-13 12:34:27
  */
 const Controller = require('egg').Controller;
 
@@ -14,7 +14,7 @@ class SystemConfigController extends Controller {
         let systemConfigList = await ctx.service.systemConfig.find({
             isPaging: '0'
         }, {
-            files: 'siteName ogTitle siteDomain siteDiscription siteKeywords siteAltKeywords registrationNo showImgCode statisticalCode'
+            files: 'siteName ogTitle siteDomain siteDiscription siteKeywords siteAltKeywords registrationNo showImgCode statisticalCode siteLogo'
         });
         ctx.helper.renderSuccess(ctx, {
             data: systemConfigList[0]
