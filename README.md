@@ -1,4 +1,4 @@
-# DoraCMS 2.1.4
+# DoraCMS 2.1.5
 
 ![DoraCMS](https://raw.githubusercontent.com/doramart/picGo/master/img/Snipaste_2019-11-16_00-14-09.png "DoraCMS")
 
@@ -9,19 +9,29 @@
 
 
 
-## 2.1.4 版本更新
+## 2.1.5 版本更新
 
-1、使用eggjs重构了服务端
+* 抽离了邮件发送为独立插件
+* 新增邮件管理，管理邮件模板，可以批量定时发送邮件
+* 优化了绑定编辑的逻辑
+* 内容管理添加了分类筛选，并增加了导入word 格式的功能
+* 优化了分类管理的样式和删除逻辑
+* 修复了管理员编辑，角色无法正确读出的问题以及编辑管理员信息偶尔会导致密码被改动的问题
+* 系统配置中加入了网站logo上传功能
+* 修复了在宽屏下默认模板会拉长的问题
+* 后台管理图标优化以及细节修改
 
-2、使用single-spa,vue-cli 重构了后台页面
+#### 注意：2.1.5 版本新增的插件中添加了两个依赖，您需要在合并代码后，分别在以下两个目录下执行 npm install 单独安装依赖
 
-3、完善了模板模块也修复了一些已知bug
-
-
-
+```
+cd lib/plugin/egg-dora-content
+npm install
+cd lib/plugin/egg-dora-maildelivery
+npm install
+```
 ## 说明
 
-### DoraCMS 2.1.4 使用的技术栈：
+### DoraCMS 2.1.5 使用的技术栈：
 
 ```
 1、nodejs 12.13.0 + eggjs 2
