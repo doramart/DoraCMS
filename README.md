@@ -1,6 +1,6 @@
 # DoraCMS 2.1.5
 
-![DoraCMS](https://raw.githubusercontent.com/doramart/picGo/master/img/Snipaste_2019-11-16_00-14-09.png "DoraCMS")
+![DoraCMS](https://ae01.alicdn.com/kf/H114ba4fd0eab4f36a4b16d970e11222dz.png "DoraCMS")
 
 
 ## DoraCMS 视频简介
