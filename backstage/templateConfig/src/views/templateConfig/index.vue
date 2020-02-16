@@ -395,12 +395,17 @@ export default {
       console.log(tab, event);
     },
     askVipLogin(item, action) {
-      if (item.version.indexOf(this.$root.appVersion) < 0) {
-        this.$message({
-          message: "版本不匹配",
-          type: "warning"
-        });
-        return;
+      let currentVersion = this.$root.appVersion.split(".").join("");
+      for (const version of item.version) {
+        let thisVersion = version.split(".").join("");
+        if (thisVersion > thisVersion) {
+          this.$message({
+            message: "版本不匹配",
+            type: "warning"
+          });
+          break;
+          return;
+        }
       }
       // 非免费安装需要登录VIP
       if (action == "install" && item.amount != "0") {
