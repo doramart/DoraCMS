@@ -96,6 +96,15 @@ npm install apidoc -g  // api文档生成
 npm install
 ```
 
+### 安装插件缺少的依赖 
+> 路径 lib/plugin/
+```
+cd lib/plugin/egg-dora-content
+npm install
+cd lib/plugin/egg-dora-maildelivery
+npm install
+```
+
 
 ### 初始化数据
 ```javascript
