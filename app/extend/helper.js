@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-15 14:23:19 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-13 17:37:07
+ * @Last Modified time: 2020-02-17 17:17:07
  */
 
 require('module-alias/register')
@@ -516,5 +516,20 @@ module.exports = {
         var newLink = this.decrypt(tokenId, this.app.config.encrypt_key);
         var keyArr = newLink.split('$');
         return keyArr;
+    },
+
+    async getAdminPower(ctx) {
+        let adminUserInfo = await ctx.service.adminUser.item(ctx, {
+            query: {
+                _id: ctx.session.adminUserInfo._id,
+            },
+            populate: [{
+                path: 'group',
+                select: 'power _id enable name'
+            }],
+            files: 'group'
+        })
+        let adminPower = adminUserInfo.group.power || {};
+        return adminPower;
     }
 };

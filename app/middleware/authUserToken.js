@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-16 14:51:46 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-01-22 10:34:46
+ * @Last Modified time: 2020-02-19 13:17:39
  */
 
 const {
@@ -36,10 +36,21 @@ module.exports = (options, app) => {
                             query: {
                                 _id: checkToken.userId,
                             },
-                            files: getAuthUserFields('session')
+                            files: '_id userName email'
                         });
                         if (!_.isEmpty(targetUser)) {
-                            ctx.session.user = targetUser;
+                            let {
+                                _id,
+                                userName,
+                                email,
+                                logo
+                            } = targetUser;
+                            ctx.session.user = {
+                                _id,
+                                userName,
+                                email,
+                                logo
+                            };
                             ctx.session.user.token = userToken;
                             ctx.session.logined = true;
                         }

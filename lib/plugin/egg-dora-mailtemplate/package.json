@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-mailtemplate",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "description": "mailTemplate",
   "eggPlugin": {
     "name": "doraMailTemplate"

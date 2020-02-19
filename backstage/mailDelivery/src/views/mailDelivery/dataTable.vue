@@ -49,7 +49,7 @@
       <el-table-column prop="comments" :label="$t('mailDelivery.comments')"></el-table-column>
 
       <el-table-column prop="createTime" :label="$t('mailDelivery.createTime')" width="180"></el-table-column>
-      <el-table-column :label="$t('main.dataTableOptions')" min-width="100" fixed="right">
+      <el-table-column :label="$t('main.dataTableOptions')" min-width="150" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="mini"

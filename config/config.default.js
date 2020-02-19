@@ -14,11 +14,24 @@ module.exports = appInfo => {
       }
     },
 
+    session: {
+      key: 'DORA_SESS',
+      maxAge: 24 * 3600 * 1000, // 1 day
+      httpOnly: true,
+      encrypt: true,
+      renew: true //延长会话有效期
+    },
+
+    // 前台会员登录有效时间
+    userMaxAge: 1000 * 60 * 60 * 24 * 1, // 1 day
+
+    // 后台管理员登录有效时间
+    adminUserMaxAge: 1000 * 60 * 60 * 24 * 1, // 1 day
+
     // 设置网站图标
     siteFile: {
       '/favicon.ico': fs.readFileSync(path.join(appInfo.baseDir, 'app/public/favicon.ico'))
     },
-
 
     // 配置需要的中间件,数组顺序即为中间件的加载顺序
     middleware: ['notfoundHandler', 'crossHeader', 'compress', 'authUserToken', 'authAdminToken', 'authAdminPower'],

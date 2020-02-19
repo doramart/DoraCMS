@@ -72,9 +72,6 @@ export default {
       getOneAdminUser({ id: rowData._id })
         .then(result => {
           let adminUserInfo = result.data;
-          if (!_.isEmpty(adminUserInfo)) {
-            adminUserInfo.group = adminUserInfo.group._id;
-          }
           this.$store.dispatch("adminUser/showAdminUserForm", {
             edit: true,
             formData: adminUserInfo

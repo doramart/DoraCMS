@@ -12,7 +12,7 @@ const autoprefixer = require('gulp-autoprefixer');
 // 设置项目根目录
 const projectPath = '..';
 
-var tempforder = "qingyulan";
+var tempforder = "dorawhite";
 var doraWhiteSassPath = './themes/' + tempforder + '/css/white.scss';
 var doraWhiteCssPath = projectPath + '/public/themes/' + tempforder + '/css';
 

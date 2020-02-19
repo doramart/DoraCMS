@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-reguser",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "description": "regUser",
   "eggPlugin": {
     "name": "doraRegUser"

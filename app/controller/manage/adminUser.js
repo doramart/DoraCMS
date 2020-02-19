@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-13 16:17:55
+ * @Last Modified time: 2020-02-17 17:20:26
  */
 const Controller = require('egg').Controller;
 const {
@@ -19,6 +19,7 @@ const {
 
 const path = require('path');
 const _ = require('lodash');
+
 
 class AdminUserController extends Controller {
     async list() {
@@ -337,7 +338,7 @@ class AdminUserController extends Controller {
             for (let i = 0; i < fullResources.length; i++) {
                 let resourceObj = JSON.parse(JSON.stringify(fullResources[i]));
                 if (resourceObj.type == '1' && !_.isEmpty(ctx.session.adminUserInfo)) {
-                    let adminPower = ctx.session.adminUserInfo.group.power;
+                    let adminPower = await ctx.helper.getAdminPower(ctx);
                     if (adminPower && adminPower.indexOf(resourceObj._id) > -1) {
                         resourceObj.hasPower = true;
                     } else {
@@ -435,7 +436,7 @@ class AdminUserController extends Controller {
         let manageCates = await ctx.service.adminResource.find(payload, {
             files: 'api _id label enable routePath parentId type icon comments'
         });
-        let adminPower = ctx.session.adminUserInfo.group.power;
+        let adminPower = await ctx.helper.getAdminPower(ctx);
         let currentCates = await siteFunc.renderNoPowerMenus(manageCates, adminPower, false);
         if (!_.isEmpty(currentCates)) {
 

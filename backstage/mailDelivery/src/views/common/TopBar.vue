@@ -1,12 +1,12 @@
 <template>
   <div class="dr-toolbar">
-    <div class="option-button el-col-20">
+    <el-col :xs="12" :md="20" class="option-button">
       <el-button type="primary" size="small" plain round @click="addMailDelivery">
         <svg-icon icon-class="icon_add" />
       </el-button>
       <!-- TOPBARLEFT -->
-    </div>
-    <div class="el-col-4">
+    </el-col>
+    <el-col :xs="12" :md="4">
       <el-input
         class="dr-searchInput"
         size="small"
@@ -16,7 +16,7 @@
         @keyup.enter.native="searchResult"
       ></el-input>
       <!-- TOPBARRIGHT -->
-    </div>
+    </el-col>
   </div>
 </template>
 <script>

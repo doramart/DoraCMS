@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-maildelivery",
-  "version": "1.0.5",
+  "version": "1.0.10",
   "description": "mailDelivery",
   "eggPlugin": {
     "name": "doraMailDelivery"

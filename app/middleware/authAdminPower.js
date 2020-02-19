@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-16 14:51:46 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-19 15:03:31
+ * @Last Modified time: 2020-02-17 17:20:16
  */
 const _ = require('lodash')
 module.exports = (options, app) => {
@@ -43,7 +43,7 @@ module.exports = (options, app) => {
 
             let targetApi = (ctx.originalUrl).replace('/manage/', '').split("?")[0];
             if (!_.isEmpty(ctx.session.adminUserInfo)) {
-                let adminPower = ctx.session.adminUserInfo.group.power;
+                let adminPower = await ctx.helper.getAdminPower(ctx);
                 if (resourceObj.api === targetApi && adminPower && adminPower.indexOf(resourceObj._id) > -1) {
                     hasPower = true;
                     break;

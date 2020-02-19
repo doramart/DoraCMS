@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-16 14:51:46 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-01 16:35:10
+ * @Last Modified time: 2020-02-17 17:36:57
  */
 
 const {
@@ -38,10 +38,7 @@ module.exports = (options, app) => {
                         query: {
                             _id: checkToken._id,
                         },
-                        populate: [{
-                            path: 'group',
-                            select: 'power _id enable name'
-                        }],
+                        populate: 'none',
                         files: {
                             password: 0,
                             email: 0
@@ -49,7 +46,17 @@ module.exports = (options, app) => {
                     })
                     if (!_.isEmpty(targetUser)) {
                         // console.log('adminuser had login');
-                        ctx.session.adminUserInfo = targetUser;
+                        let {
+                            userName,
+                            _id,
+                            group,
+                        } = targetUser;
+
+                        ctx.session.adminUserInfo = {
+                            userName,
+                            _id,
+                            group
+                        };
 
                         await next();
                     } else {

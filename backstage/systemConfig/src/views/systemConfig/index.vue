@@ -137,6 +137,10 @@ export default {
           label: "QQ"
         },
         {
+          value: "smtp.exmail.qq.com",
+          label: "腾讯企业邮箱"
+        },
+        {
           value: "163",
           label: "163"
         }

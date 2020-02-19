@@ -79,8 +79,9 @@ function getAjaxData(url, success = () => {}, type = 'get', params = {}, error =
             }
         },
         error: function (d) {
-            console.log('error:', d)
-            layer.msg(d.message, {
+            layer.closeAll('loading');
+            let message = d.message || 'Server error!'
+            layer.msg(message, {
                 icon: 2,
                 time: msgTime
             });
@@ -861,6 +862,7 @@ var postMsgVm = avalon.define({
                     var params = {
                         contentId: $('#contentId').val(),
                         replyAuthor: postMsgVm.replyAuthor,
+                        adminReplyAuthor: postMsgVm.adminReplyAuthor,
                         relationMsgId: postMsgVm.relationMsgId,
                         content: postMsgVm.content,
                     }
@@ -928,7 +930,7 @@ var myContentsVm = avalon.define({
         })
     },
     joinTopicPageClick: function (e, cur) {
-        getUserRelevantList('/user/getMessages', 'myJoinTopics', cur, {
+        getUserRelevantList('/contentMessage/getMessages', 'myJoinTopics', cur, {
             userId: $('#userId').val()
         })
     },
@@ -938,7 +940,7 @@ var myContentsVm = avalon.define({
         $(targetDom).toggleClass('fa-angle-down');
         $(targetDom).parent().next().toggleClass('show');
         if (!el.isRead) {
-            getAjaxData('/api/user/setNoticeRead?ids=' + el.id, (data) => {
+            getAjaxData('/api/systemNotify/setNoticeRead?ids=' + el.id, (data) => {
                 if (data.status == 200) {
                     getUserRelevantList('/systemNotify/getUserNotifys', 'myMessages', 1)
                 }
@@ -956,7 +958,7 @@ var myContentsVm = avalon.define({
                         layer.msg(getSysValueByKey('sys_layer_option_success'), {
                             icon: 1
                         }, function () {
-                            getUserRelevantList('/user/getUserNotifys', 'myMessages', 1)
+                            getUserRelevantList('/systemNotify/getUserNotifys', 'myMessages', 1)
                         });
                     }
                 })
@@ -1101,7 +1103,7 @@ var regVm = avalon.define({
                             icon: 1,
                             time: msgTime
                         }, function () {
-                            window.location.href = "/";
+                            window.location.href = "/users/login";
                         });
                     }
                 }, 'post', params, () => {

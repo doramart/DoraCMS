@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-27 17:16:32 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-04 16:08:53
+ * @Last Modified time: 2020-02-17 17:44:26
  */
 const Controller = require('egg').Controller;
 const jwt = require('jsonwebtoken')
@@ -60,7 +60,6 @@ class AdminController extends Controller {
             } = systemConfigs[0];
 
             let errMsg = '';
-            // console.log('--showImgCode--', showImgCode)
             if (showImgCode && (!fields.imageCode || fields.imageCode != ctx.session.imageCode)) {
                 errMsg = ctx.__("validate_inputCorrect", [ctx.__("label_user_imageCode")])
             }
@@ -103,7 +102,7 @@ class AdminController extends Controller {
 
                 ctx.cookies.set('admin_' + this.app.config.auth_cookie_name, adminUserToken, {
                     path: '/',
-                    maxAge: 1000 * 60 * 60 * 24 * 30,
+                    maxAge: this.app.config.adminUserMaxAge,
                     signed: true,
                     httpOnly: false
                 }); //cookie 有效期30天

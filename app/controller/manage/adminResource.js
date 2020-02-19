@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-10-25 23:55:04
+ * @Last Modified time: 2020-02-17 17:19:22
  */
 const Controller = require('egg').Controller;
 const {
@@ -59,7 +59,7 @@ class AdminResourceController extends Controller {
             let manageCates = await ctx.service.adminResource.find(payload, {
                 files: 'api _id label enable routePath parentId type icon comments'
             });
-            let adminPower = ctx.session.adminUserInfo.group.power;
+            let adminPower = await ctx.helper.getAdminPower(ctx);
             let currentCates = await siteFunc.renderNoPowerMenus(manageCates, adminPower);
 
             ctx.helper.renderSuccess(ctx, {

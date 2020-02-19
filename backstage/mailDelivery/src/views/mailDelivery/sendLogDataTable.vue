@@ -5,7 +5,7 @@
     :md="6"
     :lg="6"
     :xl="6"
-    width="60%"
+    width="70%"
     title="发送详情"
     :visible.sync="sendLogFormState.show"
     :before-close="handleClose"
@@ -18,10 +18,22 @@
           <svg-icon v-show="scope.row.state=='0'" :style="red" icon-class="minus-circle-fill" />
         </template>
       </el-table-column>
-      <el-table-column prop="recipient" label="目标">
-        <template slot-scope="scope">{{scope.row.recipient.userName}}</template>
+      <el-table-column prop="recipient" label="目标" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span
+            v-for="userItem in scope.row.recipient"
+            :key="userItem._id"
+          >{{userItem.userName+','}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="recipientEmail" label="目标邮箱"></el-table-column>
+      <el-table-column prop="recipientEmail" label="目标邮箱" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span
+            v-for="(emailItem,index) in scope.row.recipientEmail"
+            :key="'email_'+index"
+          >{{emailItem+','}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="createTime" label="日期" width="180"></el-table-column>
     </el-table>
 
