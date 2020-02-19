@@ -11,33 +11,33 @@
 	<script type="systemjs-importmap">
 		{
             "imports": {
-                "single-spa": "https://cdnjs.cloudflare.com/ajax/libs/single-spa/4.3.7/system/single-spa.min.js",
-                "vue": "https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js",
-                "vuex": "https://cdn.bootcss.com/vuex/3.1.1/vuex.min.js",
-                "vue-router": "https://cdn.jsdelivr.net/npm/vue-router@3.0.7/dist/vue-router.min.js",
-                "element-ui": "https://cdn.bootcss.com/element-ui/2.11.1/index.js",
-                "vue-i18n": "https://cdn.bootcss.com/vue-i18n/8.14.0/vue-i18n.min.js",
-                "axios": "https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js",
-				"lodash": "https://cdn.bootcss.com/lodash.js/4.17.15/lodash.min.js",
+                "single-spa": "{{staticRootPath}}/jscss/single-spa.min.js",
+                "vue": "{{staticRootPath}}/jscss/vue.js",
+                "vuex": "{{staticRootPath}}/jscss/vuex.min.js",
+                "vue-router": "{{staticRootPath}}/jscss/vue-router.min.js",
+                "element-ui": "{{staticRootPath}}/jscss/index.js",
+                "vue-i18n": "{{staticRootPath}}/jscss/vue-i18n.min.js",
+                "axios": "{{staticRootPath}}/jscss/axios.min.js",
+				"lodash": "{{staticRootPath}}/jscss/lodash.min.js",
 				{% for appItem in renderMap %}
                 "{{appItem.name}}": "{{appItem.path}}",
                 {% endfor %}
-                "crypto-js": "https://cdn.bootcss.com/crypto-js/3.1.9/crypto-js.min.js"
+                "crypto-js": "{{staticRootPath}}/jscss/crypto-js.min.js"
             }
         }
     </script>
-	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-	<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/single-spa/4.3.7/system/single-spa.min.js"
+	<link rel="stylesheet" href="{{staticRootPath}}/jscss/index.css">
+	<link rel="preload" href="{{staticRootPath}}/jscss/single-spa.min.js"
 		as="script" crossorigin="anonymous" />
-	<link rel="preload" href="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js" as="script"
+	<link rel="preload" href="{{staticRootPath}}/jscss/vue.js" as="script"
 		crossorigin="anonymous" />
-	<link rel="preload" href="https://cdn.bootcss.com/element-ui/2.11.1/index.js" as="script" crossorigin="anonymous" />
-	<script src="https://unpkg.com/import-map-overrides@1.7.2/dist/import-map-overrides.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.1.0/system.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.1.0/extras/amd.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.1.0/extras/named-exports.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.1.0/extras/named-register.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.1.0/extras/use-default.min.js"></script>
+	<link rel="preload" href="{{staticRootPath}}/jscss/index.js" as="script" crossorigin="anonymous" />
+	<script src="{{staticRootPath}}/jscss/import-map-overrides.js"></script>
+	<script src="{{staticRootPath}}/jscss/system.min.js"></script>
+	<script src="{{staticRootPath}}/jscss/amd.min.js"></script>
+	<script src="{{staticRootPath}}/jscss/named-exports.js"></script>
+	<script src="{{staticRootPath}}/jscss/named-register.min.js"></script>
+	<script src="{{staticRootPath}}/jscss/use-default.min.js"></script>
 </head>
 
 <body>
