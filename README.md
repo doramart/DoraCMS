@@ -114,18 +114,6 @@ npm run init
 > 网站图片资源可从这里获取
 下载链接: https://pan.baidu.com/s/1th7Qlz4eJGNN3w_Tacl9AQ 提取码: jczt  ，解压后放到项目根目录下 app/public/upload (替换)。
 
-### 安装全局依赖
-```javascript
-npm install egg-scripts -g   // egg 启动工具
-npm install gulp -g  // 静态资源构建
-npm install apidoc -g  // 生成api文档
-```
-
-
-### 安装本系统依赖（代码根目录）
-```javascript
-npm install
-```
 
 ### 开发模式启动
 ```javascript
