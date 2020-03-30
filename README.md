@@ -151,7 +151,7 @@ echo $NODE_ENV
 ### 启动 `mongodb`
 > 不同平台启动 mongodb 方式基本相同
 
-#### 新建配置文件 `mongodb.config`
+#### 新建配置文件 `mongodb.conf`
 ```
 dbpath=/Users/dora/Documents/dora/softs/mongodb/data/  #数据存放路径
 
