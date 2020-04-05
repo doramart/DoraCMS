@@ -41,7 +41,7 @@ API： [DoraCMS API文档](https://www.html-js.cn/static/apidoc/index.html)
 
 
 ## 快速开始体验 `DoraCMS`（推荐）
-> 前提是您需要提前安装 `docker`. 这里介绍的是本地体验，如果你想运行在服务器上，需要先修改配置文件 config/config.local.js 里的 `server_path` `server_api` 为您服务器的 `IP` + `端口号`。该操作仅为快速体验，如果正式环境部署，请移步后面的 `如何安装 DoraCMS（开发环境/生产环境）`
+> 前提是您需要提前安装 `docker`. 这里介绍的是本地体验，如果你想运行在服务器上，需要先修改配置文件 config/config.local.js 里的 `server_path` `server_api` 为您服务器的 `IP` + `端口号`。__该操作仅为快速体验__，如果正式环境部署，请移步后面的 __`如何安装 DoraCMS（开发环境/生产环境）`__
 
 `DoraCMS` 可以依托 `docker-compose` 快速在本地跑起来，您只需要这样做：
 
