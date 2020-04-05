@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="{{staticRootPath}}/plugins/layer/theme/default/layer.css">
 
     <!--default theme-->
-    <script src="{{staticRootPath}}/plugins/crypto-js/3.1.9/crypto-js.min.js"></script>
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -253,7 +253,7 @@
                     console.log('全部通过');
                     var params = {
                         userName: adminLoginVm.userName,
-                        password: CryptoJS.MD5('dora' + adminLoginVm.password).toString(),
+                        password: adminLoginVm.password,
                         imageCode: adminLoginVm.imageCode
                     }
                     getAjaxData('/api/admin/doLogin', function (data) {

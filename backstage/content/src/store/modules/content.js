@@ -1,7 +1,8 @@
 import * as types from '../types.js';
 import {
   contentList,
-  getOneContent
+  getOneContent,
+  coverList
 } from '@/api/content';
 import _ from 'lodash';
 
@@ -20,6 +21,8 @@ const state = {
       tags: [],
       keywords: '',
       sImg: '/static/upload/images/defaultImg.jpg',
+      sImgType: '2',
+      cover: '',
       discription: '',
       author: {},
       uAuthor: '',
@@ -51,6 +54,29 @@ const state = {
       }
     }
   },
+  moveCate: {
+    formState: {
+      show: false,
+      edit: false,
+      formData: {
+        categories: ''
+      }
+    }
+  },
+  contentCoverDialog: {
+    show: false,
+  },
+  contentCoverList: {
+    pageInfo: {},
+    docs: []
+  },
+  draftContentDialog: {
+    show: false,
+  },
+  draftContentList: {
+    pageInfo: {},
+    docs: []
+  }
 }
 
 const mutations = {
@@ -67,6 +93,8 @@ const mutations = {
       tags: [],
       keywords: '',
       sImg: '',
+      sImgType: '2',
+      cover: '',
       discription: '',
       author: {},
       uAuthor: '',
@@ -97,6 +125,26 @@ const mutations = {
       alias: '',
       targetUser: ''
     }, formState.formData);
+  },
+  [types.CONTENT_MOVECATEFORMSTATE](state, formState) {
+    state.moveCate.formState.show = formState.show;
+    state.moveCate.formState.edit = formState.edit;
+    state.moveCate.formState.type = formState.type;
+    state.moveCate.formState.formData = Object.assign({
+      categories: ''
+    }, formState.formData);
+  },
+  [types.CONTENT_COVERDIALOGSTAGE](state, formState) {
+    state.contentCoverDialog.show = formState.show;
+  },
+  [types.CONTENT_COVERLIST](state, contentCoverList) {
+    state.contentCoverList = contentCoverList
+  },
+  [types.CONTENT_DRAFTDIALOGSTAGE](state, formState) {
+    state.draftContentDialog.show = formState.show;
+  },
+  [types.CONTENT_DRAFTLIST](state, draftList) {
+    state.draftContentList = draftList
   },
 }
 
@@ -132,6 +180,59 @@ const actions = {
       show: false
     })
   },
+  showMoveCateForm: ({
+    commit
+  }, params = {
+    edit: false,
+    formData: {}
+  }) => {
+    commit(types.CONTENT_MOVECATEFORMSTATE, {
+      show: true,
+      edit: params.edit,
+      formData: params.formData
+    })
+  },
+  hideMoveCateForm: ({
+    commit
+  }) => {
+    commit(types.CONTENT_MOVECATEFORMSTATE, {
+      show: false
+    })
+  },
+  showCoverListDialog: ({
+    commit
+  }, params = {
+    edit: false,
+
+  }) => {
+    commit(types.CONTENT_COVERDIALOGSTAGE, {
+      show: true,
+    })
+  },
+  hideCoverListDialog: ({
+    commit
+  }) => {
+    commit(types.CONTENT_COVERDIALOGSTAGE, {
+      show: false
+    })
+  },
+  showDraftListDialog: ({
+    commit
+  }, params = {
+    edit: false,
+
+  }) => {
+    commit(types.CONTENT_DRAFTDIALOGSTAGE, {
+      show: true,
+    })
+  },
+  hideDraftListDialog: ({
+    commit
+  }) => {
+    commit(types.CONTENT_DRAFTDIALOGSTAGE, {
+      show: false
+    })
+  },
   getContentList({
     commit
   }, params = {}) {
@@ -147,6 +248,25 @@ const actions = {
       commit(types.CONTENT_ONE, result.data)
     })
   },
+
+  getContentCoverList({
+    commit
+  }, params = {}) {
+    coverList(params).then((result) => {
+      commit(types.CONTENT_COVERLIST, result.data)
+    })
+  },
+
+  getDraftContentList({
+    commit
+  }, params = {
+    draft: '1'
+  }) {
+    contentList(params).then((result) => {
+      commit(types.CONTENT_DRAFTLIST, result.data)
+    })
+  },
+
 
 }
 

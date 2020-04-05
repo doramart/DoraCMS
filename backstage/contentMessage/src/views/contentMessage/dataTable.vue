@@ -91,6 +91,9 @@ export default {
         });
         this.multipleSelection = ids;
         this.$emit("changeMsgSelectList", ids);
+      } else {
+        this.multipleSelection = "";
+        this.$emit("changeMsgSelectList", "");
       }
     },
     replyContentMessage(index, rows) {

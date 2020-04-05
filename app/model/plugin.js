@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-09-23 13:28:28 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-10-30 10:29:37
+ * @Last Modified time: 2020-03-24 14:26:56
  */
 
 module.exports = app => {
@@ -36,6 +36,7 @@ module.exports = app => {
             default: '0'
         }, // 有前台 
         version: String, // 版本号 
+        operationInstructions: String, // 操作说明
         author: String, // 作者
         adminUrl: {
             type: Schema.Types.Mixed

@@ -2,17 +2,14 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-06 15:11:38
+ * @Last Modified time: 2020-03-31 11:38:15
  */
 const Controller = require('egg').Controller;
 const shell = require('shelljs');
-
-
-const {
-    pluginRule
-} = require('@validate')
+const workPath = process.cwd();
+const pkg = require(`${workPath}/package.json`)
 const _ = require('lodash');
-const muri = require('muri');
+const env = process.env.NODE_ENV;
 
 class PluginController extends Controller {
 
@@ -25,7 +22,11 @@ class PluginController extends Controller {
 
             let payload = ctx.query;
             let helpType = ctx.query.helpType;
-            let queryObj = {};
+            let queryObj = {
+                type: {
+                    $ne: '1'
+                }
+            };
 
             if (helpType) {
                 queryObj.type = helpType;
@@ -108,7 +109,8 @@ class PluginController extends Controller {
 
             if (!_.isEmpty(pluginInfos)) {
 
-                // 1、npm install 安装
+                shell.exec(`cd ${workPath}`);
+
                 shell.exec(`npm install ${pluginInfos.pkgName} --save --registry=https://registry.npm.taobao.org`);
 
                 // 2、初始化数据表
@@ -124,12 +126,18 @@ class PluginController extends Controller {
 
                 // 5、保存插件基本信息到本地
                 let currentPluginInfo = _.assign({}, pluginInfos, {
-                    pluginId: pluginInfos._id
+                    pluginId: pluginInfos._id,
+                    createTime: new Date()
                 })
                 delete currentPluginInfo._id;
                 await ctx.service.plugin.create(currentPluginInfo);
 
                 ctx.helper.renderSuccess(ctx);
+
+                // 6 重启服务
+                (env == 'production') && setTimeout(() => {
+                    shell.exec(`pm2 restart ${pkg.name}`);
+                }, 1000)
 
             } else {
                 throw new Error(ctx.__('validate_error_params'));
@@ -163,9 +171,10 @@ class PluginController extends Controller {
                 throw new Error(ctx.__('validate_error_params'));
             }
 
+            shell.exec(`cd ${workPath}`);
+
             // 1、npm uninstall 卸载
-            // TODO 插件卸载暂不执行卸载库操作
-            // shell.exec(`npm uninstall ${pluginInfos.pkgName}`);
+            shell.exec(`npm uninstall ${pluginInfos.pkgName}`);
 
             // 2、删除数据表
             if (pluginInfos.initData) {
@@ -183,12 +192,18 @@ class PluginController extends Controller {
 
             ctx.helper.renderSuccess(ctx);
 
+            // 6 重启服务
+            (env == 'production') && setTimeout(() => {
+                shell.exec(`pm2 restart ${pkg.name}`);
+            }, 1000)
+
         } catch (err) {
             ctx.helper.renderFail(ctx, {
                 message: err
             });
         }
     }
+
     async updatePlugin() {
 
         const {
@@ -215,7 +230,15 @@ class PluginController extends Controller {
                 delete pluginItem._id;
                 pluginItem.updateTime = new Date();
                 await ctx.service.plugin.update(ctx, targetId, pluginItem);
+
+                shell.exec(`cd ${workPath}`);
+
                 shell.exec(`npm install ${pluginItem.pkgName} --save --registry=https://registry.npm.taobao.org`);
+
+                // 6 重启服务
+                (env == 'production') && setTimeout(() => {
+                    shell.exec(`pm2 restart ${pkg.name}`);
+                }, 1000)
 
             }
 
@@ -253,7 +276,6 @@ class PluginController extends Controller {
         }
 
     }
-
 
     async removes() {
         const {
@@ -391,6 +413,25 @@ class PluginController extends Controller {
 
             ctx.helper.renderSuccess(ctx, {
                 data: checkInviceState
+            });
+
+        } catch (err) {
+            ctx.helper.renderFail(ctx, {
+                message: err
+            });
+        }
+    }
+
+    // 心跳监测
+    async pluginHeartBeat() {
+
+        const {
+            ctx,
+        } = this;
+        try {
+
+            ctx.helper.renderSuccess(ctx, {
+                data: 'success'
             });
 
         } catch (err) {

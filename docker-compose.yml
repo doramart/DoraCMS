@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  node:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - nodeapp-network
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: doramart/dora-mongo
+    networks:
+      - nodeapp-network
+   
+  mongo_seed:
+    image: doramart/dora-mongo
+    links:
+      - mongodb
+    networks:
+      - nodeapp-network  
+    command:
+      mongorestore --host mongodb -d doracms2 --drop ./app/databak/doracms2  
+
+networks:
+  nodeapp-network:
+    driver: bridge

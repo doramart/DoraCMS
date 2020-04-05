@@ -36,7 +36,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-sm-9 col-md-5" id="navWrapper">
+                    <div class="col-sm-9 col-md-6" id="navWrapper">
                         <div id="navScroller">
                             <ul>
                                 {% for cate in cateTypes %} {% if cate.parentId == '0' %}
@@ -48,7 +48,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-sm-1 col-md-5">
+                    <div class="col-sm-1 col-md-4">
                         <div class="text-right topNav">
                             <div class="search-pannel">
                                 <div :class="['input-area',(@activeSearch? 'active':'')]">

@@ -5,10 +5,6 @@ import {
 } from 'element-ui'
 import store from '@/store'
 import {
-  getToken
-} from '@root/publicMethods/auth'
-import settings from '@root/publicMethods/settings'
-import {
   showFullScreenLoading,
   tryHideFullScreenLoading,
 } from '@root/publicMethods/axiosLoading'
@@ -25,7 +21,8 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    showFullScreenLoading();
+    let loadingConfig = !_.isEmpty(config.params) && !_.isEmpty(config.params.loadingConfig) ? config.params.loadingConfig : {};
+    showFullScreenLoading(loadingConfig);
 
     return config
   },
@@ -84,12 +81,21 @@ service.interceptors.response.use(
     if (error.response && error.response.data && error.response.data.message) {
       errorMsg = error.response.data.message;
     }
-    Message({
-      message: errorMsg,
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    // 网络错误把异常抛到前面
+    if (errorMsg == "Network Error" || errorMsg == "Request failed with status code 502") {
+      return {
+        status: 500,
+        message: 'Network Error'
+      }
+    } else {
+      Message({
+        message: errorMsg,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      return Promise.reject(error)
+    }
+
   }
 )
 

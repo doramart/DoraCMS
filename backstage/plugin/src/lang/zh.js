@@ -6,6 +6,7 @@ export default {
     enName: '英文名',
     name: '名称',
     description: '描述',
+    operationInstructions: '操作说明',
     amount: '价格',
     isadm: '有后管',
     isindex: '有前台',

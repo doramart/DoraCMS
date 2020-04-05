@@ -13,6 +13,9 @@ import router from './router/index';
 import store from './store'
 import singleSpaVue from 'single-spa-vue';
 
+import hljs from "highlight.js"
+import 'highlight.js/styles/default.css';
+
 
 import './icons' // icon
 import i18n from './lang' // Internationalization
@@ -20,6 +23,13 @@ import * as filters from './filters' // global filters
 
 Vue.config.productionTip = false;
 
+// 定义自定义指令 highlight 代码高亮
+Vue.directive('highlight', function (el) {
+  let blocks = el.querySelectorAll('pre code');
+  blocks.forEach((block) => {
+    hljs.highlightBlock(block)
+  })
+})
 
 Vue.use(ElementUI, {
   size: Cookies.get('size') || 'medium', // set element-ui default size

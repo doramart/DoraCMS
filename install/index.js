@@ -3,7 +3,7 @@
  * @Description install step_1
  * @Date: 2020-03-13 08:43:33 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-03-16 12:34:49
+ * @Last Modified time: 2020-04-02 21:46:44
  */
 
 
@@ -12,21 +12,64 @@ var execSync = require('child_process').execSync;
 const path = require("path");
 const fs = require('fs');
 const needInstallPlugin = ["mammoth", "node-schedule"];
-const needModules = ["egg-scripts", "gulp", "apidoc"];
 const installPath = path.join(process.cwd(), './install');
+const pkgPath = path.join(process.cwd(), './package.json');
+let pkgInfo = require(pkgPath);
 const localPath = path.join(process.cwd(), '');
 let jsonPath = installPath + '/serverConfig.js';
 let serverConfig = require(jsonPath);
 let agentStr = serverConfig.tbAgent == '1' ? '--registry=https://registry.npm.taobao.org' : '';
+const needModules = serverConfig.env == "production" ? ["pm2", "egg-scripts"] : ["egg-scripts", "gulp"];
 
-const modifyFileByReplace = (targetPath, replaceStr, targetStr) => {
-    var readText = fs.readFileSync(targetPath, 'utf-8');
-    var reg = new RegExp(replaceStr, "g")
-    if (replaceStr.indexOf('path.join') >= 0 || replaceStr.indexOf('"egg":') >= 0) {
-        reg = replaceStr;
+
+const modifyFileByReplace = (targetPath, replaceKey, targetValue, auxiliaryKey = '') => {
+
+    let targetConfig = require(targetPath)({
+        baseDir: ''
+    });
+
+    if (targetConfig) {
+
+        for (const configKey of replaceKey) {
+
+            let oldStr = '',
+                configIndex;
+            const fileData = fs.readFileSync(targetPath, 'utf8').split('\n');
+            for (let i = 0; i < fileData.length; i++) {
+                const str = fileData[i];
+
+                if ((str.trim()).indexOf(configKey) == 0) {
+
+                    // 辅助字符串校验
+                    if (auxiliaryKey) {
+
+                        if ((str.trim()).indexOf(auxiliaryKey) > 0) {
+                            oldStr = str.trim();
+                            configIndex = i;
+                            break;
+                        }
+                        break;
+
+                    } else {
+                        oldStr = str.trim();
+                        configIndex = i;
+                        break;
+                    }
+
+                }
+            }
+
+            if (oldStr) {
+                let checkValue = (typeof targetValue === 'string' ? `"${targetValue}"` : targetValue);
+                fileData.splice(configIndex, 1, `        ${configKey}: ${checkValue},`);
+                fs.writeFileSync(targetPath, fileData.join('\n'), 'utf8');
+            }
+
+        }
     }
-    var newRenderContent = readText.replace(reg, targetStr);
-    fs.writeFileSync(targetPath, newRenderContent);
+
+
+
 }
 
 
@@ -49,6 +92,7 @@ const deleteFolder = (path) => {
 const checkMongo = async (params) => {
     let {
         env,
+        mongodbBinPath,
         dbIP,
         dbPort,
         dbName,
@@ -65,7 +109,7 @@ const checkMongo = async (params) => {
     if (!port) {
         throw new Error("请填写正确的 DoraCMS 启动默认端口号！");
     }
-    if (env != process.env.NODE_ENV) {
+    if (!env) {
         throw new Error("您当前环境和传入的配置不匹配！");
     }
     if (!dbIP || !dbPort) {
@@ -95,7 +139,7 @@ const checkMongo = async (params) => {
         } else {
             throw new Error("您的操作系统不支持该安装流程！");
         }
-        initDataBase(checkResult.linkStr, mongoStr);
+        initDataBase(checkResult.linkStr, `${mongodbBinPath}${mongoStr}`);
         return checkResult.linkStr;
     } else {
         throw new Error("数据库无法连接成功，请确认是否开启mongodb！");
@@ -146,9 +190,7 @@ const installSystemModules = () => {
 
 
     console.log('*****************开始安装插件依赖*****************');
-    for (const pluginItem of needInstallPlugin) {
-        shell.exec(`npm install ${pluginItem} ${agentStr}`);
-    }
+    shell.exec(`npm install ${needInstallPlugin.join(' ')} ${agentStr} --save`);
 }
 
 const initDataBase = (mongoUri, binPath) => {
@@ -179,6 +221,9 @@ const initDataBase = (mongoUri, binPath) => {
     shell.exec(cmd).stdout;
 }
 
+
+
+
 exec('node -v', (error, stdout, stderr) => {
     if (error) {
         throw new Error("获取 nodejs 版本号失败！");
@@ -186,11 +231,7 @@ exec('node -v', (error, stdout, stderr) => {
     console.log('Nodejs 版本号:', stdout);
 })
 
-if (!process.env.NODE_ENV) {
-    throw new Error("请先设置系统环境变量！");
-}
-
-console.log('系统环境变量:', process.env.NODE_ENV);
+console.log('系统环境变量:', serverConfig.env);
 
 if (fs.existsSync(localPath + '/node_modules')) {
     deleteFolder(localPath + '/node_modules');
@@ -212,21 +253,24 @@ const askStep_1 = async () => {
         let mongolinkStr = await checkMongo(serverConfig);
 
         // 修改配置文件
-        modifyFileByReplace(`${localPath}/config/config.default.js`, "8080", serverConfig.port);
+        modifyFileByReplace(`${localPath}/config/config.default.js`, ['port'], Number(serverConfig.port));
+        modifyFileByReplace(`${localPath}/config/config.local.js`, ["url"], mongolinkStr);
+        modifyFileByReplace(`${localPath}/config/config.local.js`, ['server_path'], serverConfig.domain);
+        modifyFileByReplace(`${localPath}/config/config.local.js`, ['server_api'], serverConfig.domain + '/api');
+        modifyFileByReplace(`${localPath}/config/config.local.js`, ['binPath'], serverConfig.mongodbBinPath);
 
         if (serverConfig.env == 'development') {
-            modifyFileByReplace(`${localPath}/config/config.local.js`, "mongodb://127.0.0.1:27017/doracms2", mongolinkStr);
-            modifyFileByReplace(`${localPath}/config/config.local.js`, "http://127.0.0.1:8080", serverConfig.domain);
+
             setTimeout(() => {
                 shell.exec('npm run dev');
             }, 3000)
 
         } else if (serverConfig.env == 'production') {
-            modifyFileByReplace(`${localPath}/config/config.prod.js`, "mongodb://127.0.0.1:27017/doracms2", mongolinkStr);
-            modifyFileByReplace(`${localPath}/config/config.prod.js`, "https://www.html-js.cn", serverConfig.domain);
+
             setTimeout(() => {
-                shell.exec('npm run start');
+                shell.exec(`cross-env NODE_ENV=production && pm2 start server.js --name ${pkgInfo.name}`);
             }, 3000)
+
         }
 
         console.log('系统初始化成功，访问地址:' + serverConfig.domain);

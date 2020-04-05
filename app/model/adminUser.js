@@ -6,6 +6,7 @@ module.exports = app => {
     const mongoose = app.mongoose
     var shortid = require('shortid');
     var Schema = mongoose.Schema;
+    var CryptoJS = require("crypto-js");
 
     require('./adminGroup');
 
@@ -18,7 +19,12 @@ module.exports = app => {
         },
         name: String,
         userName: String,
-        password: String,
+        password: {
+            type: String,
+            set(val) {
+                return CryptoJS.AES.encrypt(val, app.config.encrypt_key).toString();
+            }
+        },
         email: String,
         phoneNum: String,
         countryCode: {

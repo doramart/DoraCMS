@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-13 12:34:15
+ * @Last Modified time: 2020-03-20 12:09:29
  */
 const Controller = require('egg').Controller;
 
@@ -102,7 +102,7 @@ class SystemConfigController extends Controller {
                 if (fields.siteEmailPwd.length < 6) {
                     errInfo = ctx.__("validate_inputCorrect", [ctx.__("label_password")])
                 } else {
-                    formObj.siteEmailPwd = ctx.helper.encrypt(fields.siteEmailPwd, this.app.config.encrypt_key);
+                    formObj.siteEmailPwd = fields.siteEmailPwd;
                 }
             }
 

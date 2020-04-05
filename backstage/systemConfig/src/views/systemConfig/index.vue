@@ -84,12 +84,6 @@
             <el-form-item :label="$t('sysTemConfigs.statisticalCode')" prop="statisticalCode">
               <el-input size="small" v-model="systemConfig.configs.statisticalCode"></el-input>
             </el-form-item>
-            <el-form-item label="mongoDBPath" prop="mongodbInstallPath">
-              <el-input size="small" v-model="systemConfig.configs.mongodbInstallPath"></el-input>
-            </el-form-item>
-            <el-form-item :label="$t('sysTemConfigs.databakPath')" prop="databackForderPath">
-              <el-input size="small" v-model="systemConfig.configs.databackForderPath"></el-input>
-            </el-form-item>
             <el-form-item>
               <el-button
                 size="medium"
@@ -302,42 +296,6 @@ export default {
             message: this.$t("validate.ranglengthandnormal", {
               min: 5,
               max: 30
-            }),
-            trigger: "blur"
-          }
-        ],
-        mongodbInstallPath: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("sysTemConfigs.mongoPath")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            max: 100,
-            message: this.$t("validate.ranglengthandnormal", {
-              min: 5,
-              max: 100
-            }),
-            trigger: "blur"
-          }
-        ],
-        databackForderPath: [
-          {
-            required: true,
-            message: this.$t("validate.inputNull", {
-              label: this.$t("sysTemConfigs.databakPath")
-            }),
-            trigger: "blur"
-          },
-          {
-            min: 5,
-            max: 100,
-            message: this.$t("validate.ranglengthandnormal", {
-              min: 5,
-              max: 100
             }),
             trigger: "blur"
           }

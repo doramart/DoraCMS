@@ -17,5 +17,6 @@ targetBuildModules.forEach(function (name) {
     if (name != '.git' && name != 'build' && name != 'publicMethods' && name != 'dist') {
         shell.cd(`${modulesPath}/${name}`);
         shell.exec('cnpm install');
+        // shell.exec('npm install --registry=https://registry.npm.taobao.org');
     }
 });

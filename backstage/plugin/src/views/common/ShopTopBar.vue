@@ -1,10 +1,10 @@
 <template>
   <div class="dr-toolbar">
-    <div class="option-button el-col-6">
+    <div class="option-button el-xs-12 el-col-18">
       &nbsp;
       <!-- TOPBARLEFT -->
     </div>
-    <div class="el-col-18" style="textAlign:right;">
+    <div class="el-xs-12 el-col-6" style="textAlign:right;">
       <el-input
         class="dr-searchInput"
         size="small"

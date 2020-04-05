@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-15 14:23:19 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-17 17:17:07
+ * @Last Modified time: 2020-04-02 17:04:44
  */
 
 require('module-alias/register')
@@ -10,14 +10,11 @@ require('module-alias/register')
 //文件操作对象
 let fs = require('fs');
 let stat = fs.stat;
-//数据库操作对象
-let crypto = require("crypto");
+//TODO 老版本暂时保留，下个版本移除
+var CryptoJS = require("crypto-js");
 //站点配置
 const validator = require('validator');
 let iconv = require('iconv-lite');
-const {
-    cache
-} = require('@utils');
 const Axios = require("axios");
 const _ = require('lodash')
 
@@ -57,8 +54,9 @@ module.exports = {
     clearRedisByType(str, cacheKey) {
         console.log('cacheStr', str);
         let currentKey = this.app.config.session_secret + cacheKey + str;
-        cache.set(currentKey, '', 2000);
+        this.setMemoryCache(currentKey, '', 2000);
     },
+
     renderSuccess(ctx, {
         data = {},
         message = ''
@@ -475,44 +473,18 @@ module.exports = {
 
 
     encrypt(data, key) { // 密码加密
-        let cipher = crypto.createCipher("bf", key);
-        let newPsd = "";
-        newPsd += cipher.update(data, "utf8", "hex");
-        newPsd += cipher.final("hex");
-        return newPsd;
+
+        return CryptoJS.AES.encrypt(data, key).toString();
+
     },
 
     decrypt(data, key) { //密码解密
-        let decipher = crypto.createDecipher("bf", key);
-        let oldPsd = "";
-        oldPsd += decipher.update(data, "hex", "utf8");
-        oldPsd += decipher.final("utf8");
-        return oldPsd;
-    },
-
-    // APP加密
-    encryptApp(key, iv, data) {
-        var cipher = crypto.createCipheriv('aes-128-cbc', key, iv);
-        var cryped = cipher.update(data, 'utf8', 'binary');
-        cryped += cipher.final('binary');
-        cryped = new Buffer(cryped, 'binary').toString('base64');
-        return cryped;
-    },
-
-    decryptApp(key, iv, crypted) {
-        try {
-            crypted = new Buffer(crypted, 'base64').toString('binary');
-            var decipher = crypto.createDecipheriv('aes-128-cbc', key, iv);
-            var decoded = decipher.update(crypted, 'binary', 'utf8');
-            decoded += decipher.final('utf8');
-            return decoded;
-        } catch (error) {
-            console.log('check token failed!')
-            return '';
-        }
+        var bytes = CryptoJS.AES.decrypt(data, key);
+        return bytes.toString(CryptoJS.enc.Utf8);
     },
 
     getKeyArrByTokenId(tokenId) {
+        tokenId = decodeURIComponent(tokenId);
         var newLink = this.decrypt(tokenId, this.app.config.encrypt_key);
         var keyArr = newLink.split('$');
         return keyArr;
@@ -531,5 +503,10 @@ module.exports = {
         })
         let adminPower = adminUserInfo.group.power || {};
         return adminPower;
+    },
+
+    setMemoryCache(key, value, time) {
+        this.app.cache.set(key, value, time);
     }
+
 };

@@ -1,0 +1,3968 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "DoraCMS 内容管理系统 API 接口文档",
+    "version": "2.1.6",
+    "title": "DoraCMS 接口文档",
+    "contact": {
+      "email": "admin@html-js.cn"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "www.html-js.cn",
+  "basePath": "/api",
+  "tags": [{
+      "name": "ads",
+      "description": "广告管理"
+    },
+    {
+      "name": "content",
+      "description": "文档管理"
+    },
+    {
+      "name": "contentCategory",
+      "description": "文档类别"
+    },
+    {
+      "name": "contentMessage",
+      "description": "文档留言"
+    },
+    {
+      "name": "contentTag",
+      "description": "文档标签"
+    },
+    {
+      "name": "contentTemp",
+      "description": "模板编辑"
+    },
+    {
+      "name": "mailTemplate",
+      "description": "邮件模板"
+    },
+    {
+      "name": "user",
+      "description": "会员管理"
+    },
+    {
+      "name": "siteMessage",
+      "description": "站点消息"
+    },
+    {
+      "name": "systemNotify",
+      "description": "系统消息"
+    },
+    {
+      "name": "uploadFile",
+      "description": "文件上传"
+    },
+    {
+      "name": "versionManage",
+      "description": "app版本"
+    }, {
+      "name": "tools",
+      "description": "工具类api"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/ads/getOne": {
+      "get": {
+        "tags": [
+          "ads"
+        ],
+        "summary": "广告获取",
+        "description": "查找指定位置 banner",
+        "operationId": "ads_getOne",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "name",
+          "in": "query",
+          "description": "广告位名称",
+          "required": true,
+          "type": "string",
+          "default": "anli"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Ads"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getMyFavoriteContents": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "获取收藏文档",
+        "description": "获取我收藏的帖子列表",
+        "operationId": "content_getMyFavoriteContents",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "current",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页记录数",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Content"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getUserContents": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "我的文档",
+        "description": "查询指定用户的文档列表",
+        "operationId": "content_getUserContents",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "current",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页记录数",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "listState",
+            "in": "query",
+            "description": "针对本人可以根据状态显示文档列表(all:全部)",
+            "required": true,
+            "type": "string",
+            "default": "2"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "指定用户的ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Content"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getList": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "文档列表获取",
+        "description": "根据合适条件查询文档列表",
+        "operationId": "content_getList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "current",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页记录数",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "searchkey",
+            "in": "query",
+            "description": "搜索关键字",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "指定作者ID",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "description": "特殊分类 1:推荐帖子",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sortby",
+            "in": "query",
+            "description": "按字段排序(0:默认按时间，1:热门)",
+            "required": false,
+            "type": "string",
+            "default": "0"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Content"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getRadomContents": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "随机文档",
+        "description": "获取随机文档列表",
+        "operationId": "content_getRadomContents",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Content"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getRandomContentImg": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "随机获取图片",
+        "description": "随机获取图片",
+        "operationId": "content_getRandomContentImg",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "current",
+          "in": "query",
+          "description": "随机取几个",
+          "required": false,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getContent": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "查询文档详情",
+        "description": "查询文档详情",
+        "operationId": "content_getContent",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "id",
+          "in": "query",
+          "description": "文档ID",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Content"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getWordHtmlContent": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "word转html",
+        "description": "获取Word文档Html信息",
+        "operationId": "content_getWordHtmlContent",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [{
+          "name": "file",
+          "in": "formData",
+          "type": "file"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "description": "word解析后的html"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/addOne": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "创建文档",
+        "description": "创建文档",
+        "operationId": "content_addOne",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "文档标题",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "discription",
+            "in": "query",
+            "description": "文档简介",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sImg",
+            "in": "query",
+            "description": "文档缩略图",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "文档类型",
+            "required": true,
+            "type": "string",
+            "default": "1"
+          },
+          {
+            "name": "draft",
+            "in": "query",
+            "description": "是否草稿(1:是，0:不是)",
+            "required": true,
+            "type": "string",
+            "default": "0"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "文档标签ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "文档关键词",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "comments",
+            "in": "query",
+            "description": "文档详情",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "simpleComments",
+            "in": "query",
+            "description": "文档详情简约版，适用于移动端",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/updateOne": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "更新文档",
+        "description": "更新文档",
+        "operationId": "content_updateOne",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "id",
+            "in": "query",
+            "description": "文档ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "文档标题",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "discription",
+            "in": "query",
+            "description": "文档简介",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sImg",
+            "in": "query",
+            "description": "文档缩略图",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "文档类型",
+            "required": true,
+            "type": "string",
+            "default": "1"
+          },
+          {
+            "name": "draft",
+            "in": "query",
+            "description": "是否草稿(1:是，0:不是)",
+            "required": true,
+            "type": "string",
+            "default": "0"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "文档标签ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "description": "文档关键词",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "comments",
+            "in": "query",
+            "description": "文档详情",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "simpleComments",
+            "in": "query",
+            "description": "文档详情简约版，适用于移动端",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {}
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getNearbyContent": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "获取最近的文档",
+        "description": "获取最近的文档",
+        "operationId": "content_getNearbyContent",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "id",
+          "in": "query",
+          "description": "文档ID",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "preContent": {
+                  "type": "string",
+                  "$ref": "#/definitions/Content"
+                },
+                "nextContent": {
+                  "type": "string",
+                  "$ref": "#/definitions/Content"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getCoverList": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "获取封面背景图列表",
+        "description": "获取封面背景图列表",
+        "operationId": "content_getCoverList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ContentCover"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getCoverTypeList": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "获取封面背景图类别列表",
+        "description": "获取封面背景图类别列表",
+        "operationId": "content_getCoverTypeList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CoverType"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/getOneContentCover": {
+      "get": {
+        "tags": [
+          "content"
+        ],
+        "summary": "获取单个封面信息",
+        "description": "获取单个封面信息",
+        "operationId": "content_getOneContentCover",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "id",
+          "in": "query",
+          "description": "封面ID",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ContentCover"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/content/uploadCover": {
+      "post": {
+        "tags": [
+          "content"
+        ],
+        "summary": "上传封面",
+        "description": "上传base64合成后的背景图",
+        "operationId": "content_uploadCover",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "base64",
+          "in": "query",
+          "description": "图片base64数据",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "description": "图片URL"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentCategory/getList": {
+      "get": {
+        "tags": [
+          "contentCategory"
+        ],
+        "summary": "获取文档类别列表",
+        "description": "获取文档类别列表",
+        "operationId": "contentCategory_getList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ContentCategory"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentCategory/getTreelist": {
+      "get": {
+        "tags": [
+          "contentCategory"
+        ],
+        "summary": "获取分类的tree结构列表",
+        "description": "获取分类的tree结构列表",
+        "operationId": "contentCategory_getTreelist",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ContentCategory"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentCategory/getCurrentCategoriesById": {
+      "get": {
+        "tags": [
+          "contentCategory"
+        ],
+        "summary": "根据类别id或者文档id查询子类",
+        "description": "根据类别id或者文档id查询子类",
+        "operationId": "contentCategory_getCurrentCategoriesById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "contentId",
+            "in": "query",
+            "description": "文档ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "typeId",
+            "in": "query",
+            "description": "类别ID",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ContentCategory"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentCategory/getOne": {
+      "get": {
+        "tags": [
+          "contentCategory"
+        ],
+        "summary": "获取单个类别信息",
+        "description": "获取单个类别信息",
+        "operationId": "contentCategory_getOne",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "id",
+          "in": "query",
+          "description": "类别ID",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ContentCategory"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentMessage/postMessages": {
+      "post": {
+        "tags": [
+          "contentMessage"
+        ],
+        "summary": "发表留言",
+        "description": "发表留言",
+        "operationId": "contentMessage_postMessages",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentId",
+            "in": "query",
+            "description": "帖子ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "replyAuthor",
+            "in": "query",
+            "description": "回复者ID (二级留言必填)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "relationMsgId",
+            "in": "query",
+            "description": "回复目标留言ID (二级留言必填)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "评论内容",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentMessage/getMessages": {
+      "get": {
+        "tags": [
+          "contentMessage"
+        ],
+        "summary": "获取评论列表",
+        "description": "获取评论列表 带分页",
+        "operationId": "contentMessage_getMessages",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "current",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页记录数",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "获取指定用户的评论,传用户id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "contentId",
+            "in": "query",
+            "description": "获取指定文章的评论,传文档id",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Message"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentTag/getList": {
+      "get": {
+        "tags": [
+          "contentTag"
+        ],
+        "summary": "获取标签列表",
+        "description": "获取标签列表",
+        "operationId": "contentTag_getList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "token",
+          "in": "query",
+          "description": "登录时返回的参数鉴权",
+          "required": false,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ContentTag"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/contentTemplate/getDefaultTempInfo": {
+      "get": {
+        "tags": [
+          "contentTemp"
+        ],
+        "summary": "获取默认的模板信息",
+        "description": "获取默认的模板信息",
+        "operationId": "contentTemplate_getDefaultTempInfo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ContentTemp"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/mailTemplate/getList": {
+      "get": {
+        "tags": [
+          "mailTemplate"
+        ],
+        "summary": "获取邮件模板列表",
+        "description": "获取邮件模板列表",
+        "operationId": "mailTemplate_getList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "current",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页记录数",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MailTemplate"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/mailTemplate/getOne": {
+      "get": {
+        "tags": [
+          "mailTemplate"
+        ],
+        "summary": "获取单个邮件模板信息",
+        "description": "获取单个邮件模板信息",
+        "operationId": "mailTemplate_getOne",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "_id",
+          "in": "query",
+          "description": "Status values that need to be considered for filter",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/MailTemplate"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/mailTemplate/getTypeList": {
+      "get": {
+        "tags": [
+          "mailTemplate"
+        ],
+        "summary": "获取邮件模板类别信息",
+        "description": "获取邮件模板类别信息",
+        "operationId": "mailTemplate_getTypeList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/mailTemplate/sendEmail": {
+      "post": {
+        "tags": [
+          "mailTemplate"
+        ],
+        "summary": "发送邮件",
+        "description": "发送邮件",
+        "operationId": "mailTemplate_sendEmail",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "tempkey",
+            "in": "query",
+            "description": "邮件模板类别标识",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "in": "query",
+            "description": "邮件关联信息",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/sendVerificationCode": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "发送验证码",
+        "description": "发送验证码",
+        "operationId": "user_sendVerificationCode",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "_id",
+          "in": "query",
+          "description": "Status values that need to be considered for filter",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "messageCode": {
+                  "type": "string",
+                  "description": "验证码加密字符串"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/doLogin": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "用户登录",
+        "description": "用户登录",
+        "operationId": "user_doLogin",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "phoneNum",
+            "in": "query",
+            "description": "手机号（eq:15220064294）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "description": "国家代码（eq: 86）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "用户邮箱",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "loginType",
+            "in": "query",
+            "description": "登录类型(1:手机验证码登录 2:手机号密码登录 3:邮箱密码登录,4:邮箱验证码登录)",
+            "required": true,
+            "type": "string",
+            "default": "3"
+          },
+          {
+            "name": "messageCode",
+            "in": "query",
+            "description": "验证码",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "密码",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/touristLogin": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "游客登录",
+        "description": "游客登录",
+        "operationId": "user_touristLogin",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "userCode",
+          "in": "query",
+          "description": "客户端传递加签字符串",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/doReg": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "用户注册",
+        "description": "用户注册",
+        "operationId": "user_doReg",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "regType",
+            "in": "query",
+            "description": "注册类型(1:手机号注册  2:邮箱注册)",
+            "required": true,
+            "type": "string",
+            "default": "2"
+          },
+          {
+            "name": "phoneNum",
+            "in": "query",
+            "description": "手机号（eq:15220064294）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "description": "国家代码（eq: 86）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "用户邮箱",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "messageCode",
+            "in": "query",
+            "description": "验证码",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "密码",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "logo",
+            "in": "query",
+            "description": "头像",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "用户名",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {}
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/bindInfo": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "游客绑定邮箱或手机号",
+        "description": "游客绑定邮箱或手机号",
+        "operationId": "user_bindInfo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "type",
+            "in": "query",
+            "description": "绑定类型（1:手机号  2:邮箱）",
+            "required": true,
+            "type": "string",
+            "default": "2"
+          },
+          {
+            "name": "phoneNum",
+            "in": "query",
+            "description": "手机号（eq:15220064294）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "description": "国家代码（eq: 86）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "用户邮箱",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "messageCode",
+            "in": "query",
+            "description": "验证码",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/resetPassword": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "忘记密码找回",
+        "description": "忘记密码找回",
+        "operationId": "user_resetPassword",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "type",
+            "in": "query",
+            "description": "找回方式(1:通过手机号找回，2:通过邮箱找回)",
+            "required": true,
+            "type": "string",
+            "default": "2"
+          },
+          {
+            "name": "phoneNum",
+            "in": "query",
+            "description": "手机号（eq:15220064294）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "description": "国家代码（eq: 86）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "用户邮箱",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "messageCode",
+            "in": "query",
+            "description": "验证码",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "密码",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/modifyMyPsd": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "广告获取",
+        "description": "查找指定位置 banner",
+        "operationId": "user_modifyMyPsd",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "oldPassword",
+            "in": "query",
+            "description": "原密码",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "新密码",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/userInfo": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "获取登录用户基本信息",
+        "description": "获取登录用户基本信息",
+        "operationId": "user_userInfo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "token",
+          "in": "query",
+          "description": "登录时返回的参数鉴权",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/followCreator": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "关注/取消关注 创作者",
+        "description": "关注/取消关注 创作者",
+        "operationId": "user_followCreator",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "followState",
+            "in": "query",
+            "description": "in:关注 out:取消关注",
+            "required": true,
+            "type": "string",
+            "default": "in"
+          },
+          {
+            "name": "creatorId",
+            "in": "query",
+            "description": "创作者id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/addTags": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "关注标签",
+        "description": "关注标签",
+        "operationId": "user_addTags",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tagId",
+            "in": "query",
+            "description": "标签id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "方式(1:关注 0:取消关注)",
+            "required": true,
+            "type": "string",
+            "default": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/askContentThumbsUp": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "帖子点赞/取消点赞",
+        "description": "帖子点赞/取消点赞",
+        "operationId": "user_askContentThumbsUp",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "praiseState",
+            "in": "query",
+            "description": "in:赞 out:取消赞",
+            "required": true,
+            "type": "string",
+            "default": "in"
+          },
+          {
+            "name": "contentId",
+            "in": "query",
+            "description": "文档ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/favoriteContent": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "收藏/取消收藏帖子",
+        "description": "收藏/取消收藏帖子",
+        "operationId": "user_favoriteContent",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "favoriteState",
+            "in": "query",
+            "description": "in:收藏 out:取消收藏",
+            "required": true,
+            "type": "string",
+            "default": "in"
+          },
+          {
+            "name": "contentId",
+            "in": "query",
+            "description": "文档ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/despiseContent": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "踩/取消踩 帖子",
+        "description": "踩/取消踩 帖子",
+        "operationId": "user_despiseContent",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "despiseState",
+            "in": "query",
+            "description": "in:踩 out:取消踩",
+            "required": true,
+            "type": "string",
+            "default": "in"
+          },
+          {
+            "name": "contentId",
+            "in": "query",
+            "description": "文档ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/checkPhoneNumExist": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "校验注册手机号是否存在",
+        "description": "校验注册手机号是否存在",
+        "operationId": "user_checkPhoneNumExist",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "countryCode",
+            "in": "query",
+            "description": "国家代码",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phoneNum",
+            "in": "query",
+            "description": "注册手机号",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "checkState": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/checkHadSetLoginPassword": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "校验用户是否已设置登录密码",
+        "description": "校验用户是否已设置登录密码",
+        "operationId": "user_checkHadSetLoginPassword",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "token",
+          "in": "query",
+          "description": "登录时返回的参数鉴权",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "checkState": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/updateInfo": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "修改用户信息",
+        "description": "修改用户信息",
+        "operationId": "user_updateInfo",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "profession",
+            "in": "query",
+            "description": "职业",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "industry",
+            "in": "query",
+            "description": "行业",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "experience",
+            "in": "query",
+            "description": "教育经历",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "logo",
+            "in": "query",
+            "description": "头像",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "description": "性别 0男 1女",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "姓名",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "昵称",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "phoneNum",
+            "in": "query",
+            "description": "手机号",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "introduction",
+            "in": "query",
+            "description": "一句话介绍",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "comments",
+            "in": "query",
+            "description": "个人简介",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "description": "所在省份",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "description": "所在城市",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "birth",
+            "in": "query",
+            "description": "出生年月日 2018-09-21",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/getMyFollowInfos": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "我的关注",
+        "description": "我的关注，获取我关注的创作者，已经关注创作者的帖子等相关信息，目前不带分页",
+        "operationId": "user_getMyFollowInfos",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "token",
+          "in": "query",
+          "description": "登录时返回的参数鉴权",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "watchersList": {
+                  "type": "array",
+                  "$ref": "#/definitions/User"
+                },
+                "watchCreatorContents": {
+                  "type": "array",
+                  "$ref": "#/definitions/Content"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/logOut": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "用户登出",
+        "description": "用户登出",
+        "operationId": "user_logOut",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/sentConfirmEmail": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "邮件发送",
+        "description": "邮件发送",
+        "operationId": "user_sentConfirmEmail",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "email",
+          "in": "query",
+          "description": "用户邮箱",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/user/updateNewPsd": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Web端找回密码",
+        "description": "Web端找回密码",
+        "operationId": "user_updateNewPsd",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "tokenId",
+            "in": "query",
+            "description": "通过密码重置链接带过来的tokenId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "新密码",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "confirmPassword",
+            "in": "query",
+            "description": "确认新密码",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/siteMessage/getList": {
+      "get": {
+        "tags": [
+          "siteMessage"
+        ],
+        "summary": "获取用户消息列表",
+        "description": "获取用户消息列表",
+        "operationId": "siteMessage_getList",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "current",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页记录数",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "消息类别(1、赞赏 ，2、关注 ，3、评论或回复)",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SiteMessage"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/siteMessage/setHasRead": {
+      "get": {
+        "tags": [
+          "siteMessage"
+        ],
+        "summary": "设置消息为已读",
+        "description": "设置消息为已读",
+        "operationId": "siteMessage_setHasRead",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "消息id,多个id用逗号隔开;传 ids=all 设置所有消息为已读",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "当ids为all时，传该参数，指定全部设置已读的消息类别",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "isRead": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/siteMessage/getSiteMessageOutline": {
+      "get": {
+        "tags": [
+          "siteMessage"
+        ],
+        "summary": "获取私信概要",
+        "description": "获取私信概要",
+        "operationId": "siteMessage_getSiteMessageOutline",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "token",
+          "in": "query",
+          "description": "登录时返回的参数鉴权",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "first_privateLetter": {
+                  "type": "array",
+                  "$ref": "#/definitions/SystemNotify",
+                  "description": "未读系统消息"
+                },
+                "private_no_read_num": {
+                  "type": "number",
+                  "description": "未读系统消息数量"
+                },
+                "no_read_good_num": {
+                  "type": "number",
+                  "description": "未读点赞提醒数量"
+                },
+                "first_good_message": {
+                  "type": "array",
+                  "$ref": "#/definitions/SiteMessage",
+                  "description": "未读点赞提醒"
+                },
+                "no_read_follow_num": {
+                  "type": "number",
+                  "description": "未读关注提醒数量"
+                },
+                "first_follow_message": {
+                  "type": "array",
+                  "$ref": "#/definitions/SiteMessage",
+                  "description": "未读关注提醒"
+                },
+                "no_read_comment_num": {
+                  "type": "number",
+                  "description": "未读评论提醒数量"
+                },
+                "first_comment_message": {
+                  "type": "array",
+                  "$ref": "#/definitions/SiteMessage",
+                  "description": "未读评论提醒"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/systemNotify/getUserNotifys": {
+      "get": {
+        "tags": [
+          "systemNotify"
+        ],
+        "summary": "获取系统公告",
+        "description": "获取系统公告，带分页，需要登录态",
+        "operationId": "systemNotify_getUserNotifys",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "current",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页记录数",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SystemNotify"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/systemNotify/setNoticeRead": {
+      "get": {
+        "tags": [
+          "systemNotify"
+        ],
+        "summary": "设置系统公告为已读",
+        "description": "设置系统公告为已读",
+        "operationId": "systemNotify_setNoticeRead",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "ids",
+            "in": "query",
+            "description": "消息id,多个id用逗号隔开,全部传 all",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "isRead": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/systemNotify/delUserNotify": {
+      "get": {
+        "tags": [
+          "systemNotify"
+        ],
+        "summary": "删除公告",
+        "description": "删除指定公告",
+        "operationId": "systemNotify_delUserNotify",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "ids",
+            "in": "query",
+            "description": "消息id,多个id用逗号隔开,全部传 all",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "description": "登录时返回的参数鉴权",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/upload/files": {
+      "post": {
+        "tags": [
+          "uploadFile"
+        ],
+        "summary": "文件上传",
+        "description": "文件上传，上传用户头像等，限单个文件",
+        "operationId": "upload_files",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [{
+          "name": "file",
+          "in": "formData",
+          "type": "file"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/upload/filePath": {
+      "post": {
+        "tags": [
+          "uploadFile"
+        ],
+        "summary": "文件上传(根据路径)",
+        "description": "文件上传(根据路径)",
+        "operationId": "upload_filePath",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "imgPath",
+            "in": "query",
+            "description": "图片预设上传路径（本地上传适用）",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "localImgPath",
+            "in": "query",
+            "description": "图片服务器实际路径",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/versionManage/getAppVersion": {
+      "get": {
+        "tags": [
+          "versionManage"
+        ],
+        "summary": "获取APP版本信息",
+        "description": "获取APP版本信息",
+        "operationId": "versionManage_getAppVersion",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "versionCode",
+            "in": "query",
+            "description": "版本号(传字符串类型整数)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "client",
+            "in": "query",
+            "description": "客户端类型(0:安卓，1:ios)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/VersionManage"
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/createQRCode": {
+      "get": {
+        "tags": [
+          "tools"
+        ],
+        "summary": "获取二维码",
+        "description": "根据链接获取二维码",
+        "operationId": "versionManage_getAppVersion",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "text",
+          "in": "query",
+          "description": "需要转成二维码的字符",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    },
+    "/getImgCode": {
+      "get": {
+        "tags": [
+          "tools"
+        ],
+        "summary": "获取图片验证码",
+        "description": "获取图片随机验证码，用于登录校验等场景",
+        "operationId": "versionManage_getAppVersion",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [{}]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "petstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:pets": "modify pets in your account",
+        "read:pets": "read your pets"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "Ads": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "default": "0"
+        },
+        "carousel": {
+          "type": "boolean",
+          "default": "true"
+        },
+        "state": {
+          "type": "boolean",
+          "default": "true"
+        },
+        "height": {
+          "type": "number",
+          "default": "50"
+        },
+        "date": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "xml": {
+            "name": "items",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/AdsItems"
+          }
+        },
+        "comments": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Ads"
+      }
+    },
+    "AdsItems": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "appLink": {
+          "type": "string"
+        },
+        "appLinkType": {
+          "type": "string"
+        },
+        "width": {
+          "type": "string"
+        },
+        "height": {
+          "type": "number",
+          "default": 1
+        },
+        "target": {
+          "type": "string",
+          "default": "_blank"
+        },
+        "sImg": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Ads"
+      }
+    },
+    "Announce": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "1",
+            "2",
+            "3"
+          ],
+          "default": "available"
+        },
+        "target": {
+          "type": "string",
+          "$ref": "#/definitions/Content"
+        },
+        "targetType": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "sender": {
+          "type": "string",
+          "$ref": "#/definitions/User"
+        },
+        "adminSender": {
+          "type": "string",
+          "$ref": "#/definitions/AdminUser"
+        },
+        "systemSender": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Announce"
+      }
+    },
+    "BackUpdata": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "logs": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Backupdata"
+      }
+    },
+    "Content": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "stitle": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "default": "1"
+        },
+        "categories": {
+          "type": "array",
+          "xml": {
+            "name": "category",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/ContentCategory"
+          }
+        },
+        "sortPath": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "xml": {
+            "name": "contentTag",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/ContentTag"
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sImg": {
+          "type": "string",
+          "default": "/upload/images/defaultImg.jpg"
+        },
+        "sImgType": {
+          "type": "string",
+          "default": "2"
+        },
+        "cover": {
+          "type": "string"
+        },
+        "videoImg": {
+          "type": "string",
+          "default": ""
+        },
+        "discription": {
+          "type": "string"
+        },
+        "appShowType": {
+          "type": "string",
+          "default": "1"
+        },
+        "imageArr": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "videoArr": {
+          "type": "array",
+          "xml": {
+            "name": "videoArr",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string"
+          }
+        },
+        "duration": {
+          "type": "string",
+          "default": "0:01"
+        },
+        "date": {
+          "type": "string"
+        },
+        "updateDate": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string",
+          "$ref": "#/definitions/AdminUser"
+        },
+        "uAuthor": {
+          "type": "string",
+          "$ref": "#/definitions/User"
+        },
+        "state": {
+          "type": "string",
+          "default": "0"
+        },
+        "draft": {
+          "type": "string",
+          "default": "0"
+        },
+        "dismissReason": {
+          "type": "string"
+        },
+        "isTop": {
+          "type": "number",
+          "default": "0"
+        },
+        "roofPlacement": {
+          "type": "string",
+          "default": "0"
+        },
+        "clickNum": {
+          "type": "number",
+          "default": "1"
+        },
+        "comments": {
+          "type": "string"
+        },
+        "simpleComments": {
+          "type": "string"
+        },
+        "markDownComments": {
+          "type": "string"
+        },
+        "commentNum": {
+          "type": "number",
+          "default": "0"
+        },
+        "likeNum": {
+          "type": "number",
+          "default": "0"
+        }
+      },
+      "xml": {
+        "name": "Content"
+      }
+    },
+    "ContentCategory": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "number",
+          "default": "0"
+        },
+        "name": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "default": "1"
+        },
+        "sortId": {
+          "type": "number",
+          "default": "1"
+        },
+        "parentId": {
+          "type": "string",
+          "default": "0"
+        },
+        "enable": {
+          "type": "boolean",
+          "default": "true"
+        },
+        "date": {
+          "type": "string"
+        },
+        "contentTemp": {
+          "type": "string",
+          "$ref": "#/definitions/TemplateItems"
+        },
+        "defaultUrl": {
+          "type": "string",
+          "default": ""
+        },
+        "homePage": {
+          "type": "string",
+          "default": "ui"
+        },
+        "sortPath": {
+          "type": "string",
+          "default": "0"
+        },
+        "comments": {
+          "type": "string"
+        },
+        "sImg": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "ContentCategory"
+      }
+    },
+    "ContentTag": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "comments": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "ContentTag"
+      }
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "contentId": {
+          "type": "string",
+          "$ref": "#/definitions/Content"
+        },
+        "contentTitle": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string",
+          "$ref": "#/definitions/User"
+        },
+        "adminAuthor": {
+          "type": "string",
+          "$ref": "#/definitions/Content"
+        },
+        "replyAuthor": {
+          "type": "string",
+          "$ref": "#/definitions/User"
+        },
+        "adminReplyAuthor": {
+          "type": "string",
+          "$ref": "#/definitions/AdminUser"
+        },
+        "state": {
+          "type": "boolean",
+          "default": false
+        },
+        "utype": {
+          "type": "string",
+          "default": "0"
+        },
+        "relationMsgId": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "praise_num": {
+          "type": "number",
+          "default": 0
+        },
+        "had_praise": {
+          "type": "boolean",
+          "default": false
+        },
+        "praiseMembers": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string",
+          "default": "输入评论内容..."
+        }
+      },
+      "xml": {
+        "name": "Message"
+      }
+    },
+    "ContentTemp": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string",
+          "default": "defaultTemp"
+        },
+        "version": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "items": {
+          "type": "array",
+          "xml": {
+            "name": "templateItems",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/TemplateItems"
+          }
+        },
+        "sImg": {
+          "type": "string",
+          "default": "/stylesheets/backstage/img/screenshot.png"
+        },
+        "author": {
+          "type": "string",
+          "default": "doramart"
+        },
+        "using": {
+          "type": "boolean",
+          "default": false
+        },
+        "date": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "ContentTemp"
+      }
+    },
+    "TemplateItems": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "forder": {
+          "type": "string",
+          "default": "2-stage-default"
+        },
+        "cateName": {
+          "type": "string",
+          "default": "contentList"
+        },
+        "detailName": {
+          "type": "string",
+          "default": "detail"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "default": false
+        },
+        "date": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "TemplateItems"
+      }
+    },
+    "HelpCenter": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string",
+          "default": "1"
+        },
+        "state": {
+          "type": "boolean",
+          "default": "false"
+        },
+        "time": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "default": "0"
+        },
+        "updateTime": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string",
+          "$ref": "#/definitions/AdminUser"
+        },
+        "comments": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "HelpCenter"
+      }
+    },
+    "MailDelivery": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "createTime": {
+          "type": "string"
+        },
+        "updateTime": {
+          "type": "string"
+        },
+        "sender": {
+          "type": "string",
+          "$ref": "#/definitions/AdminUser"
+        },
+        "emailType": {
+          "type": "string",
+          "$ref": "#/definitions/MailTemplate"
+        },
+        "state": {
+          "type": "string",
+          "default": "0"
+        },
+        "timing": {
+          "type": "string"
+        },
+        "comments": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "default": "0"
+        },
+        "targetType": {
+          "type": "string"
+        },
+        "targets": {
+          "type": "array",
+          "xml": {
+            "name": "user",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      },
+      "xml": {
+        "name": "MailDelivery"
+      }
+    },
+    "MailTemplate": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "createTime": {
+          "type": "string"
+        },
+        "updateTime": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subTitle": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "MailTemplate"
+      }
+    },
+    "SiteMessage": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string",
+          "$ref": "#/definitions/Content"
+        },
+        "message": {
+          "type": "string",
+          "$ref": "#/definitions/Message"
+        },
+        "type": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "isRead": {
+          "type": "boolean",
+          "default": "false"
+        },
+        "activeUser": {
+          "type": "string",
+          "$ref": "#/definitions/User"
+        },
+        "passiveUser": {
+          "type": "string",
+          "$ref": "#/definitions/User"
+        }
+      },
+      "xml": {
+        "name": "SiteMessage"
+      }
+    },
+    "SystemNotify": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "isRead": {
+          "type": "boolean",
+          "default": "false"
+        },
+        "user": {
+          "type": "string",
+          "$ref": "#/definitions/User"
+        },
+        "systemUser": {
+          "type": "string",
+          "$ref": "#/definitions/AdminUser"
+        },
+        "notify": {
+          "type": "string",
+          "$ref": "#/definitions/Announce"
+        },
+        "date": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "SystemNotify"
+      }
+    },
+    "SystemOptionLog": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "logs": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "SystemOptionLog"
+      }
+    },
+    "UploadFile": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "createTime": {
+          "type": "string"
+        },
+        "updateTime": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "local",
+            "qn",
+            "oss"
+          ],
+          "default": "available"
+        },
+        "uploadPath": {
+          "type": "string"
+        },
+        "qn_bucket": {
+          "type": "string"
+        },
+        "qn_accessKey": {
+          "type": "string"
+        },
+        "qn_secretKey": {
+          "type": "string"
+        },
+        "qn_zone": {
+          "type": "string"
+        },
+        "qn_endPoint": {
+          "type": "string"
+        },
+        "oss_bucket": {
+          "type": "string"
+        },
+        "oss_accessKey": {
+          "type": "string"
+        },
+        "oss_secretKey": {
+          "type": "string"
+        },
+        "oss_region": {
+          "type": "string"
+        },
+        "oss_endPoint": {
+          "type": "string"
+        },
+        "oss_apiVersion": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UploadFile"
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "enable": {
+          "type": "boolean",
+          "default": true
+        },
+        "password": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "idType": {
+          "type": "string",
+          "default": "1"
+        },
+        "comments": {
+          "type": "string"
+        },
+        "introduction": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string",
+          "default": "/static/upload/images/defaultlogo.png"
+        },
+        "group": {
+          "type": "string",
+          "default": "0"
+        },
+        "birth": {
+          "type": "string",
+          "default": "1770-01-01T00:00:00.000Z"
+        },
+        "gender": {
+          "type": "string",
+          "default": "0"
+        },
+        "despises": {
+          "type": "array",
+          "xml": {
+            "name": "despises",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/Content"
+          }
+        },
+        "despiseMessage": {
+          "type": "array",
+          "xml": {
+            "name": "despiseMessage",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/Message"
+          }
+        },
+        "favorites": {
+          "type": "array",
+          "xml": {
+            "name": "favorites",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/Content"
+          }
+        },
+        "praiseContents": {
+          "type": "array",
+          "xml": {
+            "name": "praiseContents",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/Content"
+          }
+        },
+        "praiseMessages": {
+          "type": "array",
+          "xml": {
+            "name": "praiseMessages",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/Message"
+          }
+        },
+        "state": {
+          "default": "1"
+        },
+        "followers": {
+          "type": "array",
+          "xml": {
+            "name": "followers",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/User"
+          }
+        },
+        "watchers": {
+          "type": "array",
+          "xml": {
+            "name": "followers",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/User"
+          }
+        },
+        "watchTags": {
+          "type": "array",
+          "xml": {
+            "name": "watchTags",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string",
+            "$ref": "#/definitions/ContentTag"
+          }
+        },
+        "retrieve_time": {
+          "type": "string"
+        },
+        "loginActive": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "AdminUser": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string",
+          "default": "/static/upload/images/defaultlogo.png"
+        },
+        "enable": {
+          "type": "boolean",
+          "default": false
+        },
+        "state": {
+          "type": "string",
+          "default": "1"
+        },
+        "auth": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "xml": {
+        "name": "ContentTag"
+      }
+    },
+    "VersionManage": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "client": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "version": {
+          "type": "number"
+        },
+        "versionName": {
+          "type": "string"
+        },
+        "forcibly": {
+          "type": "boolean",
+          "default": "false"
+        },
+        "url": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "VersionManage"
+      }
+    },
+    "ContentCover": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "createTime": {
+          "type": "string"
+        },
+        "updateTime": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "$ref": "#/definitions/CoverType"
+        },
+        "cover": {
+          "type": "string"
+        },
+        "width": {
+          "type": "string"
+        },
+        "height": {
+          "type": "string"
+        },
+        "backgroundDefaultCss": {
+          "type": "string",
+          "default": ""
+        },
+        "titleColor": {
+          "type": "string",
+          "default": "#409EFF"
+        },
+        "titleSize": {
+          "type": "string",
+          "default": "27"
+        }
+      },
+      "xml": {
+        "name": "ContentCover"
+      }
+    },
+    "CoverType": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "createTime": {
+          "type": "string"
+        },
+        "updateTime": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "structure": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "xml": {
+        "name": "CoverType"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "DoraCMS 开发文档",
+    "url": "https://www.doracms.com/"
+  }
+}

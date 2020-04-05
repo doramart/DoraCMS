@@ -1,4 +1,4 @@
-# DoraCMS 2.1.5
+# DoraCMS 2.1.6
 
 ![DoraCMS](https://ae01.alicdn.com/kf/H114ba4fd0eab4f36a4b16d970e11222dz.png "DoraCMS")
 
@@ -9,45 +9,60 @@
 
 
 
-## 2.1.5 版本更新
+## 2.1.6 版本更新
 
-* 抽离了邮件发送为独立插件
-* 新增邮件管理，管理邮件模板，可以批量定时发送邮件
-* 优化了绑定编辑的逻辑
-* 内容管理添加了分类筛选，并增加了导入word 格式的功能
-* 优化了分类管理的样式和删除逻辑
-* 修复了管理员编辑，角色无法正确读出的问题以及编辑管理员信息偶尔会导致密码被改动的问题
-* 系统配置中加入了网站logo上传功能
-* 修复了在宽屏下默认模板会拉长的问题
-* 后台管理图标优化以及细节修改
+* `api` 文档换成 `swagger-ui`
+* 修复 `gulp` 不兼容 `node 12+` 的问题
+* 修改了后台密码的加密方式
+* 文档添加加入了自动生成缩略图功能
+* 文档管理加入了回收站功能
+* 加入插件功能
+* 加入数据恢复功能
+* 补充国际化文件
+* 修复了一些其它bug
 
 
 ## 说明
 
-### DoraCMS 2.1.5 使用的技术栈：
+### DoraCMS 2.1.6 使用的技术栈：
 
 ```
-1、nodejs 10 + eggjs 2
+1、nodejs 12 + eggjs 2
 2、vue-cli
 3、mongodb 4+
 ```
 
 文档： [DoraCMS 开发文档](https://www.doracms.com)  
+API： [DoraCMS API文档](https://www.html-js.cn/static/apidoc/index.html)  
 演示地址： [前端开发俱乐部](https://www.html-js.cn)  
 
 后台登录： https://www.html-js.cn/dr-admin  
 测试账号：doracms/123456  
 
 
-## 如何安装 `DoraCMS`
+## 快速开始体验 `DoraCMS`（推荐）
+> 前提是您需要提前安装 `docker`. 这里介绍的是本地体验，如果你想运行在服务器上，需要先修改配置文件 config/config.local.js 里的 `server_path` `server_api` 为您服务器的 `IP` + `端口号`。该操作仅为快速体验，如果正式环境部署，请移步后面的 `如何安装 DoraCMS（开发环境/生产环境）`
+
+`DoraCMS` 可以依托 `docker-compose` 快速在本地跑起来，您只需要这样做：
+
+
+* 下载代码到本地，进入代码根目录，终端执行
+```
+docker-compose up -d
+```
+接下来等待几分钟，看到执行成功后，浏览器访问
+```
+http://127.0.0.1:8080/
+```
+
+## 如何安装 `DoraCMS`（开发环境/生产环境）
 ### 在安装 `DoraCMS` 之前，需要确保您已经完成了以下工作
 
-* 已经安装好了 `nodejs` , 版本 `v10.19.0`
+* 已经安装好了 `nodejs` , 版本 `v12.13.0`
 * 已经安装并启动了 `Mongodb`，版本 `4.0`
-* 服务器设置了 nodejs 环境变量，并将 mongodb bin目录加入到了环境变量
 
 ### 安装 `DoraCMS` 只需要一步
-> 在完成上述准备工作后，代码根目录下执行
+> 在完成上述准备工作后，代码根目录下执行(如果下次重新执行，需要重新checkout代码回到仓库原始状态)
 
 ```
 npm run doracms
@@ -57,13 +72,13 @@ npm run doracms
 ### 下载并安装 `nodejs`
 `nodejs` 可以去官网下载，你可以去 [安装包列表](https://nodejs.org/dist/latest-v10.x/) 中找到需要的安装包，具体的安装方式可自行百度。
 ```javascript
-https://nodejs.org/dist/latest-v10.x/node-v10.19.0.pkg  // Mac Pro
-https://nodejs.org/dist/latest-v10.x/node-v10.19.0-x64.msi  // windows 64位
-https://nodejs.org/dist/latest-v10.x/node-v10.19.0-x86.msi  // windows 32位
+https://nodejs.org/dist/latest-v10.x/node-v12.13.0.pkg  // Mac Pro
+https://nodejs.org/dist/latest-v10.x/node-v12.13.0-x64.msi  // windows 64位
+https://nodejs.org/dist/latest-v10.x/node-v12.13.0-x86.msi  // windows 32位
 ```
 安装完成后，打开终端，确认是否安装成功
 ```
-node -v // v10.19.0
+node -v // v12.13.0
 ```
 
 ### 安装 `mongodb`
@@ -77,81 +92,12 @@ https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.16.tgz  // Mac 安装�
 
 ![目录结构](https://cdn.html-js.cn/cms/upload/images/WX20200314-230731@2x.png)
 
-### 添加环境变量，不同平台添加方式有所不同
-#### Windows
-> windows 下添加环境变量有时候需要重启电脑才能生效
-* 添加 `nodejs` 环境变量
-
-![输入图片说明](https://cdn.html-js.cn/cms/upload/images/Snipaste_2020-03-14_23-17-24.png)
-
-终端查看是否生效
-```
-node
-process.env.NODE_ENV
-```
-![终端校验](https://cdn.html-js.cn/cms/upload/images/WX20200314-232407@2x.png)
-
-
-* 添加 `mongodb bin` 目录到 `path` 环境变量
-
-![环境变量](https://cdn.html-js.cn/cms/upload/images/Snipaste_2020-03-14_23-37-53.png)
-
-终端查看是否生效
-```
-mongod --help
-```
-![环境变量](https://cdn.html-js.cn/cms/upload/images/Snipaste_2020-03-14_23-40-24.png)
-
-#### Mac
-
-* 直接在配置文件中添加 
-
-```javascript
-vim ~/.bash_profile
-export NODE_ENV=development
-#下面为mongodb bin 路径
-MONGODBPATH=/Users/Dora/Documents/dora/soft/mongodb/bin
-PATH="${MONGODBPATH}:${PATH}"
-export PATH
-```
-修改完之后需要 `source` 一下使其生效
-```
-source ~/.bash_profile
-```
-终端查看效果
-```
-echo $NODE_ENV
-```
-![终端校验](https://cdn.html-js.cn/cms/upload/images/WX20200314-232153@2x.png)
-
-#### Ubuntu(服务器，生产环境)
-> 和 mac 类似，只是修改的文件有所不同
-
-* 直接在配置文件中添加 
-
-```javascript
-vim /etc/profile
-export NODE_ENV=production
-#下面为mongodb bin 路径
-MONGODBPATH=/home/Dora/Documents/dora/soft/mongodb/bin
-PATH="${MONGODBPATH}:${PATH}"
-export PATH
-```
-修改完之后需要 `source` 一下使其生效
-```
-source /etc/profile
-```
-终端查看效果
-```
-echo $NODE_ENV
-```
-![输入图片说明](https://cdn.html-js.cn/cms/upload/images/WX20200314-232942@2x.png)
 
 
 ### 启动 `mongodb`
 > 不同平台启动 mongodb 方式基本相同
 
-#### 新建配置文件 `mongodb.conf`
+#### 新建配置文件 `mongodb.config`
 ```
 dbpath=/Users/dora/Documents/dora/softs/mongodb/data/  #数据存放路径
 
@@ -180,11 +126,46 @@ mongod --config C:\mongodb\mongod.conf
 
 #### 修改配置文件
 
-> install -> serverConfig.js，开发环境可以不用改，生产环境根据实际情况修改，配置文件中的备注很明确，请仔细阅读
+> install -> serverConfig.js，根据实际情况修改，配置文件中的备注很明确，请仔细阅读
 
 ```
 cd install
 vim serverConfig.js
+```
+##### 参数配置详情
+> 一定要注意 `mongodbBinPath` ,在 `windows` 环境下路径中 `\` 必须改为 `/` 如 `C:/mongodb/mongodb/bin/` 才是正确的，另外，`bin` 路径中不要包含中文
+
+```
+/**
+ * 服务器配置信息
+ * @param  {String} env            [[必填]服务器环境 development:开发环境，production:生产环境]
+ * @param  {String} mongodbBinPath [[必填]Mongodb bin目录路径，注意结尾必须带 / ，windows 环境下路径中 \ 必须改为 / 如 C:/mongodb/mongodb/bin/ ]
+ * @param  {String} dbIP           [[必填]Mongodb 数据库IP，默认 127.0.0.1 默认不用更改]
+ * @param  {String} dbPort         [[必填]Mongodb 数据库端口号，默认为 27017 默认不用更改]
+ * @param  {String} dbName         [Mongodb 数据库名称，默认为 doracms2 默认不用更改]
+ * @param  {String} dbUserName     [Mongodb 数据库用户名，没有可以不填，和 dbPassword 同时存在或同时为空]
+ * @param  {String} dbPassword     [Mongodb 数据库密码，没有可以不填，和 dbUserName 同时存在或同时为空]
+ * @param  {String} os             [[必填]服务器平台 Mac,Windows,Linux 可选]
+ * @param  {String} domain         [[必填]网站访问域名或IP+端口号，需要带http/https,如 https://www.html-js.cn, http://120.25.150.169:8080]
+ * @param  {String} port           [[必填]DoraCMS 启动默认端口号，domain 中如果也有端口号，那么理论上这两个端口号是相同的]
+ * @param  {String} tbAgent        [[必填]NPM安装包是否启用淘宝代理 1：启用 0：不启用，建议启用]
+ */
+
+ const serverConfig = {
+    env: "development",
+    mongodbBinPath: "C:/mongodb/mongodb/bin/",
+    dbIP: "127.0.0.1",
+    dbPort: "27017",
+    dbName: "doracms2",
+    dbUserName: "",
+    dbPassword: "",
+    os: "Windows",
+    domain: "http://127.0.0.1:8080",
+    port: 8080,
+    tbAgent: "1",
+}
+
+module.exports = serverConfig;
 ```
 
 #### 代码根目录执行
@@ -215,28 +196,30 @@ https://www.html-js.cn // 生产环境配置了域名并做好了域名解析
 
 ## 其它
 
-### 开发模式启动
+### 开发环境启动
 ```javascript
 npm run dev
 ```
 
-### 生产模式启动
+### 生产环境启动
 ```javascript
-npm start
+pm2 start server.js --name doracms2
 ```
 
-### 生产模式停止
+### 生产环境停止
 ```javascript
-npm run stop
+pm2 stop doracms2
 ```
 
-### 生成api文档
+### 生产环境重启
 ```javascript
-npm run makePrdDoc
+pm2 restart doracms2
+```
 
+### api文档
+```javascript
 api访问地址： http://127.0.0.1:8080/static/apidoc/index.html
 ```
-
 
 ### 首页
 ```javascript

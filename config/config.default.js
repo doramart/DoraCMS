@@ -2,15 +2,15 @@
 const path = require('path');
 const fs = require('fs');
 module.exports = appInfo => {
-  // console.log('--appInfo-', appInfo);
+
   return {
 
-    keys: 'doracms',
+    keys: 'doracms2',
 
     cluster: {
       listen: {
         port: 8080,
-        hostname: '127.0.0.1',
+        hostname: '',
       }
     },
 
@@ -59,6 +59,8 @@ module.exports = appInfo => {
       defaultLocale: 'zh-CN',
     },
 
+    
+
     // cdn域名
     origin: 'https://cdn.html-js.cn',
     // 系统服务提供商
@@ -69,7 +71,6 @@ module.exports = appInfo => {
     temp_locales_forder: process.cwd() + '/config/locale/',
     // 后台管理根目录
     admin_base_path: '/admin',
-    mongo_bin_path: '/usr/local/mongodb/mongodb-linux-x86_64-ubuntu1604-4.0.0/bin/', // mongdb bin 目录
 
     // 加密解密
     session_secret: 'doracms_secret',
@@ -77,8 +78,6 @@ module.exports = appInfo => {
     encrypt_key: 'dora',
     salt_aes_key: "doracms_",
     salt_md5_key: "dora",
-    encryptApp_key: '751f621ea5c8f930',
-    encryptApp_vi: '2624750004598718',
 
     // 安全性校验
     security: {
@@ -122,6 +121,17 @@ module.exports = appInfo => {
     backUpDataRouter: {
       match: [ctx => ctx.path.startsWith('/manage/backupDataManage')],
     },
+
+    uploadFileRouter: {
+      uploadFileFormat: {
+        "upload_path": process.cwd() + '/app/public',
+        "static_root_path": 'cms' // 针对云存储可设置
+      },
+      match: [ctx => ctx.path.startsWith('/manage/uploadFile'), ctx => ctx.path.startsWith('/api/upload/files'), ctx => ctx.path.startsWith('/api/upload/ueditor'), , ctx => ctx.path.startsWith('/api/upload/filePath')],
+    },
+
+    
+
 
     // CONFIG_NORMALPLUGIN_BEGIN
 
@@ -234,26 +244,12 @@ module.exports = appInfo => {
     },
     // doraMailDeliveryPluginEnd
 
-    renderCmsRouter: {
-      match: [ctx => ctx.path.startsWith('/manage/renderCms')],
-    },
-
 
     // doraMiddleStagePluginBegin
     doraMiddleStageRouter: {
       match: [ctx => ctx.path.startsWith('/manage/singleUser')],
     },
     // doraMiddleStagePluginEnd
-
-    // doraUploadFilePluginBegin
-    uploadFileRouter: {
-      uploadFileFormat: {
-        "upload_path": process.cwd() + '/app/public',
-        "static_root_path": 'cms' // 针对云存储可设置
-      },
-      match: [ctx => ctx.path.startsWith('/manage/uploadFile'), ctx => ctx.path.startsWith('/api/upload/files'), ctx => ctx.path.startsWith('/api/upload/ueditor'), , ctx => ctx.path.startsWith('/api/upload/filePath')],
-    },
-    // doraUploadFilePluginEnd
 
     // CONFIG_NORMALPLUGIN_END
 

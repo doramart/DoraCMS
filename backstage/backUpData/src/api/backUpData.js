@@ -17,6 +17,14 @@ export function bakUpCMSData(data) {
   })
 }
 
+export function restoreCMSData(data) {
+  return request({
+    url: '/manage/backupDataManage/restore',
+    method: 'post',
+    data
+  })
+}
+
 export function deletetBakDataItem(params) {
   return request({
     url: '/manage/backupDataManage/deleteDataItem',

@@ -85,7 +85,8 @@ import {
   addPlugin,
   getOneShopPlugin,
   createInvoice,
-  checkInvoice
+  checkInvoice,
+  pluginHeartBeat
 } from "@/api/plugin";
 
 export default {
@@ -99,11 +100,31 @@ export default {
       green: { color: "#13CE66" },
       red: { color: "#FF4949" },
       loading: false,
-      multipleSelection: []
+      multipleSelection: [],
+      heartBeatEvt: ""
     };
   },
 
   methods: {
+    heartBeat() {
+      let _this = this;
+      pluginHeartBeat()
+        .then(result => {
+          if (result.status === 200) {
+            clearTimeout(_this.heartBeat);
+            window.location.reload();
+          } else {
+            if (!_this.heartBeatEvt) {
+              _this.heartBeatEvt = setInterval(_this.heartBeat, 2000);
+            }
+          }
+        })
+        .catch(() => {
+          if (!_this.heartBeatEvt) {
+            _this.heartBeatEvt = setInterval(_this.heartBeat, 2000);
+          }
+        });
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -144,11 +165,10 @@ export default {
         })
         .then(result => {
           if (result.status === 200) {
-            this.$store.dispatch("plugin/getShopPluginList", this.pageInfo);
-            this.$message({
-              message: "恭喜，插件安装成功！",
-              type: "success"
-            });
+            // this.$store.dispatch("plugin/getShopPluginList", this.pageInfo);
+            setTimeout(() => {
+              this.heartBeat();
+            }, 3000);
           } else {
             this.$message.error(result.message);
           }
@@ -190,7 +210,7 @@ export default {
                 }
               );
               this.checkPaymentStateTask = setInterval(() => {
-                this.checkTradeState({noInvoice});
+                this.checkTradeState({ noInvoice });
               }, 5000);
             }
           } else {

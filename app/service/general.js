@@ -2,12 +2,28 @@
  * @Author: doramart 
  * @Date: 2019-06-21 11:14:02 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-19 14:11:30
+ * @Last Modified time: 2020-03-14 12:01:05
  */
 
 
 const shortid = require('shortid');
-const _ = require('lodash')
+const _ = require('lodash');
+
+// 关键操作记录日志
+const _addActionUserInfo = (ctx, params = {}) => {
+
+    let infoStr = '';
+
+    if (!_.isEmpty(ctx.session.adminUserInfo)) {
+        infoStr += 'actionUser: ' + JSON.stringify(ctx.session.adminUserInfo) + ',';
+    }
+
+    if (!_.isEmpty(params)) {
+        infoStr += 'actionParams: ' + JSON.stringify(params) + ',';
+    }
+
+    return infoStr;
+}
 
 /**
  * 通用列表
@@ -94,9 +110,11 @@ exports._list = async (Model, payload, {
         for (const querykey in query) {
             if (query.hasOwnProperty(querykey)) {
                 const queryValue = query[querykey];
-                _.assign(pageInfoParams, {
-                    [querykey]: queryValue || ''
-                });
+                if (typeof queryValue != 'object') {
+                    _.assign(pageInfoParams, {
+                        [querykey]: queryValue || ''
+                    });
+                }
             }
         }
         return {
@@ -157,6 +175,11 @@ exports._removes = async (ctx, Model, ids, key) => {
         ids = ids.split(',');
     }
 
+    ctx.logger.warn(_addActionUserInfo(ctx, {
+        ids,
+        key
+    }));
+
     return await Model.deleteMany({
         [key]: {
             $in: ids
@@ -184,7 +207,7 @@ exports._removeAll = async (Model) => {
  * @param  {[type]}   ids [description]
  */
 
-exports._safeDelete = async (ctx, Model, ids) => {
+exports._safeDelete = async (ctx, Model, ids, updateObj = {}) => {
 
     if (!checkCurrentId(ids)) {
         throw new Error(ctx.__("validate_error_params"));
@@ -192,14 +215,20 @@ exports._safeDelete = async (ctx, Model, ids) => {
         ids = ids.split(',');
     }
 
+    let queryObj = {
+        state: '0'
+    };
+
+    if (!_.isEmpty(updateObj)) {
+        queryObj = updateObj;
+    }
+
     return await Model.updateMany({
         _id: {
             $in: ids
         }
     }, {
-        $set: {
-            state: '0'
-        }
+        $set: queryObj
     })
 
 }
@@ -246,13 +275,18 @@ exports._update = async (ctx, Model, _id, data, query = {}) => {
  * @param  {[type]} data    [description]
  */
 
-exports._updateMany = async (ctx, Model, ids = [], data, query = {}) => {
+exports._updateMany = async (ctx, Model, ids = '', data, query = {}) => {
 
     if (_.isEmpty(ids) && _.isEmpty(query)) {
         throw new Error(ctx.__('validate_error_params'));
     }
 
     if (!_.isEmpty(ids)) {
+        if (!checkCurrentId(ids)) {
+            throw new Error(ctx.__("validate_error_params"));
+        } else {
+            ids = ids.split(',');
+        }
         query = _.assign({}, query, {
             _id: {
                 $in: ids

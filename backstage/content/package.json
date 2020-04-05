@@ -12,6 +12,7 @@
     "crypto-js": "^3.1.9-1",
     "element-ui": "^2.11.1",
     "fuse.js": "^3.4.5",
+    "html2canvas": "^1.0.0-rc.5",
     "js-cookie": "^2.2.1",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",

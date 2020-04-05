@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-contenttags",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "contentTag",
   "eggPlugin": {
     "name": "doraContentTags"

@@ -2,16 +2,15 @@
  * @Author: doramart 
  * @Date: 2019-06-27 17:16:32 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-17 17:44:26
+ * @Last Modified time: 2020-03-20 08:53:05
  */
 const Controller = require('egg').Controller;
 const jwt = require('jsonwebtoken')
 const _ = require('lodash');
-
+var CryptoJS = require("crypto-js");
 const {
     adminUserRule
 } = require('@validate')
-
 
 class AdminController extends Controller {
 
@@ -70,12 +69,11 @@ class AdminController extends Controller {
 
             const formObj = {
                 userName: fields.userName,
-                password: fields.password
             }
 
-            ctx.validate(adminUserRule.login(ctx), formObj)
-
-
+            ctx.validate(adminUserRule.login(ctx), Object.assign({}, formObj, {
+                password: fields.password
+            }))
 
             let user = await ctx.service.adminUser.item(ctx, {
                 query: formObj,
@@ -90,6 +88,14 @@ class AdminController extends Controller {
             })
 
             if (!_.isEmpty(user)) {
+
+                let userPsd = user.password;
+                // 兼容老的加密方式
+                if (userPsd !== CryptoJS.MD5(this.app.config.salt_md5_key + fields.password).toString() &&
+                    fields.password != ctx.helper.decrypt(userPsd, this.app.config.encrypt_key)) {
+                    throw new Error(ctx.__("validate_user_forbiden"));
+                }
+
                 if (!user.enable) {
                     throw new Error(ctx.__("validate_user_forbiden"));
                 }

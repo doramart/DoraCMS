@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-09-23 09:25:24 
  * @Last Modified by: doramart
- * @Last Modified time: 2019-11-19 14:58:05
+ * @Last Modified time: 2020-04-02 18:21:16
  */
 'use strict';
 
@@ -76,8 +76,7 @@ module.exports = {
                     if (parsedUri.db) {
                         parameters.push(`-d "${parsedUri.db}"`)
                     }
-                    let mongoBinPath = app.config.mongo_bin_path;
-                    let cmdstr = (isDev ? '' : mongoBinPath) + `mongoimport ${parameters.join(' ')} -c ${tabname} --upsert --drop "${dataPath}"`
+                    let cmdstr = `${app.config.mongodb.binPath}mongoimport ${parameters.join(' ')} -c ${tabname} --upsert --drop "${dataPath}"`
                     child.execSync(cmdstr);
                 }
 
@@ -177,21 +176,21 @@ module.exports = {
             let app = this;
             let pluginConfigPath = path.join(app.config.baseDir, `config/plugin.js`);
             let configDefaultPath = path.join(app.config.baseDir, `config/config.default.js`);
+            // let packageJsonPath = path.join(app.config.baseDir, `package.json`);
 
             if (type == 'install') {
 
                 if (fs.existsSync(pluginConfigPath) && pluginInfos.pluginsConfig) {
                     let pluginStr = `// ${pluginInfos.enName}PluginBegin\n
-                    ${pluginInfos.pluginsConfig}// ${pluginInfos.enName}PluginEnd\n    // EGGPLUGINCONFIG\n`;
-                    siteFunc.modifyFileByPath(pluginConfigPath, '// EGGPLUGINCONFIG', pluginStr);
+                    ${pluginInfos.pluginsConfig}// ${pluginInfos.enName}PluginEnd\n    `;
+                    siteFunc.appendTxtToFileByLine(pluginConfigPath, 1, pluginStr);
                 }
 
                 if (fs.existsSync(configDefaultPath) && pluginInfos.defaultConfig) {
 
                     let configStr = `// ${pluginInfos.enName}PluginBegin\n
-                    ${pluginInfos.defaultConfig}// ${pluginInfos.enName}PluginEnd\n    // EGGCONFIGDEFAULT\n`;
-                    siteFunc.modifyFileByPath(configDefaultPath, '// EGGCONFIGDEFAULT', configStr);
-
+                    ${pluginInfos.defaultConfig}// ${pluginInfos.enName}PluginEnd\n    `;
+                    siteFunc.appendTxtToFileByLine(configDefaultPath, 2, configStr);
                 }
 
             } else {
@@ -214,7 +213,6 @@ module.exports = {
     initExtendModel(modelsPath) {
         let app = this;
         fs.readdirSync(modelsPath).forEach(function (extendName) {
-            // console.log(`Init ${path.basename(extendName, '.js')} model success`);
             if (extendName) {
                 let filePath = `${modelsPath}/${extendName}`;
                 if (fs.existsSync(filePath)) {

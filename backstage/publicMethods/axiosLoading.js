@@ -5,29 +5,35 @@ import _ from 'lodash'
 
 let needLoadingRequestCount = 0
 let loading
+let configs = {};
 
 function startLoading() {
-  // console.log('startLoading =============')
+
   loading = Loading.service({
     lock: true,
-    text: '数据加载中...',
+    text: configs.str ? configs.str : '数据加载中...',
     spinner: 'el-icon-loading',
     background: 'rgba(0, 0, 0, 0.7)'
   })
+
 }
 
 function endLoading() {
-  // console.log('endLoading==========')
   loading.close()
 }
 
 const tryCloseLoading = () => {
-  if (needLoadingRequestCount === 0) {
+  if (needLoadingRequestCount === 0 && !configs.alwaysShow) {
     endLoading()
   }
 }
 
-export function showFullScreenLoading() {
+export function showFullScreenLoading(loadingConfig = {}) {
+  if (!_.isEmpty(loadingConfig)) {
+    configs = loadingConfig;
+  } else {
+    configs = {};
+  }
   if (needLoadingRequestCount === 0) {
     startLoading()
   }

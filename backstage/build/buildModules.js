@@ -13,7 +13,8 @@ const {
 let designatedModule = [];
 
 let copyType = "dev",
-    targetModules = ''; //  ALL 或 separate 可选
+    targetModules = '',
+    localDistPath = ''; //  ALL 或 separate 可选
 let argvs = process.argv;
 if (argvs[2] == '--type') {
     copyType = argvs[3];
@@ -28,6 +29,10 @@ if (argvs[4] == '--modules') {
         }
         console.log('begin build target module: ', targetModules);
     }
+}
+
+if (argvs[6] == '--localDistPath') {
+    localDistPath = argvs[7];
 }
 
 let targetBuildModules = scanforder(modulesPath);
@@ -59,6 +64,7 @@ if (copyType == 'prd') {
                 localFile,
                 pathKey
             } = uploadItem;
+
             console.log(`Begin upload ${pathKey}`);
             await uploadByQiniu(localFile, settings.qiniuStaticPath + pathKey);
             console.log(`Upload ${pathKey} success!`);
@@ -70,8 +76,23 @@ if (copyType == 'prd') {
         for (const moduleItem of targetBuildModules) {
             uploadInfo = scanFiles(modulesPath, `${modulesPath}/dist/${moduleItem}`);
             updateQniu(uploadInfo);
+
+            if (localDistPath) {
+                let targetLocalPluginPath = `${localDistPath}/${moduleItem}`;
+                if (fs.existsSync(targetLocalPluginPath)) {
+                    shell.rm('-rf', `${targetLocalPluginPath}/*`);
+                }
+                shell.cp('-R', `${modulesPath}/dist/${moduleItem}/*`, `${targetLocalPluginPath}`);
+            }
+
         }
     } else {
+        if (localDistPath) {
+            if (fs.existsSync(`${modulesPath}/dist`)) {
+                shell.rm('-rf', `${modulesPath}/dist/*`);
+            }
+            shell.cp('-R', `${modulesPath}/dist/*`, `${localDistPath}`);
+        }
         uploadInfo = scanFiles(modulesPath, `${modulesPath}/dist`);
         updateQniu(uploadInfo);
     }

@@ -56,14 +56,15 @@ gulp.task('layerSass', function () {
         .pipe(gulp.dest(doraLayerCssPath));
 });
 
-gulp.task("jsmin", ["cleanjs"], function () {
+
+gulp.task("askjsmin", gulp.series("cleanjs", function () {
     return gulp.src(doraWhiteNormalJs)
         .pipe(babel({
             presets: [es2015Preset]
         }))
         .pipe(jsmin())
         .pipe(gulp.dest(doraWhiteMinJs));
-});
+}));
 
 gulp.task("cleanpagerjs", function () {
     return del(doraWhiteMinJs + 'avalon-ms-pager.js', {
@@ -71,39 +72,37 @@ gulp.task("cleanpagerjs", function () {
     });
 });
 
-gulp.task("pagerjsmin", ["cleanpagerjs"], function () {
+gulp.task("pagerjsmin", gulp.series("cleanpagerjs", function () {
     return gulp.src(doraWhitePagerJs)
         .pipe(babel({
             presets: [es2015Preset]
         }))
         .pipe(jsmin())
         .pipe(gulp.dest(doraWhiteMinJs));
-});
+}));
 
 gulp.task("editorjsmin", function () {
     return gulp.src(doraWhiteEditor)
-        // .pipe(babel({ presets: [es2015Preset] }))
         .pipe(jsmin())
         .pipe(gulp.dest(editorMinPath));
 });
 
 gulp.task('uglifyEditorJs', function () {
-    gulp.watch(doraWhiteEditor, ['editorjsmin']);
+    gulp.watch(doraWhiteEditor, gulp.parallel('editorjsmin'));
 });
 
 gulp.task('uglifyPagerJs', function () {
-    gulp.watch(doraWhitePagerJs, ['pagerjsmin']);
+    gulp.watch(doraWhitePagerJs, gulp.parallel('pagerjsmin'));
 });
 
 gulp.task('uglifyWhiteJs', function () {
-    gulp.watch(doraWhiteNormalJs, ['jsmin']);
+    gulp.watch(doraWhiteNormalJs, gulp.parallel('askjsmin'));
 });
 
 gulp.task('uglifyLayerJs', function () {
-    gulp.watch(doraLayerSassPath, ['layerSass']);
+    gulp.watch(doraLayerSassPath, gulp.parallel('layerSass'));
 });
 
-
-gulp.task('default', ['uglifyWhiteJs', 'uglifyEditorJs', 'uglifyPagerJs', 'uglifyLayerJs'], function () {
-    gulp.watch(doraWhiteSassPath, ['sass']);
-});
+gulp.task('default', gulp.parallel('uglifyWhiteJs', 'uglifyEditorJs', 'uglifyPagerJs', 'uglifyLayerJs', function () {
+    gulp.watch(doraWhiteSassPath, gulp.parallel('sass'));
+}))

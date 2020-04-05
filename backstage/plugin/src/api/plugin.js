@@ -35,7 +35,12 @@ export function getOneShopPlugin(params) {
 export function addPlugin(params) {
   return request({
     url: '/manage/plugin/installPlugin',
-    params,
+    params: Object.assign({}, params, {
+      loadingConfig: {
+        str: '正在安装插件，请勿刷新页面!',
+        alwaysShow: true
+      }
+    }),
     method: 'get'
   })
 }
@@ -44,7 +49,25 @@ export function addPlugin(params) {
 export function deletePlugin(params) {
   return request({
     url: '/manage/plugin/unInstallPlugin',
-    params,
+    params: Object.assign({}, params, {
+      loadingConfig: {
+        str: '正在卸载插件，请勿刷新页面!',
+        alwaysShow: true
+      }
+    }),
+    method: 'get'
+  })
+}
+
+export function pluginHeartBeat(params) {
+  return request({
+    url: '/manage/plugin/pluginHeartBeat',
+    params: Object.assign({}, params, {
+      loadingConfig: {
+        str: '正在重启，请稍后...',
+        alwaysShow: true
+      }
+    }),
     method: 'get'
   })
 }
@@ -52,7 +75,12 @@ export function deletePlugin(params) {
 export function updatePlugin(params) {
   return request({
     url: '/manage/plugin/updatePlugin',
-    params,
+    params: Object.assign({}, params, {
+      loadingConfig: {
+        str: '正在更新插件，请勿刷新页面!',
+        alwaysShow: true
+      }
+    }),
     method: 'get'
   })
 }

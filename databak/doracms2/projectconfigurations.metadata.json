@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"doracms2.projectconfigurations"},{"v":2,"unique":true,"key":{"tableName":1},"name":"tableName_1","background":true,"ns":"doracms2.projectconfigurations"}],"uuid":"1674562d7f094db799963b6a34ea3792"}

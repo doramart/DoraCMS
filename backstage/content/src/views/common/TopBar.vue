@@ -1,20 +1,31 @@
 <template>
   <div class="dr-toolbar">
-    <el-col :xs="12" :md="6" class="option-button">
+    <el-col :xs="14" :md="6" class="option-button">
       <el-button size="small" type="primary" plain @click="addContent('content')" round>
         <svg-icon icon-class="icon_add" />
-      </el-button>
-      <el-button size="small" type="danger" plain round @click="branchDelete('content')">
-        <svg-icon icon-class="icon_delete" />
       </el-button>
       <el-tooltip class="item" effect="dark" content="绑定编辑" placement="top">
         <el-button size="small" type="warning" plain @click="directUser('content')" round>
           <svg-icon icon-class="direct_user" />
         </el-button>
       </el-tooltip>
+      <el-tooltip class="item" effect="dark" content="批量移动" placement="top">
+        <el-button size="small" type="success" plain round @click="moveCate('content')">
+          <svg-icon icon-class="icon_move" />
+        </el-button>
+      </el-tooltip>
+      <el-tooltip class="item" effect="dark" content="回收站" placement="top">
+        <el-button size="small" type="info" plain round @click="showDraft('content')">
+          <svg-icon icon-class="icon_collect" />
+        </el-button>
+      </el-tooltip>
+      <el-button size="small" type="danger" plain round @click="branchDelete('content')">
+        <svg-icon icon-class="icon_delete" />
+      </el-button>
+
       <!-- TOPBARLEFT -->
     </el-col>
-    <el-col :xs="12" :md="18">
+    <el-col :xs="10" :md="18">
       <div class="dr-toolbar-right">
         <div v-if="device != 'mobile'" style="display:inline-block">
           <el-cascader
@@ -133,6 +144,13 @@ export default {
     directUser() {
       this.$store.dispatch("content/showDirectUserForm");
     },
+    moveCate() {
+      this.$store.dispatch("content/showMoveCateForm");
+    },
+    showDraft() {
+      this.$store.dispatch("content/getDraftContentList");
+      this.$store.dispatch("content/showDraftListDialog");
+    },
     branchDelete(target) {
       let _this = this;
       if (_.isEmpty(_this.ids)) {
@@ -156,7 +174,8 @@ export default {
         .then(() => {
           let ids = _this.ids.join();
           return deleteContent({
-            ids
+            ids,
+            draft: "1"
           });
         })
         .then(result => {

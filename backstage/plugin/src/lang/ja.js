@@ -6,6 +6,7 @@ export default {
     enName: 'English name',
     name: 'name',
     description: 'description',
+    operationInstructions: '操作说明',
     amount: '价格',
     isadm: 'Back tube',
     isindex: 'Have a front desk',

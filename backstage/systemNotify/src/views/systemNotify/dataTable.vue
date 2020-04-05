@@ -52,6 +52,9 @@ export default {
         });
         this.multipleSelection = ids;
         this.$emit("changeSystemNotifySelectList", ids);
+      } else {
+        this.multipleSelection = "";
+        this.$emit("changeSystemNotifySelectList", "");
       }
     }
   }

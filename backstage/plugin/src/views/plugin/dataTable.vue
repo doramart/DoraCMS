@@ -71,7 +71,8 @@ import {
   deletePlugin,
   getOnePlugin,
   getOneShopPlugin,
-  updatePlugin
+  updatePlugin,
+  pluginHeartBeat
 } from "@/api/plugin";
 
 export default {
@@ -84,11 +85,31 @@ export default {
       green: { color: "#13CE66" },
       red: { color: "#FF4949" },
       loading: false,
-      multipleSelection: []
+      multipleSelection: [],
+      heartBeatEvt: ""
     };
   },
 
   methods: {
+    heartBeat() {
+      let _this = this;
+      pluginHeartBeat()
+        .then(result => {
+          if (result.status === 200) {
+            clearTimeout(_this.heartBeat);
+            window.location.reload();
+          } else {
+            if (!_this.heartBeatEvt) {
+              _this.heartBeatEvt = setInterval(_this.heartBeat, 2000);
+            }
+          }
+        })
+        .catch(() => {
+          if (!_this.heartBeatEvt) {
+            _this.heartBeatEvt = setInterval(_this.heartBeat, 2000);
+          }
+        });
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -129,11 +150,10 @@ export default {
         })
         .then(result => {
           if (result.status === 200) {
-            this.$store.dispatch("plugin/getPluginList", this.pageInfo);
-            this.$message({
-              message: "恭喜，插件卸载成功！",
-              type: "success"
-            });
+            // this.$store.dispatch("plugin/getPluginList", this.pageInfo);
+            setTimeout(() => {
+              this.heartBeat();
+            }, 3000);
           } else {
             this.$message.error(result.message);
           }
@@ -162,11 +182,14 @@ export default {
         })
         .then(result => {
           if (result.status === 200) {
-            this.$store.dispatch("plugin/getPluginList", this.pageInfo);
-            this.$message({
-              message: "恭喜，插件升级成功！",
-              type: "success"
-            });
+            // this.$store.dispatch("plugin/getPluginList", this.pageInfo);
+            // this.$message({
+            //   message: "恭喜，插件升级成功！",
+            //   type: "success"
+            // });
+            setTimeout(() => {
+              this.heartBeat();
+            }, 3000);
           } else {
             this.$message.error(result.message);
           }

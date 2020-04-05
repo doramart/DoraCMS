@@ -1,5 +1,12 @@
 <template>
   <div :class="classObj" class="dr-contentForm">
+    <CoverTable
+      @updateTargetCover="updateTargetCover"
+      :coverTypeList="coverTypeList"
+      :targetCover="targetCover"
+      :dialogState="contentCoverDialog"
+      :device="device"
+    ></CoverTable>
     <div class="main-container">
       <el-form
         :model="formState.formData"
@@ -38,35 +45,39 @@
           ></el-cascader>
         </el-form-item>
 
-        <div v-if="formState.formData.type == '1'">
-          <el-form-item :label="$t('contents.stitle')" prop="stitle">
-            <el-input size="small" v-model="formState.formData.stitle"></el-input>
-          </el-form-item>
+        <el-form-item :label="$t('contents.stitle')" prop="stitle">
+          <el-input size="small" v-model="formState.formData.stitle"></el-input>
+        </el-form-item>
 
-          <el-form-item label="关键字" prop="keywords">
-            <el-input size="small" v-model="formState.formData.keywords"></el-input>
-          </el-form-item>
+        <el-form-item label="关键字" prop="keywords">
+          <el-input size="small" v-model="formState.formData.keywords"></el-input>
+        </el-form-item>
 
-          <el-form-item label="标签" prop="tags">
-            <el-select
-              size="small"
-              v-model="formState.formData.tags"
-              multiple
-              filterable
-              allow-create
-              default-first-option
-              :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
-            >
-              <el-option
-                v-for="item in contentTagList.docs"
-                :key="item._id"
-                :label="item.name"
-                :value="item._id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </div>
-        <el-form-item class="upSimg" :label="$t('contents.sImg')" prop="sImg">
+        <el-form-item label="标签" prop="tags">
+          <el-select
+            size="small"
+            v-model="formState.formData.tags"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            :placeholder="$t('validate.selectNull', {label: this.$t('contents.tags')})"
+          >
+            <el-option
+              v-for="item in contentTagList.docs"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item :label="$t('contents.sImg')" prop="sImgType">
+          <el-radio v-model="formState.formData.sImgType" label="2">上传</el-radio>
+          <el-radio v-model="formState.formData.sImgType" label="1">自动生成</el-radio>
+        </el-form-item>
+
+        <el-form-item v-if="formState.formData.sImgType=='2'" class="upSimg" label prop="sImg">
           <el-upload
             class="avatar-uploader"
             action="/api/upload/files"
@@ -82,9 +93,50 @@
             <svg-icon icon-class="reload" />
           </el-button>
         </el-form-item>
+
+        <div v-if="formState.formData.sImgType=='1'">
+          <el-form-item label="封面选择底图" prop="covers">
+            <el-row :gutter="20" class="covers-list" style="padding-left:10px;">
+              <el-col :xs="6" :md="3" v-for="item in selectCoverList" :key="item._id">
+                <div class="grid-img" @click="selectThisCover(item)">
+                  <img :src="item.cover" />
+                  <div
+                    class="cover"
+                    :style="formState.formData.cover==item._id?coverActiveStyle:{}"
+                  >
+                    <span>
+                      <svg-icon icon-class="icon_check_right" />已选择
+                    </span>
+                  </div>
+                </div>
+              </el-col>
+              <el-col :xs="6" :md="3">
+                <div class="grid-img" @click="showMoreCovers()">
+                  <div class="cover" style="display:block">
+                    <span class="showMoreCover">
+                      <svg-icon icon-class="icon_more" />
+                    </span>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <div id="view"></div>
+          <el-form-item label="封面合成预览" prop="coversPreview">
+            <div class="covers-list" style="marginLeft:10px">
+              <div class="preview" :style="renderPreviewBackground">
+                <div class="grid-img">
+                  <div :style="currentStyle" v-html="renderPreviewTitle"></div>
+                </div>
+              </div>
+            </div>
+          </el-form-item>
+        </div>
+
         <el-form-item :label="$t('contents.discription')" prop="discription">
           <el-input size="small" type="textarea" v-model="formState.formData.discription"></el-input>
         </el-form-item>
+
         <el-form-item :label="$t('contents.uploadWord')" prop="uploadWord">
           <el-upload
             class="upload-demo"
@@ -103,6 +155,7 @@
             <div slot="tip" class="el-upload__tip">只能上传doc/docx文件，且不超过5mb</div>
           </el-upload>
         </el-form-item>
+
         <el-form-item :label="$t('contents.comments')" prop="comments">
           <vue-ueditor-wrap
             class="editorForm"
@@ -125,70 +178,11 @@
   </div>
 </template>
 
-<style lang="scss">
-.edui-default .edui-toolbar {
-  line-height: 20px !important;
-}
-.dr-contentForm {
-  padding: 20px;
-  .post-rate {
-    .el-rate {
-      margin-top: 10px;
-    }
-  }
-  .dr-submitContent {
-    position: fixed;
-    z-index: 9999999;
-    padding: 10px 30px;
-    text-align: right;
-    right: 0;
-    bottom: 0;
-    background: none;
-    margin-bottom: 0;
-  }
-
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 200px;
-    height: 150px;
-    line-height: 150px !important;
-    text-align: center;
-  }
-  .avatar {
-    width: 200px;
-    height: 158px;
-    display: block;
-  }
-
-  .upSimg {
-    position: relative;
-    .refresh-btn {
-      position: absolute;
-      left: 220px;
-      top: 0;
-      i {
-        // color: #dcdfe6;
-        font-weight: 400;
-      }
-    }
-  }
-}
-</style>
 
 <script>
 import VueUeditorWrap from "vue-ueditor-wrap";
 import { initEvent } from "@root/publicMethods/events";
+import CoverTable from "./coverTable";
 import {
   showFullScreenLoading,
   tryHideFullScreenLoading
@@ -198,17 +192,26 @@ import {
   addContent,
   updateContent,
   getRandomContentImg,
-  regUserList
+  regUserList,
+  coverList,
+  coverInfo,
+  uploadCover,
+  contentCoverTypeList
 } from "@/api/content";
 
 import _ from "lodash";
 import { mapGetters, mapActions } from "vuex";
+import html2canvas from "html2canvas";
 export default {
   props: {
     groups: Array
   },
   data() {
     return {
+      dataURL: "",
+      coverImg: "https://cdn.html-js.cn/cms/covers/1.png",
+      targetCover: "",
+      coverTypeList: [],
       wordFileList: [],
       wordFileUrl: "",
       sidebarOpened: true,
@@ -223,6 +226,7 @@ export default {
       loading: false,
       userLoading: false,
       selectSpecialList: [],
+      selectCoverList: [],
       content: "",
       simpleComments: "",
       isflash: false,
@@ -234,7 +238,7 @@ export default {
         // 编辑器不自动被内容撑高
         autoHeightEnabled: false,
         // 初始容器高度
-        initialFrameHeight: 240,
+        initialFrameHeight: 600,
         // 初始容器宽度
         initialFrameWidth: "100%",
         // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
@@ -365,9 +369,76 @@ export default {
     };
   },
   components: {
-    VueUeditorWrap
+    VueUeditorWrap,
+    CoverTable
   },
   methods: {
+    updateTargetCover(item) {
+      this.targetCover = item;
+    },
+    showMoreCovers() {
+      this.$store.dispatch("content/showCoverListDialog");
+      if (!_.isEmpty(this.coverTypeList)) {
+        let defaultCoverType = !_.isEmpty(this.targetCover)
+          ? this.targetCover.type._id
+          : this.coverTypeList[0]._id;
+        this.$store.dispatch("content/getContentCoverList", {
+          type: defaultCoverType,
+          pageSize: 30
+        });
+      }
+    },
+    htmlToImage() {
+      return new Promise((reslove, reject) => {
+        let element = document.getElementsByClassName("preview")[0];
+        var width = element.offsetWidth;
+        var height = element.offsetHeight;
+        var scale = 1;
+        var canvas = document.createElement("canvas");
+        // 获取元素相对于视窗的偏移量
+        var rect = element.getBoundingClientRect();
+        canvas.width = width * scale;
+        canvas.height = height * scale * 1;
+        var context = canvas.getContext("2d");
+        context.scale(scale, scale);
+
+        // 设置context位置, 值为相对于视窗的偏移量的负值, 实现图片复位
+        let canvasHeight = window.scrollY;
+        context.translate(0, -canvasHeight);
+
+        var options = {
+          scale: scale,
+          canvas: canvas,
+          width: width,
+          height: height,
+          taintTest: true, //在渲染前测试图片
+          useCORS: true, //貌似与跨域有关，但和allowTaint不能共存
+          dpi: window.devicePixelRatio, // window.devicePixelRatio是设备像素比
+          background: "#fff"
+        };
+
+        html2canvas(element, options).then(function(canvas) {
+          var dataURL = canvas.toDataURL("image/png", 1.0); //将图片转为base64, 0-1 表示清晰度
+          var base64String = dataURL
+            .toString()
+            .substring(dataURL.indexOf(",") + 1); //截取base64以便上传
+          let params = { base64: base64String };
+          uploadCover(params).then(result => {
+            if (result.status === 200) {
+              reslove(result.data);
+            } else {
+              reject(result.message);
+            }
+          });
+        });
+      });
+    },
+    selectThisCover(item) {
+      if (!_.isEmpty(item)) {
+        this.targetCover = item;
+        this.formState.formData.cover = item._id;
+      }
+    },
     handleWordRemove(file, fileList) {
       console.log(file, fileList);
     },
@@ -449,6 +520,61 @@ export default {
           console.log(err);
         });
     },
+    queryCoverListByParams(params = {}) {
+      let _this = this;
+      coverList(params)
+        .then(result => {
+          let cvList = result.data.docs;
+          if (cvList) {
+            _this.selectCoverList = cvList;
+            setTimeout(() => {
+              if (this.$route.params.id) {
+                coverInfo({
+                  id: _this.formState.formData.cover
+                }).then(result => {
+                  if (!_.isEmpty(result)) {
+                    _this.targetCover = result.data;
+                    _this.formState.formData.cover = result.data._id;
+                  }
+                });
+              } else {
+                _this.targetCover = cvList[0];
+                _this.formState.formData.cover = cvList[0]._id;
+              }
+            }, 1000);
+          } else {
+            _this.selectCoverList = [];
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          _this.selectUserList = [];
+        });
+    },
+
+    queryCoverTypeListByParams(params = {}) {
+      let _this = this;
+      contentCoverTypeList(params)
+        .then(result => {
+          let typeList = result.data;
+          if (typeList) {
+            _this.coverTypeList = typeList;
+            let defaultType = _.filter(typeList, item => {
+              return item.isDefault;
+            });
+            if (!_.isEmpty(defaultType)) {
+              _this.queryCoverListByParams({ type: defaultType[0]._id });
+            }
+          } else {
+            _this.coverTypeList = [];
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          _this.coverTypeList = [];
+        });
+    },
+
     checkFlashPost(currentType) {
       this.$store.dispatch("content/showContentForm", {
         edit: this.formState.edit,
@@ -511,49 +637,56 @@ export default {
       this.$router.push(this.$root.adminBasePath + "/content");
     },
     submitForm(formName, type = "") {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
-          let params = Object.assign({}, this.formState.formData, {
-            comments: this.ueditorObj.getContent(),
-            simpleComments: this.ueditorObj.getPlainTxt()
-          });
-
-          // 更新
-          if (this.formState.edit) {
-            updateContent(params).then(result => {
-              if (result.status === 200) {
-                this.$router.push(this.$root.adminBasePath + "/content");
-                this.$message({
-                  message: this.$t("main.updateSuccess"),
-                  type: "success"
-                });
-              } else {
-                this.$message.error(result.message);
-              }
+          try {
+            let params = Object.assign({}, this.formState.formData, {
+              comments: this.ueditorObj.getContent(),
+              simpleComments: this.ueditorObj.getPlainTxt()
             });
-          } else {
-            // 新增
-            if (
-              !_.isEmpty(this.adminUserInfo) &&
-              !_.isEmpty(this.adminUserInfo.targetEditor)
-            ) {
-              params.targetUser = this.adminUserInfo.targetEditor._id;
-            } else {
-              this.$message.error("在添加文档之前，您需要指定一个默认编辑！");
-              this.$router.push(this.$root.adminBasePath + "/content");
-              return false;
+            // 上传合成图片
+            if (this.formState.formData.sImgType == "1") {
+              params.sImg = await this.htmlToImage();
             }
-            addContent(params).then(result => {
-              if (result.status === 200) {
-                this.$router.push(this.$root.adminBasePath + "/content");
-                this.$message({
-                  message: this.$t("main.addSuccess"),
-                  type: "success"
-                });
+            // 更新
+            if (this.formState.edit) {
+              updateContent(params).then(result => {
+                if (result.status === 200) {
+                  this.$router.push(this.$root.adminBasePath + "/content");
+                  this.$message({
+                    message: this.$t("main.updateSuccess"),
+                    type: "success"
+                  });
+                } else {
+                  this.$message.error(result.message);
+                }
+              });
+            } else {
+              // 新增
+              if (
+                !_.isEmpty(this.adminUserInfo) &&
+                !_.isEmpty(this.adminUserInfo.targetEditor)
+              ) {
+                params.targetUser = this.adminUserInfo.targetEditor._id;
               } else {
-                this.$message.error(result.message);
+                this.$message.error("在添加文档之前，您需要指定一个默认编辑！");
+                this.$router.push(this.$root.adminBasePath + "/content");
+                return false;
               }
-            });
+              addContent(params).then(result => {
+                if (result.status === 200) {
+                  this.$router.push(this.$root.adminBasePath + "/content");
+                  this.$message({
+                    message: this.$t("main.addSuccess"),
+                    type: "success"
+                  });
+                } else {
+                  this.$message.error(result.message);
+                }
+              });
+            }
+          } catch (error) {
+            this.$message.error(error.message);
           }
         } else {
           console.log("error submit!!");
@@ -563,7 +696,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["contentTagList", "contentCategoryList", "adminUserInfo"]),
+    ...mapGetters([
+      "contentTagList",
+      "contentCategoryList",
+      "adminUserInfo",
+      "contentCoverDialog"
+    ]),
     formState() {
       return this.$store.getters.contentFormState;
     },
@@ -574,10 +712,72 @@ export default {
         withoutAnimation: "false",
         mobile: this.device === "mobile"
       };
+    },
+    coverActiveStyle() {
+      return {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        background: "rgba(0, 0, 0, 0.4)",
+        display: "block"
+      };
+    },
+    currentStyle() {
+      let renderStyle = {};
+      return Object.assign(
+        {},
+        {
+          color: this.targetCover.titleColor,
+          fontSize: Number(this.targetCover.titleSize) + "px"
+        }
+      );
+    },
+    renderPreviewBackground() {
+      let backStyle = this.targetCover.backgroundDefaultCss;
+      let defaultCss = {
+        backgroundImage: "url(" + this.targetCover.cover + ")",
+        backgroundSize: "cover",
+        width: this.targetCover.width + "px",
+        height: this.targetCover.height + "px"
+      };
+      if (!_.isEmpty(backStyle)) {
+        Object.assign(defaultCss, JSON.parse(backStyle));
+      }
+      return defaultCss;
+    },
+    renderPreviewTitle() {
+      let stitle = this.formState.formData.stitle;
+      let targetCover = this.targetCover;
+      if (!_.isEmpty(targetCover) && !_.isEmpty(targetCover.type)) {
+        if (stitle) {
+          let stitleArr = stitle.split("--");
+          let newHtml = this.targetCover.type.structure.replace(
+            "content_title",
+            stitle
+          );
+          if (
+            stitleArr.length == 2 &&
+            this.targetCover.type.structure.indexOf("content_title_1") >= 0
+          ) {
+            newHtml = this.targetCover.type.structure
+              .replace("content_title", stitleArr[0])
+              .replace("content_title_1", stitleArr[1]);
+          }
+          return newHtml;
+        } else {
+          return this.targetCover.type.structure;
+        }
+      } else {
+        return "";
+      }
     }
   },
   mounted() {
     initEvent(this);
+    // 初始化模板
+    this.queryCoverTypeListByParams({ isDefault: true });
     this.$store.dispatch("adminUser/getUserInfo");
     // 针对手动页面刷新
     let _this = this;
@@ -668,3 +868,134 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.edui-default .edui-toolbar {
+  line-height: 20px !important;
+}
+.dr-contentForm {
+  padding: 20px;
+  .post-rate {
+    .el-rate {
+      margin-top: 10px;
+    }
+  }
+  .dr-submitContent {
+    position: fixed;
+    z-index: 9999999;
+    padding: 10px 30px;
+    text-align: right;
+    right: 0;
+    bottom: 0;
+    background: none;
+    margin-bottom: 0;
+  }
+
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 200px;
+    height: 150px;
+    line-height: 150px !important;
+    text-align: center;
+  }
+  .avatar {
+    width: 200px;
+    height: 158px;
+    display: block;
+  }
+
+  .upSimg {
+    position: relative;
+    .refresh-btn {
+      position: absolute;
+      left: 220px;
+      top: 0;
+      i {
+        // color: #dcdfe6;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .covers-list {
+    .el-col {
+      height: 100px;
+      margin-bottom: 15px;
+      .grid-img {
+        border-radius: 4px;
+        overflow: hidden;
+        height: 100%;
+        cursor: pointer;
+        position: relative;
+        .cover {
+          display: none;
+          span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            display: inline-block;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 12px;
+            width: 60px;
+            svg {
+              margin-right: 4px;
+            }
+          }
+          .showMoreCover {
+            color: rgb(170, 170, 170);
+            text-align: center;
+            border: 1px solid #eee;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+            font-size: 15px;
+          }
+        }
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+    .preview {
+      position: relative;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      .grid-img {
+        overflow: hidden;
+        height: 100%;
+        .cover-title {
+          overflow: hidden;
+          word-break: break-word;
+          font-family: fzlthjt;
+        }
+      }
+    }
+  }
+}
+
+.dr-contentForm.mobile {
+  .covers-list {
+    .preview {
+      width: 300px !important;
+      height: 200px !important;
+    }
+    .el-col {
+      height: 50px !important;
+    }
+  }
+}
+</style>

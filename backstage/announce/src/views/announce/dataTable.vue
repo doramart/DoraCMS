@@ -29,8 +29,10 @@
             plain
             size="mini"
             round
-             @click="deleteAnnounce(scope.$index, dataList)"
-          ><svg-icon icon-class="icon_delete" /></el-button>
+            @click="deleteAnnounce(scope.$index, dataList)"
+          >
+            <svg-icon icon-class="icon_delete" />
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -75,6 +77,9 @@ export default {
         });
         this.multipleSelection = ids;
         this.$emit("handleSystemAnnounceChange", ids);
+      } else {
+        this.multipleSelection = "";
+        this.$emit("handleSystemAnnounceChange", "");
       }
     },
     deleteAnnounce(index, rows) {

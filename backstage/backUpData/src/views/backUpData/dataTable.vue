@@ -22,11 +22,22 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
+            type="primary"
+            plain
+            round
+            @click="restoreData(scope.$index, dataList)"
+          >
+            <svg-icon icon-class="icon_restore" />
+          </el-button>
+          <el-button
+            size="mini"
             type="danger"
             plain
             round
-             @click="deleteDataItem(scope.$index, dataList)"
-          ><svg-icon icon-class="icon_delete" /></el-button>
+            @click="deleteDataItem(scope.$index, dataList)"
+          >
+            <svg-icon icon-class="icon_delete" />
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -34,7 +45,7 @@
 </template>
 
 <script>
-import { deletetBakDataItem } from "@/api/backUpData";
+import { deletetBakDataItem, restoreCMSData } from "@/api/backUpData";
 
 export default {
   props: {
@@ -82,6 +93,39 @@ export default {
           this.$message({
             type: "info",
             message: this.$t("main.scr_modal_del_error_info")
+          });
+        });
+    },
+    restoreData(index, rows) {
+      this.$confirm(
+        this.$t("backUpData.askRestore"),
+        this.$t("main.scr_modal_title"),
+        {
+          confirmButtonText: this.$t("main.confirmBtnText"),
+          cancelButtonText: this.$t("main.cancelBtnText"),
+          type: "warning"
+        }
+      )
+        .then(() => {
+          return restoreCMSData({
+            id: rows[index]._id
+          });
+        })
+        .then(result => {
+          if (result.status === 200) {
+            this.$store.dispatch("backUpData/getBakDateList");
+            this.$message({
+              message: this.$t("backUpData.restoreSuccess"),
+              type: "success"
+            });
+          } else {
+            this.$message.error(result.message);
+          }
+        })
+        .catch(err => {
+          this.$message({
+            type: "info",
+            message: this.$t("backUpData.restoreEr") + err
           });
         });
     }

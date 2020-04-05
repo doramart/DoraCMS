@@ -30,11 +30,11 @@
     "babel-runtime": "^6.20.0",
     "browserslist": "^2.1.2",
     "del": "^3.0.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.0.0",
     "gulp-babel": "^7.0.1",
     "gulp-minify-css": "^1.2.4",
-    "gulp-sass": "^3.2.1",
+    "gulp-sass": "^4.0.2",
     "gulp-sequence": "^1.0.0",
     "gulp-uglify": "^3.0.0"
   }

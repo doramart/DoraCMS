@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-08-16 14:51:46 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-17 17:20:16
+ * @Last Modified time: 2020-03-29 17:04:40
  */
 const _ = require('lodash')
 module.exports = (options, app) => {
@@ -12,8 +12,7 @@ module.exports = (options, app) => {
         'getUserSession',
         'getSitBasicInfo',
         'adminResource/getListByPower',
-        'plugin/unInstallPlugin',
-        'plugin/installPlugin',
+        'plugin/pluginHeartBeat',
         'plugin/getPluginShopList',
         'plugin/getOneShopPlugin',
         'plugin/createInvoice',
@@ -73,7 +72,7 @@ module.exports = (options, app) => {
                 message: ctx.__('label_systemnotice_nopower')
             });
         } else {
-            console.log('check power success!')
+            // console.log('check power success!')
             await next();
         }
 

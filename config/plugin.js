@@ -25,6 +25,20 @@ exports.doraBackUpData = {
     path: path.join(__dirname, "../lib/plugin/egg-dora-backupdata")
 };
 
+exports.validate = {
+    enable: true,
+    package: 'egg-dora-validate',
+    
+};
+
+exports.doraUploadFile = {
+    enable: true,
+    package: 'egg-dora-uploadfile',
+    
+};
+
+
+
 
 
 // PLUGIN_NORMALPLUGIN_BEGIN
@@ -150,21 +164,6 @@ exports.doraMiddleStage = {
 };
 // doraMiddleStagePluginEnd
 
-// doraUploadFilePluginBegin
-exports.doraUploadFile = {
-    enable: true,
-    package: 'egg-dora-uploadfile',
-    
-};
-// doraUploadFilePluginEnd
-
-// doraValidatePluginBegin
-exports.validate = {
-    enable: true,
-    package: 'egg-dora-validate',
-    
-};
-// doraValidatePluginEnd
 
 // doraMailTemplatePluginBegin
 exports.doraMailTemplate = {

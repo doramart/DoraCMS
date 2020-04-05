@@ -91,6 +91,9 @@ module.exports = app => {
     // 升级
     router.get('/manage/plugin/updatePlugin', controller.manage.plugin.updatePlugin);
 
+    // 心跳
+    router.get('/manage/plugin/pluginHeartBeat', controller.manage.plugin.pluginHeartBeat);
+
     // 获取插件市场列表
     router.get('/manage/plugin/getPluginShopList', controller.manage.plugin.getPluginShopList);
 

@@ -1,7 +1,7 @@
-{% macro slider(targetAds) %} 
-{% if targetAds %} 
+{% macro slider(targetAds) %}
+{% if targetAds %}
 
-{% if targetAds.type == '1' %} 
+{% if targetAds.type == '1' %}
 {% if (targetAds.carousel) and (targetAds.items.length > 0) %}
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
@@ -18,7 +18,12 @@
         {% endif %}
         <div class="{{'item ' + activeImg}}">
             <a href="{{item.link}}" target="_blank">
+                {% if targetAds.height %}
+                {% set imgItemStyle = 'height:'+targetAds.height+'px' %}
+                <img style="{{imgItemStyle}}" src="{{item.sImg}}" alt="{{item.title}}">
+                {% else %}
                 <img src="{{item.sImg}}" alt="{{item.title}}">
+                {% endif %}
             </a>
             <div class="carousel-caption">
                 <h3>{{item.alt}}</h3>
@@ -55,7 +60,7 @@
         <img src="{{ normalAds.sImg}}" alt="{{normalAds.title}}">
     </a>
 </div>
-{% endif %} 
+{% endif %}
 {% elif targetAds.type == '0' %}
 <div class="normal-text-ads">
     <ul>
@@ -67,5 +72,5 @@
     </ul>
 </div>
 {% endif %}
-{% endif %} 
+{% endif %}
 {% endmacro %}

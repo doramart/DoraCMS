@@ -87,6 +87,9 @@ export default {
         });
         this.multipleSelection = ids;
         this.$emit("changeSystemLogsSelectList", ids);
+      } else {
+        this.multipleSelection = "";
+        this.$emit("changeSystemLogsSelectList", "");
       }
     },
     deleteDataItem(index, rows) {

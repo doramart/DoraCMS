@@ -409,6 +409,9 @@ var siteFunc = {
         var readText = fs.readFileSync(targetPath, 'utf-8');
         if (readText.indexOf(replaceStr) >= 0) {
             var reg = new RegExp(replaceStr, "g")
+            if (replaceStr.indexOf('path.join') >= 0 || replaceStr.indexOf('"egg-dora') >= 0 || replaceStr.indexOf('"egg-alinode":') >= 0) {
+                reg = replaceStr;
+            }
             var newRenderContent = readText.replace(reg, targetStr);
             fs.writeFileSync(targetPath, newRenderContent);
         }
@@ -424,7 +427,13 @@ var siteFunc = {
             newRenderContent = startContent + endContent;
             fs.writeFileSync(targetPath, newRenderContent);
         }
-    }
+    },
+
+    appendTxtToFileByLine(targetPath, line, targetStr) {
+        const fileData = fs.readFileSync(targetPath, 'utf8').split('\n');
+        fileData.splice(fileData.length - line, 0, targetStr);
+        fs.writeFileSync(targetPath, fileData.join('\n'), 'utf8');
+    },
 
     // OPTION_DATABASE_END
 };

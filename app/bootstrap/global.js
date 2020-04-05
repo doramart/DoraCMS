@@ -2,17 +2,12 @@
  * @Author: doramart 
  * @Date: 2019-06-18 17:04:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-08 10:17:45
+ * @Last Modified time: 2020-03-10 17:18:10
  */
 
 const _ = require('lodash');
 const shortid = require('shortid');
 const moment = require('moment');
-const {
-  cache
-} = require('@utils');
-
-
 
 // 校验合法ID
 global.checkCurrentId = (ids) => {
@@ -68,19 +63,6 @@ global.getDateStr = (addDayCount) => {
     startTime: y + "-" + m + "-" + d + ' 23:59:59',
     endTime: endDate + ' 23:59:59'
   }
-}
-
-
-global.getCacheValueByKey = (key) => {
-  return new Promise((resolve, reject) => {
-    cache.get(key, (targetValue) => {
-      if (targetValue) {
-        resolve(targetValue)
-      } else {
-        resolve('');
-      }
-    })
-  })
 }
 
 
