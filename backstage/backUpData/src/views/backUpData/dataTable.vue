@@ -25,6 +25,7 @@
             type="primary"
             plain
             round
+            v-if="scope.row.fileName"
             @click="restoreData(scope.$index, dataList)"
           >
             <svg-icon icon-class="icon_restore" />
