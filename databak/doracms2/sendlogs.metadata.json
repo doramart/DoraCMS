@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"doracms2.sendlogs"}],"uuid":"c290f733e3ff4424aaee3740cc90b07b"}
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"githubcms.sendlogs"}],"uuid":"1cfa9b0ae7b5461cab0ece413c935bb2"}
