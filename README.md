@@ -133,7 +133,7 @@ cd install
 vim serverConfig.js
 ```
 ##### 参数配置详情
-> 一定要注意 `mongodbBinPath` ,在 `windows` 环境下路径中 `\` 必须改为 `/` 如 `C:/mongodb/mongodb/bin/` 才是正确的，另外，`bin` 路径中不要包含中文
+> 一定要注意 `mongodbBinPath` ,在 `windows` 环境下路径中 `\` 必须改为 `/` 如 `C:/mongodb/mongodb/bin/` 才是正确的，另外，`bin` 路径中不要包含中文或空格
 
 ```
 /**
