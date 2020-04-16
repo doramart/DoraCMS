@@ -52,7 +52,8 @@ export default {
         searchkey,
         state,
         uAuthor,
-        categories
+        categories,
+        draft: "1"
       });
       //ComponentPaginationEnd
     },
