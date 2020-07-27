@@ -81,12 +81,15 @@
 
 					var renderMap = document.getElementById('renderMap').value;
 					var renderMapObj = JSON.parse(renderMap);
-					for (const mapItem of renderMapObj) {
-
-						if (mapItem.name == 'navbar') {
+					let itemSet = new Set();
+                    for (const mapItem of renderMapObj) {
+                        itemSet.add(mapItem.name);
+                    }
+					for (let item of itemSet) {
+						if (item == 'navbar') {
 							singleSpa.registerApplication(
-								mapItem.name,
-								() => System.import(mapItem.name),
+								item,
+								() => System.import(item),
 								location => true, {
 									eventBus,
 									staticRootPath,
@@ -97,9 +100,9 @@
 							);
 						} else {
 							singleSpa.registerApplication(
-								mapItem.name,
-								() => System.import(mapItem.name),
-								location => location.pathname.startsWith('/admin/' + mapItem.name), {
+								item,
+								() => System.import(item),
+								location => location.pathname.startsWith('/admin/' + item), {
 									eventBus,
 									staticRootPath,
 									adminBasePath,
