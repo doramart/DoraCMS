@@ -40,7 +40,7 @@ module.exports = appInfo => {
         // DEV_CONFIG_MODULES_END
         mongoose: {
             client: {
-                url: `mongodb://${mongohost}/githubcms`,
+                url: `mongodb://${mongohost}/doracms2`,
                 options: {
                     useCreateIndex: true,
                     useUnifiedTopology: true,
