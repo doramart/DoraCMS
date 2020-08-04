@@ -1,0 +1,446 @@
+<!--投稿-->
+{% extends themePublicPath %} {% block content %}
+{% plugin name="webuploader" %}
+{% endplugin %}
+<style>
+    .edui-default .edui-editor-breadcrumb span {
+        display: inline-block;
+    }
+</style>
+<article>
+    <div class="page whitebg container">
+
+        {% include "./public/userNav.html" %}
+        <div class="page-box">
+            <div class="row user-contents-post" ms-controller="user-post">
+                <div class="pannel-container clearfix">
+                    <form name="postForm" ms-validate="@validate">
+                        <div class="col-md-12">
+                            <div class="col-md-8 left-frame">
+                                <div class="main-form">
+                                    <div class="form-group">
+                                        <label for="">{{__('lc_documentCate')}}</label>
+                                        <div class="select-group">
+                                            <select id="selectCategory" class="form-control"
+                                                onchange="selectCateOnChange(this)">
+                                                <option value="0" selected>{{__('lc_please_select_documentCate')}}
+                                                </option>
+                                                {% if navigation.length > 0 %} {% for item in navigation %}
+                                                {% if item.parentId == '0' %} {%if item.type == '1'%}
+                                                <option value="{{item._id}}">{{item.name}}</option>
+                                                {% endif %} {% endif %} {% endfor %} {% endif %}
+                                            </select>
+                                            <select class="form-control" id="selectChildCates"
+                                                onchange="childCateOnChange(this)">
+                                                <option value="0" selected>{{__('lc_please_select_childCate')}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">{{__('lc_documentTitle')}}</label>
+                                        <input type="text" class="form-control" name="title" ms-duplex="@title"
+                                            placeholder="{{__('lc_please_documentTitle')}}"
+                                            ms-rules="{required:true, minlength：5,maxlength:50 }"
+                                            data-required-message="{{__('lc_please_documentTitle_null_tips')}}"
+                                            data-message="{{__('validate_ranglengthandnormal',[__('lc_please_documentTitle'),5,50])}}">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 right-frame">
+                                <div class="right-form">
+                                    <button type="submit" class="btn btn-primary sub-content"
+                                        id="saveContent">{{__('lc_commitUserConent')}}</button>
+                                    <a href="javascript:void(0)" ms-on-click="saveDraft"
+                                        class="btn btn-default sub-content">{{__('label_content_save_draft')}}</a>
+                                    <div class="form-group thumbImg">
+                                        <label for="">{{__('lc_small_images')}}</label>
+                                        <div class="uploader-demo">
+                                            <!--用来存放item-->
+                                            <div id="fileList" class="uploader-list"></div>
+                                            <div id="filePicker">选择图片</div>
+                                            <i class="fa fa-trash-o trashIco" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                    <div class="form-group tag-list">
+                                        <label for="">{{__('lc_content_tag')}}</label>
+                                        <select id="selectTags" class="form-control" onchange="selectTagOnChange(this)">
+                                            <option value="0" selected>{{__('lc_select_documentTag')}}</option>
+                                            {% hottags pageSize=50 %}
+                                            {% for item in hottags %}
+                                            <option value="{{item._id}}">{{item.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group wordFile">
+                                        <label for="">{{__('lc_upload_word')}}</label>
+                                        <input type="file" id="wordFileList" name="wordFileList"
+                                            onchange="handleWordFile()"></input>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear blank"></div>
+                        </div>
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <label for="">{{__('lc_documentDis')}}</label>
+                                <input type="text" class="form-control" name="discription" ms-duplex="@discription"
+                                    placeholder="{{__('lc_pleace_documentDis')}}"
+                                    ms-rules="{required:true, minlength：5,maxlength:300 }"
+                                    data-required-message="{{__('lc_pleace_documentDis_null_tips')}}"
+                                    data-message="{{__('validate_ranglengthandnormal',[__('lc_documentDis'),5,300])}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="">{{__('lc_contentDetails')}}</label>
+                                <!-- 加载编辑器的容器 -->
+                                <script id="container" name="content" type="text/plain"></script>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+{% plugin name="ueditor" %}
+{% endplugin %}
+
+<script>
+    var currentCate = [];
+    var selectTips = "{{__('lc_please_select_childCate')}}";
+
+
+    function fillChildCateOptions(typeId, cb) {
+        getAjaxData('/api/contentCategory/getCurrentCategoriesById?typeId=' + typeId + '&userId=' + $(
+                '#userId')
+            .val(),
+            function (
+                result) {
+                if (result.status == 200 && result.data) {
+                    var childCates = result.data.cates;
+                    var childHtml = '<option value="0" selected>' + selectTips + '</option>';
+                    for (const cateItem of childCates) {
+                        if (cateItem._id != typeId) {
+                            childHtml += '<option value="' + cateItem._id + '">' + cateItem.name + '</option>';
+                        }
+                    }
+                    $('#selectChildCates').html(childHtml);
+                }
+                cb && cb();
+            })
+    }
+
+    function selectTagOnChange(obj) {
+        postArticelVM.tags = obj.value;
+    }
+
+    function childCateOnChange(obj) {
+        currentCate.push(obj.value);
+        if (currentCate.length == 2) {
+            postArticelVM.categories = currentCate;
+        }
+    }
+
+    function selectCateOnChange(obj) {
+        currentCate.push(obj.value);
+        if (obj.value) {
+            fillChildCateOptions(obj.value);
+        }
+    }
+
+    /**
+     * $icon: 文件上传中loading图标
+     * fs: 上传的文件（$("#file")[0].files）
+     * max_size: 文件大小的最大值（1024 * 1024 * 100为100M）
+     */
+    function handleWordFile() {
+        let formData = new FormData();
+        var file1 = $('#wordFileList')[0].files[0];
+        formData.append('files', file1);
+
+        $.ajax({
+            url: "/api/content/getWordHtmlContent",
+            data: formData,
+            type: "POST",
+            // contentType: "multipart/form-data",        
+            contentType: false,
+            /* 不可缺 */
+            processData: false, // 默认为true，默认情况下，发送的数据将被转换为对象，设为false不希望进行转换
+            cache: false,
+            success: function (result) {
+                console.log(result);
+                if (result.status == 200) {
+                    (postArticelVM.contentObj).setContent(result.data);
+                }
+            }
+        });
+    }
+
+
+
+    var uploader;
+    $(function () {
+
+        var staticRootPath = "{{staticRootPath}}";
+        // 初始化Web Uploader
+        var $list = $('#fileList')
+        uploader = WebUploader.create({
+
+            // 选完文件后，是否自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: staticRootPath + '/plugins/webuploader/Uploader.swf',
+
+            // 文件接收服务端。
+            server: '/api/upload/files',
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            formData: {
+                action: 'uploadimage'
+            },
+            pick: {
+                id: '#filePicker',
+                multiple: false
+            },
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+        // 当有文件添加进来的时候
+        uploader.on('fileQueued', function (file) {
+            var $li = $(
+                    '<div id="' + file.id + '" class="file-item thumbnail">' +
+                    '<img>' +
+
+                    '</div>'
+                ),
+                $img = $li.find('img');
+
+
+            // $list为容器jQuery实例
+            $list.append($li);
+
+            // 创建缩略图
+            // 如果为非图片文件，可以不用调用此方法。
+            // thumbnailWidth x thumbnailHeight 为 100 x 100
+            uploader.makeThumb(file, function (error, src) {
+                if (error) {
+                    $img.replaceWith('<span>不能预览</span>');
+                    return;
+                }
+
+                $img.attr('src', src);
+            }, 100, 100);
+        });
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on('uploadProgress', function (file, percentage) {
+            var $li = $('#' + file.id),
+                $percent = $li.find('.progress span');
+
+            // 避免重复创建
+            if (!$percent.length) {
+                $percent = $('<p class="progress"><span></span></p>')
+                    .appendTo($li)
+                    .find('span');
+            }
+
+            $percent.css('width', percentage * 100 + '%');
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on('uploadSuccess', function (file, response) {
+            $('#' + file.id).addClass('upload-state-done');
+            postArticelVM.sImg = response.data.path;
+            $('.uploader-list').css({
+                zIndex: 1
+            });
+            $('.trashIco').show();
+            $('#' + file.id).find('img').attr('src', response.data.path)
+        });
+
+        // 文件上传失败，显示上传出错。
+        uploader.on('uploadError', function (file) {
+            var $li = $('#' + file.id),
+                $error = $li.find('div.error');
+
+            // 避免重复创建
+            if (!$error.length) {
+                $error = $('<div class="error"></div>').appendTo($li);
+            }
+
+            $error.text('上传失败');
+        });
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on('uploadComplete', function (file) {
+            $('#' + file.id).find('.progress').remove();
+
+        });
+    })
+
+    $('.trashIco').click(function () {
+        var fileItem = $('.uploader-list').find('.file-item ')
+        var fileId = $(fileItem[0]).attr("id");
+        var isEdit = "{{contentId}}";
+        $('.uploader-list').removeAttr('style');
+        if (!isEdit) {
+            uploader.removeFile(fileId, true);
+        }
+        $(this).hide();
+        $(fileItem[0]).fadeOut(function () {
+            $(fileItem[0]).remove();
+        });
+    })
+
+    var postArticelVM = avalon.define({
+        $id: 'user-post',
+        title: '',
+        discription: '',
+        comments: '',
+        message: '',
+        contentObj: UE.getEditor('container', {
+            UEDITOR_HOME_URL: '/static/plugins/ueditor/',
+            serverUrl: '/api/upload/ueditor',
+            initialFrameHeight: '500'
+        }),
+        sImg: "",
+        tags: [],
+        categories: [],
+        draft: '0',
+        edit: false,
+        showErr: false,
+        validate: {
+            onError: function (reasons) {
+                reasons.forEach(function (reason) {
+                    console.log(reason.getMessage())
+                })
+            },
+            onValidateAll: function (reasons) {
+                if (reasons.length > 0) {
+                    postArticelVM.showErr = true;
+                    postArticelVM.message = reasons[0].message;
+                } else {
+                    if (!postArticelVM.sImg) {
+                        layer.msg("{{__('validate_userContent_sImg')}}", {
+                            icon: 2
+                        });
+                    } else if (postArticelVM.categories.length == 0) {
+                        layer.msg("{{__('validate_userContent_category')}}", {
+                            icon: 2
+                        });
+                    } else if (postArticelVM.tags.length == 0) {
+                        layer.msg("{{__('validate_userContent_tags')}}", {
+                            icon: 2
+                        });
+                    } else {
+                        var params = {
+                            title: postArticelVM.title,
+                            sImg: postArticelVM.sImg,
+                            discription: postArticelVM.discription,
+                            categories: postArticelVM.categories,
+                            draft: postArticelVM.draft,
+                            tags: postArticelVM.tags,
+                            comments: postArticelVM.contentObj.getContent(),
+                            simpleComments: postArticelVM.contentObj.getPlainTxt()
+                        }
+                        if (postArticelVM._id) {
+                            params.id = postArticelVM._id;
+                        }
+                        var askUrl = postArticelVM.edit ? '/api/content/updateOne' :
+                            '/api/content/addOne';
+                        $.ajax({
+                            type: 'POST',
+                            contentType: 'application/json; charset=utf-8', // 很重要
+                            traditional: true,
+                            data: JSON.stringify(params),
+                            url: askUrl,
+                            success: function (data) {
+                                if (data.status == 200) {
+                                    layer.msg("{{__('sys_layer_option_success')}}", {
+                                        icon: 1,
+                                        anim: 1
+                                    }, function () {
+                                        window.location.href = "/users/userContents"
+                                    });
+                                } else {
+                                    layer.msg(data.message, {
+                                        icon: 2
+                                    });
+                                }
+                            },
+                            error: function (d) {
+                                console.log('error:', d)
+                            }
+                        })
+                    }
+
+                }
+            }
+        },
+        saveDraft: function () {
+            postArticelVM.draft = '1';
+            $('#saveContent').click();
+        },
+    })
+
+    var getContentId = "{{contentId}}";
+    if (getContentId) {
+        getAjaxData('/api/content/getContent?id=' + getContentId + '&userId=' + $('#userId').val(), function (
+            result) {
+            if (result.status == 200 && result.data) {
+                var contentInfo = result.data;
+                postArticelVM._id = contentInfo._id;
+                postArticelVM.edit = true;
+                postArticelVM.title = contentInfo.title;
+                postArticelVM.sImg = contentInfo.sImg;
+                if (postArticelVM.sImg) {
+                    var $li = $(
+                            '<div id="' + contentInfo._id + '" class="file-item thumbnail">' +
+                            '<img src="' + postArticelVM.sImg + '">' +
+                            '</div>'
+                        ),
+                        $img = $li.find('img');
+                    $('#fileList').append($li);
+                    $('.uploader-list').css({
+                        zIndex: 1
+                    });
+                    $('.trashIco').show();
+                }
+                postArticelVM.discription = contentInfo.discription;
+                if (contentInfo.keywords) {
+                    postArticelVM.keywords = (contentInfo.keywords).join();
+                }
+                if (contentInfo.comments) {
+                    setTimeout(function () {
+                        (postArticelVM.contentObj).setContent(contentInfo.comments);
+                    }, 1500)
+                }
+                if (contentInfo.tags) {
+                    var defaultTag = (contentInfo.tags)[0]._id;
+                    $('#selectTags').val(defaultTag);
+                    postArticelVM.tags = defaultTag;
+                }
+                if (contentInfo.categories) {
+                    var parentCate = (contentInfo.categories)[0];
+                    var childCate = (contentInfo.categories)[1];
+                    if (parentCate) {
+                        $('#selectCategory').val(parentCate._id);
+                    }
+                    if (childCate) {
+                        fillChildCateOptions(parentCate._id, function () {
+                            $('#selectChildCates').val(childCate._id);
+                        });
+                    }
+                    postArticelVM.categories = contentInfo.categories;
+                }
+            }
+        })
+    }
+</script> {% endblock %}

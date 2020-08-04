@@ -1,0 +1,51 @@
+{
+    "env": {
+        "production": {
+            "presets": [
+                [
+                    "env",
+                    {
+                        "targets": {
+                            "browsers": [
+                                "last 2 version",
+                                "ie 10"
+                            ]
+                        },
+                        "modules": false,
+                        "debug": true
+                    }
+                ]
+            ],
+            "plugins": [
+                "lodash",
+                "transform-runtime",
+                "transform-object-rest-spread",
+                "transform-vue-jsx",
+                "transform-remove-strict-mode",
+                "syntax-dynamic-import",
+                "transform-es2015-modules-commonjs"
+            ]
+        },
+        "development": {
+            "presets": [
+                [
+                    "env",
+                    {
+                        "targets": {
+                            "chrome": 52
+                        },
+                        "modules": false,
+                        "debug": true
+                    }
+                ]
+            ],
+            "plugins": [
+                "lodash",
+                "transform-object-rest-spread",
+                "transform-vue-jsx",
+                "transform-remove-strict-mode",
+                "syntax-dynamic-import"
+            ]
+        }
+    }
+}

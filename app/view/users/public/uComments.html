@@ -1,0 +1,39 @@
+<h2 class="page-box-title">参与话题</h2>
+<div class="page-box-content" ms-controller="my-contents">
+
+    <div :if="@myJoinTopicsList.length == 0">
+        <div class="no-contents">
+            <div class="um-profile-note">
+                <i class="fa fa-frown-o"></i>
+                <span>{{__('lc_no_myJoinComment')}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="myJoinTopicsList" :if="@myJoinTopicsList.length > 0">
+        <div>
+            <ul class="replyList">
+                <li ms-for="(index,el) in @myJoinTopicsList">
+                    <time ms-text="@el.date"></time>
+                    <h2>
+                        <a href="#">{{userInfo.userName}}</a>&nbsp;发表在&nbsp;
+                        <a ms-attr="{href:el.contentId.url}" class=""
+                            ms-text="@el.contentId.title"></a>
+                    </h2>
+                    <div class="smalltext"><i></i><span ms-text="@el.content"></span></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="text-center">
+        <wbr ms-widget="{is:'ms-pager', onPageClick: @joinTopicPageClick, totalPages:@joinTopicsTotalPage}" /></div>
+    </div>
+
+
+</div>
+<script>
+    // 获取用户投稿列表
+    getUserRelevantList('/contentMessage/getMessages', 'myJoinTopics', 1, {
+        userId: $('#userId').val(),
+        listState: 'all'
+    });
+</script>

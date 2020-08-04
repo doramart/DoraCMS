@@ -8,7 +8,7 @@
         </h2>
         <div class="give-message">
             <form name="postMsgForm" ms-validate="@validate">
-                <input id="contentId" type="hidden" value="{{documentInfo._id}}" />
+                <input id="contentId" type="hidden" value="{{post._id}}" />
                 <textarea class="form-control" rows="3" name="email" ms-duplex="@content"
                     placeholder="{{__('lc_please_write_message')}}"
                     ms-rules="{required:true,minlength:5,maxlength:200 }"

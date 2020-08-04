@@ -27,7 +27,7 @@ export default {
     flashComments: "快讯摘要",
     rec: "推荐",
     roofPlacement: "置顶",
-    date: "创建时间",
+    createDate: "创建时间",
     updateDate: "更新时间",
     commentNum: "评论数",
     clickNum: "点击",

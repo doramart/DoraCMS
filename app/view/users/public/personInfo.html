@@ -1,0 +1,73 @@
+<!--用户信息完善-->
+<style>
+    #uploadULogoImg {
+        margin: 5px auto;
+    }
+</style>
+<h2 class="page-box-title">{{__('lc_basic_userInfo')}}</h2>
+<div class="uInfos" ms-controller="user-info">
+    <form name="loginForm" ms-validate="@validate">
+        <small style="display:block" class="text-danger text-center" :visible="@showErr" ms-html="@message"></small>
+        <div class="form-group">
+            <label for="">{{__('lc_userName')}}</label>
+            <input type="text" class="form-control" name="userName" ms-duplex="@userName"
+                placeholder="{{__('lc_basic_pl_username')}}"
+                ms-rules="{required:true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{4,11}$/ }"
+                data-required-message="{{__('validate_inputNull',[__('lc_userName')])}}"
+                data-message="{{__('lc_basic_user_writecurrent_username')}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{__('lc_basic_user_name')}}</label>
+            <input type="text" class="form-control" name="name" ms-duplex="@name"
+                placeholder="{{__('lc_basic_pl_name')}}"
+                ms-rules="{required:true,minlength:2,maxlength:6, pattern: /[\u4e00-\u9fa5]/ }"
+                data-required-message="{{__('validate_inputNull',[__('lc_basic_user_name')])}}"
+                data-message="{{__('validate_ranglengthandnormal',[__('lc_basic_user_name'),2,6])}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{__('lc_basic_user_tel')}}</label>
+            <input type="text" class="form-control" name="phoneNum" ms-duplex="@phoneNum"
+                placeholder="{{__('lc_basic_pl_tel')}}" ms-rules="{required:true,number:true }"
+                data-required-message="{{__('validate_inputNull',[__('lc_basic_user_tel')])}}"
+                data-message="{{__('validate_inputCorrect',[__('lc_basic_user_tel')])}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{__('lc_email')}}</label>
+            <input type="email" class="form-control" name="email" ms-duplex="@email"
+                placeholder="{{__('lc_write_email')}}"
+                ms-rules="{required:true, pattern: /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/ }"
+                data-required-message="{{__('validate_inputNull',[__('lc_email')])}}"
+                data-message="{{__('validate_inputCorrect',[__('lc_email')])}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{__('lc_basic_user_comments')}}</label>
+            <input type="text" class="form-control" name="comments" ms-duplex="@comments"
+                placeholder="{{__('lc_basic_pl_comments')}}">
+        </div>
+        <div class="sub-btns" id="ul-s5">
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">{{__('lc_basic_sub_btn')}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 请求用户信息
+    $.ajax({
+        type: "GET",
+        url: '/api/user/userInfo',
+        success: function (data) {
+            console.log('data', data);
+            if (data.status === 200) {
+                userInfoVm.name = data.data.name || '';
+                userInfoVm.userName = data.data.userName;
+                userInfoVm.email = data.data.email;
+                userInfoVm.phoneNum = data.data.phoneNum || '';
+                userInfoVm.comments = data.data.comments;
+            }
+        }
+    })
+</script>

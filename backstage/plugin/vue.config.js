@@ -60,7 +60,7 @@ module.exports = {
 
     config.devServer.set('inline', false)
     config.devServer.set('hot', false)
-    config.externals(['vue', 'vue-router', 'vuex', 'element-ui', 'axios', 'lodash', 'crypto-js', 'vue-i18n'])
+    config.externals(['vue', 'vue-router', 'vuex', 'element-ui', 'axios', 'lodash', 'crypto-js', 'vue-i18n', 'showdown', 'highlight.js'])
   },
   filenameHashing: false,
 }

@@ -1,0 +1,41 @@
+<!--用户中心右侧菜单-->
+<div class="page-title" id="pageContents" ms-controller="user-nav">
+
+    <div id="firstpane" class="menu_list">
+
+        <p class="menu_head">
+            <a href="/users/userCenter" :class="[@currentPath.indexOf('userCenter')>0 && 'current']"><i
+                    class="fa fa-home"></i>用户主页</a>
+        </p>
+        <p class="menu_head"><i class="fa fa-newspaper-o"></i>内容管理</p>
+        <div :css="{display: @menu_body_1_show() ? 'block' : 'none'}" class="menu_body">
+            <a href="/users/userContents" :class="[@currentPath.indexOf('userContents')>0 && 'current']"><i
+                    class="fa fa-angle-right"></i>我的文章</a>
+            <a href="/users/joinComments" :class="[@currentPath.indexOf('joinComments')>0 && 'current']"><i
+                    class="fa fa-angle-right"></i>参与话题</a>
+            <a href="/users/notify" :class="[@currentPath.indexOf('notify')>0 && 'current']"><i
+                    class="fa fa-angle-right"></i>{{__('lc_myMessage')}}</a>
+            <a href="/users/userAddContent" :class="[@currentPath.indexOf('userAddContent')>0 && 'current']"><i
+                    class="fa fa-angle-right"></i>在线投稿</a>
+        </div>
+        <p class="menu_head"><i class="fa fa-user"></i>账户管理</p>
+        <div :css="{display: @menu_body_2_show() ? 'block' : 'none'}" class="menu_body">
+            <a href="/users/personInfo" :class="[@currentPath.indexOf('personInfo')>0 && 'current']"><i
+                    class="fa fa-angle-right"></i>个人信息</a>
+            <a href="/users/setUserPsd" :class="[@currentPath.indexOf('setUserPsd')>0 && 'current']"><i
+                    class="fa fa-angle-right"></i>修改密码</a>
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#firstpane p.menu_head").click(function () {
+            $(this).addClass("current").next("div.menu_body").slideToggle(300).siblings("div.menu_body")
+                .slideUp("slow");
+            $(this).siblings().removeClass("current");
+        });
+
+    });
+</script>

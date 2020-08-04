@@ -13,7 +13,7 @@
 
       <el-table-column prop="name" :label="$t('plugin.name')"></el-table-column>
 
-      <el-table-column prop="description" :label="$t('plugin.description')" width="250"></el-table-column>
+      <el-table-column prop="description" :label="$t('plugin.description')" width="200"></el-table-column>
 
       <el-table-column prop="version" :label="$t('plugin.version')">
         <template slot-scope="scope">
@@ -25,6 +25,18 @@
           <div v-else>
             <el-tag type="info">{{scope.row.version}}</el-tag>
           </div>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="hooks" :label="$t('plugin.hooks')" width="180">
+        <template slot-scope="scope">
+          <div v-if="scope.row.hooks">{{scope.row.hooks.join(',')}}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="enable" :label="$t('plugin.enable')" width="180">
+        <template slot-scope="scope">
+          <el-switch @change="changePluginEnable(scope.$index, dataList)" v-model="scope.row.state"></el-switch>
         </template>
       </el-table-column>
 
@@ -72,7 +84,8 @@ import {
   getOnePlugin,
   getOneShopPlugin,
   updatePlugin,
-  pluginHeartBeat
+  pluginHeartBeat,
+  enablePlugin
 } from "@/api/plugin";
 
 export default {
@@ -91,6 +104,23 @@ export default {
   },
 
   methods: {
+    changePluginEnable(index, rows) {
+      let rowData = rows[index];
+      enablePlugin({ id: rowData.id, state: rowData.state })
+        .then(result => {
+          if (result.status === 200) {
+            this.$store.dispatch("plugin/getPluginList");
+          } else {
+            this.$message.error(result.message);
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: this.$t("main.scr_modal_del_error_info")
+          });
+        });
+    },
     heartBeat() {
       let _this = this;
       pluginHeartBeat()
@@ -182,11 +212,6 @@ export default {
         })
         .then(result => {
           if (result.status === 200) {
-            // this.$store.dispatch("plugin/getPluginList", this.pageInfo);
-            // this.$message({
-            //   message: "恭喜，插件升级成功！",
-            //   type: "success"
-            // });
             setTimeout(() => {
               this.heartBeat();
             }, 3000);

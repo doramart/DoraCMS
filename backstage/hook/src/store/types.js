@@ -1,0 +1,2 @@
+export const HOOKS_FORMSTATE = 'HOOKS_FORMSTATE';
+export const HOOKS_LIST = 'HOOKS_LIST';

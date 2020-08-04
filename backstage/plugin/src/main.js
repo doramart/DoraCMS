@@ -14,7 +14,7 @@ import store from './store'
 import singleSpaVue from 'single-spa-vue';
 
 import hljs from "highlight.js"
-import 'highlight.js/styles/default.css';
+// import 'highlight.js/styles/default.css';
 
 
 import './icons' // icon

@@ -20,7 +20,7 @@
                     <p>{{item.content | cutwords(100,false)}}</p>
                 </div>
                 <p class="comment-post">
-                    <a href="/details/{{item.contentId._id}}.html"
+                    <a href="{{item.contentId.url}}"
                         class="title">{{item.contentId.title | cutwords(50,false)}}</a>
                 </p>
             </li>

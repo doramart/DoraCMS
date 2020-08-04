@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-21 11:14:02 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-03-14 12:01:05
+ * @Last Modified time: 2020-05-05 22:16:02
  */
 
 
@@ -52,7 +52,8 @@ exports._list = async (Model, payload, {
         pageSize,
         searchkey,
         isPaging,
-        skip
+        skip,
+        lean
     } = payload;
 
     let docs = [];
@@ -60,6 +61,7 @@ exports._list = async (Model, payload, {
     query = query || {};
     current = current || 1, pageSize = Number(pageSize) || 10;
     isPaging = isPaging == '0' ? false : true;
+    lean = lean == '1' ? true : false;
     let skipNum = skip ? skip : ((Number(current)) - 1) * Number(pageSize);
     sort = !_.isEmpty(sort) ? sort : {
         date: -1
@@ -87,12 +89,12 @@ exports._list = async (Model, payload, {
     }
     // console.log('--query--', query);
     if (isPaging) {
-        docs = await Model.find(query, files).skip(skipNum).limit(Number(pageSize)).sort(sort).populate(populate).exec();
+        docs = !lean ? await Model.find(query, files).skip(skipNum).limit(Number(pageSize)).sort(sort).populate(populate).exec() : await Model.find(query, files).skip(skipNum).limit(Number(pageSize)).sort(sort).populate(populate).lean().exec();
     } else {
         if (payload.pageSize > 0) {
-            docs = await Model.find(query, files).skip(skipNum).limit(pageSize).sort(sort).populate(populate).exec();
+            docs = !lean ? await Model.find(query, files).skip(skipNum).limit(pageSize).sort(sort).populate(populate).exec() : await Model.find(query, files).skip(skipNum).limit(pageSize).sort(sort).populate(populate).lean().exec();
         } else {
-            docs = await Model.find(query, files).skip(skipNum).sort(sort).populate(populate).exec();
+            docs = !lean ? await Model.find(query, files).skip(skipNum).sort(sort).populate(populate).exec() : await Model.find(query, files).skip(skipNum).sort(sort).populate(populate).lean().exec();
         }
     }
     count = await Model.countDocuments(query).exec();
@@ -370,7 +372,9 @@ exports._inc = async (ctx, Model, id, data, {
     }
 
     if (!_.isEmpty(id)) {
-        query = _.assign({}, query);
+        query = _.assign({}, {
+            _id: id
+        }, query);
     }
 
     return await Model.updateMany(query, {

@@ -1,0 +1,38 @@
+<h2 class="page-box-title">{{__('lc_myMessage')}}</h2>
+<div class="page-box-content" ms-controller="my-contents">
+
+    <div :if="@myMessageList.length == 0">
+        <div class="no-contents">
+            <div class="um-profile-note">
+                <i class="fa fa-frown-o"></i>
+                <span>{{__('lc_no_myMessage')}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="myMessageList" :if="@myMessageList.length > 0">
+        <div ms-for="(index,el) in @myMessageList">
+            <ul>
+                <li>
+                    <div :class="['notify-title',(@el.isRead?'isRead':'noRead')]"><i class="fa fa-angle-right"
+                            ms-on-click="showMessageDetails($event,el)"></i><span ms-html="@el.notify.title"></span>
+                    </div>
+                    <span class="notify-content" ms-html="@el.notify.content"></span>
+                    <div class="opt pull-right">
+                        <button ms-on-click="@deleteNotify(el._id)" type="button"
+                            class="btn btn-danger btn-xs">删除</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="text-center">
+        <wbr ms-widget="{is:'ms-pager', onPageClick: @messagePageClick, totalPages:@messageTotalPage}" /></div>
+    </div>
+</div>
+<script>
+    // 获取用户投稿列表
+    getUserRelevantList('/systemNotify/getUserNotifys', 'myMessages', 1, {
+        userId: $('#userId').val(),
+        listState: 'all'
+    });
+</script>

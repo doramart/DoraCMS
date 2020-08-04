@@ -26,7 +26,7 @@ export default {
     comments: "Contents Detail",
     flashComments: "News-Flash Summary",
     rec: "Recommend",
-    date: "Published Time",
+    createDate: "Published Time",
     updateDate: "Update Time",
     commentNum: "Comments Amount",
     clickNum: "Click",

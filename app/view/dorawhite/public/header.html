@@ -1,7 +1,7 @@
 <!--头部模板-->
 <script>
     if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        document.write("<script src='{{staticRootPath}}/themes/{{staticforder}}/js/iscroll/iscroll.js'><" + '/' +
+        document.write("<script src='{{staticThemePath}}/js/iscroll/iscroll.js'><" + '/' +
             "script>");
         $(function () {
             new IScroll('#navWrapper', {
@@ -17,7 +17,7 @@
 <input type="hidden" value="{{logined}}" id="logined">
 <input type="hidden" value="{{tokenId}}" id="tokenId">
 <header class="clearfix" id="header" ms-controller="headerCtr">
-    {% if siteInfo.lang == 'zh-TW' %}
+    {% if site.lang == 'zh-TW' %}
     {% set homelink = '/zh-TW' %}
     {% set endStr = '_zh-TW' %}
     {% else %}
@@ -31,7 +31,7 @@
                     <div class="col-sm-2 col-md-2">
                         <div class="site-name ">
                             <a href="{{homelink}}" id="logo">
-                                <img src="{{siteInfo.siteLogo}}" alt="{{siteInfo.title}}" />
+                                <img src="{{site.logo}}" alt="{{site.title}}" />
                             </a>
                             </a>
                         </div>
@@ -39,10 +39,10 @@
                     <div class="col-sm-9 col-md-6" id="navWrapper">
                         <div id="navScroller">
                             <ul>
-                                {% for cate in cateTypes %} {% if cate.parentId == '0' %}
+                                {% for cate in navigation %} {% if cate.parentId == '0' %}
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" alt="{{siteInfo.altkey}}{{cate.name}}"
-                                        href="/{{cate.defaultUrl}}___{{cate._id}}">{{cate.name}}</a>
+                                    <a role="menuitem" tabindex="-1" alt="{{site.altkey}}{{cate.name}}"
+                                        href="{{cate.url}}">{{cate.name}}</a>
                                 </li>
                                 {% endif %} {% endfor %}
                             </ul>

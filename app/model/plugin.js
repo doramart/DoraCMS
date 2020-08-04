@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-09-23 13:28:28 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-03-24 14:26:56
+ * @Last Modified time: 2020-04-11 21:58:09
  */
 
 module.exports = app => {
@@ -23,6 +23,10 @@ module.exports = app => {
         name: String, // 插件名称
         enName: String, // 插件英文名
         description: String, // 插件描述
+        state: {
+            type: Boolean,
+            default: false
+        }, // 是否启用
         amount: {
             type: Number,
             default: 0
@@ -53,6 +57,9 @@ module.exports = app => {
             default: false
         },
         initDataPath: String, //初始化表路径
+        hooks: [{
+            type: String,
+        }], //钩子
         defaultConfig: String, //插入到 config.default.js 中的配置
         pluginsConfig: String, //插入到 plugins.js 中的配置
         type: {

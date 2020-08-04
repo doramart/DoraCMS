@@ -16,3 +16,19 @@ export function getUserSession(params) {
     params
   })
 }
+
+export function getClientNotice(params) {
+  return request({
+    url: '/manage/singleUser/getClientNotice',
+    method: 'get',
+    params
+  })
+}
+
+export function getVersionMaintenanceInfo(params) {
+  return request({
+    url: '/manage/singleUser/getVersionMaintenanceInfo',
+    method: 'get',
+    params
+  })
+}

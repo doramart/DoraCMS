@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-templateconfig",
-  "version": "1.0.10",
+  "version": "1.0.15",
   "description": "templateConfig",
   "eggPlugin": {
     "name": "doraTemplateConfig"

@@ -9,7 +9,7 @@
             {% for sonNav in currentCateList.cates %} {% if sonNav.parentId === parentNav._id %} {% if cateInfo._id == sonNav._id %}
             {% set navClass = 'active'%} {% else %} {% set navClass = ''%} {% endif %}
             <li class="{{navClass}}">
-                <a href="{{'/'+sonNav.defaultUrl+ '___'+sonNav._id}}">{{sonNav.name}}</a>
+                <a href="{{sonNav.url}}">{{sonNav.name}}</a>
             </li>
             {% endif %} {% endfor %}
         </ul>

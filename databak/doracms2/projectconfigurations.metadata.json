@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"githubcms.projectconfigurations"},{"v":2,"unique":true,"key":{"tableName":1},"name":"tableName_1","ns":"githubcms.projectconfigurations","background":true}],"uuid":"0974c6d582d84b0c94b3d89a4eedcd33"}

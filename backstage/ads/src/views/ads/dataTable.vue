@@ -83,7 +83,7 @@ export default {
     inputData(index, rows) {
       let targetRow = rows[index];
       let adsStr = `
-      {% remote key="${targetRow.name}",api="ads/getOne",query='{"name":"${targetRow.name}"}' %}
+      {% ads name="${targetRow.name}" %}
       {{adsPannel.slider(${targetRow.name})}}
       `;
       return adsStr;

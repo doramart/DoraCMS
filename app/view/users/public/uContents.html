@@ -1,0 +1,57 @@
+<h2 class="page-box-title">{{__('lc_myDocument')}}</h2>
+<div class="page-box-content" ms-controller="my-contents">
+
+    <div :if="@myContentList.length == 0">
+        <div class="no-contents">
+            <div class="um-profile-note">
+                <i class="fa fa-frown-o"></i>
+                <span>{{__('lc_no_myDocument')}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="myContentList" :if="@myContentList.length > 0">
+        <div ms-for="(index,el) in @myContentList">
+            <div class="discription ">
+                <h2 class="post-title ">
+                    <a ms-visible="@el.state=='2'" ms-attr="{href:el.url}" target="_blank " ms-text="@el.title"></a>
+                    <a ms-visible="@el.state != '2'" ms-text="@el.title"></a>
+                    <div class="contentState">
+                        <span ms-visible="@el.state == '0'" style="font-weight:normal;"><a target="_blank"
+                                ms-attr="{href:'/users/editContent/'+ @el._id}">{{__('lc_content_state_draft')}}</a></span>
+                        <span style="color:orange;" ms-visible="@el.state == '1'">{{__('lc_content_state_wait')}}</span>
+                        <span style="color:green;"
+                            ms-visible="@el.state == '2'">{{__('lc_content_state_publish')}}</span>
+                        <span style="color:red;" ms-visible="@el.state == '3'">{{__('lc_content_state_failed')}}</span>
+                    </div>
+                </h2>
+                <div class="post-content" ms-html="@el.discription"></div>
+                <ul class="post-meta ">
+                    <li>
+                        <i class="fa fa-clock-o " aria-hidden="true "></i>&nbsp;&nbsp;
+                        <span ms-text="@el.date"></span>
+                    </li>
+                    <li>
+                        <i class="fa fa-eye " aria-hidden="true "></i>&nbsp;&nbsp;
+                        <span ms-text="@el.clickNum"></span>
+                    </li>
+                    <li>
+                        <i class="fa fa-comment " aria-hidden="true "></i>&nbsp;&nbsp;
+                        <span ms-text="@el.commentNum"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <wbr ms-widget="{is:'ms-pager', onPageClick: @contentPageClick, totalPages:@contentTotalPage}" /></div>
+    </div>
+
+
+</div>
+<script>
+    // 获取用户投稿列表
+    getUserRelevantList('/content/getUserContents', 'myContents', 1, {
+        userId: $('#userId').val(),
+        listState: 'all'
+    });
+</script>

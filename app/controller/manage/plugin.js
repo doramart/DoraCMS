@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-03-31 11:38:15
+ * @Last Modified time: 2020-04-11 22:28:08
  */
 const Controller = require('egg').Controller;
 const shell = require('shelljs');
@@ -127,6 +127,7 @@ class PluginController extends Controller {
                 // 5、保存插件基本信息到本地
                 let currentPluginInfo = _.assign({}, pluginInfos, {
                     pluginId: pluginInfos._id,
+                    installor: ctx.session.adminUserInfo._id,
                     createTime: new Date()
                 })
                 delete currentPluginInfo._id;
@@ -241,6 +242,41 @@ class PluginController extends Controller {
                 }, 1000)
 
             }
+
+            ctx.helper.renderSuccess(ctx);
+
+        } catch (err) {
+            ctx.helper.renderFail(ctx, {
+                message: err
+            });
+        }
+    }
+
+    async enablePlugin() {
+
+        const {
+            ctx,
+            service
+        } = this;
+        try {
+
+            let fields = ctx.request.body;
+            let targetId = fields.id;
+            let state = fields.state;
+
+            let pluginInfos = await ctx.service.plugin.item(ctx, {
+                query: {
+                    _id: targetId
+                }
+            })
+
+            if (_.isEmpty(pluginInfos)) {
+                throw new Error(ctx.__('validate_error_params'));
+            }
+
+            await ctx.service.plugin.update(ctx, targetId, {
+                state
+            })
 
             ctx.helper.renderSuccess(ctx);
 

@@ -1,9 +1,9 @@
-{% extends "../public/defaultTemp.html" %} {% block content %}
+{% extends "../default.html" %} {% block content %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-container">
 
-            {% set firstDocuments = documentList.docs[0] %}
+            {% set firstDocuments = posts[0] %}
 
             {% if firstDocuments %}
             <input type="hidden" value="{{firstDocuments._id}}" id="contentId">
@@ -14,7 +14,7 @@
                         <article class="post">
                             <div class="col-md-2">&nbsp;</div>
                             <div class="col-md-8">
-                                <h2 alt="{{siteInfo.altkey}}{{firstDocuments.title}}" class="post-title">
+                                <h2 alt="{{site.altkey}}{{firstDocuments.title}}" class="post-title">
                                     {{firstDocuments.title}} {% if firstDocuments.from == '2' %} &nbsp;
                                     <span class="badge">{{__('lc_document_share')}}</span>
                                     {% endif %}

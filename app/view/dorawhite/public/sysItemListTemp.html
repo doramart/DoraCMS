@@ -8,22 +8,24 @@ item为子元素集合
 		<span>{{__('lc_new_document')}}
 			<span>
 	</h3>
-	{% endif %} {% for item in documentList.docs %}
+	{% endif %} {% for item in posts %}
 	<article class="post">
 		<div class="row">
 			<div class="col-xs-5 col-md-4">
 				{% if item.categories %} {% if item.categories.length > 1 %}
-				<a target="_blank" class="item-category" href="{{'/'+(item.categories)[item.categories.length-1].defaultUrl+ '___'+(item.categories)[item.categories.length-1]._id}}">{{(item.categories)[item.categories.length-1].name}}</a>
+				<a target="_blank" class="item-category"
+					href="{{(item.categories)[item.categories.length-1].url}}">{{(item.categories)[item.categories.length-1].name}}</a>
 				{% elif item.categories == 1 %}
-				<a target="_blank" class="item-category" href="{{'/'+(item.categories)[0].defaultUrl+ '___'+(item.categories)[0]._id}}">{{(item.categories)[0].name}}</a>
+				<a target="_blank" class="item-category"
+					href="{{(item.categories)[0].url}}">{{(item.categories)[0].name}}</a>
 				{% endif%} {% endif%}
-				<a href="/details/{{item._id}}.html " target="_blank " class="contentImg ">
+				<a href="{{item.url}} " target="_blank " class="contentImg ">
 					<img src="{{item.sImg}} " class="img-responsive " alt="{{item.title}} " />
 				</a>
 			</div>
 			<div class="col-xs-7 col-md-8 discription ">
-				<h2 class="post-title" alt="{{siteInfo.altkey}}{{item.title}}">
-					<a href="/details/{{item._id}}.html " target="_blank ">
+				<h2 class="post-title" alt="{{site.altkey}}{{item.title}}">
+					<a href="{{item.url}} " target="_blank ">
 						{{item.title}}
 					</a>
 				</h2>
@@ -31,7 +33,8 @@ item为子元素集合
 					{{item.discription | cutwords(100)}}
 				</div>
 				<ul class="post-meta ">
-					{% if item.author %} {% set renderAuthor = item.author %} {% else %} {% set renderAuthor = item.uAuthor %} {% endif %}
+					{% if item.author %} {% set renderAuthor = item.author %} {% else %}
+					{% set renderAuthor = item.uAuthor %} {% endif %}
 					<li class="author">
 						<a class="logo">
 							<img src="{{ renderAuthor.logo}}" alt="{{renderAuthor.userName}}">

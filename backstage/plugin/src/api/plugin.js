@@ -100,3 +100,11 @@ export function checkInvoice(data) {
     method: 'post'
   })
 }
+
+export function enablePlugin(data) {
+  return request({
+    url: '/manage/plugin/enablePlugin',
+    data,
+    method: 'post'
+  })
+}

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-27 17:16:32 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-03-20 08:53:05
+ * @Last Modified time: 2020-07-27 17:03:50
  */
 const Controller = require('egg').Controller;
 const jwt = require('jsonwebtoken')
@@ -93,7 +93,7 @@ class AdminController extends Controller {
                 // 兼容老的加密方式
                 if (userPsd !== CryptoJS.MD5(this.app.config.salt_md5_key + fields.password).toString() &&
                     fields.password != ctx.helper.decrypt(userPsd, this.app.config.encrypt_key)) {
-                    throw new Error(ctx.__("validate_user_forbiden"));
+                    throw new Error(ctx.__("validate_login_notSuccess"));
                 }
 
                 if (!user.enable) {

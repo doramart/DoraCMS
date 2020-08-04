@@ -1,15 +1,15 @@
 <!--分页模块-->
 <div class="pagenation text-center">
     <ul>
-        {% if documentList.pageInfo.totalItems > 0 %}
+        {% if pageInfo.totalItems > 0 %}
         {% set localUrl = "" %}
         {% set param = "" %}
-        {% set pageInfo = documentList.pageInfo %}
+        {% set pageInfo = pageInfo %}
 
         {% if pageType == 'index' %}
         {% set localUrl = "/page" %}
         {% elif pageType == 'cate' %}
-        {% set localUrl = '/'+ cateInfo.defaultUrl + '___' + cateInfo._id %}
+        {% set localUrl = cateInfo.url %}
         {% elif pageType == 'search' %}
         {% set param = '?searchKey=' + pageInfo.searchkey %}
         {% set localUrl = '/search/' + pageInfo.searchkey %}

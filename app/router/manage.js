@@ -91,6 +91,9 @@ module.exports = app => {
     // 升级
     router.get('/manage/plugin/updatePlugin', controller.manage.plugin.updatePlugin);
 
+    // 启用插件
+    router.post('/manage/plugin/enablePlugin', controller.manage.plugin.enablePlugin);
+
     // 心跳
     router.get('/manage/plugin/pluginHeartBeat', controller.manage.plugin.pluginHeartBeat);
 
@@ -105,6 +108,20 @@ module.exports = app => {
 
     // 订单校验
     router.post('/manage/plugin/checkInvoice', controller.manage.plugin.checkInvoice);
+
+    /**
+     * 钩子管理
+     */
+    router.get('/manage/hook/getList', controller.manage.hook.list)
+
+    router.get('/manage/hook/getOne', controller.manage.hook.getOne)
+
+    router.post('/manage/hook/addOne', controller.manage.hook.create)
+
+    router.post('/manage/hook/updateOne', controller.manage.hook.update)
+
+    router.get('/manage/hook/deleteUser', controller.manage.hook.removes)
+
 
 
     //ManageRouters

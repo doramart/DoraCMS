@@ -1,11 +1,11 @@
 import * as types from '../types.js';
 import {
   getSiteBasicInfo,
-  getUserSession
+  getUserSession,
+  getClientNotice,
+  getVersionMaintenanceInfo
 } from '@/api/dashboard';
 import _ from 'lodash';
-
-
 
 
 const state = {
@@ -24,7 +24,9 @@ const state = {
       group: []
     },
     noticeCounts: 0
-  }
+  },
+  notice: [],
+  versionInfo: []
 }
 
 const mutations = {
@@ -45,6 +47,12 @@ const mutations = {
       state: params.loginState || false,
       noticeCounts: params.noticeCounts
     });
+  },
+  [types.CLIENT_NOTICE](state, list) {
+    state.notice = list
+  },
+  [types.SYSTEM_VERSION_INFO](state, list) {
+    state.versionInfo = list.length > 0 ? list[0] : {}
   },
 }
 
@@ -68,6 +76,21 @@ const actions = {
     })
   },
 
+  getNotice: ({
+    commit
+  }, params = {}) => {
+    getClientNotice(params).then((result) => {
+      commit(types.CLIENT_NOTICE, result.data)
+    })
+  },
+
+  getVersionMaintenanceInfo: ({
+    commit
+  }, params = {}) => {
+    getVersionMaintenanceInfo(params).then((result) => {
+      commit(types.SYSTEM_VERSION_INFO, result.data)
+    })
+  },
 }
 
 export default {

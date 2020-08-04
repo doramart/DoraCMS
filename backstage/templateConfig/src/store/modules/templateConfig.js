@@ -19,8 +19,8 @@ const state = {
       }
     },
     templateList: {
-      pageInfo: {},
-      docs: []
+      // pageInfo: {},
+      // docs: []
     },
     templateItemForderList: {}
   },

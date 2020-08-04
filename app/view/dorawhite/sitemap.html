@@ -1,5 +1,5 @@
 <!-- BEGIN SITEMAP -->
-{% extends "./public/defaultTemp.html" %} {% block content %}
+{% extends "./default.html" %} {% block content %}
 <style>
     .siteMap {
         padding: 15px;
@@ -16,7 +16,7 @@
                 <ol>
                     {% for item in siteMapList %}
                     <li>
-                        <a href="/details/{{item._id}}.html">{{item.title}}</a>
+                        <a href="{{item.url}}">{{item.title}}</a>
                     </li>
                     {% endfor %}
                 </ol>

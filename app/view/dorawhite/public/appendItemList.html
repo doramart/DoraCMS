@@ -7,17 +7,18 @@ item为子元素集合
 		<article class="post" ms-for="(index,item) in @appendDocumentList">
 			<div class="row">
 				<div class="col-xs-5 col-sm-3 col-md-4">
-					<a ms-if="@item.categories.length > 1" target="_blank" class="item-category" ms-attr="{href:'/'+(@item.categories)[@item.categories.length-1].defaultUrl+ '___'+(@item.categories)[@item.categories.length-1]._id}"
-					 ms-text="(@item.categories)[@item.categories.length-1].name"></a>
-					<a ms-if="@item.categories.length == 1" target="_blank" class="item-category" ms-attr="{href:'/'+(@item.categories)[0].defaultUrl+ '___'+(@item.categories)[0]._id}"
-					 ms-text="(@item.categories)[0].name"></a>
-					<a ms-attr="{href:'/details/'+ @item._id + '.html'}" target="_blank " class="contentImg ">
+					<a ms-if="@item.categories.length > 1" target="_blank" class="item-category"
+						ms-attr="{href:(@item.categories)[@item.categories.length-1].url}"
+						ms-text="(@item.categories)[@item.categories.length-1].name"></a>
+					<a ms-if="@item.categories.length == 1" target="_blank" class="item-category"
+						ms-attr="{href:(@item.categories)[0].url}" ms-text="(@item.categories)[0].name"></a>
+					<a ms-attr="{href:'@item.url'}" target="_blank " class="contentImg ">
 						<img ms-attr="{src: @item.sImg,alt:@item.title }" class="img-responsive " />
 					</a>
 				</div>
 				<div class="col-xs-7 col-sm-9 col-md-8 discription ">
 					<h2 class="post-title" ms-attr="{alt:@item.title}">
-						<a ms-attr="{href:'/details/'+ @item._id + '.html'}" target="_blank" ms-text="@item.title">
+						<a ms-attr="{href:'@item.url'}" target="_blank" ms-text="@item.title">
 						</a>
 					</h2>
 					<div class="post-content " ms-text="@item.discription | cutwords(60)">
@@ -48,7 +49,7 @@ item为子元素集合
 			</div>
 		</article>
 	</div>
-	{% if documentList.docs.length > 0 %}
+	{% if posts.length > 0 %}
 	<div class="loading-more" ms-on-click="@getMoreNews">
 		<i :visible="!@loadingState" class="fa fa-sort-down" aria-hidden="true"></i>
 		<i :visible="@loadingState" class="fa fa-spin fa-spinner"></i>
@@ -86,9 +87,10 @@ item为子元素集合
 				appendNewsVm.loadingState = false;
 				if (data.status == 200) {
 					if (data.data.docs.length > 0) {
-						appendNewsVm.appendDocumentList = (appendNewsVm.appendDocumentList).concat(data.data.docs);
+						appendNewsVm.appendDocumentList = (appendNewsVm.appendDocumentList).concat(data.data
+							.docs);
 					}
-				} 
+				}
 			},
 			error: function (d) {
 				console.log('error:', d)

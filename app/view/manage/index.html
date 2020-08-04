@@ -10,23 +10,26 @@
 	<input type="hidden" id="renderMap" value="{{renderMapJson}}">
 	<script type="systemjs-importmap">
 		{
-            "imports": {
-                "single-spa": "{{staticRootPath}}/plugins/single-spa/4.3.7/system/single-spa.min.js",
-                "vue": "{{staticRootPath}}/plugins/vue/2.6.10/vue.min.js",
-                "vuex": "{{staticRootPath}}/plugins/vuex/3.1.1/vuex.min.js",
-                "vue-router": "{{staticRootPath}}/plugins/vue-router/3.0.7/vue-router.min.js",
-                "element-ui": "{{staticRootPath}}/plugins/element-ui/2.11.1/index.js",
-                "vue-i18n": "{{staticRootPath}}/plugins/vue-i18n/8.14.0/vue-i18n.min.js",
-                "axios": "{{staticRootPath}}/plugins/axios/0.19.0-beta.1/axios.min.js",
+		"imports": {
+				"single-spa": "{{staticRootPath}}/plugins/single-spa/4.3.7/system/single-spa.min.js",
+				"vue": "{{staticRootPath}}/plugins/vue/2.6.10/vue.min.js",
+				"vuex": "{{staticRootPath}}/plugins/vuex/3.1.1/vuex.min.js",
+				"vue-router": "{{staticRootPath}}/plugins/vue-router/3.0.7/vue-router.min.js",
+				"element-ui": "{{staticRootPath}}/plugins/element-ui/2.11.1/index.js",
+				"vue-i18n": "{{staticRootPath}}/plugins/vue-i18n/8.14.0/vue-i18n.min.js",
+				"axios": "{{staticRootPath}}/plugins/axios/0.19.0-beta.1/axios.min.js",
 				"lodash": "{{staticRootPath}}/plugins/lodash.js/4.17.15/lodash.min.js",
+				"showdown": "{{staticRootPath}}/plugins/showdown/showdown.min.js",
+				"highlight.js": "{{staticRootPath}}/plugins/highlight.js/9.18.1/highlight.min.js",
 				{% for appItem in renderMap %}
-                "{{appItem.name}}": "{{appItem.path}}",
-                {% endfor %}
-                "crypto-js": "{{staticRootPath}}/plugins/crypto-js/3.1.9/crypto-js.min.js"
-            }
-        }
+				"{{appItem.name}}": "{{appItem.path}}",
+				{% endfor %}
+				"crypto-js": "{{staticRootPath}}/plugins/crypto-js/3.1.9/crypto-js.min.js"
+      }
+    }
     </script>
 	<link rel="stylesheet" href="{{staticRootPath}}/plugins/element-ui/2.11.1/theme-chalk/index.css">
+	<link rel="stylesheet" href="{{staticRootPath}}/plugins/highlight.js/9.18.1/default.min.css">
 	<link rel="preload" href="{{staticRootPath}}/plugins/single-spa/4.3.7/system/single-spa.min.js" as="script"
 		crossorigin="anonymous" />
 	<link rel="preload" href="{{staticRootPath}}/plugins/vue/2.6.10/vue.min.js" as="script" crossorigin="anonymous" />

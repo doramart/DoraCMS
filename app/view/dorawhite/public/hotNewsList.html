@@ -1,5 +1,4 @@
-{% remote key="hotItemListData",api="content/getList",query='{"sortby":"1","pageSize":10,"isPaging":"0"}' %}
-
+{% hot key="hotItemListData","pageSize"=10 %}
 {% if hotItemListData.length > 0 %}
 <div class="pannel-box hot-content-list">
     <h2 class="pannel-title">{{__('lc_hotDocuments')}}</h2>
@@ -9,7 +8,7 @@
             <li>
                 <span class="triangle"></span>
                 <div class="con">
-                    <a href="/details/{{item._id}}.html" target="_blank">
+                    <a href="{{item.url}}" target="_blank">
                         {{item.title}}
                     </a>
                 </div>

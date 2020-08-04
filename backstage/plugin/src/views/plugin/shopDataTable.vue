@@ -13,11 +13,17 @@
 
       <el-table-column prop="name" :label="$t('plugin.name')"></el-table-column>
 
-      <el-table-column prop="description" :label="$t('plugin.description')" width="250"></el-table-column>
+      <el-table-column prop="description" :label="$t('plugin.description')" width="200"></el-table-column>
 
       <el-table-column prop="version" :label="$t('plugin.version')">
         <template slot-scope="scope">
           <el-tag type="info">{{scope.row.version}}</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="hooks" :label="$t('plugin.hooks')" width="180">
+        <template slot-scope="scope">
+          <div v-if="scope.row.hooks">{{scope.row.hooks.join(',')}}</div>
         </template>
       </el-table-column>
 

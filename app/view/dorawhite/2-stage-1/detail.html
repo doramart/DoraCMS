@@ -1,48 +1,48 @@
-{% extends "../public/defaultTemp.html" %} {% block content %}
+{% extends "../default.html" %} {% block content %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-container" ms-controller="documentInfo">
-            <input type="hidden" value="{{documentInfo._id}}" id="contentId">
+            <input type="hidden" value="{{post._id}}" id="contentId">
             <div class="row articel-details">
-                {% if (documentInfo.categories[0]).enable %}
+                {% if (post.categories[0]).enable %}
                 <div class="col-md-8 left-frame">
                     <div class="articel-main ">
                         <article class="">fsdfsdf
-                            <h2 alt="{{siteInfo.altkey}}{{documentInfo.title}}" class="post-title">
-                                {{documentInfo.title}} {% if documentInfo.from == '2' %} &nbsp;
+                            <h2 alt="{{site.altkey}}{{post.title}}" class="post-title">
+                                {{post.title}} {% if post.from == '2' %} &nbsp;
                                 <span class="badge">{{__('lc_document_share')}}</span>
                                 {% endif %}
                             </h2>
                             <ul class="post-meta content-author">
                                 <li class="author-name">
-                                    {% if documentInfo.author %} {{documentInfo.author.userName}} {% else %}
-                                    {{documentInfo.uAuthor.userName}} {% endif %}
+                                    {% if post.author %} {{post.author.userName}} {% else %}
+                                    {{post.uAuthor.userName}} {% endif %}
                                 </li>
                                 <li>
-                                    {% set cateInfo = (documentInfo.categories[0]) %}
+                                    {% set cateInfo = (post.categories[0]) %}
                                     <span class="dot">&nbsp;•&nbsp;</span>
-                                    <a href="/{{cateInfo.defaultUrl}}___{{cateInfo._id}}"
-                                        target="_blank">{{(documentInfo.categories[documentInfo.categories.length-1]).name}}</a>
+                                    <a href="{{cateInfo.url}}"
+                                        target="_blank">{{(post.categories[post.categories.length-1]).name}}</a>
                                 </li>
                                 <li>
-                                    <span class="dot">&nbsp;•&nbsp;</span> {{documentInfo.date}}
+                                    <span class="dot">&nbsp;•&nbsp;</span> {{post.date}}
                                 </li>
                                 <li>
                                     <span
-                                        class="dot">&nbsp;•&nbsp;</span>{{__('lc_document_readNum}}&nbsp;&nbsp;{{documentInfo.clickNum')}}
+                                        class="dot">&nbsp;•&nbsp;</span>{{__('lc_document_readNum}}&nbsp;&nbsp;{{post.clickNum')}}
                                 </li>
                             </ul>
                             <div class="post-content">
-                                {{documentInfo.comments | safe}}
+                                {{post.comments | safe}}
                             </div>
                         </article>
-                        {% if documentInfo.tags.length>0%}
+                        {% if post.tags.length>0%}
                         <div class="tag-list">
                             <ul>
-                                {% for tag in documentInfo.tags %}
+                                {% for tag in post.tags %}
                                 <li>
                                     <span class="label label-info">
-                                        <a href="/tag/{{tag.name}}">{{tag.name}}</a>
+                                        <a href="{{tag.url}}">{{tag.name}}</a>
                                     </span>
                                 </li>
                                 {% endfor %}
@@ -58,30 +58,30 @@
                 <div class="col-md-12 left-frame">
                     <div class="articel-main">
                         <article class="post">
-                            <h2 alt="{{siteInfo.altkey}}{{documentInfo.title}}" class="post-title">
-                                {{documentInfo.discription}} {% if documentInfo.from == '2' %} &nbsp;
+                            <h2 alt="{{site.altkey}}{{post.title}}" class="post-title">
+                                {{post.discription}} {% if post.from == '2' %} &nbsp;
                                 <span class="badge">{{__('lc_document_share')}}</span>
                                 {% endif %}
                             </h2>
                             <ul class="post-meta content-author">
                                 <li class="author-name">
-                                    {% if documentInfo.author %} {{documentInfo.author.userName}} {% else %}
-                                    {{documentInfo.uAuthor.userName}} {% endif %}
+                                    {% if post.author %} {{post.author.userName}} {% else %}
+                                    {{post.uAuthor.userName}} {% endif %}
                                 </li>
                                 <li>
                                     <span class="dot">&nbsp;•&nbsp;</span>
-                                    {{(documentInfo.categories[documentInfo.categories.length-1]).name}}
+                                    {{(post.categories[post.categories.length-1]).name}}
                                 </li>
                                 <li>
-                                    <span class="dot">&nbsp;•&nbsp;</span> {{documentInfo.date}}
+                                    <span class="dot">&nbsp;•&nbsp;</span> {{post.date}}
                                 </li>
                                 <li>
                                     <span
-                                        class="dot">&nbsp;•&nbsp;</span>{{__('lc_document_readNum}}&nbsp;&nbsp;{{documentInfo.clickNum')}}
+                                        class="dot">&nbsp;•&nbsp;</span>{{__('lc_document_readNum}}&nbsp;&nbsp;{{post.clickNum')}}
                                 </li>
                             </ul>
                             <div class="post-content">
-                                {{documentInfo.comments | safe}}
+                                {{post.comments | safe}}
                             </div>
                         </article>
                     </div>

@@ -1,0 +1,460 @@
+.page {
+    overflow: hidden;
+    padding: 20px;
+}
+
+.whitebg {
+    background-color: #fff;
+}
+
+.page-title {
+    width: 230px;
+    float: left
+}
+
+.page-title li {
+    margin-bottom: 10px
+}
+
+.page-title li a {
+    display: block;
+    text-align: center;
+    padding: 8px 0;
+    border: #f1f1f1 1px solid;
+    border-radius: 3px;
+}
+
+#pagecurrent,
+.page-title li a:hover {
+    background: #1487f4;
+    color: #fff;
+    border: #1487f4 1px solid;
+}
+
+.page-box {
+    width: 830px;
+    float: left;
+    margin-left: 30px;
+    padding-left: 30px;
+    border-left: #eee 1px solid;
+    min-height: 500px;
+}
+
+.page-box-title {
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.page-box-title:after {
+    content: "";
+    position: absolute;
+    width: 64px;
+    height: 2px;
+    content: "";
+    background: #000;
+    left: 0;
+    bottom: -1px;
+    -moz-transition: all .5s ease;
+    -webkit-transition: all .5s ease;
+    transition: all .5s ease;
+}
+
+.page-box-title:hover:after {
+    width: 80px;
+}
+
+.page-box-content {
+    line-height: 26px;
+}
+
+.page-box-content p {
+    margin-bottom: 15px;
+}
+
+.page-box-content img {
+    max-width: 100%;
+    margin: 10px auto
+}
+
+.page-box-content h2,
+.page-box-content h3,
+.page-box-content h4,
+.page-box-content h5,
+.page-box-content h6 {
+    font-size: 16px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.page-box-content h2:before,
+.page-box-content h3:before,
+.page-box-content h4:before,
+.page-box-content h5:before,
+.page-box-content h6:before {
+    position: absolute;
+    content: "";
+    background: #1487f4;
+    width: 3px;
+    height: 100%;
+    left: -32px;
+    bottom: 0;
+}
+
+.page-box-content a {
+    color: #39F
+}
+
+/* 用户中心下拉菜单 */
+.menu_head {
+    width: 185px;
+    height: 47px;
+    line-height: 47px;
+    padding-left: 38px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    position: relative;
+    margin: 0px;
+
+    background: url(../images/pro_left.png) center right no-repeat;
+
+    .fa {
+        display: inline-block;
+        margin-right: 10px;
+    }
+}
+
+.menu_list .current {
+    background: url(../images/pro_down.png) center right no-repeat;
+    color: #1487f4;
+}
+
+.menu_body {
+    width: 223px;
+    height: auto;
+    overflow: hidden;
+    line-height: 38px;
+
+    .fa {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    a {
+        display: block;
+        width: 223px;
+        height: 38px;
+        line-height: 38px;
+        padding-left: 48px;
+        color: #333;
+        background: #fff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: #1487f4;
+    }
+}
+
+
+/* 个人中心，暂无数据 */
+.no-contents {
+    padding-bottom: 50px;
+
+    .um-profile-note {
+        color: #666;
+        text-align: center;
+        padding-top: 60px;
+
+        i {
+            display: block;
+            font-size: 70px;
+            height: 70px;
+            line-height: 70px;
+        }
+    }
+
+}
+
+// pannelbox
+.pannel-box {
+    padding: 15px 0;
+    margin-bottom: 20px;
+
+    .pannel-title {
+        margin: 0 0 10px;
+        padding: 1px 0 1px 7px;
+        font-size: 16px;
+        font-weight: normal;
+
+        span {
+            display: inline-block;
+        }
+    }
+}
+
+/* 我的文档列表 */
+.myContentList .discription {
+    border-bottom: 1px solid #efefef;
+    padding-top: 20px;
+
+    .post-title {
+        position: relative;
+        margin: 0 0 15px;
+
+        .contentState {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+    }
+
+    .post-content {
+        color: #666;
+        line-height: 30px;
+    }
+
+    .post-meta li {
+        display: inline-block;
+        border: none;
+        color: #999;
+        font-size: 13px;
+        margin-right: 20px;
+        padding-bottom: 0;
+        padding: 20px 0;
+
+        span {
+            display: inline-block;
+        }
+
+        i {
+            margin-right: 5px;
+        }
+    }
+
+
+}
+
+// 我参与的
+.myJoinTopicsList {
+    .replyList {
+        background-color: #ffffff;
+
+        li {
+            font-size: 14px;
+            position: relative;
+
+            border-bottom: 1px dashed #ededed;
+
+            h4 {
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 30px;
+            }
+
+            time {
+                float: right;
+                color: #8492a6;
+                font-size: 12px;
+                margin-right: 30px;
+            }
+
+            blockquote {
+                color: #475669;
+            }
+        }
+    }
+}
+
+// 我的系统消息
+.myMessageList {
+    padding: 15px;
+
+    ul {
+        li {
+            position: relative;
+            padding: 15px 0;
+            border-bottom: 1px dashed #ededed;
+
+            .notify-title {
+                color: #1487f4;
+
+                span {
+                    display: inline-block;
+                }
+
+                i {
+                    width: 15px;
+                    cursor: pointer;
+                    display: inline-block;
+                    font-size: 20px;
+                    margin-right: 10px;
+                    font-weight: 700;
+                }
+
+                display: inline-block;
+                font-size: 15px;
+            }
+
+            .notify-title.noRead {
+                font-weight: bold;
+            }
+
+            .notify-title.isRead {
+                font-weight: normal;
+                color: #909090;
+            }
+
+            .notify-content {
+                display: none;
+
+                p {
+                    margin: 10px 10px 10px 30px;
+                    font-size: 15px;
+                }
+            }
+
+            .opt {
+                position: absolute;
+                top: 12px;
+                right: 0px;
+            }
+        }
+    }
+}
+
+// 用户中心分页
+.pagination {
+    text-align: center;
+    margin: 20px 0;
+
+    li {
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+        border-bottom: none;
+
+        a:hover {
+            cursor: pointer;
+        }
+
+        i {
+            width: auto;
+            height: auto;
+            color: #aaa;
+        }
+    }
+
+    li.active {
+        font-weight: bold;
+    }
+}
+
+// 用户投稿
+.user-contents-post {
+    background-color: #ffffff;
+    margin: 0;
+
+    .main-form {
+        padding: 15px;
+
+        .select-group {
+            select {
+                display: inline-block;
+                width: 30%;
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .right-form {
+        padding: 15px;
+
+        .sub-content {
+            width: 100%;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+
+        .webuploader-pick {
+            padding: 6px 15px;
+            background-color: #1487f4;
+        }
+
+        .thumbImg {
+            .uploader-demo {
+                position: relative;
+
+                .uploader-list {
+                    .thumbnail {
+                        height: 15rem;
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+                }
+
+                .trashIco {
+                    display: none;
+                    position: absolute;
+                    z-index: 99;
+                    right: 0;
+                    top: 0;
+                    padding: 8px;
+                    font-size: 22px;
+                    color: #fff;
+                    background: rgba(0, 0, 0, .55);
+                    cursor: pointer;
+                }
+            }
+
+        }
+    }
+}
+
+// 用户注册
+.login-main {
+    background-color: #fff;
+
+    .login-box {
+        width: 65%;
+        margin: 0 auto;
+        margin-top: 20px;
+        padding: 20px 0px 100px;
+
+        .title {
+            text-align: center;
+            font-size: 24px;
+            position: relative;
+        }
+
+        .forget-psd {
+            margin-top: 30px;
+            text-align: center;
+        }
+    }
+
+    .form-group {
+        label {
+            line-height: 22px;
+            padding-bottom: 8px !important;
+            font-weight: 600;
+            font-size: 15px;
+        }
+    }
+
+    .sub-btns {
+        button {
+            width: 100%;
+            padding: 12px 20px;
+        }
+    }
+}

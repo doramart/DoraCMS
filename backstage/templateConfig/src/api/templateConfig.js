@@ -49,6 +49,14 @@ export function installTemp(params) {
   })
 }
 
+export function updateTemp(params) {
+  return request({
+    url: '/manage/template/updateTemp',
+    params,
+    method: 'get'
+  })
+}
+
 export function enableTemp(params) {
   return request({
     url: '/manage/template/enableTemp',

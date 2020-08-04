@@ -1,4 +1,4 @@
-{% extends "../public/defaultTemp.html" %} {% block content %} {% import "../public/adsPannel.html" as adsPannel %}
+{% extends "../default.html" %} {% block content %} {% import "../public/adsPannel.html" as adsPannel %}
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 <div class="container-fluid">
     <div class="row">
@@ -15,7 +15,7 @@
 
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
-                        {% remote key="anli",api="ads/getOne",query='{"name":"anli"}' %}
+                        {% ads name="anli" %}
                         {{adsPannel.slider(anli)}}
                     </div>
                     <div class="col-md-1"></div>

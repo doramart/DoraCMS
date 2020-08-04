@@ -1302,12 +1302,43 @@
           "application/json"
         ],
         "parameters": [{
-          "name": "_id",
-          "in": "query",
-          "description": "Status values that need to be considered for filter",
-          "required": true,
-          "type": "string"
-        }],
+            "name": "phoneNum",
+            "in": "query",
+            "description": "手机号（eq:15220064294）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "description": "国家代码（eq: 86）",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "用户邮箱",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "messageType",
+            "in": "query",
+            "description": "发送验证码类别（0、注册 1、登录，2、忘记密码找回, 3、忘记密码，4、身份验证, 5、管理员登录，6、游客绑定邮箱或手机号）",
+            "required": true,
+            "type": "string",
+            "default": "0"
+          },
+          {
+            "name": "sendType",
+            "in": "query",
+            "description": "发送验证码形式（1: 短信验证码  2:邮箱验证码）",
+            "required": true,
+            "type": "string",
+            "default": "2"
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",

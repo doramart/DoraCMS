@@ -96,10 +96,19 @@
                         :xs="12"
                         :sm="8"
                         :md="4"
-                        v-for="item in templateConfigList"
+                        v-for="item in renderMyThemes"
                         :key="item._id"
                       >
                         <div class="myTemplist">
+                          <div
+                            v-if="item.shoudUpdate"
+                            @click="askVipLogin(item,'update')"
+                            style="cursor: pointer;"
+                          >
+                            <UpdateCorner
+                              style="position: absolute; top: 5px; border: 0; right: 5px;"
+                            />
+                          </div>
                           <img :src="item.sImg" />
                         </div>
                         <div class="theme-info temp-info">
@@ -221,7 +230,7 @@
                     <hr style="margin:20px 0;" />
                     <el-row>
                       <el-link
-                        href="https://cdn.html-js.cn/cmsSource20190516172452.zip"
+                        href="http://cdn.html-js.cn/cms/templates/2.1.7/tempdemo.zip"
                         target="_blank"
                       >
                         <i class="el-icon-s-cooperation"></i>下载示例模板
@@ -238,6 +247,7 @@
   </div>
 </template>
 <script>
+import UpdateCorner from "./updateCorner";
 import ConfigForm from "./configForm";
 import BuyTipsForm from "./buyTipsForm";
 import { getToken } from "@root/publicMethods/auth";
@@ -247,6 +257,7 @@ import {
   uninstallTemp,
   enableTemp,
   installTemp,
+  updateTemp,
   createInvoice,
   checkInvoice
 } from "@/api/templateConfig";
@@ -268,24 +279,13 @@ export default {
         info: {},
         buyQr: ""
       },
-      activeName: "tempConfig",
-      tableData: [
-        {
-          title: "默认模板",
-          name: "2-stage-default",
-          comment: ""
-        },
-        {
-          title: "默认模板",
-          name: "2-stage-default",
-          comment: ""
-        }
-      ]
+      activeName: "tempConfig"
     };
   },
   components: {
     ConfigForm,
-    BuyTipsForm
+    BuyTipsForm,
+    UpdateCorner
     // Pagination
   },
   methods: {
@@ -354,7 +354,9 @@ export default {
     },
     beforeUpload(file) {
       this.loadingPage = true;
-      const isZIP = file.type === "application/zip";
+      const isZIP =
+        file.type === "application/zip" ||
+        file.type === "application/x-zip-compressed";
       const isLt5M = file.size / 1024 / 1024 < 5;
       if (!isZIP) {
         this.loadingPage = false;
@@ -395,20 +397,31 @@ export default {
       console.log(tab, event);
     },
     askVipLogin(item, action) {
-      let currentVersion = this.$root.appVersion.split(".").join("");
-      for (const version of item.version) {
-        let thisVersion = version.split(".").join("");
-        if (thisVersion > thisVersion) {
+      let cmsVersion = this.$root.appVersion;
+      // let currentVersion = cmsVersion.split(".").join("");
+
+      if (action == "update") {
+        let currentItem = _.filter(this.tempShoplist.docs, temp => {
+          return (temp.alias = item.alias);
+        });
+        if (!_.isEmpty(currentItem) && currentItem.length == 1) {
+          item.amount = currentItem[0].amount;
+          item.hadPayed = currentItem[0].hadPayed;
+        }
+      }
+      // 安装或启用时校验版本
+      if (action == "install" || action == "update" || action == "enable") {
+        if (item.version.indexOf(cmsVersion) < 0) {
           this.$message({
-            message: "版本不匹配",
+            message: "该模板和当前系统版本不匹配，请确认后再试！",
             type: "warning"
           });
-          break;
           return;
         }
       }
-      // 非免费安装需要登录VIP
-      if (action == "install" && item.amount != "0") {
+      // console.log("--item--", item);
+      // 非免费安装或更新需要登录VIP
+      if ((action == "install" || action == "update") && item.amount != "0") {
         if (!getToken("1")) {
           this.$root.eventBus.$emit("toggleVipLogin", {
             item,
@@ -429,6 +442,8 @@ export default {
       let askTips = "";
       if (option == "install") {
         askTips = this.$t("templateConfig.ask_ifinstall");
+      } else if (option == "update") {
+        askTips = this.$t("templateConfig.ask_ifupdate");
       } else if (option == "enable") {
         askTips = this.$t("templateConfig.ask_ifenable");
       } else if (option == "uninstall") {
@@ -449,6 +464,11 @@ export default {
           if (option == "install") {
             return installTemp({
               tempId: tempId,
+              singleUserToken: getToken("1")
+            });
+          } else if (option == "update") {
+            return updateTemp({
+              localTempId: tempId,
               singleUserToken: getToken("1")
             });
           } else if (option == "enable") {
@@ -540,6 +560,32 @@ export default {
         withoutAnimation: "false",
         mobile: this.device === "mobile"
       };
+    },
+    renderMyThemes() {
+      let myThemes = this.templateConfigList;
+      let shopThemes = this.tempShoplist.docs;
+      if (!_.isEmpty(myThemes) && !_.isEmpty(shopThemes)) {
+        for (const themeItem of myThemes) {
+          let compareShop = _.filter(shopThemes, t => {
+            return t.alias == themeItem.alias;
+          });
+          if (!_.isEmpty(compareShop)) {
+            let oldVersion = themeItem.version[themeItem.version.length - 1];
+            let shopVersion =
+              compareShop[0].version[compareShop[0].version.length - 1];
+            if (oldVersion && shopVersion) {
+              if (
+                Number(oldVersion.split(".").join("")) <
+                Number(shopVersion.split(".").join(""))
+              ) {
+                themeItem.shoudUpdate = true;
+              }
+            }
+          }
+        }
+      }
+      console.log("--myThemes--", myThemes);
+      return myThemes;
     }
   },
   mounted() {
@@ -567,6 +613,7 @@ export default {
   .mytheme {
     padding: 15px 0;
     .theme-image {
+      height: 200px;
       border-radius: 4px;
       border: 1px solid #ebeef5;
       background-color: #fff;
@@ -574,6 +621,7 @@ export default {
       box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
       img {
         width: 100%;
+        height: 100%;
       }
     }
   }
@@ -602,18 +650,21 @@ export default {
 
   .myTemplist {
     width: 100%;
+    position: relative;
     margin-top: 30px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     border: 1px solid #ebeef5;
     overflow: hidden;
+    height: 150px;
     img {
       width: 100%;
-      height: 150px;
+      height: 100%;
     }
   }
   .temp-info {
     margin-top: 10px;
+    min-height: 225px;
     ul {
       li {
         .buy_tips {

@@ -2,13 +2,14 @@
  * @Author: doramart 
  * @Date: 2019-08-15 14:23:19 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-04-02 17:04:44
+ * @Last Modified time: 2020-05-02 17:06:17
  */
 
 require('module-alias/register')
 
 //文件操作对象
 let fs = require('fs');
+let path = require('path');
 let stat = fs.stat;
 //TODO 老版本暂时保留，下个版本移除
 var CryptoJS = require("crypto-js");
@@ -178,6 +179,7 @@ module.exports = {
 
         return folderList;
     },
+
     deleteFolder(path) {
         // console.log("---del path--" + path);
         return new Promise((resolve, reject) => {
@@ -402,13 +404,12 @@ module.exports = {
             var DOWNLOAD_DIR = system_template_forder + targetForder + '/tempconfig.json';
             var DIST_DIR = system_template_forder + targetForder + '/dist';
             var PUBLIC_DIR = system_template_forder + targetForder + '/public';
-            var USERS_DIR = system_template_forder + targetForder + '/users';
-            var TWOSTAGEDEFAULT_DIR = system_template_forder + targetForder + '/2-stage-default';
+            var DEFAULT_DIR = system_template_forder + targetForder + '/index.html';
 
             let checkTempCount = 0;
             var tempTask = setInterval(async () => {
                 if (fs.existsSync(DOWNLOAD_DIR) && fs.existsSync(DIST_DIR) && fs.existsSync(PUBLIC_DIR) &&
-                    fs.existsSync(USERS_DIR) && fs.existsSync(TWOSTAGEDEFAULT_DIR)) {
+                    fs.existsSync(DEFAULT_DIR)) {
                     clearInterval(tempTask);
                     resolve('1');
                 } else {
@@ -430,7 +431,6 @@ module.exports = {
         var name = tempInfoData.name;
         var alias = tempInfoData.alias;
         var version = tempInfoData.version;
-        var sImg = tempInfoData.sImg;
         var author = tempInfoData.author;
         var comment = tempInfoData.comment;
         var errors;
@@ -506,7 +506,15 @@ module.exports = {
     },
 
     setMemoryCache(key, value, time) {
-        this.app.cache.set(key, value, time);
+        this.app.messenger.sendToApp('refreshCache', {
+            key,
+            value,
+            time
+        });
+    },
+
+    assignLocals(ctx, key, value) {
+        ctx.locals[key] = value;
     }
 
 };

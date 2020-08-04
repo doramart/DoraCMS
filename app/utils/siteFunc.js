@@ -435,6 +435,16 @@ var siteFunc = {
         fs.writeFileSync(targetPath, fileData.join('\n'), 'utf8');
     },
 
+    // 创建文件并写入
+    createFileByStr(path, str) {
+        if (fs.existsSync(path)) {
+            fs.unlinkSync(path);
+        }
+        if (path && str) {
+            fs.writeFileSync(path, str, 'utf8')
+        }
+    }
+
     // OPTION_DATABASE_END
 };
 module.exports = siteFunc;

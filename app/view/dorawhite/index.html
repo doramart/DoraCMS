@@ -1,4 +1,4 @@
-{% extends "./public/defaultTemp.html" %} {% block content %} {% import "./public/adsPannel.html" as adsPannel %}
+{% extends "./default.html" %} {% block content %} {% import "./public/adsPannel.html" as adsPannel %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-container">
@@ -6,30 +6,29 @@
                 <div class="col-md-8 left-frame">
                     <div class="row slider-box">
                         <div class="col-md-10">
-                            {% remote key="recommend",api="ads/getOne",query='{"name":"recommend"}' %}
+                            {% ads name="recommend" %}
                             {{adsPannel.slider(recommend)}}
                         </div>
                         <div class="col-md-2 top-rec-contents">
-                            {% remote key="reCommendListTop",api="content/getList",query='{"model":"1","pageSize":3,"isPaging":"0"}' %}
-                            {% if reCommendListTop.length > 0 %}
-                            {% for item in reCommendListTop%}
+                            {% recommend pageSize=3 %}
+                            {% for item in recommend%}
                             <div class="rec-li">
                                 <div class="contentImg">
-                                    <a href="/details/{{item._id}}.html">
+                                    <a href="{{item.url}}">
                                         <img src="{{item.sImg}}" alt="{{item.title}}" />
                                     </a>
                                 </div>
-                                <a class="title" href="/details/{{item._id}}.html">{{item.title | cutwords(15)}}</a>
+                                <a class="title" href="{{item.url}}">{{item.title | cutwords(15)}}</a>
                             </div>
-                            {% endfor %} {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                     {% include "./public/itemListTemp.html" %}
                 </div>
                 <div class="col-md-4 right-frame">
-                    {% remote key="publishCms",api="ads/getOne",query='{"name":"publishCms"}' %}
+                    {% ads name="publishCms" %}
                     {{adsPannel.slider(publishCms)}}
-                    {% remote key="qrCode",api="ads/getOne",query='{"name":"qrCode"}' %}
+                    {% ads name="qrCode" %}
                     {{adsPannel.slider(qrCode)}} {% include "./public/hotNewsList.html" %} {% include "./public/reCommendList.html"
                     %} {% include "./public/newMessageBoard.html" %}
                 </div>

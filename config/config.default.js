@@ -1,6 +1,9 @@
 'use strict'
 const path = require('path');
 const fs = require('fs');
+const defaultConfig = require('./ext/config');
+
+
 module.exports = appInfo => {
 
   return {
@@ -219,6 +222,7 @@ module.exports = appInfo => {
         '/manage/template/getTemplateItemlist',
         '/manage/template/getTempsFromShop',
         '/manage/template/installTemp',
+        '/manage/template/updateTemp',
         '/manage/template/uploadCMSTemplate',
         '/manage/template/enableTemp',
         '/manage/template/uninstallTemp',
@@ -256,6 +260,8 @@ module.exports = appInfo => {
 
     // EGGCONFIGDEFAULT
 
+
+    ...defaultConfig
 
   }
 }

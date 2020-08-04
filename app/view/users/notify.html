@@ -1,0 +1,15 @@
+<!--我的投稿-->
+{% extends themePublicPath %} {% block content %}
+{% assets "avalon-ms-pager.js" %}
+{% endassets %}
+<article>
+    <div class="page whitebg container">
+
+        {% include "./public/userNav.html" %}
+        <div class="page-box">
+            {% include "./public/uNotify.html" %}
+        </div>
+    </div>
+</article>
+
+{% endblock %}

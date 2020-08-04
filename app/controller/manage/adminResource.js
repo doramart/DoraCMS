@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-17 17:19:22
+ * @Last Modified time: 2020-08-02 00:15:44
  */
 const Controller = require('egg').Controller;
 const {
@@ -178,12 +178,21 @@ class AdminResourceController extends Controller {
             ctx.validate(adminResourceRule.form(ctx), formObj);
 
 
-
-            let oldResource = await ctx.service.adminResource.item(ctx, {
-                query: {
-                    label: fields.label
-                }
-            })
+            let oldResource;
+            if (fields.type == '0') {
+                oldResource = await ctx.service.adminResource.item(ctx, {
+                    query: {
+                        label: fields.label
+                    }
+                })
+            } else {
+                oldResource = await ctx.service.adminResource.item(ctx, {
+                    query: {
+                        parentId: fields.parentId,
+                        comments: fields.comments
+                    }
+                })
+            }
 
             if (!_.isEmpty(oldResource) && oldResource._id != fields._id) {
                 throw new Error(ctx.__("user_action_tips_repeat", [ctx.__('label_resourceName')]));

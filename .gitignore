@@ -3,6 +3,7 @@ npm-debug.log
 node_modules/
 coverage/
 .idea/
+.github/
 run/
 .DS_Store
 *.swp

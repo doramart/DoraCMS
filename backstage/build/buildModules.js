@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+const envSetStr = os.type() == 'Windows_NT' ? 'set' : 'export';
 var modulesPath = path.resolve(__dirname, '../');
 var shell = require('shelljs');
 var settings = require('../publicMethods/settings');
@@ -42,7 +44,7 @@ if (designatedModule.length > 0) {
 targetBuildModules.forEach(function (name) {
     if (name != '.git' && name != 'build' && name != 'publicMethods' && name != 'dist') {
         shell.cd(`${modulesPath}/${name}`);
-        shell.exec('npm run build');
+        shell.exec(`${envSetStr} NODE_ENV=production && npm run build`);
         if (!fs.existsSync(`${modulesPath}/dist/${name}`)) {
             shell.mkdir('-p', `${modulesPath}/dist/${name}`);
         } else {

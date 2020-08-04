@@ -1,6 +1,6 @@
 {
   "name": "egg-dora-contenttemp",
-  "version": "1.0.9",
+  "version": "1.0.13",
   "description": "contentTemplate",
   "eggPlugin": {
     "name": "doraContentTemp"

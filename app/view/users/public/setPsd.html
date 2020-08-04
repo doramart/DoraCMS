@@ -1,0 +1,36 @@
+<!--修改密码模块-->
+<h2 class="page-box-title">{{__('lc_basic_set_password')}}</h2>
+
+<div class="setPwd-box" ms-controller="setPsd">
+    <form name="loginForm" ms-validate="@validate">
+
+        <small style="display:block" class="text-danger text-center" :visible="@showErr" ms-html="@message"></small>
+
+        <div class="form-group">
+            <label for="">{{__('lc_password')}}</label>
+            <input type="password" class="form-control" name="password" id="pw"
+                placeholder="{{__('lc_password_null_tips')}}" ms-duplex="@password"
+                ms-rules="{required: true,pattern: /(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/}"
+                data-required-message="{{__('validate_inputNull',[__('lc_password')])}}"
+                data-message="{{__('validate_ranglengthandnormal',[__('lc_password'),6,12])}}">
+        </div>
+        <div class="form-group">
+            <label for="">{{__('lc_password_label_confirm')}}</label>
+            <input type="password" class="form-control" name="confirmPassword"
+                placeholder="{{__('lc_password_confirm_null')}}" ms-duplex="@confirmPassword  | change"
+                ms-rules="{required: true,equalto:'pw'}"
+                data-required-message="{{__('validate_inputNull',[__('lc_repassword')])}}"
+                data-message="{{__('validate_passwordnotmatching')}}">
+        </div>
+        <div class="sub-btns" id="ul-s5">
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary">{{__('lc_setpwd_sub_btn')}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+</script>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html class="{{pageType}}">
+
+<head>
+    {% header adaptor="ie" %}
+
+    <!-- 引入组件库 -->
+    {% plugin name="twitter-bootstrap font-awesome" %}
+    {% endplugin %}
+
+    <!-- 二次开发静态资源 -->
+    {% assets 'dora.front.js white.css' %}
+    {% endassets %}
+
+    {% endheader %}
+
+    <input type="hidden" value="{{lsk}}" id="sysKeys">
+</head>
+
+<body>
+    {% include "./public/header.html" %}
+    <div class="mainbody" id="{{pageType}}">
+        <input type="hidden" value="{{site.lang}}" id="siteLang">
+        {% block content %}{% endblock %}
+    </div>
+    {% include "./public/footer.html" %}
+</body>
+
+</html>

@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-06-20 18:55:40 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-02-17 17:20:26
+ * @Last Modified time: 2020-07-27 16:58:55
  */
 const Controller = require('egg').Controller;
 const {
@@ -516,6 +516,7 @@ class AdminUserController extends Controller {
             }
         }
 
+        renderMap = _.uniqWith(renderMap, _.isEqual);
         await ctx.render('manage/index.html', {
             renderMap: renderMap,
             renderMapJson: JSON.stringify(renderMap),

@@ -1,72 +1,75 @@
-{% extends "../public/defaultTemp.html" %} {% block content %}
+{% extends "../default.html" %} {% block content %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 main-container" ms-controller="documentInfo">
-            <input type="hidden" value="{{documentInfo._id}}" id="contentId">
+            <input type="hidden" value="{{post._id}}" id="contentId">
             <div class="row articel-details">
                 <div class="col-md-8 left-frame">
                     <div class="articel-main ">
                         <article class="post">
-                            <h2 alt="{{siteInfo.altkey}}{{documentInfo.title}}" class="post-title">
-                                {{documentInfo.title}} {% if documentInfo.from == '2' %} &nbsp;
+                            <h2 alt="{{site.altkey}}{{post.title}}" class="post-title">
+                                {{post.title}} {% if post.from == '2' %} &nbsp;
                                 <span class="badge">{{__('lc_document_share')}}</span>
                                 {% endif %}
                             </h2>
                             <ul class="post-meta content-author">
                                 <li class="author-name">
-                                    {% if documentInfo.uAuthor %} {{documentInfo.uAuthor.userName}} {% else %}
-                                    {{documentInfo.author.userName}} {% endif %}
+                                    {% if post.uAuthor %} {{post.uAuthor.userName}} {% else %}
+                                    {{post.author.userName}} {% endif %}
                                 </li>
                                 <li>
-                                    {% set cateInfo = (documentInfo.categories[0]) %}
+                                    {% set cateInfo = (post.categories[0]) %}
                                     <span class="dot">&nbsp;•&nbsp;</span>
-                                    <a href="/{{cateInfo.defaultUrl}}___{{cateInfo._id}}"
-                                        target="_blank">{{(documentInfo.categories[documentInfo.categories.length-1]).name}}</a>
+                                    <a href="{{cateInfo.url}}"
+                                        target="_blank">{{(post.categories[post.categories.length-1]).name}}</a>
                                 </li>
                                 <li>
-                                    <span class="dot">&nbsp;•&nbsp;</span> {{documentInfo.date}}
+                                    <span class="dot">&nbsp;•&nbsp;</span> {{post.date}}
                                 </li>
                                 <li>
                                     <span
-                                        class="dot">&nbsp;•&nbsp;</span>{{__('lc_document_readNum')}}&nbsp;&nbsp;{{documentInfo.clickNum}}
+                                        class="dot">&nbsp;•&nbsp;</span>{{__('lc_document_readNum')}}&nbsp;&nbsp;{{post.clickNum}}
                                 </li>
                             </ul>
                             <div class="post-content">
-                                {{documentInfo.comments | safe}}
+                                {{post.comments | safe}}
                             </div>
                         </article>
 
                         <div class="tag-list">
                             <ul>
-                                {% for tag in documentInfo.tags %}
+                                {% for tag in post.tags %}
                                 <li>
                                     <span class="label label-info">
-                                        <a href="/tag/{{tag.name}}">{{tag.name}}</a>
+                                        <a href="{{tag.url}}">{{tag.name}}</a>
                                     </span>
                                 </li>
                                 {% endfor %}
                             </ul>
                         </div>
-                        {% remote key="nearArticle",api="content/getNearbyContent",query='{"id":"' + documentInfo._id +'"}' %}
-                        {% if nearArticle %}
+                        {% near_post "id"=post._id %}
+                        {% if near_post %}
                         <div class="near-article">
                             <ul>
-                                {% if nearArticle.preContent.title %}
-                                <li class="left">{{__('lc_pre_document')}}: <a
-                                        href="/details/{{nearArticle.preContent._id}}.html "
-                                        target="_self">{{nearArticle.preContent.title}}</a>
+                                {% if near_post.preContent.title %}
+                                <li class="left">{{__('lc_pre_document')}}: <a href="{{near_post.preContent.url}}"
+                                        target="_self">{{near_post.preContent.title}}</a>
                                 </li>
                                 {% endif %}
-                                {% if nearArticle.nextContent.title %}
-                                <li class="right">{{__('lc_next_document')}}: <a
-                                        href="/details/{{nearArticle.nextContent._id}}.html "
-                                        target="_self">{{nearArticle.nextContent.title}}</a>
+                                {% if near_post.nextContent.title %}
+                                <li class="right">{{__('lc_next_document')}}: <a href="{{near_post.nextContent.url}}"
+                                        target="_self">{{near_post.nextContent.title}}</a>
                                 </li>
                                 {% endif %}
                             </ul>
                         </div>
                         {% endif %}
-                        {% include "../public/randomList.html" %} {% include "../public/msgBoard.html" %}
+                        {% include "../public/randomList.html" %}
+                        {% if HOOK@messageBoard %}
+                        {{HOOK@messageBoard | safe}}
+                        {% else %}
+                        {% include "../public/msgBoard.html" %}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-md-4 right-frame">

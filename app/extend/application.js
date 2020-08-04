@@ -2,7 +2,7 @@
  * @Author: doramart 
  * @Date: 2019-09-23 09:25:24 
  * @Last Modified by: doramart
- * @Last Modified time: 2020-04-02 18:21:16
+ * @Last Modified time: 2020-08-03 00:09:00
  */
 'use strict';
 
@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 const muri = require('muri');
-const isDev = process.env.NODE_ENV == 'development' ? true : false;
+const restore = require('@cdxoo/mongodb-restore')
 const child = require('child_process');
 
 require('module-alias/register')
@@ -19,7 +19,29 @@ const {
 } = require('@utils');
 
 module.exports = {
-
+    // 应用初始化
+    async init(ctx) {
+        let app = this;
+        console.log('app init');
+        try {
+            let checkSystemInfo = await ctx.service.systemConfig.count();
+            if (checkSystemInfo == 0) {
+                const uri = app.config.mongoose.client.url;
+                let datafile = path.join(__dirname, '../../databak/doracms2')
+                await restore.database({
+                    uri,
+                    database: 'doracms2',
+                    from: datafile
+                });
+            }
+        } catch (error) {
+            if (error && error.message == 'Invalid Operation, no operations specified') {
+                console.log('init data success')
+            } else {
+                console.log('init data error:', error.message)
+            }
+        }
+    },
     // 获取插件api白名单
     getExtendApiList() {
         let app = this;
@@ -174,33 +196,28 @@ module.exports = {
     async initPluginConfig(pluginInfos = {}, type = 'install') {
         if (!_.isEmpty(pluginInfos)) {
             let app = this;
-            let pluginConfigPath = path.join(app.config.baseDir, `config/plugin.js`);
-            let configDefaultPath = path.join(app.config.baseDir, `config/config.default.js`);
-            // let packageJsonPath = path.join(app.config.baseDir, `package.json`);
-
+            let configPluginPath = path.join(app.config.baseDir, `config/ext/config/${pluginInfos.alias}.js`);
+            let extConfigPath = path.join(app.config.baseDir, `config/ext/plugin/${pluginInfos.alias}.js`);
             if (type == 'install') {
 
-                if (fs.existsSync(pluginConfigPath) && pluginInfos.pluginsConfig) {
-                    let pluginStr = `// ${pluginInfos.enName}PluginBegin\n
-                    ${pluginInfos.pluginsConfig}// ${pluginInfos.enName}PluginEnd\n    `;
-                    siteFunc.appendTxtToFileByLine(pluginConfigPath, 1, pluginStr);
+                if (pluginInfos.pluginsConfig) {
+                    siteFunc.createFileByStr(extConfigPath, pluginInfos.pluginsConfig)
                 }
 
-                if (fs.existsSync(configDefaultPath) && pluginInfos.defaultConfig) {
+                if (pluginInfos.defaultConfig) {
 
-                    let configStr = `// ${pluginInfos.enName}PluginBegin\n
-                    ${pluginInfos.defaultConfig}// ${pluginInfos.enName}PluginEnd\n    `;
-                    siteFunc.appendTxtToFileByLine(configDefaultPath, 2, configStr);
+                    siteFunc.createFileByStr(configPluginPath, pluginInfos.defaultConfig)
+
                 }
 
             } else {
 
-                if (fs.existsSync(pluginConfigPath) && pluginInfos.pluginsConfig) {
-                    siteFunc.modifyFileByReplace(pluginConfigPath, `// ${pluginInfos.enName}PluginBegin`, `// ${pluginInfos.enName}PluginEnd`);
+                if (fs.existsSync(extConfigPath)) {
+                    fs.unlinkSync(extConfigPath);
                 }
 
-                if (fs.existsSync(configDefaultPath) && pluginInfos.defaultConfig) {
-                    siteFunc.modifyFileByReplace(configDefaultPath, `// ${pluginInfos.enName}PluginBegin`, `// ${pluginInfos.enName}PluginEnd`);
+                if (fs.existsSync(configPluginPath)) {
+                    fs.unlinkSync(configPluginPath);
                 }
 
             }
@@ -304,6 +321,79 @@ module.exports = {
             }
         }
 
+    },
+
+    // 添加钩子
+    async hooks(ctx, hooks, params = {}) {
+        try {
+
+            let targetHook = await ctx.service.hook.item(ctx, {
+                query: {
+                    name: hooks
+                },
+                files: '_id'
+            })
+
+            if (!_.isEmpty(targetHook)) {
+
+                // 暂时遍历开发环境插件列表
+                // console.log('-----', app.config)
+                // 通过钩子获取是哪个插件在挂载
+                let plugins = await ctx.service.plugin.find({
+                    isPaging: '0'
+                }, {
+                    query: {
+                        state: true,
+                        hooks: hooks
+                    }
+                })
+
+                // console.log('--plugins--', plugins)
+
+                if (!_.isEmpty(plugins)) {
+
+                    // let targetPluginConfig = this.config.doraValine;
+                    // let targetHook = await ctx.service[targetPluginConfig.alias].item(ctx, {
+                    //     query: {
+                    //         name: hooks
+                    //     },
+                    //     files: '_id'
+                    // })
+                    let targetPluginConfig = plugins[0];
+
+                    let targetHtml = await this.hookRender(ctx, hooks, targetPluginConfig.alias, params);
+                    // console.log('--targetHtml--', targetHtml)
+                    if (targetHtml) {
+                        ctx.locals['HOOK@' + hooks] = targetHtml;
+                    }
+
+                } else {
+                    throw new Error(ctx.__('validate_error_params'));
+                }
+
+            } else {
+                console.log('非法钩子')
+            }
+
+        } catch (error) {
+            console.log('暂无插件挂载');
+        }
+    },
+
+    // 插件渲染
+    async hookRender(ctx, hookname, plugin, args) {
+
+        try {
+            let html = await ctx.helper.reqJsonData(`${plugin}/hookRender`, Object.assign({
+                hookname
+            }, args));
+            return html;
+        } catch (error) {
+            return '';
+        }
+
     }
+
+
 
 };
