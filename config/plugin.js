@@ -1,6 +1,8 @@
 'use strict';
 
 const path = require('path');
+const pluginConfigs = require('./ext/plugin');
+
 // add you build-in plugin here, example:
 exports.nunjucks = {
     enable: true,
@@ -183,7 +185,12 @@ exports.doraMailDelivery = {
 
 // PLUGIN_NORMALPLUGIN_END
 
-
+for (const pluginItem in pluginConfigs) {
+    if (pluginConfigs.hasOwnProperty(pluginItem)) {
+        const element = pluginConfigs[pluginItem];
+        exports[pluginItem] = element;
+    }
+}
 
 
 // EGGPLUGINCONFIG
