@@ -82,7 +82,7 @@ export default {
     },
     searchResult(ev) {
       let searchkey = this.pageInfo ? this.pageInfo.searchkey : "";
-      this.$store.dispatch("getRegUserList", {
+      this.$store.dispatch("regUser/getRegUserList", {
         searchkey,
         isTopBar: "1"
       });
