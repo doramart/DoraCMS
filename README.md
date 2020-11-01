@@ -1,4 +1,6 @@
 # Notice: DoraCMS SQL (基于sequelize) 即将发布，进群了解最新动态！
+[DoraCMS MariaDB 版本预览](https://sql.html-js.cn/) 
+> 数据库通过花生壳连接，可能有所延时
 
 # DoraCMS 2.1.7
 
