@@ -72,19 +72,18 @@ module.exports = {
             let defaultItem = _.filter(defaultTemp.items, (temp) => {
                 return temp.isDefault;
             })
-            currentPath = defaultItem[0].forder + "/" + fileName;
+            currentPath = !_.isEmpty(defaultItem) ? defaultItem[0].forder + "/" + fileName : '';
         }
         // 校验模板的真实路径
         let themePath = this.app.config.temp_view_forder + defaultTemp.alias + '/';
         // console.log('--current--', current)
-        if (fs.existsSync(themePath + currentPath)) {
+        if (currentPath && fs.existsSync(themePath + currentPath)) {
             return currentPath;
         } else {
             // 兼容根目录下的模板方案
             if (type == 'cate' && fs.existsSync(themePath + 'page.html')) {
                 return 'page.html';
             } else if (type == 'detail' && fs.existsSync(themePath + 'post.html')) {
-                console.log('---get post-')
                 return 'post.html';
             } else if (type == 'author' && fs.existsSync(themePath + 'author.html')) {
                 return 'author.html';
@@ -93,7 +92,6 @@ module.exports = {
             }
         }
     },
-
     async getPageData() {
 
         let ctx = this;
