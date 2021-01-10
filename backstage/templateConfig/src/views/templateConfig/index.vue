@@ -1,7 +1,10 @@
 <template>
   <div :class="classObj" class="templateConfig">
     <div class="main-container">
-      <BuyTipsForm :taskId="checkPaymentStateTask" :buyTipsDialogState="buyTipsDialogState"></BuyTipsForm>
+      <BuyTipsForm
+        :taskId="checkPaymentStateTask"
+        :buyTipsDialogState="buyTipsDialogState"
+      ></BuyTipsForm>
       <el-row class="dr-datatable">
         <el-col
           :span="24"
@@ -10,7 +13,10 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="rgba(0, 0, 0, 0.8)"
         >
-          <ConfigForm :dialogState="formState" :forderlist="templateItemForderList"></ConfigForm>
+          <ConfigForm
+            :dialogState="formState"
+            :forderlist="templateItemForderList"
+          ></ConfigForm>
           <div class="temp-dashboard">
             <el-row :gutter="20">
               <template>
@@ -30,12 +36,14 @@
                                 <ul>
                                   <li>
                                     <label>名称:</label>
-                                    {{currentTheme.name}}&nbsp;
-                                    <el-tag type="success" size="mini">当前主题</el-tag>
+                                    {{ currentTheme.name }}&nbsp;
+                                    <el-tag type="success" size="mini"
+                                      >当前主题</el-tag
+                                    >
                                   </li>
                                   <li>
                                     <label>作者:</label>
-                                    {{currentTheme.author}}
+                                    {{ currentTheme.author }}
                                   </li>
                                   <li>
                                     <label>适用版本:</label>
@@ -43,13 +51,14 @@
                                       type="info"
                                       size="mini"
                                       v-for="versionItem in currentTheme.version"
-                                      style="marginRight:10px;"
+                                      style="marginright: 10px"
                                       :key="versionItem"
-                                    >{{versionItem}}</el-tag>
+                                      >{{ versionItem }}</el-tag
+                                    >
                                   </li>
                                   <li>
                                     <label>介绍:</label>
-                                    {{currentTheme.comment}}
+                                    {{ currentTheme.comment }}
                                   </li>
                                 </ul>
                               </div>
@@ -64,11 +73,26 @@
                             type="primary"
                             icon="el-icon-plus"
                             @click="addNewTemp"
-                          >模板配置</el-button>
-                          <el-table :data="currentTheme.items" style="width: 100%">
-                            <el-table-column prop="name" label="标题" width="180"></el-table-column>
-                            <el-table-column prop="forder" label="关键字" width="180"></el-table-column>
-                            <el-table-column prop="comment" label="备注"></el-table-column>
+                            >模板配置</el-button
+                          >
+                          <el-table
+                            :data="currentTheme.items"
+                            style="width: 100%"
+                          >
+                            <el-table-column
+                              prop="name"
+                              label="标题"
+                              width="180"
+                            ></el-table-column>
+                            <el-table-column
+                              prop="forder"
+                              label="关键字"
+                              width="180"
+                            ></el-table-column>
+                            <el-table-column
+                              prop="comment"
+                              label="备注"
+                            ></el-table-column>
                             <el-table-column
                               :label="$t('main.dataTableOptions')"
                               width="150"
@@ -81,7 +105,12 @@
                                     type="danger"
                                     plain
                                     icon="el-icon-delete"
-                                    @click="deleteTemplateItem(scope.$index, currentTheme.items)"
+                                    @click="
+                                      deleteTemplateItem(
+                                        scope.$index,
+                                        currentTheme.items
+                                      )
+                                    "
                                   ></el-button>
                                 </span>
                               </template>
@@ -102,21 +131,26 @@
                         <div class="myTemplist">
                           <div
                             v-if="item.shoudUpdate"
-                            @click="askVipLogin(item,'update')"
-                            style="cursor: pointer;"
+                            @click="askVipLogin(item, 'update')"
+                            style="cursor: pointer"
                           >
                             <UpdateCorner
-                              style="position: absolute; top: 5px; border: 0; right: 5px;"
+                              style="
+                                position: absolute;
+                                top: 5px;
+                                border: 0;
+                                right: 5px;
+                              "
                             />
                           </div>
                           <img :src="item.sImg" />
                         </div>
                         <div class="theme-info temp-info">
                           <ul>
-                            <li>{{item.name}}</li>
+                            <li>{{ item.name }}</li>
                             <li>
                               <label>作者:</label>
-                              {{item.author}}
+                              {{ item.author }}
                             </li>
                             <li>
                               <label>适用版本:</label>
@@ -124,17 +158,23 @@
                                 type="info"
                                 size="mini"
                                 v-for="versionItem in item.version"
-                                style="marginRight:10px;"
+                                style="marginright: 10px"
                                 :key="versionItem"
-                              >{{versionItem}}</el-tag>
+                                >{{ versionItem }}</el-tag
+                              >
                             </li>
                             <li class="opt" v-if="!item.using">
-                              <el-button size="mini" @click="askVipLogin(item,'enable')">启用</el-button>
+                              <el-button
+                                size="mini"
+                                @click="askVipLogin(item, 'enable')"
+                                >启用</el-button
+                              >
                               <el-button
                                 size="mini"
                                 type="danger"
-                                @click="askVipLogin(item,'uninstall')"
-                              >卸载</el-button>
+                                @click="askVipLogin(item, 'uninstall')"
+                                >卸载</el-button
+                              >
                             </li>
                           </ul>
                         </div>
@@ -143,7 +183,12 @@
                   </el-tab-pane>
                   <el-tab-pane label="模板市场" name="tempShop">
                     <el-row :gutter="20">
-                      <el-col :xs="24" :md="4" v-for="item in tempShoplist.docs" :key="item._id">
+                      <el-col
+                        :xs="24"
+                        :md="4"
+                        v-for="item in tempShoplist.docs"
+                        :key="item._id"
+                      >
                         <div class="myTemplist">
                           <img :src="item.sImg" />
                         </div>
@@ -151,11 +196,11 @@
                           <ul>
                             <li>
                               <label>名称:</label>
-                              {{item.name}}
+                              {{ item.name }}
                             </li>
                             <li>
                               <label>作者:</label>
-                              {{item.author}}
+                              {{ item.author }}
                             </li>
                             <li>
                               <label>适用版本:</label>
@@ -163,18 +208,22 @@
                                 type="info"
                                 size="mini"
                                 v-for="versionItem in item.version"
-                                style="marginRight:10px;"
+                                style="marginright: 10px"
                                 :key="versionItem"
-                              >{{versionItem}}</el-tag>
+                                >{{ versionItem }}</el-tag
+                              >
                             </li>
                             <li>
                               <label>摘要:</label>
-                              {{item.comment}}
+                              {{ item.comment }}
                             </li>
                             <li>
                               <label>价格:</label>
-                              <span v-if="item.amount && Number(item.amount) > 0" style="color:red">
-                                ￥ {{item.amount}}&nbsp;
+                              <span
+                                v-if="item.amount && Number(item.amount) > 0"
+                                style="color: red"
+                              >
+                                ￥ {{ item.amount }}&nbsp;
                                 <span
                                   class="price-help"
                                   @click="showPriceHelp(item)"
@@ -182,13 +231,13 @@
                                   <svg-icon icon-class="icon_help" />
                                 </span>
                               </span>
-                              <span style="color:#67C23A" v-else>免费</span>
+                              <span style="color: #67c23a" v-else>免费</span>
                             </li>
                             <li class="opt">
                               <el-button
                                 size="mini"
                                 type="primary"
-                                @click="askVipLogin(item,'install')"
+                                @click="askVipLogin(item, 'install')"
                               >
                                 <svg-icon
                                   v-if="item.amount && Number(item.amount) > 0"
@@ -199,7 +248,8 @@
                                 size="mini"
                                 :disabled="!item.preview"
                                 @click="previewTemp(item.preview)"
-                              >预览</el-button>
+                                >预览</el-button
+                              >
                             </li>
                           </ul>
                         </div>
@@ -223,11 +273,15 @@
                         :on-exceed="handleExceed"
                         :file-list="fileList"
                       >
-                        <el-button size="small" type="primary">点击上传</el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传zip文件，且不超过5MB</div>
+                        <el-button size="small" type="primary"
+                          >点击上传</el-button
+                        >
+                        <div slot="tip" class="el-upload__tip">
+                          只能上传zip文件，且不超过5MB
+                        </div>
                       </el-upload>
                     </el-row>
-                    <hr style="margin:20px 0;" />
+                    <hr style="margin: 20px 0" />
                     <el-row>
                       <el-link
                         href="http://cdn.html-js.cn/cms/templates/2.1.7/tempdemo.zip"
@@ -259,7 +313,7 @@ import {
   installTemp,
   updateTemp,
   createInvoice,
-  checkInvoice
+  checkInvoice,
 } from "@/api/templateConfig";
 
 import { initEvent } from "@root/publicMethods/events";
@@ -277,15 +331,15 @@ export default {
       buyTipsDialogState: {
         show: false,
         info: {},
-        buyQr: ""
+        buyQr: "",
       },
-      activeName: "tempConfig"
+      activeName: "tempConfig",
     };
   },
   components: {
     ConfigForm,
     BuyTipsForm,
-    UpdateCorner
+    UpdateCorner,
     // Pagination
   },
   methods: {
@@ -294,7 +348,7 @@ export default {
     },
     showPriceHelp(item) {
       this.$alert(item.buy_tips, "提示", {
-        dangerouslyUseHTMLString: true
+        dangerouslyUseHTMLString: true,
       });
     },
     hideTips() {
@@ -306,9 +360,9 @@ export default {
       this.buyTipsDialogState.show = true;
       createInvoice({
         tempId: item._id,
-        singleUserToken: getToken("1")
+        singleUserToken: getToken("1"),
       })
-        .then(result => {
+        .then((result) => {
           if (result.status === 200) {
             let qrlink = result.data.qrCode;
             let noInvoice = result.data.noInvoice;
@@ -328,7 +382,7 @@ export default {
           this.hideTips();
           this.$message({
             type: "info",
-            message: this.$t("main.scr_modal_del_error_info")
+            message: this.$t("main.scr_modal_del_error_info"),
           });
         });
     },
@@ -337,8 +391,8 @@ export default {
       checkInvoice({
         noInvoice: noInvoice,
         singleUserToken: getToken("1"),
-        itemId: item._id
-      }).then(result => {
+        itemId: item._id,
+      }).then((result) => {
         if (result.status === 200 && result.data.checkState) {
           clearInterval(this.checkPaymentStateTask);
           _this.hideTips();
@@ -372,9 +426,9 @@ export default {
     },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
       );
     },
     uploadSuccess(res, file) {
@@ -384,7 +438,7 @@ export default {
       if (res.status == 200) {
         this.$message({
           message: "模板导入成功",
-          type: "success"
+          type: "success",
         });
       } else {
         this.$message.error(res.message);
@@ -401,7 +455,7 @@ export default {
       // let currentVersion = cmsVersion.split(".").join("");
 
       if (action == "update") {
-        let currentItem = _.filter(this.tempShoplist.docs, temp => {
+        let currentItem = _.filter(this.tempShoplist.docs, (temp) => {
           return (temp.alias = item.alias);
         });
         if (!_.isEmpty(currentItem) && currentItem.length == 1) {
@@ -414,7 +468,7 @@ export default {
         if (item.version.indexOf(cmsVersion) < 0) {
           this.$message({
             message: "该模板和当前系统版本不匹配，请确认后再试！",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -425,7 +479,7 @@ export default {
         if (!getToken("1")) {
           this.$root.eventBus.$emit("toggleVipLogin", {
             item,
-            action
+            action,
           });
         } else {
           if (item.hadPayed) {
@@ -452,42 +506,43 @@ export default {
       this.$confirm(askTips, this.$t("main.scr_modal_title"), {
         confirmButtonText: this.$t("main.confirmBtnText"),
         cancelButtonText: this.$t("main.cancelBtnText"),
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           this.loadingObj = this.$loading({
             lock: true,
             text: "处理中，请勿手动刷新页面...",
             spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
+            background: "rgba(0, 0, 0, 0.7)",
           });
           if (option == "install") {
             return installTemp({
               tempId: tempId,
-              singleUserToken: getToken("1")
+              singleUserToken: getToken("1"),
             });
           } else if (option == "update") {
             return updateTemp({
               localTempId: tempId,
-              singleUserToken: getToken("1")
+              singleUserToken: getToken("1"),
             });
           } else if (option == "enable") {
             return enableTemp({
-              tempId: tempId
+              tempId: tempId,
             });
           } else if (option == "uninstall") {
             return uninstallTemp({
-              tempId: tempId
+              tempId: tempId,
             });
           }
         })
-        .then(result => {
+        .then((result) => {
           this.loadingObj.close();
           if (result.status === 200) {
             this.$store.dispatch("templateConfig/getMyTemplateList");
+            this.$store.dispatch("templateConfig/getTemplateItemForderList");
             this.$message({
               message: this.$t("main.updateSuccess"),
-              type: "success"
+              type: "success",
             });
           } else {
             this.$message.error(result.message);
@@ -496,7 +551,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: this.$t("templateConfig.install_failed")
+            message: this.$t("templateConfig.install_failed"),
           });
         });
     },
@@ -507,20 +562,20 @@ export default {
         {
           confirmButtonText: this.$t("main.confirmBtnText"),
           cancelButtonText: this.$t("main.cancelBtnText"),
-          type: "warning"
+          type: "warning",
         }
       )
         .then(() => {
           return delTemplateItem({
-            ids: rows[index]._id
+            ids: rows[index]._id,
           });
         })
-        .then(result => {
+        .then((result) => {
           if (result.status === 200) {
             this.$store.dispatch("templateConfig/getMyTemplateList");
             this.$message({
               message: this.$t("main.scr_modal_del_succes_info"),
-              type: "success"
+              type: "success",
             });
           } else {
             this.$message.error(result.message);
@@ -529,26 +584,26 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: this.$t("main.scr_modal_del_error_info")
+            message: this.$t("main.scr_modal_del_error_info"),
           });
         });
     },
     addNewTemp() {
       this.$store.dispatch("templateConfig/showTemplateConfigForm");
-    }
+    },
   },
   computed: {
     ...mapGetters([
       "templateConfigList",
       "templateItemForderList",
-      "tempShoplist"
+      "tempShoplist",
     ]),
     formState() {
       return this.$store.getters.templateConfigFormState;
     },
     currentTheme() {
       let myThemes = this.templateConfigList;
-      let currentlist = _.filter(myThemes, doc => {
+      let currentlist = _.filter(myThemes, (doc) => {
         return doc.using;
       });
       return currentlist && currentlist.length > 0 ? currentlist[0] : [];
@@ -558,7 +613,7 @@ export default {
         hideSidebar: !this.sidebarOpened,
         openSidebar: this.sidebarOpened,
         withoutAnimation: "false",
-        mobile: this.device === "mobile"
+        mobile: this.device === "mobile",
       };
     },
     renderMyThemes() {
@@ -566,7 +621,7 @@ export default {
       let shopThemes = this.tempShoplist.docs;
       if (!_.isEmpty(myThemes) && !_.isEmpty(shopThemes)) {
         for (const themeItem of myThemes) {
-          let compareShop = _.filter(shopThemes, t => {
+          let compareShop = _.filter(shopThemes, (t) => {
             return t.alias == themeItem.alias;
           });
           if (!_.isEmpty(compareShop)) {
@@ -586,24 +641,24 @@ export default {
       }
       console.log("--myThemes--", myThemes);
       return myThemes;
-    }
+    },
   },
   mounted() {
     initEvent(this);
     this.$store.dispatch("templateConfig/getMyTemplateList");
     this.$store.dispatch("templateConfig/getTemplateItemForderList");
     this.$store.dispatch("templateConfig/getTempsFromShop", {
-      singleUserToken: getToken("1")
+      singleUserToken: getToken("1"),
     });
     // 监听是否登录成功
-    this.$root.eventBus.$on("notifyVipLoginSuccess", messageInfo => {
+    this.$root.eventBus.$on("notifyVipLoginSuccess", (messageInfo) => {
       if (messageInfo && messageInfo.action == "install") {
         this.$store.dispatch("templateConfig/getTempsFromShop", {
-          singleUserToken: getToken("1")
+          singleUserToken: getToken("1"),
         });
       }
     });
-  }
+  },
 };
 </script>
 
