@@ -1,5 +1,5 @@
 # Notice: DoraCMS SQL (基于sequelize) 已发布，开源无限制可商用，觉得好请记得 star 哟！
-[DoraCMS mysql 源码](https://github.com/doramart/DoraCMS-SQL)   
+[DoraCMS mysql 源码](https://github.com/doramart/Pandora)   
 [DoraCMS mysql 版本预览](https://sql.html-js.cn/) 
 > 数据库通过花生壳连接，可能有所延时
 
