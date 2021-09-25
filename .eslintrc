@@ -1,3 +1,39 @@
 {
-  "extends": "eslint-config-egg"
+  "extends": "eslint-config-egg",
+  "parser": "babel-eslint",
+  "plugins": ["prettier"],
+  "rules": {
+    "no-control-regex": 0,
+    "no-unused-vars": "off",
+    "one-var-declaration-per-line": ["error", "initializations"],
+    "quotes": [2, "single"],
+    "arrow-parens": ["error", "always"],
+    "array-bracket-spacing": [2, "never"],
+    "space-before-function-paren": 0,
+    "indent": [0, 2],
+    "prettier/prettier": ["error", {}],
+    "linebreak-style": ["error", "unix"]
+  },
+  "globals": {
+    "exec": true,
+    "concatPopulate": true,
+    "getDateStr": true,
+    "getContentListFields": true,
+    "getAuthUserFields": true,
+    "checkCurrentId": true,
+    "remote": true,
+    "hot": true,
+    "news": true,
+    "random": true,
+    "near_post": true,
+    "hottags": true,
+    "ads": true,
+    "recommend": true,
+    "tags": true,
+    "navtree": true,
+    "childnav": true,
+    "PluginsExtension": true,
+    "HeaderExtension": true,
+    "AssetsExtension": true
+  }
 }

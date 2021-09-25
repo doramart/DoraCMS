@@ -1,6 +1,6 @@
 {
   "name": "doracms2",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "description": "",
   "dependencies": {
     "@cdxoo/mongodb-restore": "^1.0.0",
@@ -13,9 +13,12 @@
     "egg-dora-middlestage": "^1.0.0",
     "egg-dora-uploadfile": "^1.0.0",
     "egg-dora-validate": "^1.0.1",
+    "egg-dora-rendercms": "^1.0.6",
+    "egg-dora-valine": "^1.0.6",
     "egg-mongoose": "^3.2.0",
     "egg-redis": "^2.4.0",
     "egg-scripts": "^2.11.0",
+    "egg-socket.io": "^4.1.6",
     "egg-view-nunjucks": "^2.2.0",
     "iconv-lite": "^0.5.0",
     "js-cache": "^1.0.3",
@@ -45,6 +48,8 @@
     "egg-mock": "^3.14.0",
     "eslint": "^4.18.0",
     "eslint-config-egg": "^7.0.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.4.1",
     "webstorm-disable-index": "^1.2.0"
   },
   "engines": {
@@ -52,7 +57,7 @@
   },
   "scripts": {
     "debug": "egg-bin debug",
-    "dev": "cross-env NODE_ENV=development && egg-bin dev",
+    "dev": "cross-env NODE_ENV=development && egg-bin dev --sticky",
     "test": "npm run lint -- --fix && egg-bin pkgfiles && npm run test-local",
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
@@ -62,7 +67,11 @@
     "pkgfiles": "egg-bin pkgfiles",
     "init": "node ./build/restore",
     "doracms": "node ./install/index.js",
-    "start": "cross-env NODE_ENV=production && egg-scripts start --daemon --title=doracms2",
+    "publishThemes": "node ./build/publishThemes",
+    "makeReleasePro": "node ./build/renderPro --type release",
+    "makeAdminScaffoldPro": "node ./build/renderPro --type adminScaffold",
+    "makeGitHubPro": "node ./build/renderPro --type github",
+    "start": "cross-env NODE_ENV=production && egg-scripts start --daemon --title=doracms2 --sticky",
     "stop": "egg-scripts stop --title=doracms2"
   },
   "ci": {

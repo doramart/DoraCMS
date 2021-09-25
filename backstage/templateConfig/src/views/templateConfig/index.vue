@@ -51,7 +51,7 @@
                                       type="info"
                                       size="mini"
                                       v-for="versionItem in currentTheme.version"
-                                      style="marginright: 10px"
+                                      style="marginRight:10px;"
                                       :key="versionItem"
                                       >{{ versionItem }}</el-tag
                                     >
@@ -132,15 +132,10 @@
                           <div
                             v-if="item.shoudUpdate"
                             @click="askVipLogin(item, 'update')"
-                            style="cursor: pointer"
+                            style="cursor: pointer;"
                           >
                             <UpdateCorner
-                              style="
-                                position: absolute;
-                                top: 5px;
-                                border: 0;
-                                right: 5px;
-                              "
+                              style="position: absolute; top: 5px; border: 0; right: 5px;"
                             />
                           </div>
                           <img :src="item.sImg" />
@@ -158,7 +153,7 @@
                                 type="info"
                                 size="mini"
                                 v-for="versionItem in item.version"
-                                style="marginright: 10px"
+                                style="marginRight:10px;"
                                 :key="versionItem"
                                 >{{ versionItem }}</el-tag
                               >
@@ -208,7 +203,7 @@
                                 type="info"
                                 size="mini"
                                 v-for="versionItem in item.version"
-                                style="marginright: 10px"
+                                style="marginRight:10px;"
                                 :key="versionItem"
                                 >{{ versionItem }}</el-tag
                               >
@@ -221,7 +216,7 @@
                               <label>价格:</label>
                               <span
                                 v-if="item.amount && Number(item.amount) > 0"
-                                style="color: red"
+                                style="color:red"
                               >
                                 ￥ {{ item.amount }}&nbsp;
                                 <span
@@ -231,7 +226,7 @@
                                   <svg-icon icon-class="icon_help" />
                                 </span>
                               </span>
-                              <span style="color: #67c23a" v-else>免费</span>
+                              <span style="color:#67C23A" v-else>免费</span>
                             </li>
                             <li class="opt">
                               <el-button
@@ -281,7 +276,7 @@
                         </div>
                       </el-upload>
                     </el-row>
-                    <hr style="margin: 20px 0" />
+                    <hr style="margin:20px 0;" />
                     <el-row>
                       <el-link
                         href="http://cdn.html-js.cn/cms/templates/2.1.7/tempdemo.zip"
@@ -426,9 +421,9 @@ export default {
     },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
-        } 个文件`
+        `当前限制选择 1 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
       );
     },
     uploadSuccess(res, file) {

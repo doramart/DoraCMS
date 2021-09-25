@@ -1,6 +1,5 @@
-import Cookies from 'js-cookie'
-
-
+import Cookies from "js-cookie";
+import { isEmpty } from "lodash";
 function _changeSideBar(that) {
   let sidebarStatus = Cookies.get("sidebarStatus");
   that.sidebarOpened = sidebarStatus == "1" ? true : false;
@@ -9,9 +8,7 @@ function _changeSideBar(that) {
   }
 }
 
-
 export function initEvent(that) {
-
   let rootVm = that.$root;
 
   setTimeout(() => {
@@ -20,22 +17,26 @@ export function initEvent(that) {
 
   if (rootVm && rootVm.eventBus) {
     // 左侧菜单切换
-    rootVm.eventBus.$on("toggleSideBar", message => {
+    rootVm.eventBus.$on("toggleSideBar", (message) => {
       setTimeout(() => {
         _changeSideBar(that);
       }, 500);
     });
     // 屏幕大小切换
-    rootVm.eventBus.$on("toggleDevice", message => {
+    rootVm.eventBus.$on("toggleDevice", (message) => {
       that.device = message;
+    });
+
+    rootVm.eventBus.$on("handleTabInfo", (message) => {
+      if (!isEmpty(message)) {
+        rootVm.eventBus.$emit("globalTabsChange", message);
+      }
     });
   }
 
   // 修改移动端标记
-  const {
-    body
-  } = document
-  const WIDTH = 992
+  const { body } = document;
+  const WIDTH = 992;
   const rect = body.getBoundingClientRect();
-  that.device = (rect.width - 1 < WIDTH ? 'mobile' : 'desktop');
+  that.device = rect.width - 1 < WIDTH ? "mobile" : "desktop";
 }

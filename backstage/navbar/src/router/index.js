@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 import settings from "@root/publicMethods/settings";
 
-Vue.use(Router)
+Vue.use(Router);
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -28,26 +28,30 @@ Vue.use(Router)
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [{
-  path: '/',
-  redirect: settings.admin_base_path + '/dashboard',
-  children: []
-}];
+export const constantRoutes = [
+  {
+    path: "/",
+    redirect: settings.admin_base_path + "/dashboard",
+    name: "工作台",
+    children: [],
+  },
+];
 
-const createRouter = () => new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  scrollBehavior: () => ({
-    y: 0
-  }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    mode: "history",
+    base: process.env.BASE_URL,
+    scrollBehavior: () => ({
+      y: 0,
+    }),
+    routes: constantRoutes,
+  });
 
-const router = createRouter()
+const router = createRouter();
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
-export default router
+export default router;

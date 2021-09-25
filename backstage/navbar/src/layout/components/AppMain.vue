@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main">
+  <section class="app-main" :style="appMainStyle">
     <transition name="fade-transform" mode="out-in">
       <router-view :key="key" />
     </transition>
@@ -7,13 +7,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
-  name: "AppMain",
+  name: 'AppMain',
   computed: {
     key() {
       return this.$route.path;
-    }
-  }
+    },
+    ...mapGetters(['tabs']),
+    appMainStyle() {
+      return {
+        paddingTop: this.tabs.length > 0 ? '102px' : '65px',
+      };
+    },
+  },
 };
 </script>
 
@@ -25,9 +32,7 @@ export default {
   position: relative;
   overflow: hidden;
 }
-.fixed-header + .app-main {
-  padding-top: 50px;
-}
+
 </style>
 
 <style lang="scss">

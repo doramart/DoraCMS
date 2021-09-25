@@ -1,125 +1,151 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DoraCMS Admin Manage</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="importmap-type" content="systemjs-importmap">
-	<input type="hidden" id="renderMap" value="{{renderMapJson}}">
-	<script type="systemjs-importmap">
-		{
-		"imports": {
-				"single-spa": "{{staticRootPath}}/plugins/single-spa/4.3.7/system/single-spa.min.js",
-				"vue": "{{staticRootPath}}/plugins/vue/2.6.10/vue.min.js",
-				"vuex": "{{staticRootPath}}/plugins/vuex/3.1.1/vuex.min.js",
-				"vue-router": "{{staticRootPath}}/plugins/vue-router/3.0.7/vue-router.min.js",
-				"element-ui": "{{staticRootPath}}/plugins/element-ui/2.11.1/index.js",
-				"vue-i18n": "{{staticRootPath}}/plugins/vue-i18n/8.14.0/vue-i18n.min.js",
-				"axios": "{{staticRootPath}}/plugins/axios/0.19.0-beta.1/axios.min.js",
-				"lodash": "{{staticRootPath}}/plugins/lodash.js/4.17.15/lodash.min.js",
-				"showdown": "{{staticRootPath}}/plugins/showdown/showdown.min.js",
-				"highlight.js": "{{staticRootPath}}/plugins/highlight.js/9.18.1/highlight.min.js",
-				{% for appItem in renderMap %}
-				"{{appItem.name}}": "{{appItem.path}}",
-				{% endfor %}
-				"crypto-js": "{{staticRootPath}}/plugins/crypto-js/3.1.9/crypto-js.min.js"
-      }
-    }
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>DoraCMS Admin Manage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="importmap-type" content="systemjs-importmap" />
+    <input type="hidden" id="renderMap" value="{{renderMapJson}}" />
+    <script type="systemjs-importmap">
+      {
+      "imports": {
+      		"single-spa": "{{staticRootPath}}/plugins/single-spa/4.3.7/system/single-spa.min.js",
+      		"vue": "{{staticRootPath}}/plugins/vue/2.6.10/vue.min.js",
+      		"vuex": "{{staticRootPath}}/plugins/vuex/3.1.1/vuex.min.js",
+      		"vue-router": "{{staticRootPath}}/plugins/vue-router/3.0.7/vue-router.min.js",
+      		"element-ui": "{{staticRootPath}}/plugins/element-ui/2.11.1/index.js",
+      		"vue-i18n": "{{staticRootPath}}/plugins/vue-i18n/8.14.0/vue-i18n.min.js",
+      		"axios": "{{staticRootPath}}/plugins/axios/0.19.0-beta.1/axios.min.js",
+      		"lodash": "{{staticRootPath}}/plugins/lodash.js/4.17.15/lodash.min.js",
+      		"showdown": "{{staticRootPath}}/plugins/showdown/showdown.min.js",
+      		"highlight.js": "{{staticRootPath}}/plugins/highlight.js/9.18.1/highlight.min.js",
+      		{% for appItem in renderMap %}
+      		"{{appItem.name}}": "{{appItem.path}}",
+      		{% endfor %}
+      		"crypto-js": "{{staticRootPath}}/plugins/crypto-js/3.1.9/crypto-js.min.js"
+          }
+        }
     </script>
-	<link rel="stylesheet" href="{{staticRootPath}}/plugins/element-ui/2.11.1/theme-chalk/index.css">
-	<link rel="stylesheet" href="{{staticRootPath}}/plugins/highlight.js/9.18.1/default.min.css">
-	<link rel="preload" href="{{staticRootPath}}/plugins/single-spa/4.3.7/system/single-spa.min.js" as="script"
-		crossorigin="anonymous" />
-	<link rel="preload" href="{{staticRootPath}}/plugins/vue/2.6.10/vue.min.js" as="script" crossorigin="anonymous" />
-	<link rel="preload" href="{{staticRootPath}}/plugins/element-ui/2.11.1/index.js" as="script"
-		crossorigin="anonymous" />
-	<script src="{{staticRootPath}}/plugins/import-map-overrides/1.7.2/import-map-overrides.js"></script>
-	<script src="{{staticRootPath}}/plugins/systemjs/4.1.0/system.min.js"></script>
-	<script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/amd.min.js"></script>
-	<script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/named-exports.js"></script>
-	<script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/named-register.min.js"></script>
-	<script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/use-default.min.js"></script>
-</head>
+    <link
+      rel="stylesheet"
+      href="{{staticRootPath}}/plugins/element-ui/2.11.1/theme-chalk/index.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{staticRootPath}}/plugins/highlight.js/9.18.1/default.min.css"
+    />
+    <link
+      rel="preload"
+      href="{{staticRootPath}}/plugins/single-spa/4.3.7/system/single-spa.min.js"
+      as="script"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{{staticRootPath}}/plugins/vue/2.6.10/vue.min.js"
+      as="script"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="preload"
+      href="{{staticRootPath}}/plugins/element-ui/2.11.1/index.js"
+      as="script"
+      crossorigin="anonymous"
+    />
+    <script src="{{staticRootPath}}/plugins/import-map-overrides/1.7.2/import-map-overrides.js"></script>
+    <script src="{{staticRootPath}}/plugins/systemjs/4.1.0/system.min.js"></script>
+    <script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/amd.min.js"></script>
+    <script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/named-exports.js"></script>
+    <script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/named-register.min.js"></script>
+    <script src="{{staticRootPath}}/plugins/systemjs/4.1.0/extras/use-default.min.js"></script>
+  </head>
+  <style>
+    .bodyClass {
+      background-color: #f5f7f9;
+    }
+  </style>
+  <body class="bodyClass">
+    <script>
+      (function () {
+        // See https://github.com/systemjs/systemjs/issues/1939
+        var originalResolve = System.resolve;
+        var moduleMap = {};
+        System.resolve = function (name) {
+          return originalResolve.apply(this, arguments).then((resolved) => {
+            moduleMap[name] = resolved;
+            return resolved;
+          });
+        };
+        window.getPublicPath = function (name) {
+          const url = moduleMap[name];
+          if (url) {
+            let index = url.lastIndexOf("/js");
+            if (index < 0) {
+              index = url.lastIndexOf("/");
+            }
+            index++;
+            return url.slice(0, index);
+          } else {
+            throw Error(`Could not find url for module '${name}'`);
+          }
+        };
 
-<body>
-	<script>
-		(function () {
-			// See https://github.com/systemjs/systemjs/issues/1939
-			var originalResolve = System.resolve
-			var moduleMap = {}
-			System.resolve = function (name) {
-				return originalResolve.apply(this, arguments).then(resolved => {
-					moduleMap[name] = resolved;
-					return resolved;
-				});
-			}
-			window.getPublicPath = function (name) {
-				const url = moduleMap[name]
-				if (url) {
-					let index = url.lastIndexOf('/js')
-					if (index < 0) {
-						index = url.lastIndexOf('/')
-					}
-					index++
-					return url.slice(0, index);
-				} else {
-					throw Error(`Could not find url for module '${name}'`)
-				}
-			}
+        Promise.all([
+          System.import("single-spa"),
+          System.import("vue"),
+          System.import("vue-router"),
+        ]).then(function (modules) {
+          var singleSpa = modules[0];
+          var Vue = modules[1];
+          var VueRouter = modules[2];
+          var eventBus = new Vue();
+          var staticRootPath = "{{staticRootPath}}";
+          var adminBasePath = "{{adminBasePath}}";
+          var appVersion = "{{appVersion}}";
+          var appName = "{{appName}}";
+          Vue.use(VueRouter);
 
-			Promise.all([System.import('single-spa'), System.import('vue'), System.import('vue-router')]).then(
-				function (
-					modules) {
-					var singleSpa = modules[0];
-					var Vue = modules[1];
-					var VueRouter = modules[2];
-					var eventBus = new Vue;
-					var staticRootPath = "{{staticRootPath}}";
-					var adminBasePath = "{{adminBasePath}}";
-					var appVersion = "{{appVersion}}";
-					var appName = "{{appName}}";
-					Vue.use(VueRouter)
-
-					var renderMap = document.getElementById('renderMap').value;
-					var renderMapObj = JSON.parse(renderMap);
-					for (const mapItem of renderMapObj) {
-
-						if (mapItem.name == 'navbar') {
-							singleSpa.registerApplication(
-								mapItem.name,
-								() => System.import(mapItem.name),
-								location => true, {
-									eventBus,
-									staticRootPath,
-									adminBasePath,
-									appVersion,
-									appName
-								}
-							);
-						} else {
-							singleSpa.registerApplication(
-								mapItem.name,
-								() => System.import(mapItem.name),
-								location => location.pathname.startsWith('/admin/' + mapItem.name), {
-									eventBus,
-									staticRootPath,
-									adminBasePath,
-									appVersion,
-									appName
-								}
-							)
-						}
-
-					}
-					singleSpa.start();
-					document.getElementById('renderMap').value = '';
-				})
-		})()
-	</script>
-	<!-- See https://github.com/joeldenning/import-map-overrides#user-interface  -->
-	<import-map-overrides-full show-when-local-storage="overrides-ui"></import-map-overrides-full>
-</body>
-
+          var renderMap = document.getElementById("renderMap").value;
+          var renderMapObj = JSON.parse(renderMap);
+          for (const mapItem of renderMapObj) {
+            if (mapItem.name == "navbar") {
+              singleSpa.registerApplication(
+                mapItem.name,
+                () => System.import(mapItem.name),
+                (location) => true,
+                {
+                  eventBus,
+                  staticRootPath,
+                  adminBasePath,
+                  appVersion,
+                  appName,
+                }
+              );
+            } else {
+              singleSpa.registerApplication(
+                mapItem.name,
+                () => System.import(mapItem.name),
+                (location) =>
+                  location.pathname.startsWith("/admin/" + mapItem.name),
+                {
+                  eventBus,
+                  staticRootPath,
+                  adminBasePath,
+                  appVersion,
+                  appName,
+                }
+              );
+            }
+          }
+          singleSpa.start();
+          document.getElementById("renderMap").value = "";
+        });
+      })();
+    </script>
+    <!-- See https://github.com/joeldenning/import-map-overrides#user-interface  -->
+    <import-map-overrides-full
+      show-when-local-storage="overrides-ui"
+    ></import-map-overrides-full>
+  </body>
 </html>

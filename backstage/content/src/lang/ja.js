@@ -3,9 +3,9 @@ export default {
     keywords: "请输入关键字",
   },
   contents: {
-    categories: "文档类别",
-    tags: "文档标签",
-    type: "文档类型",
+    categories: "类别",
+    tags: "标签",
+    type: "类型",
     type_normal: "普通",
     type_flash: "快讯",
     type_twiter: "推特",
@@ -21,8 +21,8 @@ export default {
     tagOrKey: "标签/关键字",
     sImg: "缩略图",
     postValue: "推荐指数",
-    discription: "内容摘要",
-    uploadWord: "上传Word文档",
+    discription: "摘要",
+    uploadWord: "导入",
     comments: "文档详情",
     flashComments: "快讯摘要",
     rec: "推荐",
@@ -31,7 +31,7 @@ export default {
     updateDate: "更新时间",
     commentNum: "评论数",
     clickNum: "点击",
-    enable: "显示",
+    enable: "状态",
     author: "作者"
 
 

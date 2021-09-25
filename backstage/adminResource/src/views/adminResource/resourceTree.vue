@@ -139,7 +139,7 @@ export default {
           ""
         );
       return (
-        <span style="flex: 1; display: flex; align-items: center; justify-content: right; font-size: 14px;">
+        <span style="flex: 1; display: flex; align-items: center; justify-content: left; font-size: 14px;">
           <span>
             <span>{node.data.comments}</span>
           </span>

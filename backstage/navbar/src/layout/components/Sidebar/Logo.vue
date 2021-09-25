@@ -1,7 +1,12 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
+      <router-link
+        v-if="collapse"
+        key="collapse"
+        class="sidebar-logo-link"
+        to="/"
+      >
         <svg-icon icon-class="dora_logo" class="svg-logo" />
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
@@ -19,14 +24,14 @@ export default {
   props: {
     collapse: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      title: settings.title
+      title: settings.title,
     };
-  }
+  },
 };
 </script>
 

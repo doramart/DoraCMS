@@ -6,12 +6,12 @@
   </div>
 </template>
 <script>
-
 import Layout from "@/layout";
 export default {
+  name: "Navbar",
   components: {
-    Layout
-  }
+    Layout,
+  },
 };
 </script>
 <style>

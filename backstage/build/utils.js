@@ -56,8 +56,8 @@ let uploadByQiniu = (localFile, targetKey) => {
         //要上传的空间
         let bucket = 'cmsupload';
 
-        var accessKey = 'RzcFnbsohNPFapCTWk5KoyPgmtEhubI1DkX4adSp';
-        var secretKey = 'bbIbZh56qQrMT4AdL9vCl8ZVmJA-ZPcYUv2p7g03';
+        var accessKey = 'V6tL3A9-bg6eJ8BPA62Xpq20GGKYgK7-2uk6MgF5';
+        var secretKey = '17yL6dNxnC2-dSLJOONeBRjonoCDCrSQZoJeRC81';
         var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
         var options = {
             scope: bucket + ':' + targetKey,

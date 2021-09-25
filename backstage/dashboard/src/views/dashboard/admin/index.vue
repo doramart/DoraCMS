@@ -3,14 +3,15 @@
     <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
     <div class="notice-box">
       <div class="client-notice" v-html="noticeInfo"></div>
-      <div class="update-notice" v-if="vNo.newVersion>vNo.oldVersion">
-        发现新版本 {{vNo.nv}}，
+      <div class="update-notice" v-if="vNo.newVersion > vNo.oldVersion">
+        发现新版本 {{ vNo.nv }}，
         <el-link
           v-if="versionInfo.description"
           style="font-size:12px;"
           type="primary"
           @click="showUpdateNotice()"
-        >查看详情</el-link>
+          >查看详情</el-link
+        >
       </div>
     </div>
     <panel-group :basicInfo="basicInfo" />
@@ -24,31 +25,31 @@
     </el-dialog>
     <el-row :gutter="8">
       <el-col
-        :xs="{span: 24}"
-        :sm="{span: 24}"
-        :md="{span: 24}"
-        :lg="{span: 11}"
-        :xl="{span: 12}"
+        :xs="{ span: 24 }"
+        :sm="{ span: 24 }"
+        :md="{ span: 24 }"
+        :lg="{ span: 11 }"
+        :xl="{ span: 12 }"
         style="padding-right:8px;margin-bottom:30px;"
       >
         <transaction-table :messages="basicInfo.messages" />
       </el-col>
       <el-col
-        :xs="{span: 24}"
-        :sm="{span: 12}"
-        :md="{span: 12}"
-        :lg="{span: 6}"
-        :xl="{span: 6}"
+        :xs="{ span: 24 }"
+        :sm="{ span: 12 }"
+        :md="{ span: 12 }"
+        :lg="{ span: 6 }"
+        :xl="{ span: 6 }"
         style="margin-bottom:30px;"
       >
         <user-list :regUsers="basicInfo.regUsers" />
       </el-col>
       <el-col
-        :xs="{span: 24}"
-        :sm="{span: 12}"
-        :md="{span: 12}"
-        :lg="{span: 7}"
-        :xl="{span: 6}"
+        :xs="{ span: 24 }"
+        :sm="{ span: 12 }"
+        :md="{ span: 12 }"
+        :lg="{ span: 7 }"
+        :xl="{ span: 6 }"
         style="margin-bottom:30px;"
       >
         <box-card :basicInfo="basicInfo" @showMyResourceBox="showMyResource" />
@@ -74,11 +75,11 @@ export default {
     ResourceView,
     TransactionTable,
     UserList,
-    BoxCard
+    BoxCard,
   },
   data() {
     return {
-      resourceShow: false
+      resourceShow: false,
     };
   },
   methods: {
@@ -89,7 +90,7 @@ export default {
       if (this.versionInfo && this.versionInfo.description) {
         window.open(this.versionInfo.description);
       }
-    }
+    },
   },
   computed: {
     ...mapGetters(["basicInfo", "notice", "versionInfo"]),
@@ -115,18 +116,18 @@ export default {
         ov: cmsVersion,
         oldVersion,
         nv: this.versionInfo.version,
-        newVersion
+        newVersion,
       };
-    }
+    },
   },
   mounted() {
     this.$store.dispatch("dashboard/getSiteBasicInfo");
     this.$store.dispatch("dashboard/getNotice", { isPaging: "0" });
     this.$store.dispatch("dashboard/getVersionMaintenanceInfo", {
-      isPaging: "0"
+      isPaging: "0",
     });
     localStorage.clear();
-  }
+  },
 };
 </script>
 
@@ -154,8 +155,8 @@ export default {
 }
 
 .dashboard-editor-container {
-  padding: 32px;
-  background-color: rgb(240, 242, 245);
+  padding: 15px;
+  // background-color: rgb(240, 242, 245);
   .chart-wrapper {
     background: #fff;
     padding: 16px 16px 0;

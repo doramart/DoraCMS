@@ -1,42 +1,51 @@
 <template>
-  <div class="navbar">
-    <hamburger
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
-    />
+  <div>
+    <div class="navbar">
+      <hamburger
+        :is-active="sidebar.opened"
+        class="hamburger-container"
+        @toggleClick="toggleSideBar"
+      />
 
-    <breadcrumb class="breadcrumb-container" />
-    <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar" />
-          <i class="el-icon-caret-bottom" />
-        </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
-            <el-dropdown-item>{{$t('navbar.dashboard')}}</el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="https://github.com/doramart/DoraCMS">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
+      <breadcrumb class="breadcrumb-container" />
+      <div class="right-menu">
+        <el-dropdown class="avatar-container" trigger="click">
+          <div class="avatar-wrapper">
+            <img :src="avatar" class="user-avatar" />
+            <i class="el-icon-caret-bottom" />
+          </div>
+          <el-dropdown-menu slot="dropdown" class="user-dropdown">
+            <router-link to="/">
+              <el-dropdown-item>{{ $t("navbar.dashboard") }}</el-dropdown-item>
+            </router-link>
+            <a target="_blank" href="https://github.com/doramart/DoraCMS">
+              <el-dropdown-item>Github</el-dropdown-item>
+            </a>
 
-          <el-dropdown-item>
-            <!-- <span style="display:block;" v-if="!singleUserInfo.userName" @click="loginCmsVip">
+            <el-dropdown-item>
+              <!-- <span style="display:block;" v-if="!singleUserInfo.userName" @click="loginCmsVip">
               DoraCMS
               <svg-icon style="red" icon-class="icon_vip" />
             </span>-->
-            <span style="display:block;" v-if="singleUserInfo.userName" @click="showCmsVipInfo">
-              <svg-icon style="red" icon-class="icon_vip" />
-              {{singleUserInfo.userName}}
-            </span>
-          </el-dropdown-item>
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">{{$t('navbar.logOut')}}</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+              <span
+                style="display:block;"
+                v-if="singleUserInfo.userName"
+                @click="showCmsVipInfo"
+              >
+                <svg-icon style="red" icon-class="icon_vip" />
+                {{ singleUserInfo.userName }}
+              </span>
+            </el-dropdown-item>
+            <el-dropdown-item divided>
+              <span style="display:block;" @click="logout">{{
+                $t("navbar.logOut")
+              }}</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
+    <Tabs />
   </div>
 </template>
 
@@ -45,20 +54,21 @@ import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import settings from "@root/publicMethods/settings";
-
+import Tabs from "../components/tabs";
 export default {
   data() {
     return {};
   },
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    Tabs,
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar", "singleUserInfo"]),
+    ...mapGetters(["sidebar", "avatar", "singleUserInfo", "tabs"]),
     formState() {
       return this.$store.getters.singleUserFormState;
-    }
+    },
   },
   methods: {
     toggleSideBar() {
@@ -74,7 +84,7 @@ export default {
         _this.$t("main.confirm_logout"),
         _this.$t("main.scr_modal_title"),
         {
-          type: "warning"
+          type: "warning",
         }
       )
         .then(async () => {
@@ -90,7 +100,7 @@ export default {
         _this.$t("main.confirm_logout"),
         _this.$t("main.scr_modal_title"),
         {
-          type: "warning"
+          type: "warning",
         }
       )
         .then(async () => {
@@ -103,7 +113,7 @@ export default {
     loginCmsVip() {
       this.$store.dispatch("singleUser/showSingleUserForm", {
         formData: {},
-        regFormData: {}
+        regFormData: {},
       });
     },
     showCmsVipInfo() {
@@ -113,23 +123,23 @@ export default {
         {
           confirmButtonText: "确定",
           cancelButtonText: "注销",
-          type: "success"
+          type: "success",
         }
       )
         .then(() => {})
         .catch(() => {
           this.logOutSingleUser();
         });
-    }
+    },
   },
   mounted() {
     this.$store.dispatch("user/showSideBar");
     if (this.$root && this.$root.eventBus) {
-      this.$root.eventBus.$on("showSideBar", message => {
+      this.$root.eventBus.$on("showSideBar", (message) => {
         this.$store.dispatch("user/showSideBar");
       });
     }
-  }
+  },
 };
 </script>
 
