@@ -30,8 +30,8 @@
 3、mongodb 4+
 ```
 
-文档： [DoraCMS 开发文档](https://www.doracms.com)  
-API： [DoraCMS API文档](https://www.html-js.cn/static/apidoc/index.html)  
+文档： [DoraCMS 开发文档](https://www.doracms.net)  
+API： [DoraCMS API文档](https://s.apifox.cn/53d46887-6ec7-4c3b-8efb-a23abe1b5e79/api-327420341)  
 演示地址： [前端开发俱乐部](https://www.html-js.cn)  
 
 后台登录： https://www.html-js.cn/dr-admin  
