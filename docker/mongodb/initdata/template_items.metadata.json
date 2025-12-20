@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"doracms2test.template_items"}],"uuid":"dfb230c0a156458998570e9c3e579a67","collectionName":"template_items","type":"collection"}

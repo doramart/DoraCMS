@@ -1,22 +1,23 @@
 # Docker 相关文件忽略规则
 
 # ============ 初始化数据 ============
-# 忽略实际的数据文件，但保留目录结构
+# 注意：初始化数据文件需要提交到仓库，以便 Docker 部署时可以直接使用
+# 这些文件对于 Docker 部署是必需的
 
 # MongoDB 初始化数据
-mongodb/initdata/*.bson
-mongodb/initdata/*.json
+# mongodb/initdata/*.bson
+# mongodb/initdata/*.json
 !mongodb/initdata/.gitkeep
 !mongodb/initdata/README.md
 
 # MariaDB 初始化数据
-mariadb/init/*.sql
-mariadb/init/*.sh
+# mariadb/init/*.sql
+# mariadb/init/*.sh
 !mariadb/init/.gitkeep
 !mariadb/init/README.md
 
 # 旧的初始化数据路径（如果还存在）
-initdata/
+# initdata/  # 注释掉，因为 mongodb/initdata 需要提交
 
 # ============ 日志文件 ============
 *.log
