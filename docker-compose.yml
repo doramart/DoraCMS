@@ -70,8 +70,8 @@ services:
       STATIC_PATH: ${STATIC_PATH:-}
 
       # 外部服务配置
-      CDN_ORIGIN: ${CDN_ORIGIN:-http://localhost:8080}
-      API_DOMAIN: ${API_DOMAIN:-http://localhost:8080}
+      CDN_ORIGIN: ${CDN_ORIGIN:-https://cdn.html-js.cn}
+      API_DOMAIN: ${API_DOMAIN:-https://api.html-js.cn}
       ADMIN_BASE_PATH: ${ADMIN_BASE_PATH:-/admin}
     volumes:
       - app-logs:/app/server/logs
@@ -156,8 +156,8 @@ services:
       STATIC_PATH: ${STATIC_PATH:-}
 
       # 外部服务配置
-      CDN_ORIGIN: ${CDN_ORIGIN:-http://localhost:8080}
-      API_DOMAIN: ${API_DOMAIN:-http://localhost:8080}
+      CDN_ORIGIN: ${CDN_ORIGIN:-https://cdn.html-js.cn}
+      API_DOMAIN: ${API_DOMAIN:-https://api.html-js.cn}
       ADMIN_BASE_PATH: ${ADMIN_BASE_PATH:-/admin}
     volumes:
       - app-logs:/app/server/logs
