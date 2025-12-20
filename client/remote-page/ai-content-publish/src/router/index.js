@@ -71,7 +71,8 @@ export function createRouter(baseUrl = '/') {
 function checkPermission() {
   // 这里可以检查 token、用户权限等
   // 返回 true 表示有权限，false 表示无权限
-  const token = localStorage.getItem('doracms_user_token');
+  const tokenKey = import.meta.env.VITE_ADMIN_TOKEN_KEY || 'doracms_admin_token';
+  const token = localStorage.getItem(tokenKey);
   return !!token;
 }
 

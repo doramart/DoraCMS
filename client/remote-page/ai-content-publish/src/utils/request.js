@@ -9,6 +9,9 @@ const request = axios.create({
   timeout: 20000,
 });
 
+// 允许跨端口/域名时携带后台登录 cookie
+request.defaults.withCredentials = true;
+
 // 是否正在刷新token
 let isRefreshing = false;
 // 重试队列
@@ -23,7 +26,9 @@ request.interceptors.request.use(
       config.url = appConfigStore.transformApiUrl(config.url);
     }
 
-    const token = localStorage.getItem('doracms_user_token');
+    // 优先读取后台管理 token（可通过环境变量配置 key）
+    const tokenKey = import.meta.env.VITE_ADMIN_TOKEN_KEY || 'doracms_admin_token';
+    const token = localStorage.getItem(tokenKey);
     if (token) {
       // 检查token是否过期
       const tokenData = JSON.parse(atob(token.split('.')[1]));
@@ -60,6 +65,8 @@ request.interceptors.request.use(
 
       config.headers.Authorization = `Bearer ${token}`; // 直接使用token，不加Bearer前缀
     }
+    // 确保在跨源情况下也能携带 cookie 进行鉴权
+    config.withCredentials = true;
     return config;
   },
   error => {
@@ -76,7 +83,7 @@ request.interceptors.response.use(
 
       if (res.status === 401) {
         // token失效，清除token并跳转到登录页
-        localStorage.removeItem('doracms_user_token');
+        localStorage.removeItem(tokenKey);
         // TODO 临时注释，待测试
         // router.push('/login');
       }

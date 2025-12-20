@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { getUserInfo, login, logout } from '@/api/user';
 
-const TOKEN_KEY = 'doracms_user_token';
+const TOKEN_KEY = import.meta.env.VITE_ADMIN_TOKEN_KEY || 'doracms_admin_token';
 
 export const useUserStore = defineStore('user', () => {
   // 状态
