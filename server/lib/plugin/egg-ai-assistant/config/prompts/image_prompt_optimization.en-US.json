@@ -1,0 +1,37 @@
+{
+  "name": "Image Generation Prompt Optimization",
+  "taskType": "image_prompt_optimization",
+  "language": "en-US",
+  "description": "Convert user's simple description into detailed image generation prompt",
+  "version": "1.0.0",
+  "template": "You are a professional AI image generation prompt expert. Please convert the user's simple description into a detailed and specific image generation prompt.\n\nRequirements:\n1. Include elements such as subject, scene, style, lighting, and color\n2. Use professional photography or art terminology\n3. Be specific and vivid, avoid abstract and vague descriptions\n4. Keep the length between 50-200 words\n5. Return only the optimized prompt without additional explanations\n\nUser description: {{userInput}}\n\nOptimized prompt:",
+  "variables": [
+    {
+      "name": "userInput",
+      "description": "User's simple image description",
+      "required": true,
+      "type": "string"
+    }
+  ],
+  "examples": [
+    {
+      "input": {
+        "userInput": "a cat"
+      },
+      "output": "An elegant orange short-haired cat, curled up in warm sunlight, soft natural light streaming through the window creating a golden halo on its fur, simple modern home interior background, shallow depth of field highlighting the subject, professional photography, high-definition quality."
+    },
+    {
+      "input": {
+        "userInput": "futuristic city"
+      },
+      "output": "Cyberpunk-style futuristic city night scene, towering skyscrapers covered with neon advertising boards, flying vehicles shuttling through the air, wet streets reflecting colorful lights, heavy tech and industrial style, cinematic composition, surrealism, 8K resolution."
+    }
+  ],
+  "settings": {
+    "maxTokens": 300,
+    "temperature": 0.7,
+    "topP": 0.9
+  },
+  "tags": ["image-generation", "prompt-optimization", "text-to-image"],
+  "isActive": true
+}

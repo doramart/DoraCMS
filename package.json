@@ -1,0 +1,55 @@
+{
+  "name": "egg-cms",
+  "version": "3.0.0",
+  "description": "EggJS CMS with Vue frontend",
+  "private": false,
+  "engines": {
+    "node": ">=14.0.0",
+    "pnpm": ">=8"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "clean": "rm -rf node_modules && rm -rf server/node_modules && pnpm -r exec rm -rf node_modules",
+    "clean:server": "rm -rf server/node_modules",
+    "clean:user-center": "pnpm --filter \"./client/user-center\" exec rm -rf node_modules",
+    "clean:client": "pnpm --filter \"./client/*\" exec rm -rf node_modules",
+    "dev:server": "pnpm --filter \"./server\" run dev",
+    "dev:user-center": "pnpm --filter \"./client/user-center\" run dev",
+    "dev:client": "pnpm --filter \"./client/user-center\" run dev",
+    "dev:all": "pnpm run -r --parallel dev",
+    "dev": "pnpm run dev:server & pnpm run dev:user-center",
+    "build": "pnpm run -r build",
+    "build:server": "pnpm --filter \"./server\" run build",
+    "build:user-center": "pnpm --filter \"./client/user-center\" run build",
+    "plugin:install": "pnpm --filter \"./server\" run plugin:install",
+    "plugin:clean": "pnpm --filter \"./server\" run plugin:clean",
+    "plugin:build": "pnpm --filter \"./server\" run plugin:build",
+    "lint": "pnpm run -r lint",
+    "lint:server": "pnpm --filter \"./server\" run lint",
+    "lint:user-center": "pnpm --filter \"./client/user-center\" run lint",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,vue}\"",
+    "format:nunjucks": "node scripts/format-nunjucks.js",
+    "format:nunjucks:all": "node scripts/format-nunjucks.js server/app/view/",
+    "format:nunjucks:v2": "node server/scripts/format-nunjucks-v2.js",
+    "format:nunjucks:v2:all": "node server/scripts/format-nunjucks-v2.js server/app/view/",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "mongoose": "^8.16.4",
+    "mysql2": "^3.14.2"
+  }
+}

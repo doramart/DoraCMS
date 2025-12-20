@@ -1,0 +1,14 @@
+@import './reset.css';
+@import './nprogress.css';
+@import './transition.css';
+
+html,
+body,
+#app {
+  height: 100%;
+  font-size: 14px;
+}
+
+html {
+  overflow-x: hidden;
+}

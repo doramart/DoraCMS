@@ -1,0 +1,20 @@
+{
+  "name": "@sa/alova",
+  "version": "1.3.12",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fetch": "./src/fetch.ts",
+    "./client": "./src/client.ts",
+    "./mock": "./src/mock.ts"
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["./src/*"]
+    }
+  },
+  "dependencies": {
+    "@alova/mock": "2.0.12",
+    "@sa/utils": "workspace:*",
+    "alova": "3.2.9"
+  }
+}

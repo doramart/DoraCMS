@@ -1,0 +1,361 @@
+version: '3.8'
+
+# ==============================================================================
+# EggCMS Docker Compose 配置
+# 包含：应用服务、MongoDB/MariaDB数据库、Redis缓存、数据初始化
+# 支持通过 DATABASE_TYPE 环境变量切换数据库类型 (mongodb/mariadb)
+# ==============================================================================
+
+services:
+  # ============ 应用服务 ============
+  eggcms-app:
+    profiles:
+      - mongodb
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: eggcms-app
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      HOSTNAME: 0.0.0.0
+
+      # 数据库类型配置 (mongodb 或 mariadb)
+      DATABASE_TYPE: ${DATABASE_TYPE:-mongodb}
+      REPOSITORY_ENABLED: ${REPOSITORY_ENABLED:-false}
+
+      # MongoDB 配置
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: ${MONGODB_USERNAME:-eggcms}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD:-eggcms123}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-doracms3}
+      MONGODB_AUTH_SOURCE: ${MONGODB_AUTH_SOURCE:-doracms3}
+
+      # MariaDB 配置
+      MARIADB_HOST: mariadb
+      MARIADB_PORT: 3306
+      MARIADB_USERNAME: ${MARIADB_USERNAME:-eggcms}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-eggcms123}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-doracms3}
+
+      # Redis配置（必选）
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_DB: ${REDIS_DB:-0}
+
+      # 安全配置
+      APP_KEYS: ${APP_KEYS:-your_production_app_keys_here_change_this}
+      SESSION_SECRET: ${SESSION_SECRET:-your_production_session_secret}
+      AUTH_COOKIE_NAME: doracms
+      ENCRYPT_KEY: dora
+      SALT_AES_KEY: doracms_
+      SALT_MD5_KEY: dora
+
+      # CORS配置
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080,https://your-domain.com}
+      DOMAIN_WHITELIST: ${DOMAIN_WHITELIST:-localhost,your-domain.com}
+
+      # 日志配置
+      LOG_DIR: ${LOG_DIR:-/app/server/logs}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+
+      # 文件存储配置
+      UPLOAD_PATH: ${UPLOAD_PATH:-/app/server/app/public/upload}
+      STATIC_PATH: ${STATIC_PATH:-}
+
+      # 外部服务配置
+      CDN_ORIGIN: ${CDN_ORIGIN:-http://localhost:8080}
+      API_DOMAIN: ${API_DOMAIN:-http://localhost:8080}
+      ADMIN_BASE_PATH: ${ADMIN_BASE_PATH:-/admin}
+    volumes:
+      - app-logs:/app/server/logs
+      - app-uploads:/app/server/app/public/upload
+      - app-backups:/app/data/backups
+    # 注意：depends_on 不支持条件判断，使用 profiles 分离不同数据库部署场景
+    # 默认使用 MongoDB，MariaDB 需通过 profile 激活
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      mongodb-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks:
+      - eggcms-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ============ 应用服务 (MariaDB 模式) ============
+  eggcms-app-mariadb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: eggcms-app-mariadb
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      HOSTNAME: 0.0.0.0
+
+      # 数据库类型配置
+      DATABASE_TYPE: mariadb
+      REPOSITORY_ENABLED: ${REPOSITORY_ENABLED:-true}
+
+      # MariaDB 配置
+      MARIADB_HOST: mariadb
+      MARIADB_PORT: 3306
+      MARIADB_USERNAME: ${MARIADB_USERNAME:-eggcms}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-eggcms123}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-doracms3}
+
+      # MongoDB 配置（作为备用，某些功能可能需要）
+      MONGODB_HOST: ${MONGODB_HOST:-}
+      MONGODB_PORT: ${MONGODB_PORT:-27017}
+      MONGODB_USERNAME: ${MONGODB_USERNAME:-}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD:-}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-}
+      MONGODB_AUTH_SOURCE: ${MONGODB_AUTH_SOURCE:-admin}
+
+      # Redis配置（必选）
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_DB: ${REDIS_DB:-0}
+
+      # 安全配置
+      APP_KEYS: ${APP_KEYS:-your_production_app_keys_here_change_this}
+      SESSION_SECRET: ${SESSION_SECRET:-your_production_session_secret}
+      AUTH_COOKIE_NAME: doracms
+      ENCRYPT_KEY: dora
+      SALT_AES_KEY: doracms_
+      SALT_MD5_KEY: dora
+
+      # CORS配置
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080,https://your-domain.com}
+      DOMAIN_WHITELIST: ${DOMAIN_WHITELIST:-localhost,your-domain.com}
+
+      # 日志配置
+      LOG_DIR: ${LOG_DIR:-/app/server/logs}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+
+      # 文件存储配置
+      UPLOAD_PATH: ${UPLOAD_PATH:-/app/server/app/public/upload}
+      STATIC_PATH: ${STATIC_PATH:-}
+
+      # 外部服务配置
+      CDN_ORIGIN: ${CDN_ORIGIN:-http://localhost:8080}
+      API_DOMAIN: ${API_DOMAIN:-http://localhost:8080}
+      ADMIN_BASE_PATH: ${ADMIN_BASE_PATH:-/admin}
+    volumes:
+      - app-logs:/app/server/logs
+      - app-uploads:/app/server/app/public/upload
+      - app-backups:/app/data/backups
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      mariadb-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks:
+      - eggcms-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - mariadb
+
+  # ============ MongoDB 数据库 ============
+  mongodb:
+    profiles:
+      - mongodb
+    image: mongo:6.0
+    container_name: eggcms-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-admin123}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE:-doracms3}
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+      - ./server/initdata:/docker-entrypoint-initdb.d:ro
+    networks:
+      - eggcms-network
+    healthcheck:
+      test: ['CMD-SHELL', 'mongosh --quiet --eval "db.adminCommand(\"ping\").ok" | grep -q "1" || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    command: ['mongod', '--auth', '--bind_ip_all']
+
+  # ============ MongoDB 数据初始化 ============
+  mongodb-init:
+    profiles:
+      - mongodb
+    image: mongo:6.0
+    container_name: eggcms-mongodb-init
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME:-admin}
+      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-admin123}
+      MONGODB_USERNAME: ${MONGODB_USERNAME:-eggcms}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD:-eggcms123}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-doracms3}
+    volumes:
+      - ./docker/mongodb/initdata:/data/initdata:ro
+      - ./docker/init-mongodb.sh:/init-mongodb.sh:ro
+    networks:
+      - eggcms-network
+    command: ['bash', '/init-mongodb.sh']
+
+  # ============ MariaDB 数据库 ============
+  mariadb:
+    image: mariadb:11.2
+    container_name: eggcms-mariadb
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-admin123}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-doracms3}
+      MARIADB_USER: ${MARIADB_USERNAME:-eggcms}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-eggcms123}
+      # MariaDB 性能优化
+      MARIADB_INNODB_BUFFER_POOL_SIZE: 256M
+      MARIADB_MAX_CONNECTIONS: 200
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - ./docker/mariadb/init:/docker-entrypoint-initdb.d:ro
+      - ./docker/mariadb/conf.d:/etc/mysql/conf.d:ro
+    networks:
+      - eggcms-network
+    healthcheck:
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --max-allowed-packet=256M
+      - --innodb-log-file-size=256M
+      - --innodb-flush-log-at-trx-commit=2
+      - --innodb-flush-method=O_DIRECT
+    profiles:
+      - mariadb
+
+  # ============ MariaDB 数据初始化 ============
+  mariadb-init:
+    image: mariadb:11.2
+    container_name: eggcms-mariadb-init
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      MARIADB_HOST: mariadb
+      MARIADB_PORT: 3306
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-admin123}
+      MARIADB_USERNAME: ${MARIADB_USERNAME:-eggcms}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-eggcms123}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-doracms3}
+    volumes:
+      - ./docker/init-mariadb.sh:/init-mariadb.sh:ro
+      - ./docker/mariadb/init:/data/init:ro
+    networks:
+      - eggcms-network
+    command: ['bash', '/init-mariadb.sh']
+    profiles:
+      - mariadb
+
+  # ============ Redis 缓存（必选） ============
+  redis:
+    image: redis:7-alpine
+    container_name: eggcms-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    networks:
+      - eggcms-network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ============ Nginx 反向代理 (可选) ============
+  nginx:
+    image: nginx:alpine
+    container_name: eggcms-nginx
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+      - app-uploads:/var/www/uploads:ro
+    depends_on:
+      - eggcms-app
+    networks:
+      - eggcms-network
+    profiles:
+      - nginx
+      - full
+
+# ============ 网络配置 ============
+networks:
+  eggcms-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ============ 数据卷配置 ============
+volumes:
+  # 数据库持久化
+  mongodb-data:
+    driver: local
+  mongodb-config:
+    driver: local
+  mariadb-data:
+    driver: local
+  redis-data:
+    driver: local
+
+  # 应用数据持久化
+  app-logs:
+    driver: local
+  app-uploads:
+    driver: local
+  app-backups:
+    driver: local

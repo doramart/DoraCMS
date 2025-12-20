@@ -1,0 +1,314 @@
+{% extends "../layouts/default.html" %} {% import "../partials/article-list.html" as articleMacro %} {% import
+"../partials/ads-macro.html" as adsMacro %} {% block content %}
+<div class="bg-white dark:bg-dark-bg min-h-screen transition-colors duration-300">
+  <!-- Post Header / Hero -->
+  {% if post %}
+  <div class="relative w-full bg-gray-900 text-white py-16 md:py-24 overflow-hidden">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src="{{ post.sImg or '/public/images/default-img.png' }}"
+        alt="{{ post.title }}"
+        class="w-full h-full object-cover opacity-40 blur-sm transform scale-105"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
+    </div>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center max-w-4xl">
+      <!-- Category Tag -->
+      {% if post.categoryName %}
+      <a
+        href="/type/{{post.typeId}}"
+        class="inline-block px-4 py-1.5 rounded-full bg-primary-500/80 backdrop-blur-md text-white text-sm font-bold mb-6 hover:bg-primary-600 transition-colors"
+      >
+        {{ post.categoryName }}
+      </a>
+      {% endif %}
+
+      <h1 class="text-3xl md:text-5xl font-black mb-6 leading-tight tracking-tight">{{ post.title }}</h1>
+
+      <div class="flex flex-wrap items-center justify-center gap-6 text-gray-300 text-sm md:text-base">
+        {% if post.author %}
+        <div class="flex items-center">
+          <img
+            src="{{ post.author.logo or '/public/images/default-avatar.png' }}"
+            class="w-8 h-8 rounded-full border border-gray-600 mr-2"
+          />
+          <span class="font-medium text-white">{{ post.author.userName }}</span>
+        </div>
+        {% endif %}
+        <div class="flex items-center">
+          <span class="material-icons text-[18px] mr-1.5 opacity-70">calendar_today</span>
+          {{ post.createdAt | date('YYYY-MM-DD') }}
+        </div>
+        <div class="flex items-center">
+          <span class="material-icons text-[18px] mr-1.5 opacity-70">visibility</span>
+          {{ post.clickNum }} 阅读
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 relative -mt-10 z-20">
+    <div class="flex flex-col lg:flex-row gap-12">
+      <!-- Left Column: Article Body & Comments -->
+      <div class="w-full lg:w-2/3 xl:w-3/4">
+        <!-- Article Card -->
+        <article
+          class="bg-white dark:bg-dark-surface rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-dark-border p-6 md:p-10 lg:p-12 mb-12"
+        >
+          <!-- Summary -->
+          {% if post.discription %}
+          <div
+            class="bg-gray-50 dark:bg-gray-800/50 border-l-4 border-primary-500 p-6 mb-8 rounded-r-xl italic text-gray-600 dark:text-gray-300 leading-relaxed"
+          >
+            {{ post.discription }}
+          </div>
+          {% endif %}
+
+          <!-- Content -->
+          <div
+            class="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-xl prose-headings:font-bold prose-a:text-primary-500 hover:prose-a:text-primary-600 prose-blockquote:border-primary-500"
+          >
+            {{ post.comments | safe }}
+          </div>
+
+          <!-- Tags -->
+          {% if post.tags and post.tags.length > 0 %}
+          <div class="mt-12 pt-8 border-t border-gray-100 dark:border-dark-border flex flex-wrap gap-2">
+            <span
+              class="flex items-center text-gray-500 dark:text-gray-400 mr-2 text-sm font-bold uppercase tracking-wider"
+            >
+              <span class="material-icons text-[18px] mr-1">label</span>
+              Tags:
+            </span>
+            {% for tag in post.tags %}
+            <a
+              href="/tag/{{ tag.name }}"
+              class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm rounded-md hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 transition-colors"
+            >
+              #{{ tag.name }}
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Actions (Like/Share placeholder) -->
+          <div class="mt-8 flex justify-center space-x-6">
+            <button
+              id="like-btn"
+              class="flex items-center px-6 py-2.5 rounded-full bg-red-50 dark:bg-red-900/10 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors font-medium group relative overflow-hidden"
+            >
+              <span class="material-icons mr-2 group-hover:scale-110 transition-transform" id="like-icon">
+                favorite_border
+              </span>
+              <span id="like-text">点赞</span>
+              <span
+                id="like-count"
+                class="ml-1 text-sm bg-red-100 dark:bg-red-900/50 px-2 py-0.5 rounded-full text-red-600 dark:text-red-300"
+              >
+                {{ post.likeNum or 0 }}
+              </span>
+            </button>
+            <button
+              class="flex items-center px-6 py-2.5 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-medium"
+            >
+              <span class="material-icons mr-2">share</span>
+              分享
+            </button>
+          </div>
+        </article>
+
+        <!-- Post Navigation (Prev/Next) placeholder -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          {% if post.previous %}
+          <a
+            href="/details/{{post.previous.id}}.html"
+            class="block p-6 bg-white dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border hover:shadow-lg hover:-translate-y-1 transition-all group"
+          >
+            <span class="text-xs text-gray-400 uppercase tracking-wider mb-2 block group-hover:text-primary-500">
+              上一篇
+            </span>
+            <h4
+              class="font-bold text-gray-800 dark:text-gray-200 line-clamp-1 group-hover:text-primary-600 dark:group-hover:text-primary-400"
+            >
+              {{ post.previous.title }}
+            </h4>
+          </a>
+          {% endif %} {% if post.next %}
+          <a
+            href="/details/{{post.next.id}}.html"
+            class="block p-6 bg-white dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border hover:shadow-lg hover:-translate-y-1 transition-all group text-right"
+          >
+            <span class="text-xs text-gray-400 uppercase tracking-wider mb-2 block group-hover:text-primary-500">
+              下一篇
+            </span>
+            <h4
+              class="font-bold text-gray-800 dark:text-gray-200 line-clamp-1 group-hover:text-primary-600 dark:group-hover:text-primary-400"
+            >
+              {{ post.next.title }}
+            </h4>
+          </a>
+          {% endif %}
+        </div>
+
+        <!-- Comments Section -->
+        {% set contentId = post.id %} {% include "../partials/comment-section.html" %}
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="w-full lg:w-1/3 xl:w-1/4 space-y-8 sticky top-24 self-start">
+        <!-- Author Card -->
+        {% if post.author %}
+        <div
+          class="bg-white dark:bg-dark-surface rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6 text-center"
+        >
+          <img
+            src="{{ post.author.logo or '/public/images/default-avatar.png' }}"
+            class="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-gray-50 dark:border-gray-800"
+          />
+          <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-1">{{ post.author.userName }}</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            {{ post.author.comments or '这个作者很懒，什么都没留下。' }}
+          </p>
+          <button
+            class="w-full py-2 rounded-lg bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400 font-medium hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors"
+          >
+            查看主页
+          </button>
+        </div>
+        {% endif %}
+
+        <!-- Ads -->
+        {% ads name="sidebar_ad" %} {% if adList %} {{ adsMacro.renderAds(adList, className="w-full aspect-[4/3]") }} {%
+        endif %}
+
+        <!-- Related Posts -->
+        <div
+          class="bg-white dark:bg-dark-surface rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6"
+        >
+          <h3
+            class="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-dark-border pb-4"
+          >
+            相关推荐
+          </h3>
+          {% news key="articles", typeId=post.typeId, pageSize=5 %} {{ articleMacro.articleList(articles,
+          layout='compact', showImage=true, showMeta=false) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="container mx-auto px-4 py-20 text-center">
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">文章不存在</h1>
+    <p class="text-gray-500">无法找到您请求的内容。</p>
+    <a
+      href="/"
+      class="inline-block mt-8 px-8 py-3 bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors"
+    >
+      返回首页
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const likeBtn = document.getElementById('like-btn');
+    const likeIcon = document.getElementById('like-icon');
+    const likeCount = document.getElementById('like-count');
+
+    if (likeBtn) {
+      // Track current like state
+      let isLiked = '{{post.hasPraised}}' === 'true';
+
+      likeBtn.addEventListener('click', async () => {
+        // Check login status first (user-menu-btn exists only when logged in)
+        const isLogined = !!document.getElementById('user-menu-btn');
+
+        if (!isLogined) {
+          window.location.href = '/user-center/login';
+          return;
+        }
+
+        // Disable button to prevent multiple clicks
+        likeBtn.setAttribute('disabled', 'true');
+        likeBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+        try {
+          // 🔥 使用新的 RESTful API
+          const action = isLiked ? 'unlike' : 'like';
+          const response = await fetch(`/api/content/{{ post.id }}/like?action=${action}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const data = await response.json();
+
+          if (data.status === 200) {
+            const currentCount = parseInt(likeCount.textContent) || 0;
+
+            // Toggle like state
+            isLiked = !isLiked;
+
+            if (isLiked) {
+              // Liked state
+              likeIcon.textContent = 'favorite'; // Filled heart
+              likeIcon.classList.add('text-red-500');
+              likeBtn.classList.remove('bg-red-50', 'dark:bg-red-900/10');
+              likeBtn.classList.add('bg-red-100', 'dark:bg-red-900/30');
+              likeCount.textContent = currentCount + 1;
+            } else {
+              // Unliked state
+              likeIcon.textContent = 'favorite_border'; // Outline heart
+              likeIcon.classList.remove('text-red-500');
+              likeBtn.classList.remove('bg-red-100', 'dark:bg-red-900/30');
+              likeBtn.classList.add('bg-red-50', 'dark:bg-red-900/10');
+              likeCount.textContent = Math.max(0, currentCount - 1);
+            }
+
+            // Re-enable button
+            likeBtn.removeAttribute('disabled');
+            likeBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+
+            // Show success toast
+            const toast = document.createElement('div');
+            toast.className =
+              'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in';
+            toast.textContent = data.message || (isLiked ? '点赞成功！' : '已取消点赞');
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+          } else {
+            // Re-enable button on failure
+            likeBtn.removeAttribute('disabled');
+            likeBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+
+            // Show error toast/alert
+            const toast = document.createElement('div');
+            toast.className =
+              'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in';
+            toast.textContent = data.message || '操作失败，请稍后重试';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          // Re-enable button on network error
+          likeBtn.removeAttribute('disabled');
+          likeBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+
+          // Show error toast/alert
+          const toast = document.createElement('div');
+          toast.className =
+            'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in';
+          toast.textContent = '网络错误，请稍后重试';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

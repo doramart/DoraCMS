@@ -1,0 +1,76 @@
+{
+  "name": "标准模板主题",
+  "version": "1.0.0",
+  "description": "这是一个标准的模板主题，包含基本的页面结构和组件",
+  "author": "模板作者",
+  "license": "MIT",
+
+  "theme": {
+    "name": "standard-template",
+    "displayName": "标准模板",
+    "version": "1.0.0",
+    "description": "标准模板主题，提供基本的页面布局和组件"
+  },
+
+  "layouts": {
+    "default": "layouts/default.html",
+    "sidebar": "layouts/sidebar.html"
+  },
+
+  "templates": {
+    "index": "templates/index.html",
+    "category": "templates/list.html",
+    "post": "templates/post.html",
+    "search": "templates/search.html",
+    "tag": "templates/tag.html"
+  },
+
+  "components": {
+    "header": "components/header.html",
+    "footer": "components/footer.html",
+    "nav": "components/nav.html"
+  },
+
+  "partials": {
+    "pagination": "partials/pagination.html",
+    "article-list": "partials/article-list.html",
+    "hot-tags": "partials/hot-tags.html"
+  },
+
+  "assets": {
+    "css": ["assets/css/style.css"],
+    "js": ["assets/js/main.js"],
+    "images": ["assets/images/placeholder.jpg"]
+  },
+
+  "settings": {
+    "showSidebar": true,
+    "showSearch": true,
+    "showPagination": true,
+    "postsPerPage": 10,
+    "enableComments": true,
+    "enableSocialShare": true
+  },
+
+  "colors": {
+    "primary": "#007bff",
+    "secondary": "#6c757d",
+    "success": "#28a745",
+    "danger": "#dc3545",
+    "warning": "#ffc107",
+    "info": "#17a2b8",
+    "light": "#f8f9fa",
+    "dark": "#343a40"
+  },
+
+  "fonts": {
+    "primary": "Arial, sans-serif",
+    "secondary": "Georgia, serif"
+  },
+
+  "breakpoints": {
+    "mobile": "768px",
+    "tablet": "992px",
+    "desktop": "1200px"
+  }
+}

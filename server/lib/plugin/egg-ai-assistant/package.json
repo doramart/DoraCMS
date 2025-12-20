@@ -1,0 +1,53 @@
+{
+  "name": "egg-ai-assistant",
+  "version": "1.1.0",
+  "description": "AI Assistant Plugin for DoraCMS - Support multi AI providers with fallback mechanism",
+  "main": "app.js",
+  "eggPlugin": {
+    "name": "aiAssistant",
+    "dependencies": [],
+    "optionalDependencies": [],
+    "env": []
+  },
+  "keywords": [
+    "egg",
+    "eggPlugin",
+    "egg-plugin",
+    "ai",
+    "openai",
+    "deepseek",
+    "ollama",
+    "doubao",
+    "text-to-image",
+    "image-generation",
+    "cms",
+    "repository-pattern",
+    "multi-database"
+  ],
+  "author": "DoraCMS Team",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {
+    "egg": "^2.0.0 || ^3.0.0",
+    "shortid": "^2.2.16"
+  },
+  "peerDependenciesMeta": {
+    "shortid": {
+      "optional": true
+    }
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doramart/egg-ai-assistant"
+  },
+  "bugs": {
+    "url": "https://github.com/doramart/egg-ai-assistant/issues"
+  },
+  "homepage": "https://github.com/doramart/egg-ai-assistant#readme"
+}

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DoraCMS - 现代化内容管理系统</title>
+    <meta
+      name="description"
+      content="基于 Egg.js 构建的现代化内容管理系统，提供优雅的内容展示和管理体验"
+    />
+
+    <!-- Tailwind CSS + daisyUI -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar bg-base-100 shadow-lg sticky top-0 z-50">
+      <div class="navbar-start">
+        <div class="dropdown">
+          <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </div>
+          <ul
+            tabindex="0"
+            class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <li><a href="/">首页</a></li>
+            <li><a href="/articles">文章</a></li>
+            <li><a href="/categories">分类</a></li>
+            <li><a href="/tags">标签</a></li>
+          </ul>
+        </div>
+        <div class="flex items-center">
+          <a class="btn btn-ghost text-xl">DoraCMS</a>
+          <div class="hidden lg:block ml-2">
+            <p class="text-sm opacity-70">现代化内容管理系统</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+          <li><a href="/">首页</a></li>
+          <li><a href="/articles">文章</a></li>
+          <li><a href="/categories">分类</a></li>
+          <li><a href="/tags">标签</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-end">
+        <!-- 可以在这里添加搜索框或用户菜单 -->
+      </div>
+    </div>
+
+    <!-- 主体内容区域 -->
+    <main class="min-h-screen">
+      {% block content %}
+      <div class="container mx-auto px-4 py-8">
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body text-center">
+            <h2 class="card-title justify-center text-3xl mb-4">主体内容区域</h2>
+            <p class="mb-6">这里将显示具体页面的内容</p>
+            <div class="alert">
+              <svg class="stroke-current shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>页面内容将在这里渲染</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock %}
+    </main>
+
+    <!-- 页脚组件 -->
+    <footer class="footer p-10 bg-neutral text-neutral-content">
+      <aside>
+        <h3 class="footer-title">DoraCMS</h3>
+        <p class="max-w-md">
+          基于 Egg.js 构建的现代化内容管理系统，为您提供优雅的内容展示和管理体验。
+        </p>
+        <div class="flex gap-4 mt-4">
+          <a href="#" class="btn btn-square btn-ghost">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"
+              />
+            </svg>
+          </a>
+          <a href="#" class="btn btn-square btn-ghost">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"
+              />
+            </svg>
+          </a>
+        </div>
+      </aside>
+
+      <nav>
+        <h6 class="footer-title">快速链接</h6>
+        <a class="link link-hover" href="/">首页</a>
+        <a class="link link-hover" href="/articles">文章列表</a>
+        <a class="link link-hover" href="/categories">分类目录</a>
+        <a class="link link-hover" href="/tags">标签云</a>
+      </nav>
+
+      <nav>
+        <h6 class="footer-title">联系我们</h6>
+        <p>邮箱: info@doracms.com</p>
+        <p>电话: +86 138 0013 8000</p>
+        <p>地址: 北京市朝阳区</p>
+      </nav>
+    </footer>
+
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content">
+      <aside>
+        <p>© 2024 DoraCMS. All rights reserved. Powered by Egg.js & daisyUI</p>
+      </aside>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      // 平滑滚动
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth',
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

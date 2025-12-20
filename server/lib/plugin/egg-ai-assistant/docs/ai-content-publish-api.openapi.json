@@ -1,0 +1,1379 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AI 辅助内容发布 API",
+    "description": "AI 助手插件的内容发布接口，提供三种发布模式（手动、AI 辅助、AI 完全）和预览功能",
+    "version": "1.0.0",
+    "contact": {
+      "name": "DoraCMS Team",
+      "email": "doramart@qq.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "AI 辅助发布",
+      "description": "AI 增强的内容创建和更新接口"
+    },
+    {
+      "name": "批量操作",
+      "description": "批量内容处理接口"
+    },
+    {
+      "name": "预览功能",
+      "description": "AI 增强效果预览接口"
+    }
+  ],
+  "paths": {
+    "/manage/content/createWithAI": {
+      "post": {
+        "summary": "AI 辅助创建内容",
+        "deprecated": false,
+        "description": "支持三种发布模式：manual（手动）、ai_smart（AI 辅助）、ai_full（AI 完全）。AI 模式下可自动生成标题、摘要、标签、匹配分类、优化 SEO 等。",
+        "operationId": "createWithAI",
+        "tags": ["AI 辅助发布"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWithAIRequest"
+              },
+              "examples": {
+                "手动模式": {
+                  "summary": "传统手动模式，完全由用户填写",
+                  "value": {
+                    "publishMode": "manual",
+                    "title": "人工智能的未来发展趋势",
+                    "discription": "本文探讨了人工智能在未来十年的发展方向",
+                    "comments": "<p>人工智能正在快速发展...</p>",
+                    "simpleComments": "人工智能正在快速发展...",
+                    "tags": ["AI", "技术"],
+                    "categories": "507f1f77bcf86cd799439011",
+                    "sImg": "https://example.com/ai.jpg",
+                    "state": "0",
+                    "type": "1"
+                  }
+                },
+                "AI 智能辅助": {
+                  "summary": "AI 辅助模式，自动生成标题、摘要、标签等",
+                  "value": {
+                    "publishMode": "ai_smart",
+                    "comments": "<p>人工智能正在改变世界。深度学习技术的突破使得计算机视觉、自然语言处理等领域取得了巨大进展。未来，AI 将在医疗、教育、交通等各个领域发挥重要作用...</p>",
+                    "simpleComments": "人工智能正在改变世界。深度学习技术的突破...",
+                    "sImg": "https://example.com/ai.jpg",
+                    "regenerateTitle": true,
+                    "regenerateSummary": true,
+                    "regenerateTags": true,
+                    "autoCategory": true,
+                    "titleStyle": "engaging",
+                    "language": "zh-CN"
+                  }
+                },
+                "AI 完全模式": {
+                  "summary": "AI 完全模式，所有元数据由 AI 生成",
+                  "value": {
+                    "publishMode": "ai_full",
+                    "comments": "<p>人工智能正在改变世界...</p>",
+                    "simpleComments": "人工智能正在改变世界...",
+                    "sImg": "https://example.com/ai.jpg",
+                    "seoOptimize": true,
+                    "qualityCheck": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWithAIResponse"
+                },
+                "examples": {
+                  "成功响应": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "id": "507f1f77bcf86cd799439011",
+                        "aiEnhancements": {
+                          "used": true,
+                          "titleGenerated": true,
+                          "summaryGenerated": true,
+                          "tagsGenerated": true,
+                          "categoryMatched": true,
+                          "seoOptimized": false,
+                          "qualityChecked": false,
+                          "errors": [],
+                          "titleMetadata": {
+                            "provider": "openai",
+                            "model": "gpt-4",
+                            "cost": 0.001,
+                            "responseTime": 1200,
+                            "style": "engaging"
+                          },
+                          "summaryMetadata": {
+                            "provider": "openai",
+                            "model": "gpt-4",
+                            "cost": 0.002,
+                            "responseTime": 1500
+                          },
+                          "tagsMetadata": {
+                            "provider": "openai",
+                            "model": "gpt-4",
+                            "cost": 0.001,
+                            "responseTime": 1000
+                          },
+                          "categoryMetadata": {
+                            "confidence": 0.92,
+                            "matchedCategory": "技术"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/content/updateWithAI": {
+      "post": {
+        "summary": "AI 辅助更新内容",
+        "deprecated": false,
+        "description": "更新现有内容，支持手动模式和 AI 辅助模式。AI 模式下可选择性地重新生成标题、摘要、标签等。",
+        "operationId": "updateWithAI",
+        "tags": ["AI 辅助发布"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWithAIRequest"
+              },
+              "examples": {
+                "手动更新": {
+                  "summary": "传统手动更新",
+                  "value": {
+                    "id": "507f1f77bcf86cd799439011",
+                    "publishMode": "manual",
+                    "title": "更新后的标题",
+                    "comments": "<p>更新后的内容...</p>",
+                    "simpleComments": "更新后的内容...",
+                    "state": "1"
+                  }
+                },
+                "AI 辅助更新": {
+                  "summary": "使用 AI 重新生成标题和摘要",
+                  "value": {
+                    "id": "507f1f77bcf86cd799439011",
+                    "publishMode": "ai_smart",
+                    "comments": "<p>更新后的内容...</p>",
+                    "simpleComments": "更新后的内容...",
+                    "regenerateTitle": true,
+                    "regenerateSummary": true,
+                    "regenerateTags": false,
+                    "autoCategory": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateWithAIResponse"
+                },
+                "examples": {
+                  "成功响应": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "aiEnhancements": {
+                          "used": true,
+                          "titleGenerated": true,
+                          "summaryGenerated": true,
+                          "tagsGenerated": false,
+                          "categoryMatched": false,
+                          "errors": []
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/content/batchPublishWithAI": {
+      "post": {
+        "summary": "批量 AI 增强发布",
+        "deprecated": false,
+        "description": "批量处理多篇内容，使用 AI 自动增强元数据。支持并发控制和批次间延迟，避免 API 限流。",
+        "operationId": "batchPublishWithAI",
+        "tags": ["批量操作", "AI 辅助发布"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchPublishRequest"
+              },
+              "examples": {
+                "批量发布示例": {
+                  "summary": "批量发布 3 篇文章",
+                  "value": {
+                    "contentList": [
+                      {
+                        "comments": "<p>第一篇文章内容...</p>",
+                        "simpleComments": "第一篇文章内容...",
+                        "sImg": "https://example.com/1.jpg"
+                      },
+                      {
+                        "comments": "<p>第二篇文章内容...</p>",
+                        "simpleComments": "第二篇文章内容...",
+                        "sImg": "https://example.com/2.jpg"
+                      },
+                      {
+                        "comments": "<p>第三篇文章内容...</p>",
+                        "simpleComments": "第三篇文章内容...",
+                        "sImg": "https://example.com/3.jpg"
+                      }
+                    ],
+                    "publishMode": "ai_smart",
+                    "regenerateTitle": true,
+                    "regenerateSummary": true,
+                    "regenerateTags": true,
+                    "autoCategory": true,
+                    "batchSize": 3
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "批量处理完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchPublishResponse"
+                },
+                "examples": {
+                  "成功响应": {
+                    "value": {
+                      "success": true,
+                      "data": [
+                        {
+                          "success": true,
+                          "content": {
+                            "id": "507f1f77bcf86cd799439011",
+                            "title": "AI 生成的标题 1"
+                          },
+                          "aiEnhancements": {
+                            "used": true,
+                            "titleGenerated": true,
+                            "errors": []
+                          }
+                        },
+                        {
+                          "success": true,
+                          "content": {
+                            "id": "507f1f77bcf86cd799439012",
+                            "title": "AI 生成的标题 2"
+                          },
+                          "aiEnhancements": {
+                            "used": true,
+                            "titleGenerated": true,
+                            "errors": []
+                          }
+                        },
+                        {
+                          "success": false,
+                          "content": null,
+                          "aiEnhancements": {
+                            "used": true,
+                            "errors": ["AI 服务暂时不可用"]
+                          },
+                          "message": "AI 辅助发布失败，已回退到手动模式"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/content/previewAIEnhancements": {
+      "post": {
+        "summary": "预览 AI 增强效果",
+        "deprecated": false,
+        "description": "预览 AI 生成的标题、摘要、标签等内容，不保存到数据库。用户可以先查看效果，满意后再正式发布。",
+        "operationId": "previewAIEnhancements",
+        "tags": ["预览功能", "AI 辅助发布"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewRequest"
+              },
+              "examples": {
+                "预览示例": {
+                  "summary": "预览 AI 生成的元数据",
+                  "value": {
+                    "comments": "<p>人工智能正在改变世界。深度学习技术的突破使得计算机视觉、自然语言处理等领域取得了巨大进展...</p>",
+                    "title": "原始标题（可选）",
+                    "discription": "原始摘要（可选）",
+                    "tags": ["原始标签1"],
+                    "regenerateTitle": true,
+                    "regenerateSummary": true,
+                    "regenerateTags": true,
+                    "autoCategory": true,
+                    "language": "zh-CN"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "预览成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewResponse"
+                },
+                "examples": {
+                  "成功响应": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "originalContent": {
+                          "title": "原始标题",
+                          "discription": "原始摘要",
+                          "tags": ["原始标签1"],
+                          "categories": null
+                        },
+                        "enhancedContent": {
+                          "title": "揭秘！人工智能如何改变世界",
+                          "discription": "本文深入探讨了深度学习技术在计算机视觉、自然语言处理等领域的突破性进展，以及 AI 在未来各行各业的应用前景。",
+                          "tags": ["人工智能", "深度学习", "计算机视觉", "NLP", "技术趋势"],
+                          "tagIds": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"],
+                          "categories": "507f1f77bcf86cd799439013"
+                        },
+                        "aiEnhancements": {
+                          "used": true,
+                          "titleGenerated": true,
+                          "summaryGenerated": true,
+                          "tagsGenerated": true,
+                          "categoryMatched": true,
+                          "errors": [],
+                          "titleMetadata": {
+                            "provider": "openai",
+                            "model": "gpt-4",
+                            "cost": 0.001,
+                            "responseTime": 1200,
+                            "style": "engaging"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateWithAIRequest": {
+        "type": "object",
+        "required": ["comments", "sImg"],
+        "description": "AI 辅助创建内容请求",
+        "properties": {
+          "publishMode": {
+            "type": "string",
+            "enum": ["manual", "ai_smart", "ai_full"],
+            "default": "manual",
+            "description": "发布模式：manual（手动）、ai_smart（AI 辅助）、ai_full（AI 完全）",
+            "example": "ai_smart"
+          },
+          "comments": {
+            "type": "string",
+            "description": "文章内容（HTML 格式）",
+            "minLength": 5,
+            "maxLength": 100000,
+            "example": "<p>人工智能正在改变世界...</p>"
+          },
+          "simpleComments": {
+            "type": "string",
+            "description": "简化内容（纯文本）",
+            "example": "人工智能正在改变世界..."
+          },
+          "title": {
+            "type": "string",
+            "description": "标题（manual 模式必填）",
+            "maxLength": 200,
+            "example": "人工智能的未来"
+          },
+          "stitle": {
+            "type": "string",
+            "description": "副标题",
+            "maxLength": 200,
+            "example": "探索 AI 技术的发展趋势"
+          },
+          "discription": {
+            "type": "string",
+            "description": "摘要（manual 模式必填）",
+            "maxLength": 500,
+            "example": "本文探讨了人工智能在未来的发展方向..."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "标签 ID 数组",
+            "example": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
+          },
+          "newTags": {
+            "type": "string",
+            "description": "新标签（逗号分隔），会自动创建不存在的标签",
+            "example": "AI,机器学习,深度学习"
+          },
+          "categories": {
+            "type": "string",
+            "description": "分类 ID",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "sImg": {
+            "type": "string",
+            "description": "缩略图 URL",
+            "example": "https://example.com/ai.jpg"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["1", "2"],
+            "default": "1",
+            "description": "内容类型：1=普通文章，2=其他",
+            "example": "1"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["0", "1", "2"],
+            "default": "0",
+            "description": "状态：0=草稿，1=审核中，2=已发布",
+            "example": "0"
+          },
+          "isTop": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否置顶",
+            "example": false
+          },
+          "keywords": {
+            "type": "string",
+            "description": "关键词（逗号分隔）",
+            "example": "AI,人工智能,深度学习"
+          },
+          "regenerateTitle": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否重新生成标题（AI 模式）",
+            "example": true
+          },
+          "regenerateSummary": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否重新生成摘要（AI 模式）",
+            "example": true
+          },
+          "regenerateTags": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否重新生成标签（AI 模式）",
+            "example": true
+          },
+          "autoCategory": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否自动匹配分类（AI 模式）",
+            "example": true
+          },
+          "seoOptimize": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否进行 SEO 优化（耗时较长）",
+            "example": false
+          },
+          "qualityCheck": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否进行质量检查（耗时较长）",
+            "example": false
+          },
+          "language": {
+            "type": "string",
+            "enum": ["zh-CN", "en-US", "ja-JP"],
+            "default": "zh-CN",
+            "description": "语言",
+            "example": "zh-CN"
+          },
+          "titleStyle": {
+            "type": "string",
+            "enum": ["engaging", "professional", "simple"],
+            "default": "engaging",
+            "description": "标题风格：engaging（吸引人）、professional（专业）、simple（简洁）",
+            "example": "engaging"
+          },
+          "summaryMaxLength": {
+            "type": "integer",
+            "minimum": 50,
+            "maximum": 500,
+            "default": 200,
+            "description": "摘要最大长度",
+            "example": 200
+          },
+          "tagsMaxCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "标签最大数量",
+            "example": 5
+          }
+        }
+      },
+      "UpdateWithAIRequest": {
+        "type": "object",
+        "required": ["id", "comments"],
+        "description": "AI 辅助更新内容请求",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "内容 ID",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "publishMode": {
+            "type": "string",
+            "enum": ["manual", "ai_smart", "ai_full"],
+            "default": "manual",
+            "description": "发布模式",
+            "example": "ai_smart"
+          },
+          "comments": {
+            "type": "string",
+            "description": "文章内容（HTML 格式）",
+            "minLength": 5,
+            "maxLength": 100000,
+            "example": "<p>更新后的内容...</p>"
+          },
+          "title": {
+            "type": "string",
+            "description": "标题",
+            "maxLength": 200,
+            "example": "更新后的标题"
+          },
+          "discription": {
+            "type": "string",
+            "description": "摘要",
+            "maxLength": 500,
+            "example": "更新后的摘要..."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "标签 ID 数组",
+            "example": ["507f1f77bcf86cd799439011"]
+          },
+          "newTags": {
+            "type": "string",
+            "description": "新标签（逗号分隔）",
+            "example": "新标签1,新标签2"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["0", "1", "2"],
+            "description": "状态",
+            "example": "1"
+          },
+          "regenerateTitle": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否重新生成标题",
+            "example": true
+          },
+          "regenerateSummary": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否重新生成摘要",
+            "example": true
+          },
+          "regenerateTags": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否重新生成标签",
+            "example": false
+          },
+          "autoCategory": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否自动匹配分类",
+            "example": false
+          },
+          "seoOptimize": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否进行 SEO 优化",
+            "example": false
+          },
+          "qualityCheck": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否进行质量检查",
+            "example": false
+          },
+          "language": {
+            "type": "string",
+            "enum": ["zh-CN", "en-US", "ja-JP"],
+            "default": "zh-CN",
+            "description": "语言",
+            "example": "zh-CN"
+          }
+        }
+      },
+      "BatchPublishRequest": {
+        "type": "object",
+        "required": ["contentList"],
+        "description": "批量发布请求",
+        "properties": {
+          "contentList": {
+            "type": "array",
+            "minItems": 1,
+            "description": "内容列表",
+            "items": {
+              "type": "object",
+              "required": ["comments", "sImg"],
+              "properties": {
+                "comments": {
+                  "type": "string",
+                  "description": "文章内容",
+                  "example": "<p>文章内容...</p>"
+                },
+                "simpleComments": {
+                  "type": "string",
+                  "description": "简化内容",
+                  "example": "文章内容..."
+                },
+                "sImg": {
+                  "type": "string",
+                  "description": "缩略图",
+                  "example": "https://example.com/1.jpg"
+                }
+              }
+            }
+          },
+          "publishMode": {
+            "type": "string",
+            "enum": ["manual", "ai_smart", "ai_full"],
+            "default": "ai_smart",
+            "description": "发布模式",
+            "example": "ai_smart"
+          },
+          "batchSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 3,
+            "description": "批处理大小（并发数）",
+            "example": 3
+          },
+          "regenerateTitle": {
+            "type": "boolean",
+            "default": true,
+            "description": "批量生成标题",
+            "example": true
+          },
+          "regenerateSummary": {
+            "type": "boolean",
+            "default": true,
+            "description": "批量生成摘要",
+            "example": true
+          },
+          "regenerateTags": {
+            "type": "boolean",
+            "default": true,
+            "description": "批量提取标签",
+            "example": true
+          },
+          "autoCategory": {
+            "type": "boolean",
+            "default": true,
+            "description": "批量匹配分类",
+            "example": true
+          },
+          "seoOptimize": {
+            "type": "boolean",
+            "default": false,
+            "description": "批量 SEO 优化",
+            "example": false
+          },
+          "qualityCheck": {
+            "type": "boolean",
+            "default": false,
+            "description": "批量质量检查",
+            "example": false
+          }
+        }
+      },
+      "PreviewRequest": {
+        "type": "object",
+        "required": ["comments"],
+        "description": "预览请求",
+        "properties": {
+          "comments": {
+            "type": "string",
+            "description": "文章内容",
+            "minLength": 5,
+            "example": "<p>文章内容...</p>"
+          },
+          "title": {
+            "type": "string",
+            "description": "原始标题（可选）",
+            "example": "原始标题"
+          },
+          "discription": {
+            "type": "string",
+            "description": "原始摘要（可选）",
+            "example": "原始摘要"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "原始标签（可选）",
+            "example": ["原始标签1"]
+          },
+          "categories": {
+            "type": "string",
+            "description": "原始分类（可选）",
+            "example": null
+          },
+          "regenerateTitle": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否生成标题",
+            "example": true
+          },
+          "regenerateSummary": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否生成摘要",
+            "example": true
+          },
+          "regenerateTags": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否提取标签",
+            "example": true
+          },
+          "autoCategory": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否匹配分类",
+            "example": true
+          },
+          "language": {
+            "type": "string",
+            "enum": ["zh-CN", "en-US", "ja-JP"],
+            "default": "zh-CN",
+            "description": "语言",
+            "example": "zh-CN"
+          }
+        }
+      },
+      "CreateWithAIResponse": {
+        "type": "object",
+        "description": "创建成功响应",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "新创建的内容 ID",
+                "example": "507f1f77bcf86cd799439011"
+              },
+              "aiEnhancements": {
+                "$ref": "#/components/schemas/AIEnhancements"
+              }
+            }
+          }
+        }
+      },
+      "UpdateWithAIResponse": {
+        "type": "object",
+        "description": "更新成功响应",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "aiEnhancements": {
+                "$ref": "#/components/schemas/AIEnhancements"
+              }
+            }
+          }
+        }
+      },
+      "BatchPublishResponse": {
+        "type": "object",
+        "description": "批量发布响应",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "description": "批量处理结果列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "originalId": {
+                  "type": "string",
+                  "description": "原始 ID（如果有）",
+                  "example": null
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "该项是否处理成功",
+                  "example": true
+                },
+                "content": {
+                  "type": "object",
+                  "description": "处理后的内容",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "507f1f77bcf86cd799439011"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "AI 生成的标题"
+                    }
+                  }
+                },
+                "aiEnhancements": {
+                  "$ref": "#/components/schemas/AIEnhancements"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "处理消息（失败时）",
+                  "example": "批量处理失败: 内容为空"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PreviewResponse": {
+        "type": "object",
+        "description": "预览响应",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "originalContent": {
+                "type": "object",
+                "description": "原始内容",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "原始标题"
+                  },
+                  "discription": {
+                    "type": "string",
+                    "example": "原始摘要"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["原始标签1"]
+                  },
+                  "categories": {
+                    "type": "string",
+                    "example": null
+                  }
+                }
+              },
+              "enhancedContent": {
+                "type": "object",
+                "description": "AI 增强后的内容",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "AI 生成的标题",
+                    "example": "揭秘！人工智能如何改变世界"
+                  },
+                  "discription": {
+                    "type": "string",
+                    "description": "AI 生成的摘要",
+                    "example": "本文深入探讨了深度学习技术..."
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "AI 提取的标签名称",
+                    "example": ["人工智能", "深度学习", "技术"]
+                  },
+                  "tagIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "标签 ID（已创建或已存在）",
+                    "example": ["507f1f77bcf86cd799439011"]
+                  },
+                  "categories": {
+                    "type": "string",
+                    "description": "AI 匹配的分类 ID",
+                    "example": "507f1f77bcf86cd799439013"
+                  }
+                }
+              },
+              "aiEnhancements": {
+                "$ref": "#/components/schemas/AIEnhancements"
+              }
+            }
+          }
+        }
+      },
+      "AIEnhancements": {
+        "type": "object",
+        "description": "AI 增强信息",
+        "properties": {
+          "used": {
+            "type": "boolean",
+            "description": "是否使用了 AI",
+            "example": true
+          },
+          "titleGenerated": {
+            "type": "boolean",
+            "description": "标题是否由 AI 生成",
+            "example": true
+          },
+          "summaryGenerated": {
+            "type": "boolean",
+            "description": "摘要是否由 AI 生成",
+            "example": true
+          },
+          "tagsGenerated": {
+            "type": "boolean",
+            "description": "标签是否由 AI 生成",
+            "example": true
+          },
+          "categoryMatched": {
+            "type": "boolean",
+            "description": "分类是否由 AI 匹配",
+            "example": true
+          },
+          "seoOptimized": {
+            "type": "boolean",
+            "description": "是否进行了 SEO 优化",
+            "example": false
+          },
+          "qualityChecked": {
+            "type": "boolean",
+            "description": "是否进行了质量检查",
+            "example": false
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "错误信息列表",
+            "example": []
+          },
+          "titleMetadata": {
+            "type": "object",
+            "description": "标题生成元数据",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "description": "AI 提供商",
+                "example": "openai"
+              },
+              "model": {
+                "type": "string",
+                "description": "使用的模型",
+                "example": "gpt-4"
+              },
+              "cost": {
+                "type": "number",
+                "description": "成本（美元）",
+                "example": 0.001
+              },
+              "responseTime": {
+                "type": "integer",
+                "description": "响应时间（毫秒）",
+                "example": 1200
+              },
+              "style": {
+                "type": "string",
+                "description": "标题风格",
+                "example": "engaging"
+              },
+              "language": {
+                "type": "string",
+                "description": "语言",
+                "example": "zh-CN"
+              }
+            }
+          },
+          "summaryMetadata": {
+            "type": "object",
+            "description": "摘要生成元数据",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "example": "openai"
+              },
+              "model": {
+                "type": "string",
+                "example": "gpt-4"
+              },
+              "cost": {
+                "type": "number",
+                "example": 0.002
+              },
+              "responseTime": {
+                "type": "integer",
+                "example": 1500
+              }
+            }
+          },
+          "tagsMetadata": {
+            "type": "object",
+            "description": "标签提取元数据",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "example": "openai"
+              },
+              "model": {
+                "type": "string",
+                "example": "gpt-4"
+              },
+              "cost": {
+                "type": "number",
+                "example": 0.001
+              },
+              "responseTime": {
+                "type": "integer",
+                "example": 1000
+              }
+            }
+          },
+          "categoryMetadata": {
+            "type": "object",
+            "description": "分类匹配元数据",
+            "properties": {
+              "confidence": {
+                "type": "number",
+                "description": "匹配置信度（0-1）",
+                "example": 0.92
+              },
+              "matchedCategory": {
+                "type": "string",
+                "description": "匹配的分类名称",
+                "example": "技术"
+              }
+            }
+          },
+          "seoMetadata": {
+            "type": "object",
+            "description": "SEO 优化元数据"
+          },
+          "qualityMetadata": {
+            "type": "object",
+            "description": "质量检查元数据",
+            "properties": {
+              "score": {
+                "type": "number",
+                "description": "质量评分（0-100）",
+                "example": 85
+              },
+              "suggestions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "改进建议",
+                "example": ["建议增加更多细节", "可以添加相关数据支持"]
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "错误响应",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "错误消息",
+            "example": "操作失败"
+          },
+          "code": {
+            "type": "string",
+            "description": "错误代码",
+            "example": "VALIDATION_ERROR"
+          },
+          "details": {
+            "type": "object",
+            "description": "错误详情"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequestError": {
+        "description": "请求参数错误",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "内容为空": {
+                "value": {
+                  "success": false,
+                  "message": "内容不能为空",
+                  "code": "VALIDATION_ERROR"
+                }
+              },
+              "内容过长": {
+                "value": {
+                  "success": false,
+                  "message": "内容超过最大长度限制（100000 字符）",
+                  "code": "CONTENT_TOO_LONG"
+                }
+              },
+              "批量列表为空": {
+                "value": {
+                  "success": false,
+                  "message": "内容列表不能为空",
+                  "code": "VALIDATION_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "未授权访问",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "请先登录"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "UNAUTHORIZED"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "资源不存在",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "内容不存在"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "NOT_FOUND"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "服务器内部错误",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "AI 服务暂时不可用，已回退到手动模式"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "AI_SERVICE_ERROR"
+                }
+              }
+            },
+            "examples": {
+              "AI 服务错误": {
+                "value": {
+                  "success": false,
+                  "message": "AI 服务暂时不可用，已回退到手动模式",
+                  "code": "AI_SERVICE_ERROR"
+                }
+              },
+              "服务器错误": {
+                "value": {
+                  "success": false,
+                  "message": "服务器内部错误",
+                  "code": "INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "使用 JWT Token 进行身份验证。格式：Authorization: Bearer <token>"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:7001",
+      "description": "本地开发环境"
+    },
+    {
+      "url": "https://api.yourdomain.com",
+      "description": "生产环境"
+    }
+  ]
+}

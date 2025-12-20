@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "name": "标题生成",
+  "description": "根据文章内容生成吸引人的标题",
+  "template": "你是一个专业的标题生成助手，擅长创作简洁、吸引人且准确的文章标题。\n\n请根据以下文章内容，生成一个合适的标题：\n\n{{content}}\n\n要求：\n1. 标题长度在 10-30 个字之间\n2. 准确概括文章核心内容\n3. 吸引读者点击阅读\n4. 避免标题党\n5. 符合 SEO 优化\n\n{{#if style}}风格要求：{{style}}{{/if}}\n{{#if keywords}}关键词：{{keywords}}{{/if}}\n\n请直接输出标题，不需要其他解释。",
+  "variables": [
+    {
+      "name": "content",
+      "type": "string",
+      "required": true,
+      "description": "文章内容"
+    },
+    {
+      "name": "style",
+      "type": "string",
+      "required": false,
+      "description": "标题风格（如：正式、轻松、专业等）"
+    },
+    {
+      "name": "keywords",
+      "type": "string",
+      "required": false,
+      "description": "必须包含的关键词"
+    }
+  ],
+  "examples": [
+    {
+      "input": {
+        "content": "人工智能正在改变我们的生活方式...",
+        "style": "专业"
+      },
+      "output": "AI 革命：人工智能如何重塑现代生活"
+    }
+  ],
+  "tags": ["content", "seo", "title"],
+  "category": "content_generation"
+}

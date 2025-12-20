@@ -1,0 +1,376 @@
+{# 标签展示通用 Macro 部件 用于在各个页面中统一显示标签，支持多种布局样式 参数说明: - tags:
+标签数组数据 - layout: 布局类型 ('cloud', 'list', 'grid', 'compact', 'ranking', 'card') - showCount:
+是否显示引用次数 (true/false) - showAlias: 是否显示别名 (true/false) - showRank: 是否显示排名
+(true/false) - showDescription: 是否显示描述 (true/false) - maxCount: 最大显示数量 (数字) -
+customClass: 自定义CSS类名 - linkTarget: 链接打开方式 ('_self', '_blank') - colorScheme: 颜色方案
+('default', 'warm', 'cool', 'purple', 'green') #} {% macro tagDisplay(tags, layout='cloud',
+showCount=true, showAlias=false, showRank=false, showDescription=false, maxCount=20, customClass='',
+linkTarget='_self', colorScheme='default') %} {% if tags and tags.length > 0 %} {% if layout ==
+'cloud' %} {# 标签云布局 - 适用于热门标签展示 #}
+<div class="flex flex-wrap gap-2 {{ customClass }}">
+  {% for tag in tags %} {% if loop.index0 < maxCount %} {% set intensity = (tag.refCount or 1) /
+  (tags[0].refCount or 1) %} {% if intensity < 0.3 %} {% set sizeClass = 'text-sm' %} {% elif
+  intensity < 0.7 %} {% set sizeClass = 'text-base' %} {% else %} {% set sizeClass = 'text-lg' %} {%
+  endif %} {% if colorScheme == 'cool' %} {% set colorClass = 'from-blue-400 to-blue-600' %} {% elif
+  colorScheme == 'purple' %} {% set colorClass = 'from-purple-400 to-purple-600' %} {% elif
+  colorScheme == 'green' %} {% set colorClass = 'from-green-400 to-green-600' %} {% elif colorScheme
+  == 'warm' %} {% set colorClass = 'from-orange-400 to-red-500' %} {% else %} {% set colorClass =
+  'from-blue-500 to-indigo-600' %} {% endif %}
+  <a
+    href="{{ tag.url }}"
+    target="{{ linkTarget }}"
+    class="group relative inline-flex items-center px-3 py-1.5 bg-white hover:bg-gradient-to-r hover:{{ colorClass }} border border-gray-200 hover:border-transparent rounded-full transition-all duration-200 hover:shadow-md hover:scale-105 hover:text-white {{ sizeClass }}"
+  >
+    <span class="font-medium transition-colors">{{ tag.name }}</span>
+    {% if showCount and tag.refCount %}
+    <span
+      class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r {{ colorClass }} text-white group-hover:bg-white group-hover:text-gray-700"
+    >
+      {{ tag.refCount }}
+    </span>
+    {% endif %} {% if showAlias and tag.alias %}
+    <span
+      class="absolute -top-2 -right-2 bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+    >
+      {{ tag.alias }}
+    </span>
+    {% endif %}
+  </a>
+  {% endif %} {% endfor %}
+</div>
+
+{% elif layout == 'list' %} {# 列表布局 - 适用于排行榜展示 #}
+<div class="space-y-2 {{ customClass }}">
+  {% for tag in tags %} {% if loop.index0 < maxCount %}
+  <div
+    class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-200 group"
+  >
+    <div class="flex items-center flex-1">
+      {% if showRank %}
+      <div
+        class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full {% if loop.index <= 3 %}bg-gradient-to-r {% if loop.index == 1 %}from-yellow-400 to-yellow-500{% elif loop.index == 2 %}from-gray-400 to-gray-500{% else %}from-orange-400 to-orange-500{% endif %} text-white{% else %}bg-gray-100 text-gray-600{% endif %} font-bold text-sm mr-3"
+      >
+        {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else
+        %}{{ loop.index }}{% endif %}
+      </div>
+      {% endif %}
+      <div class="flex-1">
+        <a
+          href="{{ tag.url }}"
+          target="{{ linkTarget }}"
+          class="text-base font-semibold text-gray-900 hover:text-blue-600 transition-colors group-hover:underline"
+        >
+          {{ tag.name }}
+        </a>
+        {% if showDescription and tag.comments %}
+        <p class="text-sm text-gray-500 mt-1">{{ tag.comments | cutwords(50) }}</p>
+        {% endif %} {% if showAlias and tag.alias %}
+        <span class="inline-block mt-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded"
+          >{{ tag.alias }}</span
+        >
+        {% endif %}
+      </div>
+    </div>
+    <div class="flex items-center space-x-3">
+      {% if showCount and tag.refCount %}
+      <div class="text-right">
+        <div class="text-sm font-medium text-gray-900">{{ tag.refCount }}</div>
+        <div class="text-xs text-gray-500">次引用</div>
+      </div>
+      {% endif %}
+      <svg
+        class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"
+        ></path>
+      </svg>
+    </div>
+  </div>
+  {% endif %} {% endfor %}
+</div>
+
+{% elif layout == 'grid' %} {# 网格布局 - 适用于卡片展示 #}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 {{ customClass }}">
+  {% for tag in tags %} {% if loop.index0 < maxCount %}
+  <div
+    class="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 overflow-hidden group"
+  >
+    <div class="p-4">
+      <div class="flex items-center justify-between mb-2">
+        <a
+          href="{{ tag.url }}"
+          target="{{ linkTarget }}"
+          class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors group-hover:underline truncate"
+        >
+          {{ tag.name }}
+        </a>
+        {% if showRank %}
+        <span
+          class="flex-shrink-0 inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full"
+        >
+          #{{ loop.index }}
+        </span>
+        {% endif %}
+      </div>
+      {% if showDescription and tag.comments %}
+      <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ tag.comments | cutwords(80) }}</p>
+      {% endif %}
+      <div class="flex items-center justify-between text-sm">
+        {% if showCount and tag.refCount %}
+        <div class="flex items-center text-gray-500">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+            ></path>
+          </svg>
+          <span>{{ tag.refCount }} 次</span>
+        </div>
+        {% endif %} {% if showAlias and tag.alias %}
+        <span class="text-gray-400">{{ tag.alias }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endfor %}
+</div>
+
+{% elif layout == 'compact' %} {# 紧凑布局 - 适用于侧边栏 #}
+<div class="space-y-1 {{ customClass }}">
+  {% for tag in tags %} {% if loop.index0 < maxCount %}
+  <div
+    class="flex items-center justify-between py-2 px-3 bg-white rounded border border-gray-200 hover:bg-gray-50 transition-colors"
+  >
+    {% if showRank %}
+    <span
+      class="inline-flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full flex-shrink-0 mr-2"
+    >
+      {{ loop.index }}
+    </span>
+    {% endif %}
+    <div class="flex-1 min-w-0">
+      <a
+        href="{{ tag.url }}"
+        target="{{ linkTarget }}"
+        class="text-sm font-medium text-gray-900 hover:text-blue-600 hover:underline block truncate"
+      >
+        {{ tag.name }}
+      </a>
+    </div>
+    {% if showCount and tag.refCount %}
+    <span class="text-xs text-gray-500 ml-2">{{ tag.refCount }}</span>
+    {% endif %}
+  </div>
+  {% endif %} {% endfor %}
+</div>
+
+{% elif layout == 'ranking' %} {# 排行榜表格布局 #}
+<div class="overflow-hidden rounded-xl border border-gray-200 {{ customClass }}">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            排名
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            标签
+          </th>
+          {% if showCount %}
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            热度
+          </th>
+          {% endif %} {% if showAlias %}
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            别名
+          </th>
+          {% endif %}
+          <th
+            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            操作
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {% for tag in tags %} {% if loop.index0 < maxCount %}
+        <tr
+          class="hover:bg-gray-50 transition-colors duration-150 {% if loop.index0 < 3 %}bg-gradient-to-r from-yellow-50 to-orange-50{% endif %}"
+        >
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div
+                class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full {% if loop.index0 == 0 %}bg-gradient-to-r from-yellow-400 to-yellow-500 text-white{% elif loop.index0 == 1 %}bg-gradient-to-r from-gray-400 to-gray-500 text-white{% elif loop.index0 == 2 %}bg-gradient-to-r from-orange-400 to-orange-500 text-white{% else %}bg-gray-100 text-gray-600{% endif %} font-bold text-sm"
+              >
+                {% if loop.index0 == 0 %}🥇{% elif loop.index0 == 1 %}🥈{% elif loop.index0 == 2
+                %}🥉{% else %}{{ loop.index }}{% endif %}
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <a
+              href="{{ tag.url }}"
+              target="{{ linkTarget }}"
+              class="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors hover:underline"
+            >
+              {{ tag.name }}
+            </a>
+            {% if showDescription and tag.comments %}
+            <div class="text-xs text-gray-500 mt-1">{{ tag.comments | cutwords(40) }}</div>
+            {% endif %}
+          </td>
+          {% if showCount %}
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-1 bg-gray-200 rounded-full h-2 mr-3 max-w-20">
+                <div
+                  class="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full"
+                  style="width: auto"
+                ></div>
+              </div>
+              <span class="text-sm font-medium text-gray-900">{{ tag.refCount or 0 }}</span>
+            </div>
+          </td>
+          {% endif %} {% if showAlias %}
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ tag.alias or '-' }}</td>
+          {% endif %}
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <a
+              href="{{ tag.url }}"
+              target="{{ linkTarget }}"
+              class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-5 font-medium rounded-md text-blue-600 hover:text-blue-500 hover:bg-blue-50 transition-colors duration-150"
+            >
+              查看
+              <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </a>
+          </td>
+        </tr>
+        {% endif %} {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% elif layout == 'card' %} {# 卡片布局 - 适用于详细展示 #}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 {{ customClass }}">
+  {% for tag in tags %} {% if loop.index0 < maxCount %}
+  <div
+    class="bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200 overflow-hidden group"
+  >
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-900 truncate">{{ tag.name }}</h3>
+        {% if showRank %}
+        <div
+          class="flex-shrink-0 w-10 h-10 bg-gradient-to-r {% if loop.index == 1 %}from-yellow-400 to-yellow-500{% elif loop.index == 2 %}from-gray-400 to-gray-500{% elif loop.index == 3 %}from-orange-400 to-orange-500{% else %}from-blue-400 to-blue-500{% endif %} rounded-lg flex items-center justify-center"
+        >
+          <span class="text-white font-bold text-sm">
+            {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{%
+            else %}{{ loop.index }}{% endif %}
+          </span>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if showDescription and tag.comments %}
+      <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ tag.comments | cutwords(100) }}</p>
+      {% endif %} {% if showAlias and tag.alias %}
+      <div class="mb-4">
+        <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full">
+          别名: {{ tag.alias }}
+        </span>
+      </div>
+      {% endif %}
+
+      <div class="flex items-center justify-between">
+        {% if showCount and tag.refCount %}
+        <div class="flex items-center text-gray-500">
+          <svg
+            class="w-5 h-5 mr-2 text-orange-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+            ></path>
+          </svg>
+          <span class="text-lg font-semibold text-gray-900">{{ tag.refCount }}</span>
+          <span class="text-sm ml-1">次引用</span>
+        </div>
+        {% endif %}
+        <a
+          href="{{ tag.url }}"
+          target="{{ linkTarget }}"
+          class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150"
+        >
+          查看详情
+          <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            ></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endfor %}
+</div>
+{% endif %} {% else %} {# 无数据时的显示 #}
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center {{ customClass }}">
+  <svg
+    class="w-16 h-16 text-gray-400 mx-auto mb-4"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+    ></path>
+  </svg>
+  <p class="text-gray-500 text-lg font-medium">暂无标签数据</p>
+  <p class="text-gray-400 text-sm mt-2">请稍后再试或联系管理员</p>
+</div>
+{% endif %} {% endmacro %} {# 使用示例: 1. 标签云布局 (适用于热门标签): {% from
+"partials/tag-display.html" import tagDisplay %} {{ tagDisplay(hottags, layout='cloud',
+showCount=true, colorScheme='warm') }} 2. 排行榜布局 (适用于标签排行): {{ tagDisplay(popularTags,
+layout='list', showRank=true, showCount=true, maxCount=10) }} 3. 网格布局 (适用于标签展示): {{
+tagDisplay(allTags, layout='grid', showDescription=true, maxCount=12) }} 4. 紧凑布局 (适用于侧边栏):
+{{ tagDisplay(sidebarTags, layout='compact', showRank=true, maxCount=8) }} 5. 表格排行榜: {{
+tagDisplay(hottags, layout='ranking', showCount=true, showAlias=true, maxCount=15) }} 6. 卡片布局:
+{{ tagDisplay(featuredTags, layout='card', showRank=true, showDescription=true, showCount=true,
+maxCount=6) }} 7. 自定义样式: {{ tagDisplay(tags, layout='cloud', customClass='my-custom-tags',
+linkTarget='_blank', colorScheme='purple') }} #}

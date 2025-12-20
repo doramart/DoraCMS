@@ -1,0 +1,41 @@
+<!-- 导航组件 (components/nav.html) -->
+<nav class="main-nav">
+  <div class="nav-container">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="/" class="nav-link">首页</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a href="/category" class="nav-link">分类</a>
+        <ul class="dropdown-menu">
+          <li><a href="/category/tech" class="dropdown-link">技术</a></li>
+          <li><a href="/category/life" class="dropdown-link">生活</a></li>
+          <li><a href="/category/news" class="dropdown-link">新闻</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a href="/archive" class="nav-link">归档</a>
+      </li>
+      <li class="nav-item">
+        <a href="/about" class="nav-link">关于</a>
+      </li>
+      <li class="nav-item">
+        <a href="/contact" class="nav-link">联系</a>
+      </li>
+    </ul>
+
+    <div class="nav-actions">
+      <div class="search-toggle">
+        <button type="button" class="search-toggle-btn">搜索</button>
+      </div>
+
+      <div class="mobile-menu-toggle">
+        <button type="button" class="mobile-menu-btn">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

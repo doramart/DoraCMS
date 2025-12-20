@@ -1,0 +1,39 @@
+# dependencies
+node_modules
+
+# build output
+dist
+build
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment
+.env
+.env.*
+
+# editor directories and files
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# package files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# cache
+.cache
+coverage
+
+# server/app/public
+server/lib/plugin/egg-dora-templateconfig/app/db/

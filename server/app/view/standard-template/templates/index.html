@@ -1,0 +1,141 @@
+{% extends "../layouts/default.html" %} {% import "../partials/article-list.html" as articleMacro %} {% import
+"../partials/ads-macro.html" as adsMacro %} {% import "../partials/hot-tags.html" as hotTagsMacro %} {% block content %}
+<div class="relative bg-white dark:bg-dark-bg transition-colors duration-300">
+  <!-- Hero Section -->
+  <div class="relative pt-12 pb-16 md:pt-20 md:pb-24 overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+      <h1 class="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight animate-fade-in">
+        探索
+        <span class="text-primary-500">无限</span>
+        可能
+      </h1>
+      <p
+        class="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-400 animate-fade-in"
+        style="animation-delay: 0.1s"
+      >
+        分享有价值的内容，发现精彩的世界。加入我们，一起成长。
+      </p>
+      <div class="mt-10 flex justify-center gap-4 animate-fade-in" style="animation-delay: 0.2s">
+        <a
+          href="#latest-posts"
+          class="px-8 py-3 rounded-full bg-primary-500 text-white font-bold hover:bg-primary-600 transition-all shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 hover:scale-105"
+        >
+          开始阅读
+        </a>
+        <a
+          href="/user-center/register"
+          class="px-8 py-3 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:scale-105"
+        >
+          加入社区
+        </a>
+      </div>
+    </div>
+
+    <!-- Background Decoration -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl opacity-50 pointer-events-none z-0">
+      <div
+        class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-screen animate-blob"
+      ></div>
+      <div
+        class="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-screen animate-blob animation-delay-2000"
+      ></div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+    <div class="flex flex-col lg:flex-row gap-12">
+      <!-- Main Content -->
+      <div class="w-full lg:w-2/3 xl:w-3/4">
+        <!-- Section Header -->
+        <div class="flex items-center justify-between mb-8" id="latest-posts">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+            <span class="w-2 h-8 bg-primary-500 rounded-full mr-3"></span>
+            最新发布
+          </h2>
+          <a
+            href="/list"
+            class="text-sm font-medium text-gray-500 hover:text-primary-500 flex items-center transition-colors"
+          >
+            查看更多
+            <span class="material-icons text-[16px] ml-1">arrow_forward</span>
+          </a>
+        </div>
+
+        <!-- Article List -->
+        {% news key="articles", pageSize=10 %} {{ articleMacro.articleList(articles, layout='horizontal',
+        showImage=true) }}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="w-full lg:w-1/3 xl:w-1/4 space-y-8">
+        <!-- Search Widget (Mobile/Tablet usually hidden but good for sidebar) -->
+        <div class="bg-primary-50 dark:bg-primary-900/10 rounded-2xl p-6">
+          <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">搜索</h3>
+          <form
+            action="/search"
+            method="GET"
+            class="relative"
+            onsubmit="event.preventDefault(); var key=this.querySelector('input[name=searchKey]').value; if(key.trim()){ window.location.href='/search/'+encodeURIComponent(key.trim()); }"
+          >
+            <input
+              type="text"
+              name="searchKey"
+              placeholder="输入关键词..."
+              class="w-full pl-4 pr-10 py-3 rounded-xl border-none bg-white dark:bg-dark-bg focus:ring-2 focus:ring-primary-500 shadow-sm"
+            />
+            <button
+              type="submit"
+              class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-primary-500 hover:text-primary-600 transition-colors"
+            >
+              <span class="material-icons">search</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Hot Tags -->
+        {% include "../partials/hot-tags.html" %}
+
+        <!-- Ads -->
+        {% ads name="sidebar_ad" %} {% if adList %} {{ adsMacro.renderAds(adList, className="w-full aspect-[4/3]") }} {%
+        endif %}
+
+        <!-- Recommended/Popular -->
+        <div
+          class="bg-white dark:bg-dark-surface rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6"
+        >
+          <h3
+            class="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-dark-border pb-4"
+          >
+            推荐阅读
+          </h3>
+          {% recommend key="articles", pageSize=5 %} {{ articleMacro.articleList(articles, layout='compact',
+          showImage=true, showMeta=false) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+</style>
+{% endblock %}

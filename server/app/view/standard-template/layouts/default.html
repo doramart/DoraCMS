@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="zh-CN" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{site.title}}</title>
+    <meta name="description" content="{{site.description}}" />
+    <meta name="keywords" content="{{site.keywords}}" />
+    <meta name="author" content="{{site.author}}" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#fef2f2',
+                100: '#fee2e2',
+                200: '#fecaca',
+                300: '#fca5a5',
+                400: '#f87171',
+                500: '#ef4444',
+                600: '#dc2626',
+                700: '#b91c1c',
+                800: '#991b1b',
+                900: '#7f1d1d',
+              },
+              dark: {
+                bg: '#0f172a',
+                surface: '#1e293b',
+                border: '#334155',
+              },
+            },
+            fontFamily: {
+              sans: ['Noto Sans SC', 'system-ui', 'sans-serif'],
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.3s ease-out',
+              'slide-in-right': 'slideInRight 0.3s ease-out',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideInRight: {
+                '0%': { transform: 'translateX(100%)' },
+                '100%': { transform: 'translateX(0)' },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* CustomScrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* Glassmorphism Utilities */
+      .glass {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .dark .glass {
+        background: rgba(15, 23, 42, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-50 dark:bg-dark-bg text-gray-800 dark:text-gray-100 flex flex-col min-h-screen transition-colors duration-300"
+  >
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 glass transition-all duration-300" id="main-header">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex-shrink-0 flex items-center">
+            <a href="/" class="flex items-center space-x-2 group">
+              <img src="/static/images/logo.png" alt="logo" class="h-8 w-auto" />
+              <!-- <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-primary-700">DoraCMS</span> -->
+            </a>
+          </div>
+
+          <!-- Desktop Nav -->
+          <nav class="hidden md:flex space-x-8">
+            {% navigation key="menuItems" %} {% if menuItems %} {% for item in menuItems %} {% set isActive = false %}
+            {% if cateInfo and currentCateList %} {% if item.id == cateInfo.id %} {% set isActive = true %} {% elif
+            currentCateList.parents and currentCateList.parents.length > 0 %} {% for parent in currentCateList.parents
+            %} {% if parent.id == item.id %} {% set isActive = true %} {% endif %} {% endfor %} {% endif %} {% endif %}
+            <a
+              href="/{{ item.defaultUrl }}___{{ item.id }}"
+              class="text-sm font-medium transition-colors duration-200 hover:text-primary-500 relative group py-2 {% if isActive %}text-primary-500 font-semibold{% else %}text-gray-600 dark:text-gray-300{% endif %}"
+            >
+              {{ item.name }}
+              <span
+                class="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 transform {% if isActive %}scale-x-100{% else %}scale-x-0{% endif %} group-hover:scale-x-100 transition-transform duration-200 origin-left"
+              ></span>
+            </a>
+            {% endfor %} {% else %}
+            <a href="/" class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-500">首页</a>
+            {% endif %}
+          </nav>
+
+          <!-- Right Actions -->
+          <div class="hidden md:flex items-center space-x-4">
+            <!-- Search Trigger -->
+            <button
+              id="search-toggle"
+              class="p-2 text-gray-500 hover:text-primary-500 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-dark-surface focus:outline-none"
+            >
+              <span class="material-icons text-[20px]">search</span>
+            </button>
+
+            <!-- User Actions -->
+            {% if logined %}
+            <div class="relative ml-3" id="user-menu-container">
+              <div
+                class="flex items-center cursor-pointer space-x-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-dark-surface transition-colors"
+                id="user-menu-btn"
+              >
+                <img
+                  class="h-8 w-8 rounded-full border border-gray-200 dark:border-gray-700 object-cover"
+                  src="{{ member.logo or '/public/images/default-avatar.png' }}"
+                  alt="{{ member.userName }}"
+                />
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-200 max-w-[100px] truncate">
+                  {{ member.userName }}
+                </span>
+              </div>
+              <!-- Dropdown -->
+              <div
+                class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-dark-surface rounded-lg shadow-lg py-1 border border-gray-100 dark:border-dark-border transform opacity-0 scale-95 transition-all duration-200 origin-top-right z-50"
+                id="user-dropdown"
+              >
+                <a
+                  href="/user-center/home"
+                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center"
+                >
+                  <span class="material-icons text-[18px] mr-2">person</span>
+                  用户中心
+                </a>
+                <a
+                  href="/api/user/logOut"
+                  class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center"
+                >
+                  <span class="material-icons text-[18px] mr-2">logout</span>
+                  退出登录
+                </a>
+              </div>
+            </div>
+            {% else %}
+            <div class="flex items-center space-x-3">
+              <a
+                href="/user-center/login"
+                class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors"
+              >
+                登录
+              </a>
+              <a
+                href="/user-center/register"
+                class="text-sm font-medium px-4 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 shadow-lg shadow-primary-500/30 transition-all hover:shadow-primary-500/50 transform hover:-translate-y-0.5"
+              >
+                注册
+              </a>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Mobile menu button -->
+          <div class="flex md:hidden items-center">
+            <button
+              id="mobile-menu-btn"
+              class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-primary-500 hover:bg-gray-100 dark:hover:bg-dark-surface focus:outline-none"
+            >
+              <span class="material-icons">menu</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Overlay -->
+      <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
+        <div
+          class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0"
+          id="mobile-menu-backdrop"
+        ></div>
+        <div
+          class="absolute right-0 top-0 h-full w-64 bg-white dark:bg-dark-surface shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col"
+          id="mobile-menu-panel"
+        >
+          <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-dark-border">
+            <span class="text-lg font-bold text-gray-800 dark:text-white">菜单</span>
+            <button
+              id="close-mobile-menu"
+              class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+            >
+              <span class="material-icons">close</span>
+            </button>
+          </div>
+          <div class="p-4 flex-1 overflow-y-auto">
+            <nav class="space-y-2">
+              {% if menuItems %} {% for item in menuItems %}
+              <a
+                href="/{{ item.defaultUrl }}___{{ item.id }}"
+                class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 font-medium transition-colors"
+              >
+                {{ item.name }}
+              </a>
+              {% endfor %} {% else %}
+              <a href="/" class="block px-4 py-3 rounded-lg bg-primary-50 text-primary-600 font-medium">首页</a>
+              {% endif %}
+            </nav>
+          </div>
+          <!-- Mobile User Actions -->
+          <div class="p-4 border-t border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-gray-800/50">
+            {% if logined %}
+            <div class="flex items-center space-x-3 mb-4">
+              <img
+                class="h-10 w-10 rounded-full"
+                src="{{ member.logo or '/public/images/default-avatar.png' }}"
+                alt="{{ member.userName }}"
+              />
+              <div>
+                <div class="font-medium text-gray-900 dark:text-white">{{ member.userName }}</div>
+                <div class="text-xs text-gray-500">已登录</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <a
+                href="/user-center/home"
+                class="text-center py-2 rounded-lg bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border text-sm font-medium hover:bg-gray-50"
+              >
+                用户中心
+              </a>
+              <a
+                href="/api/user/logOut"
+                class="text-center py-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 border border-transparent text-sm font-medium"
+              >
+                退出
+              </a>
+            </div>
+            {% else %}
+            <div class="grid grid-cols-2 gap-3">
+              <a
+                href="/user-center/login"
+                class="text-center py-2 rounded-lg bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                登录
+              </a>
+              <a
+                href="/user-center/register"
+                class="text-center py-2 rounded-lg bg-primary-500 text-white text-sm font-medium shadow-md"
+              >
+                注册
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Bar Overlay (Desktop) -->
+      <div
+        id="search-bar"
+        class="absolute top-full left-0 w-full bg-white dark:bg-dark-surface shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-40"
+      >
+        <div class="container mx-auto px-4 py-6">
+          <form action="/search" method="GET" id="header-search-form" class="relative max-w-2xl mx-auto">
+            <input
+              type="text"
+              name="searchKey"
+              placeholder="搜索感兴趣的内容..."
+              class="w-full pl-12 pr-4 py-3 rounded-full border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white transition-shadow shadow-inner"
+            />
+            <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+            <button
+              type="submit"
+              class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary-500 text-white text-sm rounded-full hover:bg-primary-600 transition-colors"
+            >
+              搜索
+            </button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-20">{% block content %}{% endblock %}</main>
+
+    <!-- Footer -->
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-dark-surface border-t border-gray-100 dark:border-dark-border mt-20">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
+          <!-- Brand & Social -->
+          <div class="lg:col-span-4 space-y-6">
+            <a href="/" class="inline-block">
+              <span
+                class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400"
+              >
+                {{site.name or 'DoraCMS'}}
+              </span>
+            </a>
+            <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm">
+              {{site.description or '致力于为开发者提供简单、高效的内容管理系统。分享技术，构建社区，连接你我。'}}
+            </p>
+            <div class="flex items-center space-x-4">
+              <!-- GitHub -->
+              <a
+                href="https://github.com/doramart/DoraCMS"
+                target="_blank"
+                class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-900 transition-all duration-300 group"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill-rule="evenodd"
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </a>
+              <!-- Gitee -->
+              <a
+                href="https://gitee.com/doramart/DoraCMS"
+                target="_blank"
+                class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-red-600 hover:text-white hover:bg-red-600 transition-all duration-300"
+              >
+                <span class="text-xs font-bold leading-none">G</span>
+              </a>
+              <!-- Email -->
+              <a
+                href="mailto:doramart@qq.com"
+                class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-500 hover:text-white hover:bg-primary-500 transition-all duration-300"
+              >
+                <span class="material-icons text-[20px]">email</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="lg:col-span-2 lg:col-start-6">
+            <h4 class="font-bold text-gray-900 dark:text-white mb-6">快速链接</h4>
+            <ul class="space-y-4 text-sm text-gray-500 dark:text-gray-400">
+              <li>
+                <a href="/" class="hover:text-primary-500 transition-colors flex items-center">
+                  <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mr-2"></span>
+                  首页
+                </a>
+              </li>
+              <li>
+                <a href="/" class="hover:text-primary-500 transition-colors flex items-center">
+                  <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mr-2"></span>
+                  最新文章
+                </a>
+              </li>
+              <li>
+                <a href="/search/doracms" class="hover:text-primary-500 transition-colors flex items-center">
+                  <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mr-2"></span>
+                  全站搜索
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Resources -->
+          <div class="lg:col-span-2">
+            <h4 class="font-bold text-gray-900 dark:text-white mb-6">开发者资源</h4>
+            <ul class="space-y-4 text-sm text-gray-500 dark:text-gray-400">
+              <li>
+                <a
+                  href="https://www.doracms.net/"
+                  target="_blank"
+                  class="hover:text-primary-500 transition-colors flex items-center"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mr-2"></span>
+                  官方文档
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/doramart/DoraCMS/issues"
+                  target="_blank"
+                  class="hover:text-primary-500 transition-colors flex items-center"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mr-2"></span>
+                  问题反馈
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://s.apifox.cn/53d46887-6ec7-4c3b-8efb-a23abe1b5e79/api-327420341"
+                  target="_blank"
+                  class="hover:text-primary-500 transition-colors flex items-center"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mr-2"></span>
+                  API 接口
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Newsletter (Mockup) -->
+          <div class="lg:col-span-3">
+            <h4 class="font-bold text-gray-900 dark:text-white mb-6">订阅更新</h4>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">订阅我们的周刊，获取最新的技术文章和开源动态。</p>
+            <form class="space-y-3" onsubmit="event.preventDefault(); alert('感谢订阅！功能开发中...');">
+              <div class="relative">
+                <input
+                  type="email"
+                  placeholder="您的邮箱地址"
+                  class="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-primary-500 dark:text-white text-sm"
+                  required
+                />
+                <button
+                  type="submit"
+                  class="absolute right-2 top-1.5 px-4 py-1.5 bg-primary-500 text-white rounded-md text-xs font-medium hover:bg-primary-600 transition-colors"
+                >
+                  订阅
+                </button>
+              </div>
+              <p class="text-xs text-xs text-gray-400">我们尊重您的隐私，不会发送垃圾邮件。</p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Copyright -->
+        <div
+          class="border-t border-gray-100 dark:border-dark-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4"
+        >
+          <div class="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
+            <span>&copy; {{ site.year or '2024' }} {{site.name or 'DoraCMS'}}. All rights reserved.</span>
+            <span class="hidden md:inline mx-2 text-gray-300">|</span>
+            <a href="http://beian.miit.gov.cn/" target="_blank" class="hover:text-primary-500 transition-colors">
+              {{site.registrationNo}}
+            </a>
+          </div>
+          <div class="flex items-center space-x-6">
+            <a href="#" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">隐私政策</a>
+            <a href="#" class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">服务条款</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Global Scripts -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // User Dropdown Interaction
+        const userBtn = document.getElementById('user-menu-btn');
+        const userDropdown = document.getElementById('user-dropdown');
+        if (userBtn && userDropdown) {
+          userBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            const isHidden = userDropdown.classList.contains('hidden');
+            if (isHidden) {
+              userDropdown.classList.remove('hidden');
+              setTimeout(() => {
+                userDropdown.classList.remove('opacity-0', 'scale-95');
+                userDropdown.classList.add('opacity-100', 'scale-100');
+              }, 10);
+            } else {
+              closeUserDropdown();
+            }
+          });
+
+          document.addEventListener('click', e => {
+            if (!userBtn.contains(e.target)) {
+              closeUserDropdown();
+            }
+          });
+        }
+
+        function closeUserDropdown() {
+          if (!userDropdown) return;
+          userDropdown.classList.remove('opacity-100', 'scale-100');
+          userDropdown.classList.add('opacity-0', 'scale-95');
+          setTimeout(() => {
+            userDropdown.classList.add('hidden');
+          }, 200);
+        }
+
+        // Mobile Menu Interaction
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMobileBtn = document.getElementById('close-mobile-menu');
+        const mobilePanel = document.getElementById('mobile-menu-panel');
+        const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+
+        if (mobileBtn && mobileMenu) {
+          mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            setTimeout(() => {
+              mobileBackdrop.classList.remove('opacity-0');
+              mobilePanel.classList.remove('translate-x-full');
+            }, 10);
+          });
+
+          const closeMenu = () => {
+            mobileBackdrop.classList.add('opacity-0');
+            mobilePanel.classList.add('translate-x-full');
+            setTimeout(() => {
+              mobileMenu.classList.add('hidden');
+            }, 300);
+          };
+
+          closeMobileBtn.addEventListener('click', closeMenu);
+          mobileBackdrop.addEventListener('click', closeMenu);
+        }
+
+        // Search Toggle Interaction
+        const searchToggle = document.getElementById('search-toggle');
+        const searchBar = document.getElementById('search-bar');
+        let isSearchOpen = false;
+
+        if (searchToggle && searchBar) {
+          const closeSearch = () => {
+            isSearchOpen = false;
+            searchBar.classList.remove('opacity-100', 'pointer-events-auto');
+            searchBar.classList.add('opacity-0', 'pointer-events-none');
+          };
+
+          searchToggle.addEventListener('click', e => {
+            e.stopPropagation();
+            isSearchOpen = !isSearchOpen;
+            if (isSearchOpen) {
+              searchBar.classList.remove('opacity-0', 'pointer-events-none');
+              searchBar.classList.add('opacity-100', 'pointer-events-auto');
+              const input = searchBar.querySelector('input');
+              if (input) setTimeout(() => input.focus(), 100);
+            } else {
+              closeSearch();
+            }
+          });
+
+          document.addEventListener('click', e => {
+            if (isSearchOpen && !searchBar.contains(e.target)) {
+              closeSearch();
+            }
+          });
+        }
+        const searchForm = document.getElementById('header-search-form');
+        if (searchForm) {
+          searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const input = this.querySelector('input[name="searchKey"]');
+            if (input && input.value.trim()) {
+              window.location.href = '/search/' + encodeURIComponent(input.value.trim());
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,321 @@
+{
+  "user": {
+    "center": {
+      "basicInfo": "基本信息",
+      "joinComments": "参与话题",
+      "noJoinComment": "暂无参与话题",
+      "commentOn": "发表在",
+      "myDocument": "我的文档",
+      "noDocument": "暂无任何文档",
+      "loading": "加载中...",
+      "noDescription": "暂无简介",
+      "goodMorning": "早上好",
+      "goodAfternoon": "下午好",
+      "goodEvening": "晚上好",
+      "user": "用户",
+      "welcomeMessage": "欢迎来到您的个人中心，在这里您可以管理您的个人信息和内容。",
+      "quickNav": "快速导航",
+      "notifications": "通知管理",
+      "viewAll": "查看全部",
+      "recentActivity": "最近动态",
+      "announcements": "系统公告",
+      "noAnnouncement": "暂无公告"
+    },
+    "apiKey": {
+      "createApiKey": "创建API Key",
+      "apiKey": "API Key",
+      "apiKeyList": "API Key列表",
+      "editApiKey": "编辑API Key",
+      "apiKeyDetails": "API Key详情",
+      "name": "名称",
+      "status": "状态",
+      "permissions": "权限",
+      "ipWhitelist": "IP白名单",
+      "rateLimit": "速率限制",
+      "expiresAt": "过期时间",
+      "createdAt": "创建时间",
+      "lastUsedAt": "最后使用时间",
+      "secret": "密钥",
+      "enabled": "启用",
+      "disabled": "禁用",
+      "active": "激活",
+      "inactive": "未激活",
+      "url": "URL",
+      "method": "方法",
+      "requests": "请求数",
+      "period": "时间段(秒)",
+      "never": "永不",
+      "yes": "是",
+      "no": "否",
+      "per": "每",
+      "noIpRestrictions": "无IP限制",
+      "addPermission": "添加权限",
+      "usageInstructions": "使用说明",
+      "includeHeaders": "在API请求中包含以下头部信息：",
+      "actions": {
+        "view": "查看",
+        "edit": "编辑",
+        "enable": "启用",
+        "disable": "禁用",
+        "rotate": "轮换",
+        "delete": "删除",
+        "create": "创建",
+        "update": "更新",
+        "close": "关闭",
+        "cancel": "取消"
+      },
+      "form": {
+        "namePlaceholder": "请输入API Key名称",
+        "urlPlaceholder": "请输入API URL",
+        "selectMethod": "选择方法",
+        "ipPlaceholder": "请输入IP地址",
+        "requestsPlaceholder": "请求数",
+        "periodPlaceholder": "时间段(秒)",
+        "expirationPlaceholder": "选择过期日期"
+      },
+      "validation": {
+        "nameRequired": "请输入API Key名称",
+        "nameLength": "名称长度应为3到50个字符",
+        "permissionsRequired": "请至少添加一个权限"
+      },
+      "messages": {
+        "createSuccess": "API Key创建成功",
+        "updateSuccess": "API Key更新成功",
+        "enableSuccess": "API Key启用成功",
+        "disableSuccess": "API Key禁用成功",
+        "rotateSuccess": "API Key轮换成功",
+        "deleteSuccess": "API Key删除成功",
+        "copySuccess": "已复制到剪贴板",
+        "copyFailed": "复制到剪贴板失败",
+        "fetchFailed": "获取API Key列表失败",
+        "createFailed": "API Key创建失败",
+        "updateFailed": "API Key更新失败",
+        "enableFailed": "启用API Key失败",
+        "disableFailed": "禁用API Key失败",
+        "rotateFailed": "API Key轮换失败",
+        "deleteFailed": "删除API Key失败"
+      },
+      "confirm": {
+        "deleteTitle": "确定要删除这个API Key吗？"
+      }
+    },
+    "profile": {
+      "basic": {
+        "email": "邮箱",
+        "username": "用户名",
+        "name": "姓名",
+        "phoneNum": "手机号码",
+        "comments": "备注",
+        "avatar": "头像"
+      },
+      "placeholder": {
+        "email": "请填写邮箱",
+        "currentEmail": "请填写正确的邮箱地址",
+        "username": "请填写用户名",
+        "name": "请填写姓名",
+        "tel": "请填写手机号码",
+        "comments": "请填写备注信息"
+      },
+      "tips": {
+        "avatarSize": "图片大小不超过2MB，支持jpg、png、gif、webp格式"
+      }
+    },
+    "auth": {
+      "login": "登录",
+      "newAccount": "创建新账号",
+      "register": "注册",
+      "registerSuccess": "注册成功",
+      "resetPassword": "重置密码",
+      "resetPasswordSuccess": "密码重置成功",
+      "resetPasswordFailed": "密码重置失败",
+      "password": {
+        "label": "密码",
+        "confirm": "确认密码",
+        "modify": "修改密码",
+        "nullTips": "请输入密码",
+        "confirmNull": "请再次输入密码",
+        "forgot": "找回密码"
+      },
+      "placeholder": {
+        "password": "请输入密码",
+        "currentPassword": "请填写正确的密码",
+        "rePassword": "请再次输入密码"
+      },
+      "verify": {
+        "imageCode": "验证码",
+        "sendCode": "发送验证码",
+        "codeSent": "验证码已发送"
+      },
+      "email": {
+        "confirm": "确认邮箱",
+        "sendEmail": "发送重置邮件",
+        "sendSuccess": "重置邮件已发送，请查收",
+        "sendFailed": "发送重置邮件失败",
+        "invalidEmail": "无效的邮箱地址"
+      }
+    },
+    "action": {
+      "modifyPassword": "修改密码",
+      "updateInfo": "更新信息"
+    },
+    "action_type_register": "注册",
+    "home": {
+      "userInfo": "用户信息",
+      "gender": "性别",
+      "male": "男",
+      "female": "女",
+      "secret": "保密",
+      "birthday": "出生日期",
+      "selectDate": "选择日期",
+      "region": "所在地区",
+      "selectRegion": "请选择所在地区",
+      "save": "保存",
+      "submitSuccess": "提交成功",
+      "formCheckFailed": "表单校验失败，请检查输入",
+      "phoneNumberFormat": "请输入正确的手机号码",
+      "selectGender": "请选择性别",
+      "selectBirthday": "请选择出生日期"
+    }
+  },
+  "system": {
+    "title": {
+      "userCenter": "DoraCMS",
+      "userHome": "用户主页",
+      "myArticles": "我的文章",
+      "createArticle": "新增文章",
+      "editArticle": "编辑文章",
+      "aiContentPublish": "AI内容发布",
+      "joinComments": "参与话题",
+      "personalInfo": "个人信息",
+      "changePassword": "修改密码",
+      "register": "用户注册",
+      "forgotPassword": "找回密码",
+      "resetPassword": "重置密码"
+    },
+    "language": {
+      "chinese": "中文",
+      "english": "English"
+    },
+    "menu": {
+      "home": "首页",
+      "userHome": "用户主页",
+      "content": "内容管理",
+      "myArticles": "我的文章",
+      "joinComments": "参与话题",
+      "account": "账户管理",
+      "personalInfo": "个人信息",
+      "changePassword": "修改密码",
+      "profile": "个人中心",
+      "logout": "退出登录",
+      "apiKey": "API Key"
+    },
+    "dialog": {
+      "title": "提示",
+      "logoutConfirm": "确定要退出登录吗？"
+    },
+    "button": {
+      "confirm": "确定",
+      "cancel": "取消",
+      "reset": "重置",
+      "backToHome": "返回首页"
+    },
+    "error": {
+      "logoutFailed": "登出失败：",
+      "notFound": "页面不存在",
+      "notFoundMessage": "抱歉，您访问的页面不存在或已被删除"
+    },
+    "footer": {
+      "copyright": "DoraCMS 版权所有"
+    },
+    "settings": "系统设置"
+  },
+  "validation": {
+    "userLoginOk": "登录成功",
+    "loginNotSuccess": "登录失败",
+    "inputNull": "请输入{0}",
+    "inputCorrect": "请输入正确的{0}",
+    "rangelength": "{0}长度必须在{1}到{2}个字符之间",
+    "ranglengthandnormal": "{0}长度必须在{1}到{2}个字符之间，且不能为纯数字、纯字母或纯特殊字符",
+    "passwordStrength": "密码必须包含字母、数字和特殊字符",
+    "passwordNotMatching": "两次输入的密码不一致",
+    "passwordModifySuccess": "密码修改成功",
+    "userContentSImg": "请上传缩略图",
+    "userContentCategory": "请选择分类",
+    "userContentTags": "请选择标签",
+    "formInvalid": "表单验证失败，请检查输入"
+  },
+  "common": {
+    "error": {
+      "fetchFailed": "获取数据失败",
+      "updateFailed": "更新失败",
+      "fetchCategoriesFailed": "获取分类数据失败",
+      "fetchTagsFailed": "获取标签数据失败",
+      "fetchContentFailed": "获取文章数据失败"
+    },
+    "success": {
+      "updateSuccess": "更新成功"
+    },
+    "confirm": "确认",
+    "cancel": "取消",
+    "warning": "警告"
+  },
+  "content": {
+    "title": "标题",
+    "description": "描述",
+    "createdAt": "日期",
+    "views": "阅读数",
+    "comments": "评论数",
+    "actions": "操作",
+    "view": "查看",
+    "edit": "编辑",
+    "state": {
+      "draft": "草稿",
+      "wait": "待审核",
+      "publish": "已发布",
+      "failed": "未通过"
+    },
+    "action": {
+      "addContent": "新增文章",
+      "editContent": "编辑文章",
+      "commitContent": "提交文章",
+      "saveDraft": "保存草稿",
+      "uploadWord": "上传Word文档"
+    },
+    "fields": {
+      "title": "标题",
+      "description": "描述",
+      "category": "分类",
+      "tag": "标签",
+      "thumbnail": "缩略图",
+      "details": "文章详情"
+    },
+    "placeholder": {
+      "title": "请输入标题",
+      "description": "请输入描述信息",
+      "selectCategory": "请选择分类",
+      "selectChildCategory": "请选择子分类",
+      "selectTag": "请选择标签"
+    },
+    "validation": {
+      "titleRequired": "请输入标题",
+      "descriptionRequired": "请输入描述信息",
+      "contentRequired": "请输入文章内容"
+    },
+    "tips": {
+      "thumbnailSize": "图片大小不超过2MB",
+      "wordSize": "文档大小不超过10MB，支持.doc/.docx格式"
+    },
+    "submitSuccess": "提交成功",
+    "submitFailed": "提交失败",
+    "confirmCancel": "确定要取消编辑吗？未保存的内容将丢失"
+  },
+  "upload": {
+    "success": "上传成功",
+    "failed": "上传失败",
+    "imageTypeError": "请上传图片格式文件",
+    "imageSizeError": "图片大小不能超过2MB",
+    "wordTypeError": "请上传Word文档格式(.doc/.docx)",
+    "wordSizeError": "文档大小不能超过10MB",
+    "wordImportSuccess": "Word文档导入成功"
+  }
+}

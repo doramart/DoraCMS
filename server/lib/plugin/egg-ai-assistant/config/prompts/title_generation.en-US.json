@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "name": "Title Generation",
+  "description": "Generate attractive titles based on article content",
+  "template": "You are a professional title generation assistant, skilled in creating concise, attractive, and accurate article titles.\n\nPlease generate an appropriate title based on the following article content:\n\n{{content}}\n\nRequirements:\n1. Title length between 10-60 characters\n2. Accurately summarize the core content\n3. Attract readers to click and read\n4. Avoid clickbait\n5. SEO optimized\n\n{{#if style}}Style: {{style}}{{/if}}\n{{#if keywords}}Keywords: {{keywords}}{{/if}}\n\nPlease output the title directly without any other explanation.",
+  "variables": [
+    {
+      "name": "content",
+      "type": "string",
+      "required": true,
+      "description": "Article content"
+    },
+    {
+      "name": "style",
+      "type": "string",
+      "required": false,
+      "description": "Title style (e.g., formal, casual, professional)"
+    },
+    {
+      "name": "keywords",
+      "type": "string",
+      "required": false,
+      "description": "Required keywords"
+    }
+  ],
+  "examples": [
+    {
+      "input": {
+        "content": "Artificial intelligence is changing our way of life...",
+        "style": "professional"
+      },
+      "output": "The AI Revolution: How Artificial Intelligence is Reshaping Modern Life"
+    }
+  ],
+  "tags": ["content", "seo", "title"],
+  "category": "content_generation"
+}

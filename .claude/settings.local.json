@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(pnpm lint:server:*)",
+      "Bash(npx prettier:*)",
+      "Bash(pnpm build:server:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,73 @@
+# ==============================================================================
+# MariaDB 自定义配置
+# 针对 EggCMS 项目的性能优化
+# ==============================================================================
+
+[mysqld]
+# ============ 字符集配置 ============
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+init-connect = 'SET NAMES utf8mb4'
+
+# ============ 性能优化 ============
+# InnoDB 缓冲池大小 (建议设置为可用内存的 70-80%)
+innodb_buffer_pool_size = 256M
+innodb_buffer_pool_instances = 1
+
+# 日志文件大小
+innodb_log_file_size = 256M
+innodb_log_buffer_size = 16M
+
+# 刷新策略 (2 = 每秒写入并刷新到磁盘，性能更好但可能丢失1秒数据)
+innodb_flush_log_at_trx_commit = 2
+innodb_flush_method = O_DIRECT
+
+# 线程配置
+max_connections = 200
+thread_cache_size = 50
+table_open_cache = 2000
+table_definition_cache = 1000
+
+# 查询缓存 (现代版本建议禁用)
+query_cache_type = 0
+query_cache_size = 0
+
+# ============ 包大小限制 ============
+max_allowed_packet = 256M
+net_buffer_length = 16K
+
+# ============ 临时表配置 ============
+tmp_table_size = 64M
+max_heap_table_size = 64M
+
+# ============ 慢查询日志 ============
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow-query.log
+long_query_time = 2
+
+# ============ 二进制日志（可选，用于主从复制） ============
+# log-bin = /var/log/mysql/mysql-bin.log
+# binlog_format = ROW
+# expire_logs_days = 7
+# max_binlog_size = 100M
+
+# ============ 安全配置 ============
+# 禁用 LOAD DATA LOCAL INFILE 以提高安全性
+local_infile = 0
+
+# ============ 其他优化 ============
+# 避免反向 DNS 查找
+skip-name-resolve = 1
+
+# 默认存储引擎
+default-storage-engine = InnoDB
+
+# 事务隔离级别
+transaction-isolation = READ-COMMITTED
+
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
+

@@ -1,0 +1,104 @@
+/* 用户下拉菜单样式 */
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown-trigger {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.user-dropdown-trigger:hover {
+  opacity: 0.8;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-10px) !important;
+  transition: all 0.2s ease-in-out;
+  z-index: 50;
+}
+
+/* 移除CSS hover效果，改为通过JavaScript控制 */
+.user-dropdown.dropdown-active .user-dropdown-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+.user-dropdown.dropdown-active .user-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* 暗色模式支持 */
+.dark .user-dropdown-menu {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.user-dropdown-menu a {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.user-dropdown-menu a:hover {
+  background-color: #f3f4f6;
+}
+
+.dark .user-dropdown-menu a {
+  color: #d1d5db;
+}
+
+.dark .user-dropdown-menu a:hover {
+  background-color: #4b5563;
+}
+
+.user-dropdown-menu a:first-child {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.user-dropdown-menu a:last-child {
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+/* 用户头像样式 */
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  background-color: #e53e3e;
+}
+
+/* 箭头动画 */
+.user-dropdown-arrow {
+  transition: transform 0.2s ease-in-out;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .user-dropdown-menu {
+    width: 10rem;
+    right: -1rem;
+  }
+}

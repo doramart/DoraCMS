@@ -1,0 +1,119 @@
+{% extends "../layouts/default.html" %} {% import "../partials/article-list.html" as articleMacro %} {% import
+"../partials/pagination.html" as paginationMacro %} {% import "../partials/ads-macro.html" as adsMacro %} {% block
+content %}
+<div class="bg-gray-50 dark:bg-dark-bg min-h-screen py-12 transition-colors duration-300">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header / Breadcrumb -->
+    <div class="mb-10 text-center md:text-left">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {% if cateInfo %} {{ cateInfo.name }} {% elif searchKey %} 搜索:
+        <span class="text-primary-500">"{{ searchKey }}"</span>
+        {% else %} 所有文章 {% endif %}
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 max-w-2xl">
+        {% if cateInfo %} {{ cateInfo.comments or '浏览该分类下的所有精彩内容' }} {% else %} 发现更多有趣的内容 {% endif
+        %}
+      </p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-12">
+      <!-- Main Content -->
+      <div class="w-full lg:w-3/4">
+        <!-- Filter/Sort Toolbar placeholder -->
+        <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex items-center space-x-4">
+            <span class="text-sm font-medium text-gray-500">排序:</span>
+            <a href="#" class="text-sm font-bold text-primary-500">最新</a>
+            <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+              热门
+            </a>
+          </div>
+        </div>
+
+        <!-- Articles -->
+        {% if searchKey %} {{ articleMacro.articleList(posts, layout='search', showImage=false, customClass="space-y-8")
+        }} {% else %} {{ articleMacro.articleList(posts, layout='horizontal', showImage=true, customClass="space-y-8")
+        }} {% endif %}
+
+        <!-- Pagination -->
+        {% if pageInfo.totalPage > 1 %}
+        <div class="mt-16 flex justify-center">
+          {{ paginationMacro.simplePagination(pageInfo, 'category', cateInfo) }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="w-full lg:w-1/4 space-y-8">
+        <!-- Sub Category Nav -->
+        {% if currentCateList.parents and currentCateList.parents.length > 0 %} {% childnav key="categories",
+        typeId=currentCateList.parents[0].id %} {% elif cateInfo %} {% childnav key="categories", typeId=cateInfo.id %}
+        {% endif %} {% if categories and categories.length > 0 %}
+        <div
+          class="bg-white dark:bg-dark-surface rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6"
+        >
+          <h3
+            class="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-dark-border pb-4"
+          >
+            相关分类
+          </h3>
+          <ul class="space-y-3">
+            {% for category in categories %}
+            <li>
+              {% if category.children and category.children.length > 0 %}
+              <a
+                class="flex justify-between items-center {% if cateInfo and category.id == cateInfo.id %}text-primary-500 font-semibold{% else %}text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500{% endif %} transition-colors"
+                href="{{ category.url }}"
+              >
+                <span>{{ category.name }}</span>
+                <span class="text-xs text-gray-400">{{ category.contentCount }}</span>
+              </a>
+              <ul class="pl-4 mt-2 space-y-2 border-l border-gray-100 dark:border-gray-700">
+                {% for child in category.children %}
+                <li>
+                  <a
+                    class="flex justify-between items-center {% if cateInfo and child.id == cateInfo.id %}text-primary-500 font-semibold{% else %}text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-500{% endif %} transition-colors"
+                    href="{{ child.url }}"
+                  >
+                    <span>{{ child.name }}</span>
+                    <span class="text-xs text-gray-400">{{ child.contentCount }}</span>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <a
+                class="flex justify-between items-center {% if cateInfo and category.id == cateInfo.id %}text-primary-500 font-semibold{% else %}text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500{% endif %} transition-colors"
+                href="{{ category.url }}"
+              >
+                <span>{{ category.name }}</span>
+                <span class="text-xs text-gray-400">{{ category.contentCount }}</span>
+              </a>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %} {% include "../partials/hot-tags.html" %}
+
+        <!-- Recommended -->
+        <div
+          class="bg-white dark:bg-dark-surface rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6"
+        >
+          <h3
+            class="text-lg font-bold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-dark-border pb-4"
+          >
+            推荐阅读
+          </h3>
+          {% recommend key="articles", pageSize=5 %} {{ articleMacro.articleList(articles, layout='compact',
+          showImage=true, showMeta=false) }}
+        </div>
+
+        <!-- Ads -->
+        {% ads key="adList",name="indexTop2Right" %} {% if adList %} {{ adsMacro.renderAds(adList, className="w-full
+        aspect-[4/3]") }} {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

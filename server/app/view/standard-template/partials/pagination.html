@@ -1,0 +1,107 @@
+<!-- 分页组件宏 (partials/pagination.html) -->
+{% macro standardPagination(pageInfo, pageType, options = {}, contextData = {}) %}
+  {% if pageInfo and pageInfo.totalPage > 1 %}
+    {% set containerClass = options.containerClass or "flex justify-center items-center space-x-1 mt-8" %}
+    {% set linkClass = options.linkClass or "px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors" %}
+    {% set activeClass = options.activeClass or "px-4 py-2 text-white bg-primary rounded-md" %}
+    {% set prevClass = options.prevClass or "px-3 py-2 text-gray-500 bg-white dark:bg-gray-800 rounded-md hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors" %}
+    {% set nextClass = options.nextClass or "px-3 py-2 text-gray-500 bg-white dark:bg-gray-800 rounded-md hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors" %}
+    {% set ellipsisClass = options.ellipsisClass or "px-4 py-2 text-gray-500 dark:text-gray-400" %}
+    {% set current = pageInfo.current %}
+    {% set totalPage = pageInfo.totalPage %}
+
+    <!-- 确定基础URL -->
+    {% set localUrl = "" %}
+    {% set param = "" %}
+    {% if pageType == "index" %}
+      {% set localUrl = "/page" %}
+    {% elif pageType == "category" or pageType == "cate" %}
+      {% set localUrl = contextData.cateInfo.url if contextData.cateInfo and contextData.cateInfo.url else "" %}
+    {% elif pageType == "search" %}
+      {% set searchKey = pageInfo.searchkey or contextData.targetSearchKey or "" %}
+      {% set param = "" %}
+      {% set localUrl = "/search/" + searchKey %}
+    {% elif pageType == "tag" %}
+      {% set tagName = contextData.targetTagName or "" %}
+      {% set param = "" %}
+      {% set localUrl = "/tag/" + tagName %}
+    {% endif %}
+
+    <!-- 计算页码范围 -->
+    {% set pageStart = current - 2 %}
+    {% if pageStart < 1 %}
+      {% set pageStart = 1 %}
+    {% endif %}
+    {% set pageEnd = pageStart + 4 %}
+    {% if pageEnd > totalPage %}
+      {% set pageEnd = totalPage %}
+    {% endif %}
+    {% if pageEnd - pageStart < 4 %}
+      {% set pageStart = pageEnd - 4 %}
+      {% if pageStart < 1 %}
+        {% set pageStart = 1 %}
+      {% endif %}
+    {% endif %}
+
+    <div class="{{ containerClass }}">
+      <!-- 首页链接 -->
+      {% if current != 1 %}
+        <a class="{{ prevClass }}" href="{{ localUrl }}/1.html{{ param }}">«</a>
+      {% endif %}
+
+      <!-- 上一页 -->
+      {% if current > 1 %}
+        <a class="{{ prevClass }}" href="{{ localUrl }}/{{ current - 1 }}.html{{ param }}">‹</a>
+      {% endif %}
+
+      <!-- 开始省略号 -->
+      {% if pageStart > 1 %}
+        <span class="{{ ellipsisClass }}">...</span>
+      {% endif %}
+
+      <!-- 页码 -->
+      {% for i in range(pageStart, pageEnd + 1) %}
+        {% if i == current %}
+          <span class="{{ activeClass }}">{{ i }}</span>
+        {% else %}
+          <a class="{{ linkClass }}" href="{{ localUrl }}/{{ i }}.html{{ param }}">{{ i }}</a>
+        {% endif %}
+      {% endfor %}
+
+      <!-- 结束省略号 -->
+      {% if pageEnd < totalPage %}
+        <span class="{{ ellipsisClass }}">...</span>
+      {% endif %}
+
+      <!-- 下一页 -->
+      {% if current < totalPage %}
+        <a class="{{ nextClass }}" href="{{ localUrl }}/{{ current + 1 }}.html{{ param }}">›</a>
+      {% endif %}
+
+      <!-- 末页链接 -->
+      {% if current != totalPage %}
+        <a class="{{ nextClass }}" href="{{ localUrl }}/{{ totalPage }}.html{{ param }}">»</a>
+      {% endif %}
+      </div>
+  {% endif %}
+{% endmacro %}
+
+<!-- 简化版分页组件宏 - 使用默认样式，自动获取上下文数据 -->
+{% macro simplePagination(pageInfo, pageType, cateInfo = null, targetSearchKey = null, targetTagName = null) %}
+  {% set contextData = {
+  cateInfo: cateInfo,
+  targetSearchKey: targetSearchKey,
+  targetTagName: targetTagName
+  } %}
+  {{ standardPagination(pageInfo, pageType, {}, contextData) }}
+{% endmacro %}
+
+<!-- 自定义样式的分页组件宏 -->
+{% macro customPagination(pageInfo, pageType, customOptions, cateInfo = null, targetSearchKey = null, targetTagName = null) %}
+  {% set contextData = {
+  cateInfo: cateInfo,
+  targetSearchKey: targetSearchKey,
+  targetTagName: targetTagName
+  } %}
+  {{ standardPagination(pageInfo, pageType, customOptions, contextData) }}
+{% endmacro %}

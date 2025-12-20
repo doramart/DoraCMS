@@ -1,0 +1,21 @@
+/** request id key */
+export const REQUEST_ID_KEY = 'X-Request-Id';
+
+/** Backend error code keys (should match server/app/exceptions/index.js) */
+export const BACKEND_ERROR_CODES = [
+  'VALIDATION_ERROR',
+  'AUTHENTICATION_ERROR',
+  'AUTHORIZATION_ERROR',
+  'NOT_FOUND_ERROR',
+  'DATA_CONSISTENCY_ERROR',
+  'UNIQUE_CONSTRAINT_ERROR',
+  'CONFIGURATION_ERROR',
+  'EXTERNAL_SERVICE_ERROR',
+  'DATABASE_ERROR',
+  'BUSINESS_RULE_ERROR',
+  'RATE_LIMIT_ERROR',
+  'FILE_OPERATION_ERROR',
+  'CONCURRENCY_CONFLICT_ERROR',
+];
+export const BACKEND_ERROR_CODE = 'BACKEND_ERROR'; // fallback
+

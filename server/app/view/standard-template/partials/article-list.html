@@ -1,0 +1,243 @@
+{# 文章列表公共部件 参数说明: - articles 文章数组数据 (必需) - layout 布局类型 ('horizontal', 'vertical', 'grid',
+'compact') 默认 'horizontal' - columns 列数控制 (1-4) 仅适用于 vertical 和 grid 布局，默认 null - showImage 是否显示图片
+(true/false) 默认 true - showMeta 是否显示元信息 (true/false) 默认 true - showDescription 是否显示描述 (true/false) 默认
+true - showAuthor 是否显示作者 (true/false) 默认 true - showCategory 是否显示分类 (true/false) 默认 true - customClass
+自定义CSS类名 默认 '' - emptyText 无数据时显示的文本 默认 '暂无文章' #} {% macro articleList(articles,
+layout='horizontal', columns=null, showImage=true, showMeta=true, showDescription=true, showAuthor=true,
+showCategory=true, customClass='', emptyText='暂无文章') %} {% if articles and articles.length > 0 %} {% if layout ==
+'horizontal' %} {# 水平布局 - 适用于分类页、搜索结果等 #}
+<div class="space-y-8 {{ customClass }}">
+  {% for article in articles %}
+  <div
+    class="group relative bg-white dark:bg-dark-surface rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/5 hover:-translate-y-1 border border-gray-100 dark:border-dark-border flex flex-col sm:flex-row gap-6"
+  >
+    {% if showImage %}
+    <div class="relative w-full sm:w-1/3 aspect-[4/3] sm:aspect-[16/10] overflow-hidden rounded-xl">
+      <img
+        alt="{{ article.title }}"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        src="{{ article.sImg or '/public/images/default-img.png' }}"
+        loading="lazy"
+      />
+      {% if showCategory and article.categoryName %}
+      <span
+        class="absolute top-3 left-3 bg-white/90 dark:bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-primary-600 dark:text-primary-400"
+      >
+        {{ article.categoryName }}
+      </span>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="flex-1 flex flex-col justify-center">
+      <h3
+        class="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+      >
+        <a href="/details/{{ article.id }}.html" class="before:absolute before:inset-0">{{ article.title | safe }}</a>
+      </h3>
+
+      {% if showDescription %}
+      <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 md:line-clamp-3 leading-relaxed">
+        {{ (article.discription or article.summary) | truncate(100, true, '...') | safe}}
+      </p>
+      {% endif %} {% if showMeta %}
+      <div class="mt-auto flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4">
+        {% if showAuthor and article.author %}
+        <div class="flex items-center">
+          <span class="material-icons text-[16px] mr-1 opacity-70">person</span>
+          {{ article.author.userName }}
+        </div>
+        {% endif %}
+        <div class="flex items-center">
+          <span class="material-icons text-[16px] mr-1 opacity-70">schedule</span>
+          {{ article.createdAt | date('YYYY-MM-DD') }}
+        </div>
+        <div class="flex items-center">
+          <span class="material-icons text-[16px] mr-1 opacity-70">visibility</span>
+          {{ article.clickNum }}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% elif layout == 'grid' or layout == 'vertical' %} {# 网格/垂直布局 #} {% if columns %} {% if columns == 1 %} {% set
+gridClass = "grid-cols-1" %} {% elif columns == 2 %} {% set gridClass = "grid-cols-1 sm:grid-cols-2" %} {% elif columns
+== 3 %} {% set gridClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" %} {% elif columns == 4 %} {% set gridClass =
+"grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" %} {% else %} {% set gridClass = "grid-cols-1 sm:grid-cols-2
+lg:grid-cols-3" %} {% endif %} {% else %} {% set gridClass = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" %} {% endif %}
+
+<div class="grid {{ gridClass }} gap-6 {{ customClass }}">
+  {% for article in articles %}
+  <div
+    class="group relative bg-white dark:bg-dark-surface rounded-2xl overflow-hidden border border-gray-100 dark:border-dark-border transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 flex flex-col h-full"
+  >
+    {% if showImage %}
+    <div class="relative w-full aspect-[16/10] overflow-hidden">
+      <img
+        alt="{{ article.title }}"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        src="{{ article.sImg or '/public/images/default-img.png' }}"
+        loading="lazy"
+      />
+      {% if showCategory and article.categoryName %}
+      <span
+        class="absolute top-3 left-3 bg-white/90 dark:bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-semibold text-gray-800 dark:text-gray-200"
+      >
+        {{ article.categoryName }}
+      </span>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="p-5 flex-1 flex flex-col">
+      <h3
+        class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+      >
+        <a href="/details/{{ article.id }}.html" class="before:absolute before:inset-0">{{ article.title | safe }}</a>
+      </h3>
+
+      {% if showDescription %}
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">
+        {{ (article.discription or article.summary) | truncate(60, true, '...') | safe}}
+      </p>
+      {% endif %} {% if showMeta %}
+      <div
+        class="mt-auto pt-4 border-t border-gray-100 dark:border-dark-border flex items-center justify-between text-xs text-gray-500 dark:text-gray-400"
+      >
+        <span class="flex items-center">{{ article.createdAt | date('MM-DD') }}</span>
+        {% if showAuthor and article.author %}
+        <span class="flex items-center">By {{ article.author.userName }}</span>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% elif layout == 'compact' %} {# 紧凑布局 - 侧边栏 #}
+<div class="space-y-4 {{ customClass }}">
+  {% for article in articles %}
+  <div class="group relative flex items-start space-x-4">
+    {% if showImage %}
+    <div class="relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden">
+      <img
+        alt="{{ article.title }}"
+        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+        src="{{ article.sImg or '/public/images/default-img.png' }}"
+        loading="lazy"
+      />
+    </div>
+    {% endif %}
+
+    <div class="flex-1 min-w-0 py-0.5">
+      <h4
+        class="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-1"
+      >
+        <a href="/details/{{ article.id }}.html" class="before:absolute before:inset-0">{{ article.title | safe }}</a>
+      </h4>
+      {% if showMeta %}
+      <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+        <span>{{ article.createdAt | date('YYYY-MM-DD') }}</span>
+        <span class="mx-1">·</span>
+        <span>{{ article.clickNum }} 阅读</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% elif layout == 'search' %} {# 搜索布局 #}
+<div class="space-y-6 {{ customClass }}">
+  {% for article in articles %}
+  <article
+    class="bg-white dark:bg-dark-surface p-6 rounded-2xl border border-gray-100 dark:border-dark-border transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-1"
+  >
+    {# 标题 #}
+    <h2 class="text-xl font-bold mb-3">
+      <a
+        class="text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+        href="/details/{{ article.id }}.html"
+      >
+        {% if article.title_hasMatches %} {{ article.title | safe }} {% else %} {{ article.title }} {% endif %}
+      </a>
+    </h2>
+
+    {# 智能摘要显示 #} {% if showDescription %}
+    <div class="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed">
+      {% if article.searchSummary and article.searchSummary.hasMatches %} {# 显示智能生成的搜索摘要 #}
+      <p>{{ article.searchSummary.text | striphtml }}</p>
+      {% if article.searchSummary.source and article.searchSummary.source != 'title' %}
+      <span
+        class="inline-flex items-center mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+      >
+        匹配于: {% if article.searchSummary.source == 'stitle' %}副标题 {% elif article.searchSummary.source ==
+        'discription' %}描述 {% elif article.searchSummary.source == 'comments' %}内容 {% else %}{{
+        article.searchSummary.source }} {% endif %}
+      </span>
+      {% endif %} {% else %} {# 回退到常规描述 #}
+      <p>{{ (article.discription or article.summary) | truncate(100, true, '...') }}</p>
+      {% endif %}
+    </div>
+    {% endif %} {# 内容片段匹配 #} {% if article.comments_hasMatches and article.comments_snippets %}
+    <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border-l-4 border-yellow-400">
+      <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center font-medium">
+        <span class="material-icons text-[14px] mr-1 text-yellow-500">highlight</span>
+        内容匹配 ({{ article.comments_matchCount}} 处)
+      </div>
+      <div class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+        {% for snippet in article.comments_snippets %}
+        <p>{{ snippet.highlighted | safe }}</p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %} {# Meta 信息 #} {% if showMeta %}
+    <div
+      class="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800 text-sm text-gray-500 dark:text-gray-400"
+    >
+      <div class="flex items-center space-x-4">
+        {% if showAuthor and article.author %}
+        <span class="flex items-center hover:text-gray-700 dark:hover:text-gray-200">
+          <span class="material-icons text-[16px] mr-1 opacity-70">person</span>
+          {{ article.author.userName }}
+        </span>
+        {% endif %} {% if showCategory and article.categoryName %}
+        <a href="{{ article.categoryUrl }}" class="flex items-center hover:text-primary-500 transition-colors">
+          <span class="material-icons text-[16px] mr-1 opacity-70">folder_open</span>
+          {{ article.categoryName }}
+        </a>
+        {% endif %}
+        <span class="flex items-center">
+          <span class="material-icons text-[16px] mr-1 opacity-70">schedule</span>
+          {{ article.createdAt | date('YYYY-MM-DD') }}
+        </span>
+      </div>
+
+      {% if article.searchSummary and article.searchSummary.hasMatches %}
+      <div
+        class="flex items-center text-xs font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-2 py-1 rounded"
+      >
+        {{ article.searchSummary.matchCount }} 个关键词匹配
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
+
+{% else %} {# 默认布局 #} {{ articleList(articles, 'horizontal', columns, showImage, showMeta, showDescription,
+showAuthor, showCategory, customClass, emptyText) }} {% endif %} {% else %}
+<div class="w-full py-16 text-center">
+  <div
+    class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4 text-gray-400"
+  >
+    <span class="material-icons text-3xl">inbox</span>
+  </div>
+  <p class="text-gray-500 dark:text-gray-400 font-medium">{{ emptyText }}</p>
+</div>
+{% endif %} {% endmacro %}

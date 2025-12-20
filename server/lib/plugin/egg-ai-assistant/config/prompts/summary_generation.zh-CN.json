@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "name": "摘要生成",
+  "description": "生成文章摘要",
+  "template": "你是一个专业的摘要生成助手，擅长提取文章的核心内容并生成简洁的摘要。\n\n请为以下文章生成摘要：\n\n{{content}}\n\n要求：\n1. 摘要长度在 {{#if maxLength}}{{maxLength}}{{else}}100-200{{/if}} 个字\n2. 准确概括文章核心观点\n3. 保持客观中立\n4. 语言简洁流畅\n5. 吸引读者继续阅读全文\n\n{{#if style}}风格要求：{{style}}{{/if}}\n\n请直接输出摘要，不需要其他解释。",
+  "variables": [
+    {
+      "name": "content",
+      "type": "string",
+      "required": true,
+      "description": "文章内容"
+    },
+    {
+      "name": "maxLength",
+      "type": "number",
+      "required": false,
+      "description": "摘要最大长度"
+    },
+    {
+      "name": "style",
+      "type": "string",
+      "required": false,
+      "description": "摘要风格"
+    }
+  ],
+  "examples": [
+    {
+      "input": {
+        "content": "随着科技的发展，人工智能已经深入到我们生活的方方面面...",
+        "maxLength": 150
+      },
+      "output": "本文探讨了人工智能如何改变现代生活，从智能家居到自动驾驶，AI 技术正在重塑我们的日常体验。文章分析了 AI 的发展趋势和潜在影响。"
+    }
+  ],
+  "tags": ["content", "summary", "seo"],
+  "category": "content_generation"
+}

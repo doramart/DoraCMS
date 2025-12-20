@@ -1,0 +1,95 @@
+# ============================================
+# Docker 构建忽略文件
+# 排除不需要复制到镜像的文件和目录
+# ============================================
+
+# ============ 依赖目录 ============
+**/node_modules
+# 注意：pnpm-lock.yaml 需要保留用于 Docker 构建
+# **/pnpm-lock.yaml
+
+# ============ 开发文件 ============
+**/.git
+**/.gitignore
+**/.gitattributes
+.editorconfig
+.prettierrc
+.prettierignore
+.eslintrc
+.eslintignore
+
+# ============ 文档（保留 README 和 docker 相关文档） ============
+*.md
+!README.md
+!docker/README.md
+!docker/mongodb/README.md
+!docker/mariadb/README.md
+docs/
+*.pdf
+
+# ============ 日志文件 ============
+**/*.log
+**/logs
+server/logs/**
+run/
+server/run/**
+
+# ============ 测试文件 ============
+test/
+tests/
+**/*.test.js
+**/*.spec.js
+coverage/
+.nyc_output/
+
+# ============ 构建产物（客户端） ============
+client/**/dist
+client/**/build
+client/**/.vite
+client/**/.turbo
+
+# ============ 临时文件 ============
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ============ 环境配置 ============
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+
+# ============ Docker 相关（保留必需的脚本和配置） ============
+Dockerfile
+docker-compose*.yml
+.dockerignore
+# 保留整个 docker/ 目录，但排除不需要的文档
+!docker/
+docker/PATH_MIGRATION.md
+
+# ============ CI/CD ============
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# ============ 备份和数据（排除备份，保留初始化数据） ============
+backups/
+backup*/
+*.sql.gz
+*.dump
+# 保留初始化数据目录
+!docker/mongodb/initdata/
+!docker/mariadb/init/
+
+# ============ 其他 ============
+scripts/
+migrations/
+.git/

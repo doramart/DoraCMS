@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "name": "分类匹配",
+  "description": "智能匹配文章分类",
+  "template": "你是一个专业的内容分类助手，擅长根据文章内容匹配最合适的分类。\n\n可用分类列表：\n{{#each categories}}\n- {{this.name}}: {{this.description}}\n{{/each}}\n\n请分析以下文章内容：\n\n{{content}}\n\n要求：\n1. 选择最匹配的分类（1-3个）\n2. 基于文章核心内容判断\n3. 优先选择主要分类，请必须选择一个最匹配的，分类不允许为空\n4. 考虑文章的专业领域\n\n请直接输出分类名称，用逗号分隔。",
+  "variables": [
+    {
+      "name": "content",
+      "type": "string",
+      "required": true,
+      "description": "文章内容"
+    },
+    {
+      "name": "categories",
+      "type": "array",
+      "required": true,
+      "description": "可用分类列表"
+    }
+  ],
+  "examples": [
+    {
+      "input": {
+        "content": "React Hooks 是 React 16.8 引入的新特性...",
+        "categories": [
+          { "name": "前端开发", "description": "HTML, CSS, JavaScript 等" },
+          { "name": "后端开发", "description": "服务器端开发" },
+          { "name": "移动开发", "description": "iOS, Android 开发" }
+        ]
+      },
+      "output": "前端开发"
+    }
+  ],
+  "tags": ["classification", "content", "ai"],
+  "category": "content_analysis"
+}

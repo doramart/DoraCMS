@@ -1,0 +1,289 @@
+<!-- childnav.html - 子分类导航展示组件 -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="childnav-debug">
+  <div
+    class="bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-4 flex items-center justify-between"
+  >
+    <div class="flex items-center">
+      <div
+        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-white">🔗 子分类导航</h3>
+    </div>
+    <button
+      class="text-white hover:text-green-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+      onclick="toggleSection('childnav-debug')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="debug-content p-6">
+    <!-- 基础用法测试 -->
+    <div class="test-case">
+      <h4>1. 基础用法 - 获取指定分类的子分类</h4>
+      <code>{% raw %}{% childnav key="frontDev", typeId="4" %}{% endraw %}</code>
+
+      {% childnav key="frontDev", typeId="4" %} {% if frontDev and frontDev.length
+      > 0 %}
+      <div class="side-navigation">
+        <p class="success">✅ 成功获取到 {{ frontDev.length }} 个子分类</p>
+        {% for cateItem in frontDev %} {% if cateItem.parentId != '0' %}
+        <div class="nav-item">
+          <a href="/{{ cateItem.defaultUrl }}___{{ cateItem.id }}" class="nav-link">
+            {% if cateItem.icon %}
+            <i class="{{ cateItem.icon }}"></i>
+            {% endif %}
+            <span class="nav-text">{{ cateItem.name }}</span>
+            <span class="nav-meta">(ID: {{ cateItem.id }})</span>
+            <span class="nav-meta">(total: {{ cateItem.contentCount }})</span>
+          </a>
+          {% if cateItem.comments %}
+          <p class="nav-desc">{{ cateItem.comments | cutwords(60) }}</p>
+          {% endif %}
+        </div>
+        {% endif %} {% endfor %}
+      </div>
+      {% else %}
+      <p class="error">❌ 未获取到子分类数据或指定分类不存在</p>
+      {% endif %}
+    </div>
+
+    <!-- 不同分类ID测试 -->
+    <div class="test-case">
+      <h4>2. 不同分类ID测试</h4>
+      <code>{% raw %}{% childnav key="backendDev", typeId="1" %}{% endraw %}</code>
+
+      {% childnav key="backendDev", typeId="1" %} {% if backendDev and backendDev.length > 0 %}
+      <div class="backend-navigation">
+        <p class="success">✅ ID=1的分类子分类获取成功 {{ backendDev.length }} 个</p>
+        <div class="nav-cards">
+          {% for cateItem in backendDev %} {% if cateItem.parentId != '0' %}
+          <div class="nav-card">
+            <div class="card-header">
+              {% if cateItem.icon %}
+              <i class="{{ cateItem.icon }}"></i>
+              {% endif %}
+              <h6>{{ cateItem.name }}</h6>
+            </div>
+            <div class="card-body">
+              {% if cateItem.comments %}
+              <p>{{ cateItem.comments | cutwords(80) }}</p>
+              {% endif %}
+              <div class="card-meta">
+                <span>排序: {{ cateItem.sortId }}</span>
+                <span>类型: {{ cateItem.type }}</span>
+                <span>状态: {{ "启用" if cateItem.enable else "禁用" }}</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <a href="/{{ cateItem.defaultUrl }}___{{ cateItem.id }}" class="card-link">
+                进入分类 →
+              </a>
+            </div>
+          </div>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <p class="warning">⚠️ ID=2的分类子分类获取失败或无子分类</p>
+      {% endif %}
+    </div>
+
+    <!-- 包含所有分类的测试 -->
+    <div class="test-case">
+      <h4>3. 包含所有分类的测试</h4>
+      <code>{% raw %}{% childnav key="allCates" %}{% endraw %}</code>
+
+      {% childnav key="allCates" %} {% if allCates and allCates.length > 0 %}
+      <div class="all-categories-section">
+        <p class="success">✅ 获取到完整分类数据 {{ allCates.length }} 个</p>
+
+        <!-- 顶级分类 -->
+        <div class="top-level-categories">
+          <h6>顶级分类:</h6>
+          {% for cateItem in allCates %} {% if cateItem.parentId == '0' %}
+          <div class="top-category">
+            <strong>{{ cateItem.name }}</strong>
+            {% if cateItem.comments %}
+            <span class="desc"> - {{ cateItem.comments | cutwords(40) }}</span>
+            {% endif %}
+          </div>
+          {% endif %} {% endfor %}
+        </div>
+
+        <!-- 子分类 -->
+        <div class="sub-level-categories">
+          <h6>子分类:</h6>
+          <div class="sub-categories-list">
+            {% for cateItem in allCates %} {% if cateItem.parentId != '0' %}
+            <div class="sub-category-item">
+              <a href="/{{ cateItem.defaultUrl }}___{{ cateItem.id }}" class="sub-link">
+                {{ cateItem.name }}
+              </a>
+              <span class="parent-info">(父级ID: {{ cateItem.parentId }})</span>
+            </div>
+            {% endif %} {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 左侧导航菜单样式 -->
+    <div class="test-case">
+      <h4>4. 左侧导航菜单样式</h4>
+      {% if frontDev and frontDev.length > 0 %}
+      <div class="sidebar-navigation">
+        <div class="sidebar-header">
+          <h6>分类导航</h6>
+        </div>
+        <div class="sidebar-menu">
+          {% for cateItem in frontDev %} {% if cateItem.parentId != '0' %}
+          <div class="menu-item">
+            <a href="/{{ cateItem.defaultUrl }}___{{ cateItem.id }}" class="menu-link">
+              {% if cateItem.icon %}
+              <span class="menu-icon">
+                <i class="{{ cateItem.icon }}"></i>
+              </span>
+              {% endif %}
+              <span class="menu-text">{{ cateItem.name }}</span>
+              <span class="menu-arrow">→</span>
+            </a>
+            {% if cateItem.comments %}
+            <div class="menu-tooltip">{{ cateItem.comments }}</div>
+            {% endif %}
+          </div>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 水平导航栏样式 -->
+    <div class="test-case">
+      <h4>5. 水平导航栏样式</h4>
+      {% if frontDev and frontDev.length > 0 %}
+      <div class="horizontal-navigation">
+        <nav class="horizontal-nav">
+          {% for cateItem in frontDev %} {% if cateItem.parentId != '0' %}
+          <a href="/{{ cateItem.defaultUrl }}___{{ cateItem.id }}" class="horizontal-nav-item">
+            {% if cateItem.icon %}
+            <i class="{{ cateItem.icon }}"></i>
+            {% endif %} {{ cateItem.name }}
+          </a>
+          {% endif %} {% endfor %}
+        </nav>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 分类统计信息 -->
+    <div class="test-case">
+      <h4>6. 分类统计信息</h4>
+      {% if frontDev and frontDev.length > 0 %}
+      <div class="categories-statistics">
+        {% set parentCategories = 0 %} {% set childCategories = 0 %} {% set enabledCategories = 0 %}
+        {% for cateItem in frontDev %} {% if cateItem.parentId == '0' %} {% set parentCategories =
+        parentCategories + 1 %} {% else %} {% set childCategories = childCategories + 1 %} {% endif
+        %} {% if cateItem.enable %} {% set enabledCategories = enabledCategories + 1 %} {% endif %}
+        {% endfor %}
+
+        <div class="stats-dashboard">
+          <div class="stat-card">
+            <h6>总分类数</h6>
+            <div class="stat-number">{{ frontDev.length }}</div>
+          </div>
+          <div class="stat-card">
+            <h6>顶级分类</h6>
+            <div class="stat-number">{{ parentCategories }}</div>
+          </div>
+          <div class="stat-card">
+            <h6>子分类</h6>
+            <div class="stat-number">{{ childCategories }}</div>
+          </div>
+          <div class="stat-card">
+            <h6>启用分类</h6>
+            <div class="stat-number">{{ enabledCategories }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 分类详细信息表格 -->
+    <div class="test-case">
+      <h4>7. 分类详细信息表格</h4>
+      {% if frontDev and frontDev.length > 0 %}
+      <div class="categories-table">
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>名称</th>
+              <th>别名</th>
+              <th>父级ID</th>
+              <th>排序</th>
+              <th>类型</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cateItem in frontDev %} {% if loop.index0 < 10 %}
+            <tr
+              class="{% if cateItem.parentId == '0' %}parent-category{% else %}child-category{% endif %}"
+            >
+              <td>{{ cateItem.id }}</td>
+              <td>
+                {% if cateItem.icon %}
+                <i class="{{ cateItem.icon }}"></i>
+                {% endif %} {{ cateItem.name }}
+              </td>
+              <td>{{ cateItem.defaultUrl }}</td>
+              <td>{{ cateItem.parentId }}</td>
+              <td>{{ cateItem.sortId }}</td>
+              <td>{{ cateItem.type }}</td>
+              <td>
+                <span class="status-badge {{ 'enabled' if cateItem.enable else 'disabled' }}">
+                  {{ "启用" if cateItem.enable else "禁用" }}
+                </span>
+              </td>
+              <td>
+                <a href="/{{ cateItem.defaultUrl }}___{{ cateItem.id }}" class="action-btn">查看</a>
+              </td>
+            </tr>
+            {% endif %} {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 数据结构展示 -->
+    <div class="test-case">
+      <h4>8. 数据结构调试</h4>
+      {% if frontDev %}
+      <details>
+        <summary>点击查看子分类导航的完整数据结构</summary>
+        <pre class="debug-data">{{ frontDev | dump }}</pre>
+      </details>
+      {% endif %}
+    </div>
+  </div>
+</div>

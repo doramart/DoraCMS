@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "name": "内容质量评估",
+  "description": "评估文章内容质量",
+  "template": "你是一个专业的内容质量评估专家，擅长从多个维度分析文章质量。\n\n请评估以下文章：\n\n标题：{{title}}\n内容：{{content}}\n\n评估维度：\n1. 内容原创性（是否有价值、是否独特）\n2. 逻辑结构（结构是否清晰、层次是否分明）\n3. 语言表达（语言是否流畅、是否有错别字）\n4. 专业深度（内容是否专业、是否有深度）\n5. 可读性（是否易读、是否吸引人）\n6. 实用性（是否有实用价值）\n\n请以 JSON 格式输出评估结果：\n{\n  \"originality\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"structure\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"language\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"depth\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"readability\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"practicality\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"overallScore\": 0-100,\n  \"overallComment\": \"总体评价\",\n  \"improvements\": [\"改进建议1\", \"改进建议2\"]\n}",
+  "variables": [
+    {
+      "name": "title",
+      "type": "string",
+      "required": true,
+      "description": "文章标题"
+    },
+    {
+      "name": "content",
+      "type": "string",
+      "required": true,
+      "description": "文章内容"
+    }
+  ],
+  "tags": ["quality", "assessment", "content"],
+  "category": "content_analysis"
+}

@@ -1,0 +1,27 @@
+{% extends "../layouts/default.html" %}
+
+{% block content %}
+<div class="bg-white dark:bg-dark-bg min-h-[calc(100vh-200px)] flex flex-col items-center justify-center text-center px-4 transition-colors duration-300">
+    <div class="relative mb-8">
+        <h1 class="text-9xl font-black text-gray-100 dark:text-gray-800 tracking-tighter select-none">404</h1>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white bg-white/80 dark:bg-dark-bg/80 backdrop-blur-sm px-6 py-2 rounded-full shadow-sm">
+                页面未找到
+            </span>
+        </div>
+    </div>
+    
+    <p class="text-lg text-gray-500 dark:text-gray-400 max-w-lg mb-10">
+        抱歉，您访问的页面可能已被移除、重命名或暂时不可用。
+    </p>
+    
+    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <a href="/" class="px-8 py-3 bg-primary-500 text-white rounded-full font-bold hover:bg-primary-600 transition-all shadow-lg shadow-primary-500/30 hover:-translate-y-1">
+            返回首页
+        </a>
+        <a href="javascript:history.back()" class="px-8 py-3 bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all hover:-translate-y-1">
+            返回上一页
+        </a>
+    </div>
+</div>
+{% endblock %}

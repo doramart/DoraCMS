@@ -1,0 +1,183 @@
+{# Ads 广告组件宏 使用 DaisyUI Carousel 组件 单张图片时显示普通图片，多张图片时显示轮播 #} {% macro
+renderAds(adsData, className="", style="") %} {% if adsData and adsData.items and
+adsData.items.length > 0 %}
+<div class="ads-container {{ className }}" {% if style %}style="{{ style }}" {% endif %}>
+  {% if adsData.items.length == 1 %} {# 单张图片显示 #} {% set ad = adsData.items[0] %}
+  <div class="ads-single">
+    {% if ad.link %}
+    <a href="{{ ad.link }}" target="{{ ad.target }}" class="ads-link">
+      {% endif %} {% if ad.sImg %}
+      <div class="ads-image-container">
+        <img
+          src="{{ ad.sImg }}"
+          alt="{{ ad.alt or ad.title }}"
+          class="w-full h-auto object-cover rounded-lg shadow-lg"
+          {%
+          if
+          ad.width
+          and
+          ad.height
+          %}
+          style="aspect-ratio: {{ ad.width }}/{{ ad.height }}"
+          {%
+          endif
+          %}
+        />
+        {% if ad.title %}
+        <div
+          class="ads-overlay absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 rounded-b-lg"
+        >
+          <h3 class="text-white font-semibold text-lg">{{ ad.title }}</h3>
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="ads-text-only bg-base-200 p-6 rounded-lg text-center">
+        <h3 class="text-xl font-semibold">{{ ad.title }}</h3>
+      </div>
+      {% endif %} {% if ad.link %}
+    </a>
+    {% endif %}
+  </div>
+  {% else %} {# 多张图片轮播显示 #}
+  <div class="ads-carousel">
+    <div class="carousel w-full">
+      {% for ad in adsData.items %}
+      <div id="ads-slide-{{ loop.index }}" class="carousel-item relative w-full">
+        {% if ad.link %}
+        <a href="{{ ad.link }}" target="{{ ad.target }}" class="ads-link w-full">
+          {% endif %} {% if ad.sImg %}
+          <div class="ads-image-container w-full relative">
+            <img
+              src="{{ ad.sImg }}"
+              alt="{{ ad.alt or ad.title }}"
+              class="w-full h-auto object-cover"
+              {%
+              if
+              ad.width
+              and
+              ad.height
+              %}
+              style="aspect-ratio: {{ ad.width }}/{{ ad.height }}"
+              {%
+              endif
+              %}
+            />
+            {% if ad.title %}
+            <div
+              class="ads-overlay absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4"
+            >
+              <h3 class="text-white font-semibold text-lg">{{ ad.title }}</h3>
+            </div>
+            {% endif %}
+          </div>
+          {% else %}
+          <div class="ads-text-only bg-base-200 p-6 w-full text-center">
+            <h3 class="text-xl font-semibold">{{ ad.title }}</h3>
+          </div>
+          {% endif %} {% if ad.link %}
+        </a>
+        {% endif %} {# 轮播导航按钮 #}
+        <div
+          class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between"
+        >
+          {% if loop.index > 1 %}
+          <a
+            href="#ads-slide-{{ loop.index - 1 }}"
+            class="btn btn-circle btn-sm bg-black/50 border-none text-white hover:bg-black/70"
+            >❮</a
+          >
+          {% else %}
+          <a
+            href="#ads-slide-{{ adsData.items.length }}"
+            class="btn btn-circle btn-sm bg-black/50 border-none text-white hover:bg-black/70"
+            >❮</a
+          >
+          {% endif %} {% if loop.index < adsData.items.length %}
+          <a
+            href="#ads-slide-{{ loop.index + 1 }}"
+            class="btn btn-circle btn-sm bg-black/50 border-none text-white hover:bg-black/70"
+            >❯</a
+          >
+          {% else %}
+          <a
+            href="#ads-slide-1"
+            class="btn btn-circle btn-sm bg-black/50 border-none text-white hover:bg-black/70"
+            >❯</a
+          >
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {# 轮播指示器 #} {% if adsData.items.length > 1 %}
+    <div class="flex w-full justify-center gap-2 py-2">
+      {% for ad in adsData.items %}
+      <a
+        href="#ads-slide-{{ loop.index }}"
+        class="btn btn-xs {% if loop.first %}btn-primary{% else %}btn-outline{% endif %}"
+        data-carousel-indicator="{{ loop.index }}"
+      >
+        {{ loop.index }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %} {# 广告位信息 (可选显示) #} {% if adsData.name %}
+  <div class="ads-info text-xs text-base-content/60 mt-2 text-center">
+    广告位: {{ adsData.name }} {% if adsData.items.length > 1 %} ({{ adsData.items.length }} 个广告)
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endif %} {% endmacro %} {# 简化版本的 ads 宏，只需要传入 adsData #} {% macro ads(adsData) %} {{
+renderAds(adsData) }} {% endmacro %} {# 带样式的 ads 宏 #} {% macro adsWithStyle(adsData,
+className="", style="") %} {{ renderAds(adsData, className, style) }} {% endmacro %} {# 紧凑版本的
+ads 宏，适合侧边栏等小空间 #} {% macro adsCompact(adsData) %} {% if adsData and adsData.items and
+adsData.items.length > 0 %}
+<div class="ads-compact">
+  {% if adsData.items.length == 1 %} {% set ad = adsData.items[0] %}
+  <div class="ads-single-compact">
+    {% if ad.link %}
+    <a href="{{ ad.link }}" target="{{ ad.target }}" class="block">
+      {% endif %} {% if ad.sImg %}
+      <img
+        src="{{ ad.sImg }}"
+        alt="{{ ad.alt or ad.title }}"
+        class="w-full h-auto object-cover rounded"
+      />
+      {% endif %} {% if ad.title %}
+      <p class="text-sm font-medium mt-1 text-center">{{ ad.title }}</p>
+      {% endif %} {% if ad.link %}
+    </a>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="carousel w-full rounded">
+    {% for ad in adsData.items %}
+    <div id="ads-compact-slide-{{ loop.index }}" class="carousel-item w-full">
+      {% if ad.link %}
+      <a href="{{ ad.link }}" target="{{ ad.target }}" class="w-full">
+        {% endif %} {% if ad.sImg %}
+        <img
+          src="{{ ad.sImg }}"
+          alt="{{ ad.alt or ad.title }}"
+          class="w-full h-auto object-cover"
+        />
+        {% endif %} {% if ad.link %}
+      </a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="flex w-full justify-center gap-1 py-1">
+    {% for ad in adsData.items %}
+    <a href="#ads-compact-slide-{{ loop.index }}" class="btn btn-xs btn-circle">{{ loop.index }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endif %} {% endmacro %}

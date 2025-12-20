@@ -1,0 +1,36 @@
+/*
+ * @Author: doramart
+ * @Date: 2019-09-24 15:34:24
+ * @Last Modified by: doramart
+ * @Last Modified time: 2025-05-09 20:25:07
+ */
+'use strict';
+const _ = require('lodash');
+const contentCategory = {
+  buildCateTree(list) {
+    const currentArr = [];
+    const temp = {};
+    const tree = {};
+    for (const i in list) {
+      temp[list[i].id] = list[i];
+    }
+    for (const i in temp) {
+      if (temp[i].parentId && temp[i].parentId !== 0 && !_.isEmpty(temp[temp[i].parentId])) {
+        if (!temp[temp[i].parentId].children) {
+          temp[temp[i].parentId].children = [];
+        }
+        const currentTemp = temp[i];
+        temp[temp[i].parentId].children.push(currentTemp);
+      } else {
+        tree[temp[i].id] = temp[i];
+      }
+    }
+    for (const item in tree) {
+      currentArr.push(tree[item]);
+    }
+    return currentArr;
+  },
+
+  // OPTION_DATABASE_END
+};
+module.exports = contentCategory;

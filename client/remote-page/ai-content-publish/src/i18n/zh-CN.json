@@ -1,0 +1,236 @@
+{
+  "common": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "warning": "警告",
+    "loading": "加载中...",
+    "goBack": "返回",
+    "delete": "删除",
+    "error": {
+      "fetchFailed": "获取数据失败",
+      "updateFailed": "更新失败",
+      "fetchCategoriesFailed": "获取分类数据失败",
+      "fetchTagsFailed": "获取标签数据失败",
+      "fetchContentFailed": "获取文章数据失败"
+    },
+    "success": {
+      "updateSuccess": "更新成功"
+    },
+    "confirmDelete": "确认要删除吗？"
+  },
+  "error": {
+    "notFound": {
+      "title": "404",
+      "subtitle": "页面不存在",
+      "description": "抱歉，您访问的页面不存在或已被删除",
+      "goHome": "返回首页"
+    }
+  },
+  "publish": {
+    "pageTitle": {
+      "edit": "编辑文章",
+      "create": "新增文章"
+    },
+    "mode": {
+      "label": "发布模式",
+      "manual": "传统模式",
+      "aiSmart": "AI 辅助",
+      "aiFull": "AI 完全",
+      "help": "模式说明",
+      "unavailable": "AI 服务未配置或不可用",
+      "goToConfig": "前往配置",
+      "manualDesc": "完全手动填写标题、摘要、标签等信息，适合对内容有精确控制需求的场景。",
+      "aiSmartDesc": "AI 自动生成缺失的元数据（标题、摘要、标签等），您可以选择采用或自行修改。适合快速发布内容。",
+      "aiFullDesc": "所有元数据由 AI 自动生成，包括 SEO 优化和内容质量检查。适合批量发布或对内容要求不高的场景。",
+      "features": {
+        "autoTitle": "自动生成标题（如果未填写）",
+        "autoSummary": "自动生成摘要（如果未填写）",
+        "autoTags": "自动提取标签（如果未选择）",
+        "autoCategory": "智能匹配分类",
+        "allMetadata": "自动生成所有元数据",
+        "seoOptimization": "SEO 关键词优化",
+        "qualityCheck": "内容质量检查",
+        "oneClickPublish": "一键智能发布"
+      }
+    },
+    "aiFullAlert": {
+      "title": "AI 完全模式已启用",
+      "description": "在此模式下，只需填写文章内容，AI 将自动生成标题、摘要、封面图、标签、关键词等所有元数据。点击智能发布即可完成发布。"
+    },
+    "form": {
+      "title": "文章标题",
+      "category": "文章分类",
+      "tags": "文章标签",
+      "coverImage": "封面图",
+      "content": "文章内容",
+      "summary": "文章摘要",
+      "keywords": "关键词",
+      "source": "来源",
+      "state": "发布状态",
+      "advanced": "高级选项",
+      "isTop": "置顶",
+      "recommendToHome": "推荐到首页",
+      "initialViews": "初始点击量",
+      "initialLikes": "初始点赞数"
+    },
+    "placeholder": {
+      "title": "请输入文章标题",
+      "selectCategory": "请选择文章分类",
+      "selectTags": "选择或输入标签",
+      "summary": "请输入文章摘要",
+      "keywords": "请输入关键词，多个关键词用逗号分隔",
+      "source": "请输入文章来源"
+    },
+    "button": {
+      "cancel": "取消",
+      "saveDraft": "保存草稿",
+      "publish": "发布文章",
+      "aiPublish": "AI 智能发布",
+      "uploadCover": "上传封面图",
+      "deleteCover": "删除图片",
+      "aiGenerate": "AI 生成",
+      "aiMatch": "AI 匹配",
+      "aiExtract": "AI 提取",
+      "aiUnavailable": "AI 生成（未配置）"
+    },
+    "tips": {
+      "aiGenerated": "由 AI 生成",
+      "needContent": "请先输入文章内容",
+      "coverConfigRequired": "请先配置文生图模型",
+      "coverConfigPrompt": "封面图AI生成功能需要配置文生图模型（如豆包 SeeDream）。是否前往配置？",
+      "confirmDelete": "确定要删除封面图吗？",
+      "checkAIService": "检查 AI 服务可用性失败",
+      "detectModels": "检测到 {count} 个可用的文生图模型",
+      "noImageModels": "未检测到可用的文生图模型，封面图AI生成功能将不可用",
+      "generating": "正在生成封面图，请稍候...",
+      "aiProcessing": "AI 生成中，请勿刷新页面...",
+      "loadingArticle": "加载文章数据...",
+      "loadingCategory": "加载分类数据...",
+      "needAIConfig": "需要跳转到 AI 模型配置页面，是否继续？",
+      "dragOrClick": "将文件拖到此处，或点击上传"
+    },
+    "status": {
+      "editing": "编辑中",
+      "draft": "草稿",
+      "pending": "待审核",
+      "published": "审核通过",
+      "offline": "下架"
+    },
+    "section": {
+      "basicInfo": "基础信息",
+      "content": "正文",
+      "seo": "摘要与SEO",
+      "settings": "发布设置"
+    },
+    "validation": {
+      "titleRequired": "请输入文章标题",
+      "contentRequired": "请输入文章内容",
+      "categoryRequired": "请选择文章分类",
+      "tagsRequired": "请选择或输入标签",
+      "keywordsRequired": "请输入关键词",
+      "summaryRequired": "请输入文章摘要",
+      "stateRequired": "请选择发布状态",
+      "coverRequired": "请上传封面图",
+      "formInvalid": "请完善必填信息"
+    },
+    "success": {
+      "loadArticle": "文章数据加载成功",
+      "loadCategory": "分类加载成功",
+      "loadTags": "标签加载成功",
+      "uploadCover": "封面图上传成功",
+      "deleteCover": "封面图已删除",
+      "generateTitle": "标题生成成功，请在右侧查看",
+      "generateSummary": "摘要生成成功，请在右侧查看",
+      "generateTags": "标签生成成功，请在右侧查看",
+      "generateKeywords": "成功生成 {count} 个关键词",
+      "matchCategory": "分类匹配成功，请在右侧查看",
+      "generateCover": "封面图生成成功",
+      "preview": "AI 增强预览完成，请在右侧查看建议",
+      "publish": "发布成功",
+      "update": "更新发布成功",
+      "applyTag": "成功应用 {count} 个标签",
+      "applyTagWithNew": "成功应用 {count} 个标签（新建 {newCount} 个）",
+      "applyCategory": "成功应用分类: {name}",
+      "applyKeywords": "成功应用 {count} 个关键词",
+      "aiEnhancements": "AI 已自动生成：{items}"
+    },
+    "error": {
+      "loadArticle": "加载文章数据失败",
+      "loadCategory": "加载分类失败",
+      "loadTags": "加载标签失败",
+      "uploadCover": "封面图上传失败",
+      "uploadImageType": "请上传 JPG、PNG、GIF 或 WebP 格式的图片",
+      "uploadImageSize": "图片大小不能超过 2MB",
+      "generateTitle": "生成标题失败",
+      "generateSummary": "生成摘要失败",
+      "generateTags": "生成标签失败",
+      "generateKeywords": "生成关键词失败",
+      "matchCategory": "分类匹配失败",
+      "generateCover": "生成封面图失败",
+      "generateCoverEmpty": "AI生成的图片URL为空",
+      "modelNotFound": "未找到可用的文生图模型，请先配置",
+      "modelNotSupport": "所选模型不支持图片生成，请配置文生图模型",
+      "timeout": "生成超时，请稍后重试",
+      "noPrompt": "无法生成提示词，请先填写标题或内容",
+      "noCategoryMatch": "AI未能找到匹配的分类，请手动选择",
+      "noCategoryFound": "未找到匹配的分类: {name}，请手动选择",
+      "preview": "AI 增强失败",
+      "publish": "发布失败",
+      "update": "更新失败",
+      "applyTag": "应用标签建议失败",
+      "applyCategory": "应用分类建议失败",
+      "noTagSuggestion": "没有可用的标签建议",
+      "noCategorySuggestion": "没有可用的分类建议",
+      "noKeywordSuggestion": "没有可用的关键词建议",
+      "applyKeywords": "应用关键词建议失败"
+    },
+    "enhancement": {
+      "title": "标题",
+      "summary": "摘要",
+      "tags": "标签",
+      "category": "分类",
+      "coverImage": "封面图"
+    }
+  },
+  "aiSuggestion": {
+    "title": "AI 建议",
+    "unavailable": "AI 服务未配置或不可用",
+    "goToConfig": "前往配置",
+    "costAlert": "本次生成预估消耗 ¥{cost}",
+    "button": {
+      "preview": "预览 AI 增强效果",
+      "generating": "AI 生成中...",
+      "generateTitle": "生成标题",
+      "generateSummary": "生成摘要",
+      "extractTags": "提取标签",
+      "apply": "采用",
+      "applied": "已采用",
+      "dismiss": "忽略",
+      "clearAll": "清空全部"
+    },
+    "list": {
+      "title": "建议列表",
+      "empty": "暂无建议"
+    },
+    "empty": "暂无 AI 建议",
+    "costUnit": "¥",
+    "type": {
+      "title": "标题",
+      "summary": "摘要",
+      "tags": "标签",
+      "category": "分类"
+    },
+    "status": {
+      "available": "服务正常",
+      "unavailable": "服务不可用"
+    },
+    "usage": {
+      "title": "今日使用情况",
+      "calls": "AI 调用次数",
+      "cost": "预估成本"
+    },
+    "success": {
+      "applied": "已采用 AI 建议"
+    }
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "user": {
+    "center": {
+      "basicInfo": "Basic Information",
+      "joinComments": "Join Topics",
+      "noJoinComment": "No topics joined yet",
+      "commentOn": "commented on",
+      "myDocument": "My Documents",
+      "noDocument": "No documents yet",
+      "loading": "Loading...",
+      "noDescription": "No description",
+      "goodMorning": "Good Morning",
+      "goodAfternoon": "Good Afternoon",
+      "goodEvening": "Good Evening",
+      "user": "User",
+      "welcomeMessage": "Welcome to your personal center, where you can manage your information and content.",
+      "quickNav": "Quick Navigation",
+      "notifications": "Notifications",
+      "viewAll": "View All",
+      "recentActivity": "Recent Activity",
+      "announcements": "Announcements",
+      "noAnnouncement": "No announcements"
+    },
+    "apiKey": {
+      "createApiKey": "Create API Key",
+      "apiKey": "API Key",
+      "apiKeyList": "API Key List",
+      "editApiKey": "Edit API Key",
+      "apiKeyDetails": "API Key Details",
+      "name": "Name",
+      "status": "Status",
+      "permissions": "Permissions",
+      "ipWhitelist": "IP Whitelist",
+      "rateLimit": "Rate Limit",
+      "expiresAt": "Expires At",
+      "createdAt": "Created At",
+      "lastUsedAt": "Last Used At",
+      "secret": "Secret",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "active": "Active",
+      "inactive": "Inactive",
+      "url": "URL",
+      "method": "Method",
+      "requests": "Requests",
+      "period": "Period (seconds)",
+      "never": "Never",
+      "yes": "Yes",
+      "no": "No",
+      "per": "per",
+      "noIpRestrictions": "No IP Restrictions",
+      "addPermission": "Add Permission",
+      "usageInstructions": "Usage Instructions",
+      "includeHeaders": "Include the following headers in API requests:",
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "enable": "Enable",
+        "disable": "Disable",
+        "rotate": "Rotate",
+        "delete": "Delete",
+        "create": "Create",
+        "update": "Update",
+        "close": "Close",
+        "cancel": "Cancel"
+      },
+      "form": {
+        "namePlaceholder": "Enter API Key Name",
+        "urlPlaceholder": "Enter API URL",
+        "selectMethod": "Select Method",
+        "ipPlaceholder": "Enter IP Address",
+        "requestsPlaceholder": "Requests",
+        "periodPlaceholder": "Period (seconds)",
+        "expirationPlaceholder": "Select Expiration Date"
+      },
+      "validation": {
+        "nameRequired": "Enter API Key Name",
+        "nameLength": "Name length should be 3 to 50 characters",
+        "permissionsRequired": "Please add at least one permission"
+      },
+      "messages": {
+        "createSuccess": "API Key created successfully",
+        "updateSuccess": "API Key updated successfully",
+        "enableSuccess": "API Key enabled successfully",
+        "disableSuccess": "API Key disabled successfully",
+        "rotateSuccess": "API Key rotated successfully",
+        "deleteSuccess": "API Key deleted successfully",
+        "copySuccess": "Copied to clipboard",
+        "copyFailed": "Failed to copy to clipboard",
+        "fetchFailed": "Failed to fetch API Key list",
+        "createFailed": "Failed to create API Key",
+        "updateFailed": "Failed to update API Key",
+        "enableFailed": "Failed to enable API Key",
+        "disableFailed": "Failed to disable API Key",
+        "rotateFailed": "Failed to rotate API Key",
+        "deleteFailed": "Failed to delete API Key"
+      },
+      "confirm": {
+        "deleteTitle": "Are you sure you want to delete this API Key?"
+      }
+    },
+    "profile": {
+      "basic": {
+        "email": "Email",
+        "username": "Username",
+        "name": "Name",
+        "phoneNum": "Phone Number",
+        "comments": "Comments",
+        "avatar": "Avatar"
+      },
+      "placeholder": {
+        "email": "Please enter your email",
+        "currentEmail": "Please enter a valid email address",
+        "username": "Please enter your username",
+        "name": "Please enter your name",
+        "tel": "Please enter your phone number",
+        "comments": "Please enter your comments"
+      },
+      "tips": {
+        "avatarSize": "Image size should not exceed 2MB, supports jpg, png, gif, webp formats"
+      }
+    },
+    "auth": {
+      "login": "Login",
+      "newAccount": "Create New Account",
+      "register": "Register",
+      "registerSuccess": "Registration successful",
+      "resetPassword": "Reset Password",
+      "resetPasswordSuccess": "Password reset successful",
+      "resetPasswordFailed": "Password reset failed",
+      "password": {
+        "label": "Password",
+        "confirm": "Confirm Password",
+        "modify": "Change Password",
+        "nullTips": "Please enter password",
+        "confirmNull": "Please enter password again",
+        "forgot": "Forgot Password"
+      },
+      "placeholder": {
+        "password": "Please enter your password",
+        "currentPassword": "Please enter a valid password",
+        "rePassword": "Please enter your password again"
+      },
+      "verify": {
+        "imageCode": "Verification Code",
+        "sendCode": "Send Code",
+        "codeSent": "Verification code has been sent"
+      },
+      "email": {
+        "confirm": "Confirm Email",
+        "sendEmail": "Send Reset Email",
+        "sendSuccess": "Reset email has been sent, please check your inbox",
+        "sendFailed": "Failed to send reset email",
+        "invalidEmail": "Invalid email address"
+      }
+    },
+    "action": {
+      "modifyPassword": "Modify Password",
+      "updateInfo": "Update Information"
+    },
+    "action_type_register": "Register",
+    "home": {
+      "userInfo": "User Information",
+      "gender": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "secret": "Secret",
+      "birthday": "Birthday",
+      "selectDate": "Select Date",
+      "region": "Region",
+      "selectRegion": "Please select region",
+      "save": "Save",
+      "submitSuccess": "Submission successful",
+      "formCheckFailed": "Form validation failed, please check your input",
+      "phoneNumberFormat": "Please enter a valid phone number",
+      "selectGender": "Please select gender",
+      "selectBirthday": "Please select birthday"
+    }
+  },
+  "system": {
+    "title": {
+      "userCenter": "User Center",
+      "userHome": "User Home",
+      "myArticles": "My Articles",
+      "createArticle": "Create Article",
+      "editArticle": "Edit Article",
+      "aiContentPublish": "AI Content Publish",
+      "joinComments": "Join Comments",
+      "personalInfo": "Personal Information",
+      "changePassword": "Change Password",
+      "register": "User Registration",
+      "forgotPassword": "Forgot Password",
+      "resetPassword": "Reset Password"
+    },
+    "language": {
+      "chinese": "中文",
+      "english": "English"
+    },
+    "menu": {
+      "home": "Home",
+      "userHome": "User Home",
+      "content": "Content",
+      "myArticles": "My Articles",
+      "joinComments": "Join Comments",
+      "account": "Account",
+      "personalInfo": "Personal Info",
+      "changePassword": "Change Password",
+      "profile": "Profile",
+      "logout": "Logout",
+      "apiKey": "API Key"
+    },
+    "dialog": {
+      "title": "Notice",
+      "logoutConfirm": "Are you sure you want to logout?"
+    },
+    "button": {
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "reset": "Reset",
+      "backToHome": "Back to Home"
+    },
+    "error": {
+      "logoutFailed": "Logout failed: ",
+      "notFound": "Page Not Found",
+      "notFoundMessage": "Sorry, the page you are looking for does not exist or has been removed"
+    },
+    "footer": {
+      "copyright": "DoraCMS. All rights reserved."
+    },
+    "settings": "System Settings"
+  },
+  "validation": {
+    "userLoginOk": "Login successful",
+    "loginNotSuccess": "Login failed",
+    "inputNull": "Please enter {0}",
+    "inputCorrect": "Please enter a valid {0}",
+    "rangelength": "{0} must be between {1} and {2} characters",
+    "ranglengthandnormal": "{0} must be between {1} and {2} characters, and cannot be pure numbers, pure letters, or pure special characters",
+    "passwordStrength": "Password must contain letters, numbers and special characters",
+    "passwordNotMatching": "Passwords do not match",
+    "passwordModifySuccess": "Password modified successfully",
+    "userContentSImg": "Please upload a thumbnail",
+    "userContentCategory": "Please select a category",
+    "userContentTags": "Please select a tag",
+    "formInvalid": "Form validation failed, please check your input"
+  },
+  "common": {
+    "error": {
+      "fetchFailed": "Failed to fetch data",
+      "updateFailed": "Update failed",
+      "fetchCategoriesFailed": "Failed to fetch category data",
+      "fetchTagsFailed": "Failed to fetch tag data",
+      "fetchContentFailed": "Failed to fetch content data"
+    },
+    "success": {
+      "updateSuccess": "Update successful"
+    },
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "warning": "Warning"
+  },
+  "content": {
+    "title": "Title",
+    "description": "Description",
+    "createdAt": "Date",
+    "views": "Views",
+    "comments": "Comments",
+    "actions": "Actions",
+    "view": "View",
+    "edit": "Edit",
+    "state": {
+      "draft": "Draft",
+      "wait": "Pending",
+      "publish": "Published",
+      "failed": "Rejected"
+    },
+    "action": {
+      "addContent": "New Article",
+      "editContent": "Edit Article",
+      "commitContent": "Submit Article",
+      "saveDraft": "Save Draft",
+      "uploadWord": "Upload Word Document"
+    },
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "category": "Category",
+      "tag": "Tag",
+      "thumbnail": "Thumbnail",
+      "details": "Article Details"
+    },
+    "placeholder": {
+      "title": "Please enter title",
+      "description": "Please enter description",
+      "selectCategory": "Please select category",
+      "selectChildCategory": "Please select child category",
+      "selectTag": "Please select tag"
+    },
+    "validation": {
+      "titleRequired": "Please enter title",
+      "descriptionRequired": "Please enter description",
+      "contentRequired": "Please enter article content"
+    },
+    "tips": {
+      "thumbnailSize": "Image size should not exceed 2MB",
+      "wordSize": "Document size should not exceed 10MB, supporting .doc/.docx format"
+    },
+    "submitSuccess": "Submission successful",
+    "submitFailed": "Submission failed",
+    "confirmCancel": "Are you sure to cancel? Unsaved changes will be lost"
+  },
+  "upload": {
+    "success": "Upload successful",
+    "failed": "Upload failed",
+    "imageTypeError": "Please upload image format files",
+    "imageSizeError": "Image size cannot exceed 2MB",
+    "wordTypeError": "Please upload Word document format (.doc/.docx)",
+    "wordSizeError": "Document size cannot exceed 10MB",
+    "wordImportSuccess": "Word document imported successfully"
+  }
+}

@@ -1,0 +1,923 @@
+{
+  "user": {
+    "profile": {
+      "gender": {
+        "male": "Men",
+        "female": "Female"
+      },
+      "basic": {
+        "username": "User Name",
+        "name": "Name",
+        "email": "Email Box",
+        "phoneNum": "Cell Phone No.",
+        "birthday": "Birthday",
+        "gender": "Gender",
+        "comments": "Note",
+        "introduction": "Introduction",
+        "experience": "Experience",
+        "profession": "Profession"
+      },
+      "placeholder": {
+        "username": "Please Enter The User name",
+        "name": "Please Enter Your Name",
+        "tel": "Please Enter Your Cell Phone No.",
+        "comments": "Please Enter The Notes",
+        "email": "Please Enter Your Email",
+        "currentEmail": "Please Enter a correct email"
+      }
+    },
+    "auth": {
+      "login": "Login",
+      "loginJust": "Login now",
+      "register": "Register",
+      "newAccount": "Creat New Account",
+      "logout": "Login Out",
+      "password": {
+        "label": "Password",
+        "new": "New password",
+        "confirm": "Confirm Password",
+        "reset": "Reset Password",
+        "update": "Update",
+        "modify": "Modify The Password",
+        "remember": "Remember password",
+        "nullTips": "Please Enter the Password",
+        "confirmNull": "Please Confirm Password"
+      },
+      "placeholder": {
+        "password": "Please Enter the password",
+        "rePassword": "Please Enter The Password Again",
+        "currentPassword": "Please Enter The Correct Password"
+      },
+      "verify": {
+        "getCode": "Get verification code",
+        "imageCode": "Verification Code"
+      }
+    },
+    "center": {
+      "label": "User Center",
+      "accountSettings": "Account Setting",
+      "basicInfo": "Basic Info",
+      "myScore": "Points",
+      "myDocument": "Articles",
+      "myMessage": "Message Managment",
+      "myJoinComment": "The Threads You've Replied",
+      "myPostArticles": "Contributions",
+      "noDocument": "You hasn't Published any articles",
+      "noMessage": "No New Message, right now!",
+      "noJoinComment": "Hasn't Participate Any Threades Before",
+      "myIndex": "My homepage",
+      "myHomepage": "My Home",
+      "countryCode": "Country Code"
+    },
+    "action": {
+      "bind": "Bind",
+      "updateInfo": "Update it",
+      "modifyPassword": "Modify",
+      "tips": {
+        "repeat": "Cannot repeat {0}",
+        "subscribeSelf": "Cannot follow yourself",
+        "addCreator": "Follow creator",
+        "unsubscribeCreator": "Unfollow creator",
+        "sendMessage": "Send verification code",
+        "praiseSelf": "Cannot like your own content"
+      },
+      "types": {
+        "thumbsUp": "Like",
+        "favorite": "Favorite",
+        "despise": "Dislike"
+      }
+    },
+    "errors": {
+      "invalidLoginType": "Invalid login type parameter"
+    },
+    "messages": {
+      "userLoggedIn": "User {0} logged in"
+    },
+    "warnings": {
+      "resetPasswordEmailFailed": "Failed to send password reset email: {0}",
+      "verificationEmailFailed": "Failed to send verification code email: {0}"
+    }
+  },
+  "system": {
+    "button": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "add": "Add",
+      "edit": "Edit",
+      "delete": "Delete",
+      "search": "Search",
+      "confirm": "Confirm",
+      "reset": "Reset",
+      "update": "Update",
+      "publish": "Publish",
+      "send": "Send"
+    },
+    "tips": {
+      "regSuccess": "Congrats, account registered succeed. Please re-login!"
+    },
+    "page": {
+      "noPower": "You don't have permission to access this page"
+    },
+    "notice": {
+      "noPower": "You don't have permission to perform this operation"
+    },
+    "config": {
+      "key": "Config Key",
+      "value": "Config Value",
+      "type": "Config Type"
+    },
+    "error": {
+      "imageType": "The file format is not correct, please upload it again",
+      "upload": "The upload failed. Please try again later"
+    },
+    "operation": {
+      "success": "Operation successful"
+    }
+  },
+  "systemConfig": {
+    "fields": {
+      "key": "Config Key",
+      "value": "Config Value",
+      "type": "Config Type",
+      "public": "Is Public"
+    }
+  },
+  "content": {
+    "article": {
+      "hotDocuments": "Hot Articles",
+      "newDocuments": "Latest Articles",
+      "relatedDocuments": "Related Articles",
+      "recDocuments": "Recommend Articles",
+      "guessYouLike": "Maybe Like",
+      "randomDocuments": "Recommend",
+      "preDocument": "Prev one",
+      "nextDocument": "Next one",
+      "readMore": "Read More",
+      "documentContent": "Contents",
+      "documentDetail": "Content"
+    },
+    "tag": {
+      "nameExists": "Tag name already exists, please use a different name",
+      "aliasExists": "Tag alias already exists, please use a different alias"
+    },
+    "type": {
+      "video": "Video",
+      "audio": "Audio",
+      "article": "Article"
+    },
+    "fields": {
+      "title": "Title",
+      "stitle": "Brief Title",
+      "description": "Brief Describe",
+      "category": "Category",
+      "childCategory": "Child Category",
+      "tag": "Tag",
+      "tags": "All Tags",
+      "author": "Author",
+      "thumbnail": "Thumbnail",
+      "details": "Details",
+      "comments": "File content",
+      "readNum": "Reading",
+      "like": "Like It !",
+      "share": "Reprint",
+      "translate": "Translate"
+    },
+    "placeholder": {
+      "title": "Please Enter The Title",
+      "description": "Please Enter An Abstract for this Articles",
+      "selectCategory": "Please Choose the right Category",
+      "selectChildCategory": "Please Choose child Category",
+      "selectTag": "Please choose Tag",
+      "writeKey": "Please enter the keywords for this article"
+    },
+    "validation": {
+      "titleRequired": "The title of the article shouldn't be Null",
+      "descriptionRequired": "The Abstract of the article shouldn't be Null"
+    },
+    "state": {
+      "draft": "Edit draft",
+      "wait": "Wait Auth",
+      "publish": "Published",
+      "failed": "Auth failed"
+    },
+    "action": {
+      "saveDraft": "Save draft",
+      "publish": "Post",
+      "uploadWord": "Upload Word",
+      "commitContent": "Publish"
+    },
+    "message": {
+      "postMessage": "Submit the comments",
+      "documentMessage": "Comments",
+      "joinPostMessage": "Participate In Comments",
+      "pleaseWriteMessage": "Please Enter The Comments",
+      "newComments": "Latest Comments",
+      "hello": "Hello"
+    }
+  },
+  "site": {
+    "friendLink": "Friends",
+    "helpCenter": "Help Center",
+    "sitemap": "Site Map",
+    "contactUs": "Contact Us",
+    "position": "Your Position: ",
+    "panelTitleCate": "Catalogue",
+    "listNoContent": "No Contents, right now!",
+    "creative": "Creation",
+    "recentEssence": "Recent Essence",
+    "wantComments": "I want to evaluate",
+    "recommand": "Recommend",
+    "noData": "No data yet",
+    "signedIn": "You have already checked in"
+  },
+  "search": {
+    "label": "Search",
+    "inputKeyword": "Please Input Keyword",
+    "hotSearch": "Hot Keyword",
+    "newSearch": "Latest Keyword",
+    "keywords": {
+      "jesus": "Jesus",
+      "truth": "Truth",
+      "church": "Church",
+      "holySpirit": "Holy Spirit"
+    },
+    "change": "Change a batch"
+  },
+  "ads": {
+    "name": "Ad Name"
+  },
+  "validation": {
+    "inputNull": "Please Enter {0}",
+    "uploadNull": "Please upload {0}",
+    "inputCorrect": "Please enter the right {0}",
+    "selectNull": "Please choose {0}",
+    "rangelength": "{0} The length you can enter between {1} and {2}",
+    "ranglengthandnormal": "{0} Length between {1} and {2}, only letter, number and underline are available.",
+    "maxlength": "The maximum character you can entery is {0}",
+    "minlength": "Don't less than {0} character",
+    "errorField": "{0} cannot contain special characters",
+    "passwordNotMatching": "The password and confirm password not same",
+    "limitUploadImgType": "Only JPG,PNG,GIF pics are avaiable to upload",
+    "limitUploadImgSize": "The pics size can't exceed {0} MB",
+    "errorParams": "Invalid Parameter, Please try again.",
+    "errorRepost": "Please Click Only Once",
+    "getSuccess": "Submit Succed {0}",
+    "errorPassAtypism": "The password to same, try one more time",
+    "userForbiden": "This account has been restricted login, please try later.",
+    "loginNotSuccess": "Wrong User name or Password",
+    "loginNotSuccess1": "Unregistered or wrong password",
+    "hadUseUserName": "User name already exits, please choose another one.",
+    "hadUseUserNameOrEmail": "User name or email already exits.",
+    "userLoginOk": "Login Successfully",
+    "userRegOk": "Register Successfully",
+    "userLogoutOk": "Log out Successfully",
+    "userHadBind": "This number has been bound by another account",
+    "userAddInfo": "Please improve the information first",
+    "delAdminUserNotice": "Please delete this admin's comments then do this actions.",
+    "forbidMoreReq": "Your operation is too frequent. Please take a break!",
+    "messageAddErr": "Please comment to a specific article",
+    "userContentSImg": "Please choose thumbnails",
+    "userContentCategory": "Please select categories",
+    "userContentTags": "Please select tags",
+    "field": {
+      "required": "{0} is required",
+      "format": "{0} format is invalid",
+      "enum": "{0} must be a valid option",
+      "length": "{0} length must be between {1} and {2}",
+      "min": "{0} must be at least {1} characters",
+      "max": "{0} cannot exceed {1} characters"
+    },
+    "admin": {
+      "userName": {
+        "required": "Username is required",
+        "format": "Username format is invalid"
+      },
+      "userPhone": {
+        "required": "Phone number is required",
+        "format": "Please enter a valid phone number (11 digits, starting with 1, second digit 3-9)"
+      },
+      "userEmail": {
+        "required": "Email address is required",
+        "format": "Please enter a valid email address"
+      },
+      "userGender": {
+        "required": "Gender is required",
+        "enum": "Gender must be male or female"
+      },
+      "nickName": {
+        "required": "Nickname is required"
+      },
+      "status": {
+        "required": "Status is required",
+        "enum": "Status must be enabled or disabled"
+      },
+      "password": {
+        "required": "Password is required",
+        "format": "Password format is invalid",
+        "invalid": "Password must be a valid string"
+      },
+      "userRoles": {
+        "invalid": "User roles must be an array of valid IDs"
+      },
+      "id": {
+        "required": "User ID is required"
+      },
+      "ids": {
+        "required": "User IDs are required for deletion"
+      }
+    },
+    "role": {
+      "roleName": {
+        "required": "Role name is required",
+        "format": "Role name format is invalid"
+      },
+      "roleDescription": {
+        "required": "Role description is required",
+        "invalid": "Role description must be a valid string"
+      },
+      "status": {
+        "required": "Role status is required",
+        "enum": "Role status must be enabled or disabled"
+      },
+      "menus": {
+        "invalid": "Menu permissions must be an array of valid IDs"
+      },
+      "buttons": {
+        "invalid": "Button permissions must be an array of valid permission codes"
+      },
+      "id": {
+        "required": "Role ID is required"
+      },
+      "ids": {
+        "required": "Role IDs are required for deletion"
+      }
+    },
+    "menu": {
+      "menuName": {
+        "required": "Menu name is required",
+        "format": "Menu name format is invalid"
+      },
+      "menuPath": {
+        "required": "Menu path is required",
+        "format": "Menu path format is invalid"
+      },
+      "menuIcon": {
+        "format": "Menu icon format is invalid"
+      },
+      "status": {
+        "required": "Menu status is required",
+        "enum": "Menu status must be enabled or disabled"
+      },
+      "sort": {
+        "required": "Sort order is required",
+        "format": "Sort order must be a number"
+      }
+    },
+    "template": {
+      "name": {
+        "length": "Theme name length should be between 1-100 characters"
+      },
+      "slug": {
+        "format": "Theme slug can only contain letters, numbers, underscores and hyphens, length 1-50 characters"
+      },
+      "version": {
+        "format": "Version format should be x.y.z"
+      },
+      "author": {
+        "max": "Author name length cannot exceed 100 characters"
+      },
+      "description": {
+        "max": "Description length cannot exceed 500 characters"
+      },
+      "screenshot": {
+        "max": "Screenshot URL length cannot exceed 255 characters"
+      },
+      "config": {
+        "invalid": "Theme config must be in object format"
+      },
+      "active": {
+        "invalid": "Active status must be a boolean value"
+      },
+      "installed": {
+        "invalid": "Installation status must be a boolean value"
+      },
+      "status": {
+        "enum": "Status value must be 0 or 1"
+      },
+      "ids": {
+        "deleteRequired": "Please select themes to delete",
+        "updateRequired": "Please select themes to update"
+      },
+      "downloadCount": {
+        "min": "Download count must be a non-negative integer"
+      },
+      "rating": {
+        "range": "Rating must be between 0-5"
+      },
+      "reviewCount": {
+        "min": "Review count must be a non-negative integer"
+      }
+    },
+    "content": {
+      "title": {
+        "required": "Title is required",
+        "format": "Title format is invalid"
+      },
+      "description": {
+        "required": "Description is required"
+      },
+      "categoryId": {
+        "required": "Category is required",
+        "format": "Category ID format is invalid"
+      },
+      "status": {
+        "required": "Content status is required",
+        "enum": "Content status must be a valid option"
+      }
+    },
+    "user": {
+      "phoneNum": {
+        "invalid": "Invalid phone number format"
+      }
+    },
+    "system": {
+      "configKey": {
+        "required": "Config key is required",
+        "format": "Config key format is invalid"
+      },
+      "configValue": {
+        "required": "Config value is required"
+      },
+      "type": {
+        "required": "Config type is required",
+        "enum": "Config type must be a valid option"
+      }
+    },
+    "required": "{0} is required",
+    "enum": "{0} must be a valid option",
+    "between": "{0} must be between {1} and {2}",
+    "ai": {
+      "apiKey": {
+        "required": "API Key is required",
+        "format": "API Key format is invalid"
+      },
+      "provider": {
+        "required": "AI provider is required",
+        "enum": "AI provider must be a valid option"
+      },
+      "modelName": {
+        "required": "Model name is required",
+        "format": "Model name format is invalid"
+      },
+      "displayName": {
+        "required": "Display name is required"
+      },
+      "apiEndpoint": {
+        "required": "API endpoint is required",
+        "format": "API endpoint format is invalid"
+      }
+    }
+  },
+  "email": {
+    "userName": "Your Name",
+    "email": "Your Email",
+    "confirmEmail": "Email Confirm",
+    "title": "Title",
+    "content": "Content",
+    "sendButton": "Send",
+    "noticeTitle": "Reply:",
+    "successNotice": "Wait a minute. Thanks for your contact, we'll report it to Director.",
+    "noticeInfo": "Your contacts info as follow:",
+    "resetPwdSuccess": "Email sent successfully, please check your inbox",
+    "noEmail": "User not found by this email",
+    "linkTimeout": "Link has expired",
+    "errorMessage": "Information is incorrect, password cannot be reset"
+  },
+  "resdata": {
+    "getlistError": "Get {label} Failure: {0}",
+    "deldataError": "Delete Data Failure: {0}",
+    "savedataError": "Save Data Failure: {0}",
+    "updatedataError": "Update Data Failure: {0}",
+    "checkformdataError": "Check Form Data Failure: {0}",
+    "checkSysConfigError": "Please improve the system settings",
+    "setnoticereadSuccess": "Set up readed success",
+    "setnoticereadError": "Set up readed failure: {0}"
+  },
+  "labels": {
+    "profession": "Profession",
+    "introduction": "Introduction",
+    "experience": "Experience",
+    "bind": "bind"
+  },
+  "api": {
+    "response": {
+      "success": "{0} successful"
+    }
+  },
+  "databack": "Data Backup",
+  "watchAll": "All attention",
+  "download": "Download",
+  "your": {
+    "position": "Your Position: "
+  },
+  "and": "and",
+  "fensi": "fans",
+  "common": {
+    "labels": {
+      "template": "Template Theme"
+    },
+    "messages": {
+      "operationSuccess": "{0} operation succeeded",
+      "createSuccess": "{0} created successfully",
+      "updateSuccess": "{0} updated successfully",
+      "deleteSuccess": "{0} deleted successfully"
+    },
+    "errors": {
+      "notFound": "{0} does not exist",
+      "forbiddenAction": "Action is not allowed on {0}",
+      "invalidStatus": "{0} has an invalid status"
+    }
+  },
+  "template": {
+    "label": "Template",
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "version": "Version",
+      "author": "Author",
+      "screenshot": "Screenshot",
+      "isSystem": "System Template"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "message": {
+      "activateSuccess": "Theme {0} activated successfully",
+      "deactivateSuccess": "Theme {0} deactivated",
+      "installSuccess": "Theme installed successfully",
+      "uninstallSuccess": "Theme uninstalled successfully",
+      "deleteCountSuccess": "Deleted {0} themes successfully",
+      "updateCountSuccess": "Updated {0} themes successfully",
+      "remoteInstallSuccess": "Remote template installed successfully",
+      "uploadInstallSuccess": "Template uploaded and installed successfully",
+      "upgradeSuccess": "Template upgraded successfully",
+      "downloadUpdated": "Download count updated",
+      "rateSuccess": "Rating submitted successfully",
+      "installSuccessWithName": "Theme \"{0}\" installed successfully",
+      "remoteInstallSuccessWithName": "Remote theme \"{0}\" installed successfully",
+      "uninstallSuccessWithName": "Theme \"{0}\" uninstalled successfully",
+      "activateSuccessWithName": "Theme \"{0}\" activated successfully",
+      "deactivateSuccessWithName": "Theme \"{0}\" deactivated successfully",
+      "updateSuccessWithName": "Theme \"{0}\" updated successfully",
+      "generatedVariants": "Generated {1} template variants for theme \"{0}\"",
+      "batchGenerateSummary": "Batch generation finished: {0} files, {1} errors",
+      "themeFilesComplete": "Theme files are complete, nothing to generate",
+      "generateMissingFiles": "Generation finished: created {0} missing files"
+    },
+    "error": {
+      "notFound": "Template theme not found",
+      "deleteActiveForbidden": "Cannot delete an active theme",
+      "deleteSystemForbidden": "System templates cannot be deleted",
+      "noActiveTheme": "No active theme found",
+      "ratingRange": "Rating must be between 1 and 5",
+      "deleteActiveList": "Cannot delete active themes: {0}",
+      "deleteSystemList": "System templates cannot be deleted: {0}",
+      "duplicateUpload": "You have already uploaded this theme, please change the info and retry",
+      "invalidFileType": "Invalid file type",
+      "configFileMissing": "theme.json config file is missing",
+      "configParseFailed": "Failed to parse config file: {0}",
+      "invalidConfig": "Please complete the config file correctly",
+      "alreadyInstalled": "Theme is already installed",
+      "zipNotFound": "Template archive not found: {0}",
+      "themeFileIncomplete": "Theme files are incomplete: {0}",
+      "configNameRequired": "Config file is missing \"name\" field",
+      "configAliasRequired": "Config file is missing alias/theme.name field",
+      "unavailable": "Theme does not exist or is disabled",
+      "exists": "Theme \"{0}\" already exists",
+      "notFoundWithId": "Theme not found: {0}",
+      "cannotUninstallActive": "Cannot uninstall active theme \"{0}\"",
+      "cannotUninstallSystem": "System theme \"{0}\" cannot be uninstalled",
+      "themeFileMissing": "Theme files do not exist: {0}",
+      "generateFileFailed": "Failed to generate {0}: {1}",
+      "extractFailed": "Failed to extract theme package: {0}",
+      "generateTemplateFailed": "Failed to generate template {0}-{1}: {2}",
+      "generateVariantsFailed": "Failed to generate template variants: {0}",
+      "postInstallFailed": "Post-install processing failed: {0}"
+    }
+  },
+  "mail": {
+    "label": "Mail",
+    "delivery": {
+      "label": "Mail Delivery",
+      "fields": {
+        "title": "Task Title",
+        "type": "Task Type",
+        "timing": "Schedule",
+        "comments": "Remarks",
+        "targets": "Targets",
+        "sender": "Sender",
+        "status": "Task Status",
+        "id": "Task ID"
+      },
+      "error": {
+        "timingRequired": "Schedule time is required for timed task",
+        "targetsRequired": "Please choose at least one target",
+        "taskNotFound": "Mail task not found",
+        "idAndStatusRequired": "Task ID and status are required",
+        "invalidTaskStatus": "Invalid task status"
+      }
+    },
+    "template": {
+      "label": "Mail Template",
+      "fields": {
+        "name": "Template Name",
+        "type": "Template Type",
+        "content": "Template Content",
+        "comment": "Template Remark"
+      }
+    }
+  },
+  "admin": {
+    "label": "Administrator",
+    "fields": {
+      "userName": "Username",
+      "userPhone": "Phone Number",
+      "userEmail": "Email",
+      "nickName": "Nickname",
+      "userGender": "Gender",
+      "status": "Status",
+      "password": "Password",
+      "roles": "Roles"
+    },
+    "messages": {
+      "createSuccess": "Administrator created successfully",
+      "updateSuccess": "Administrator updated successfully",
+      "deleteSuccess": "Successfully deleted {0} administrator(s)",
+      "batchDeleteSuccess": "Batch delete administrators successfully"
+    },
+    "init": {
+      "alreadyInitialized": "Administrator already exists, initialization is not required",
+      "success": "Administrator initialized successfully"
+    },
+    "errors": {
+      "notFound": "Administrator not found",
+      "userNameExists": "Username already exists",
+      "phoneExists": "Phone number already exists",
+      "emailExists": "Email already exists",
+      "deleteSelf": "You cannot delete the currently logged-in administrator",
+      "lastAdmin": "At least one administrator must remain in the system",
+      "hasPublishedContent": "Administrator {0} has published content and cannot be deleted"
+    }
+  },
+  "role": {
+    "label": "Role",
+    "fields": {
+      "roleName": "Role Name",
+      "roleDescription": "Role Description",
+      "status": "Status",
+      "permissions": "Permissions"
+    },
+    "messages": {
+      "createSuccess": "Role created successfully",
+      "updateSuccess": "Role updated successfully",
+      "deleteSuccess": "Successfully deleted {0} role(s)",
+      "batchDeleteSuccess": "Batch delete roles successfully"
+    },
+    "errors": {
+      "notFound": "Role not found",
+      "nameExists": "Role name already exists",
+      "hasUsers": "Cannot delete role with associated users",
+      "invalidButtons": "The following button permissions are invalid or not bound to menu: {0}"
+    }
+  },
+  "menu": {
+    "label": "Menu",
+    "fields": {
+      "menuName": "Menu Name",
+      "menuPath": "Menu Path",
+      "menuIcon": "Menu Icon",
+      "sort": "Sort Order",
+      "status": "Status",
+      "parentMenu": "Parent Menu"
+    },
+    "messages": {
+      "createSuccess": "Menu created successfully",
+      "updateSuccess": "Menu updated successfully",
+      "deleteSuccess": "Successfully deleted {0} menu(s)",
+      "batchDeleteSuccess": "Batch delete menus successfully"
+    },
+    "errors": {
+      "notFound": "Menu not found",
+      "nameExists": "Menu name already exists",
+      "hasChildren": "Cannot delete menu with sub-menus",
+      "invalidButtonMethod": "The following buttons have invalid HTTP methods: {0}",
+      "invalidButtonApiFormat": "Button API \"{0}\" format is invalid, should be module/action",
+      "buttonApiTooLong": "Button API \"{0}\" exceeds length limit",
+      "buttonApiInvalidChars": "Button API \"{0}\" contains invalid characters",
+      "buttonMissingPermission": "The following buttons are missing permission codes: {0}",
+      "permissionNotDeclared": "The following permission codes are not declared in registry: {0}",
+      "noMenuToDelete": "No menus found to delete"
+    }
+  },
+  "plugin": {
+    "label": "Plugin",
+    "fields": {
+      "name": "Plugin Name",
+      "description": "Plugin Description",
+      "version": "Version",
+      "author": "Author",
+      "pkgName": "Package Name",
+      "state": "State",
+      "type": "Type"
+    },
+    "messages": {
+      "installSuccess": "Plugin installed successfully",
+      "uninstallSuccess": "Plugin uninstalled successfully",
+      "updateSuccess": "Plugin updated successfully",
+      "enableSuccess": "Plugin enabled successfully",
+      "disableSuccess": "Plugin disabled successfully",
+      "deleteSuccess": "Successfully deleted {0} plugin(s)"
+    },
+    "errors": {
+      "notFound": "Plugin not found",
+      "installFailed": "Plugin installation failed: {0}",
+      "uninstallFailed": "Plugin uninstallation failed: {0}",
+      "updateFailed": "Plugin update failed: {0}",
+      "alreadyInstalled": "Plugin already installed",
+      "cannotDeleteBuiltin": "Built-in plugins cannot be deleted",
+      "packageNotFound": "Plugin package not found",
+      "deleteTableFailed": "Failed to delete database tables: {0}",
+      "deleteResourceFailed": "Failed to delete resource data: {0}",
+      "deleteConfigFailed": "Failed to delete config files: {0}"
+    }
+  },
+  "systemLog": {
+    "label": "System Log",
+    "fields": {
+      "module": "Module",
+      "action": "Action",
+      "operator": "Operator",
+      "operatorId": "Operator ID",
+      "resourceType": "Resource Type",
+      "resourceId": "Resource ID",
+      "oldValue": "Old Value",
+      "newValue": "New Value",
+      "logs": "Log Content",
+      "ip": "IP Address",
+      "createdAt": "Created At"
+    },
+    "messages": {
+      "cleanupSuccess": "Successfully cleaned up logs older than {0} days",
+      "exportSuccess": "Logs exported successfully",
+      "deleteSuccess": "Deleted successfully",
+      "cleanupComplete": "Cleanup complete, deleted {0} log(s)",
+      "cleanupTypeComplete": "Cleanup complete, deleted {0} {1} type log(s)",
+      "preventRecentDelete": "Cannot delete logs within 3 days to prevent accidental deletion"
+    },
+    "errors": {
+      "notFound": "Log not found",
+      "exportFailed": "Log export failed"
+    }
+  },
+  "cache": {
+    "label": "Cache",
+    "messages": {
+      "clearSuccess": "Cache cleared successfully",
+      "refreshSuccess": "Cache refreshed successfully",
+      "clearAllSuccess": "All caches cleared successfully"
+    },
+    "errors": {
+      "operationFailed": "Cache operation failed: {0}",
+      "keyNotFound": "Cache key not found"
+    }
+  },
+  "logs": {
+    "admin": {
+      "create": "Create administrator user: {0}",
+      "update": "Update administrator user: {0}",
+      "delete": "Delete administrator user: {0}",
+      "batchDelete": "Batch delete administrator users: {0}"
+    },
+    "role": {
+      "create": "Create role: {0}",
+      "update": "Update role: {0}",
+      "delete": "Delete role: {0}",
+      "batchDelete": "Batch delete roles: {0}"
+    },
+    "menu": {
+      "create": "Create menu: {0}",
+      "update": "Update menu: {0}",
+      "delete": "Delete menu: {0}",
+      "batchDelete": "Batch delete menus: {0}"
+    },
+    "content": {
+      "create": "Create content: {0}",
+      "update": "Update content: {0}",
+      "delete": "Delete content: {0}",
+      "publish": "Publish content: {0}",
+      "unpublish": "Unpublish content: {0}"
+    },
+    "plugin": {
+      "install": "Install plugin: {0}",
+      "uninstall": "Uninstall plugin: {0}",
+      "update": "Update plugin: {0}",
+      "enable": "Enable plugin: {0}",
+      "disable": "Disable plugin: {0}"
+    },
+    "template": {
+      "install": "Install theme: {0}",
+      "uninstall": "Uninstall theme: {0}",
+      "activate": "Activate theme: {0}",
+      "deactivate": "Deactivate theme: {0}"
+    }
+  },
+  "message": {
+    "deleteSuccess": "Successfully deleted {0} record(s)",
+    "updateSuccess": "Successfully updated {0} record(s)",
+    "batchUpdateSuccess": "Successfully updated {0}/{1} record(s)",
+    "auditSuccess": "Successfully audited {0}/{1} comment(s)",
+    "operationSuccess": "Operation successful",
+    "operationFailed": "Operation failed: {0}"
+  },
+  "contentMessage": {
+    "label": "Comment",
+    "fields": {
+      "content": "Comment Content",
+      "contentTitle": "Article Title",
+      "author": "Commenter",
+      "status": "Status",
+      "replyStatus": "Reply Status"
+    },
+    "messages": {
+      "createSuccess": "Comment created successfully",
+      "deleteSuccess": "Successfully deleted {0} comment(s)",
+      "updateStatusSuccess": "Successfully updated {0} comment status(es)",
+      "auditSuccess": "Successfully audited {0}/{1} comment(s)"
+    },
+    "errors": {
+      "notFound": "Comment not found",
+      "cannotReply": "Cannot reply to this comment"
+    }
+  },
+  "contentCategory": {
+    "label": "Category",
+    "fields": {
+      "name": "Category Name",
+      "alias": "Category Alias",
+      "description": "Category Description",
+      "sort": "Sort Order",
+      "defaultUrl": "SEO URL"
+    },
+    "messages": {
+      "createSuccess": "Category created successfully",
+      "updateSuccess": "Category updated successfully",
+      "deleteSuccess": "Category deleted successfully"
+    },
+    "errors": {
+      "notFound": "Category not found",
+      "nameExists": "Category name already exists",
+      "hasContent": "Cannot delete category with associated content"
+    }
+  },
+  "contentTag": {
+    "label": "Tag",
+    "fields": {
+      "id": "Tag ID",
+      "ids": "Tag IDs Array",
+      "tagData": "Tag Data Array",
+      "name": "Tag Name",
+      "alias": "Tag Alias",
+      "description": "Tag Description"
+    },
+    "messages": {
+      "createSuccess": "Tag created successfully",
+      "updateSuccess": "Tag updated successfully",
+      "deleteSuccess": "Tag deleted successfully"
+    },
+    "errors": {
+      "notFound": "Tag not found",
+      "nameExists": "Tag name already exists",
+      "aliasExists": "Tag alias already exists"
+    }
+  },
+  "templateConfig": {
+    "label": "Template Config",
+    "fields": {
+      "name": "Config Name",
+      "forder": "Config Folder",
+      "comments": "Comments"
+    }
+  },
+  "middleware": {
+    "auth": {
+      "noPermission": "No permission to access",
+      "tokenExpired": "Token has expired",
+      "sessionExpired": "Session expired, please login again",
+      "accessDenied": "Access denied, please check login status",
+      "tokenInvalid": "Invalid token",
+      "notLoggedIn": "Not logged in"
+    }
+  }
+}

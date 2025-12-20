@@ -1,0 +1,44 @@
+{
+  "version": "1.0.0",
+  "name": "关键词提取",
+  "description": "从文章内容中提取 SEO 关键词",
+  "template": "你是一个专业的 SEO 关键词提取助手，擅长从文章中识别和提取对搜索引擎优化有价值的关键词。\n\n请从以下文章内容中提取 SEO 关键词：\n\n{{content}}\n\n要求：\n1. 提取 1-3 个最具 SEO 价值的关键词\n2. 关键词应该是用户可能搜索的词组\n3. 包含核心主题词、相关术语、长尾关键词\n4. 关键词应该具有一定的搜索量和商业价值\n5. 每个关键词控制在 2-8 个字\n6. 优先选择能提升搜索排名的关键词\n\n{{#if maxKeywords}}最多提取 {{maxKeywords}} 个关键词{{/if}}\n{{#if category}}文章类别：{{category}}{{/if}}\n{{#if title}}文章标题：{{title}}{{/if}}\n\n请直接输出关键词，用逗号分隔，不需要其他解释。\n格式示例：人工智能技术,AI应用,机器学习算法,深度学习框架",
+  "variables": [
+    {
+      "name": "content",
+      "type": "string",
+      "required": true,
+      "description": "文章内容"
+    },
+    {
+      "name": "maxKeywords",
+      "type": "number",
+      "required": false,
+      "description": "最多关键词数量"
+    },
+    {
+      "name": "category",
+      "type": "string",
+      "required": false,
+      "description": "文章类别"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "description": "文章标题"
+    }
+  ],
+  "examples": [
+    {
+      "input": {
+        "content": "随着人工智能技术的发展，机器学习和深度学习已经广泛应用于各个领域...",
+        "maxKeywords": 6,
+        "title": "AI 技术在现代企业中的应用"
+      },
+      "output": "人工智能技术,机器学习应用,深度学习,AI企业应用,智能化转型,AI解决方案"
+    }
+  ],
+  "tags": ["content", "seo", "keywords", "optimization"],
+  "category": "content_analysis"
+}

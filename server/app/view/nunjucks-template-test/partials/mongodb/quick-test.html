@@ -1,0 +1,360 @@
+<!-- quick-test.html - 快速测试组件 -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="quick-test">
+  <div
+    class="bg-gradient-to-r from-amber-600 to-orange-600 px-6 py-4 flex items-center justify-between"
+  >
+    <div class="flex items-center">
+      <div
+        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold text-white">⚡ 快速测试面板</h3>
+        <p class="text-orange-100 text-sm">用于快速验证核心标签是否正常工作</p>
+      </div>
+    </div>
+    <button
+      class="text-white hover:text-orange-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+      onclick="toggleSection('quick-test')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="debug-content p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 基础数据获取测试 -->
+      <div
+        class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+            <span class="text-xl">📰</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-900">内容获取</h4>
+        </div>
+        {% news key="quickNews", pageSize="3" %}
+        <div class="space-y-2">
+          {% if quickNews and quickNews.length > 0 %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-green-700">✅ 正常</span>
+          </div>
+          <p class="text-gray-600">获取到 {{ quickNews.length }} 篇文章</p>
+          {% else %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-red-700">❌ 异常</span>
+          </div>
+          <p class="text-gray-600">未获取到文章数据</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 推荐内容测试 -->
+      <div
+        class="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-6 hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+            <span class="text-xl">⭐</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-900">推荐内容</h4>
+        </div>
+        {% recommend key="quickRecommend", pageSize="2" %}
+        <div class="space-y-2">
+          {% if quickRecommend and quickRecommend.length > 0 %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-green-700">✅ 正常</span>
+          </div>
+          <p class="text-gray-600">获取到 {{ quickRecommend.length }} 篇推荐</p>
+          {% else %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-yellow-700">⚠️ 无数据</span>
+          </div>
+          <p class="text-gray-600">未获取到推荐内容</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 标签获取测试 -->
+      <div
+        class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6 hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+            <span class="text-xl">🏷️</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-900">标签系统</h4>
+        </div>
+        {% tags key="quickTags", pageSize="5" %}
+        <div class="space-y-2">
+          {% if quickTags and quickTags.length > 0 %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-green-700">✅ 正常</span>
+          </div>
+          <p class="text-gray-600">获取到 {{ quickTags.length }} 个标签</p>
+          {% else %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-yellow-700">⚠️ 无数据</span>
+          </div>
+          <p class="text-gray-600">未获取到标签数据</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 分类获取测试 -->
+      <div
+        class="bg-gradient-to-br from-teal-50 to-cyan-50 border border-teal-200 rounded-lg p-6 hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mr-3">
+            <span class="text-xl">🌳</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-900">分类系统</h4>
+        </div>
+        {% navtree key="quickCategories" %}
+        <div class="space-y-2">
+          {% if quickCategories and quickCategories.length > 0 %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-green-700">✅ 正常</span>
+          </div>
+          <p class="text-gray-600">获取到 {{ quickCategories.length }} 个分类</p>
+          {% else %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-red-700">❌ 异常</span>
+          </div>
+          <p class="text-gray-600">未获取到分类数据</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 系统配置测试 -->
+      <div
+        class="bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+            <span class="text-xl">⚙️</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-900">系统配置</h4>
+        </div>
+
+        <div class="space-y-2">
+          {% if site %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-green-700">✅ 正常</span>
+          </div>
+          <p class="text-gray-600">配置加载成功</p>
+          {% else %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-red-700">❌ 异常</span>
+          </div>
+          <p class="text-gray-600">配置加载失败</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- API调用测试 -->
+      <div
+        class="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-6 hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
+            <span class="text-xl">🌐</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-900">API调用</h4>
+        </div>
+        {% remote key="quickAPI", api="content/getList", pageSize="2" %}
+        <div class="space-y-2">
+          {% if quickAPI and quickAPI.length > 0 %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-green-700">✅ 正常</span>
+          </div>
+          <p class="text-gray-600">API调用成功</p>
+          {% else %}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+            <span class="text-sm font-medium text-yellow-700">⚠️ 无响应</span>
+          </div>
+          <p class="text-gray-600">API调用失败</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 快速诊断 -->
+    <div
+      class="mt-8 bg-gradient-to-r from-slate-50 to-gray-50 border border-gray-200 rounded-lg p-6"
+    >
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+          <span class="text-2xl">🔍</span>
+        </div>
+        <h4 class="text-xl font-bold text-gray-900">快速诊断</h4>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <strong class="text-gray-700">数据库连接:</strong>
+              <div class="mt-2">
+                {% if quickNews or quickRecommend or quickTags %}
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span class="text-sm font-medium text-green-700">正常</span>
+                </div>
+                {% else %}
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                  <span class="text-sm font-medium text-red-700">异常</span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <div
+              class="{{ 'text-green-500' if quickNews or quickRecommend or quickTags else 'text-red-500' }}"
+            >
+              {% if quickNews or quickRecommend or quickTags %}
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              {% else %}
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <strong class="text-gray-700">标签系统:</strong>
+              <div class="mt-2">
+                {% set workingTags = 0 %} {% if quickNews %}{% set workingTags = workingTags + 1
+                %}{% endif %} {% if quickRecommend %}{% set workingTags = workingTags + 1 %}{% endif
+                %} {% if quickTags %}{% set workingTags = workingTags + 1 %}{% endif %} {% if
+                quickCategories %}{% set workingTags = workingTags + 1 %}{% endif %} {% if site %}{%
+                set workingTags = workingTags + 1 %}{% endif %} {% if quickAPI %}{% set workingTags
+                = workingTags + 1 %}{% endif %} {% if workingTags >= 4 %}
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span class="text-sm font-medium text-green-700">良好 ({{ workingTags }}/6)</span>
+                </div>
+                {% elif workingTags >= 2 %}
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                  <span class="text-sm font-medium text-yellow-700"
+                    >部分工作 ({{ workingTags }}/6)</span
+                  >
+                </div>
+                {% else %}
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                  <span class="text-sm font-medium text-red-700">异常 ({{ workingTags }}/6)</span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <div
+              class="{{ 'text-green-500' if workingTags >= 4 else ('text-yellow-500' if workingTags >= 2 else 'text-red-500') }}"
+            >
+              {% if workingTags >= 4 %}
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              {% elif workingTags >= 2 %}
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                ></path>
+              </svg>
+              {% else %}
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <strong class="text-gray-700">建议操作:</strong>
+              <div class="mt-2">
+                {% if workingTags < 2 %}
+                <span class="text-sm text-gray-600">检查数据库连接和数据</span>
+                {% elif workingTags < 4 %}
+                <span class="text-sm text-gray-600">部分标签需要调试</span>
+                {% else %}
+                <span class="text-sm text-gray-600">系统运行正常</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="text-gray-400">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

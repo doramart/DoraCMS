@@ -1,0 +1,37 @@
+logs/
+npm-debug.log
+node_modules/
+coverage/
+.idea/
+.github/
+run/
+.DS_Store
+*.swp
+*.vscode
+package-lock.json
+# 忽略 upload 目录下的所有文件和子目录，但保留 .gitkeep
+server/app/public/upload/**
+!server/app/public/upload/.gitkeep
+app/ext
+app/controller/ext
+databak/
+**/dist/
+.history
+.vscode
+.husky
+.github
+
+
+# 环境变量文件
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+
+# 前端构建产物（由 pnpm build 生成）
+# 注意：由于 Docker 部署需要这些文件（Dockerfile 中没有构建前端步骤），所以需要提交 backstage 目录
+# 如果后续修改 Dockerfile 添加前端构建步骤，可以重新启用下面的忽略规则
+# server/backstage/
+# !server/backstage/.gitkeep

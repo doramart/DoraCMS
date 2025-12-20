@@ -1,0 +1,382 @@
+[
+  {
+    "taskType": "title_generation",
+    "language": "zh-CN",
+    "name": "文章标题生成（中文）",
+    "description": "根据文章内容生成吸引人的标题",
+    "template": "请根据以下文章内容，生成一个简洁、吸引人、突出重点的标题（不超过30个字）：\n\n{{content}}\n\n要求：\n1. 标题要准确概括文章主题\n2. 使用简洁有力的语言\n3. 避免使用标点符号\n4. 只返回标题文本，不要解释",
+    "systemPrompt": "你是一位专业的内容编辑，擅长创作吸引人的文章标题。",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "文章内容"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 100,
+      "temperature": 0.8,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["title", "chinese", "content-generation"],
+    "category": "content_generation"
+  },
+  {
+    "taskType": "tag_extraction",
+    "language": "zh-CN",
+    "name": "标签提取（中文）",
+    "description": "从文章内容中提取关键标签",
+    "template": "请从以下文章内容中提取5-8个最相关的标签：\n\n{{content}}\n\n要求：\n1. 标签要准确反映文章主题和关键词\n2. 每个标签2-6个字\n3. 标签之间用逗号分隔\n4. 只返回标签列表，不要解释\n5. 格式示例：技术,编程,Python,人工智能,机器学习",
+    "systemPrompt": "你是一位专业的内容分析师，擅长从文章中提取关键标签。",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "文章内容"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "temperature": 0.5,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["tag", "chinese", "extraction"],
+    "category": "content_analysis"
+  },
+  {
+    "taskType": "summary_generation",
+    "language": "zh-CN",
+    "name": "摘要生成（中文）",
+    "description": "生成文章摘要",
+    "template": "请为以下文章生成一个100-200字的摘要：\n\n{{content}}\n\n要求：\n1. 概括文章的核心内容和要点\n2. 使用简洁流畅的语言\n3. 保持客观中立的态度\n4. 只返回摘要文本，不要解释",
+    "systemPrompt": "你是一位专业的内容编辑，擅长概括文章要点。",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "文章内容"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 300,
+      "temperature": 0.7,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["summary", "chinese", "content-generation"],
+    "category": "content_generation"
+  },
+  {
+    "taskType": "keyword_extraction",
+    "language": "zh-CN",
+    "name": "关键词提取",
+    "description": "从文章内容中提取 SEO 关键词",
+    "template": "你是一个专业的 SEO 关键词提取助手，擅长从文章中识别和提取对搜索引擎优化有价值的关键词。\n\n请从以下文章内容中提取 SEO 关键词：\n\n{{content}}\n\n要求：\n1. 提取 3-8 个最具 SEO 价值的关键词\n2. 关键词应该是用户可能搜索的词组\n3. 包含核心主题词、相关术语、长尾关键词\n4. 关键词应该具有一定的搜索量和商业价值\n5. 每个关键词控制在 2-8 个字\n6. 优先选择能提升搜索排名的关键词\n\n{{#if maxKeywords}}最多提取 {{maxKeywords}} 个关键词{{/if}}\n{{#if category}}文章类别：{{category}}{{/if}}\n{{#if title}}文章标题：{{title}}{{/if}}\n\n请直接输出关键词，用逗号分隔，不需要其他解释。\n格式示例：人工智能技术,AI应用,机器学习算法,深度学习框架",
+    "systemPrompt": "你是一个专业的 SEO 关键词提取助手。",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "文章内容"
+      },
+      {
+        "name": "maxKeywords",
+        "type": "number",
+        "required": false,
+        "description": "最多关键词数量"
+      },
+      {
+        "name": "category",
+        "type": "string",
+        "required": false,
+        "description": "文章类别"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "文章标题"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 100,
+      "temperature": 0.3,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["keyword", "seo", "chinese", "extraction"],
+    "category": "content_analysis"
+  },
+  {
+    "taskType": "category_matching",
+    "language": "zh-CN",
+    "name": "分类匹配",
+    "description": "智能匹配文章分类",
+    "template": "你是一个专业的内容分类助手，擅长根据文章内容匹配最合适的分类。\n\n可用分类列表：\n{{#each categories}}\n- {{this.name}}: {{this.description}}\n{{/each}}\n\n请分析以下文章内容：\n\n{{content}}\n\n要求：\n1. 选择最匹配的分类（1-3个）\n2. 基于文章核心内容判断\n3. 优先选择主要分类，请必须选择一个最匹配的，分类不允许为空\n4. 考虑文章的专业领域\n\n请直接输出分类名称，用逗号分隔。",
+    "systemPrompt": "你是一个专业的内容分类助手。",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "文章内容"
+      },
+      {
+        "name": "categories",
+        "type": "array",
+        "required": true,
+        "description": "可用分类列表"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 50,
+      "temperature": 0.3,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["classification", "content", "chinese"],
+    "category": "content_analysis"
+  },
+  {
+    "taskType": "seo_optimization",
+    "language": "zh-CN",
+    "name": "SEO 优化建议",
+    "description": "提供文章 SEO 优化建议",
+    "template": "你是一个专业的 SEO 优化顾问，擅长分析内容并提供 SEO 优化建议。\n\n请分析以下文章：\n\n标题：{{title}}\n内容：{{content}}\n{{#if keywords}}目标关键词：{{keywords}}{{/if}}\n\n请提供 SEO 优化建议，包括：\n1. 关键词密度分析\n2. 标题优化建议\n3. 元描述建议\n4. 内链外链建议\n5. 内容结构优化\n\n请以 JSON 格式输出建议：\n{\n  \"keywordDensity\": \"关键词密度评估\",\n  \"titleSuggestion\": \"标题优化建议\",\n  \"metaDescription\": \"元描述建议\",\n  \"linkSuggestions\": \"链接建议\",\n  \"structureTips\": \"结构优化建议\",\n  \"score\": \"SEO 得分（1-100）\"\n}",
+    "systemPrompt": "你是一个专业的 SEO 优化顾问。",
+    "variables": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "文章标题"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "文章内容"
+      },
+      {
+        "name": "keywords",
+        "type": "string",
+        "required": false,
+        "description": "目标关键词"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 500,
+      "temperature": 0.5,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["seo", "optimization", "chinese"],
+    "category": "content_optimization"
+  },
+  {
+    "taskType": "content_quality_check",
+    "language": "zh-CN",
+    "name": "内容质量评估",
+    "description": "评估文章内容质量",
+    "template": "你是一个专业的内容质量评估专家，擅长从多个维度分析文章质量。\n\n请评估以下文章：\n\n标题：{{title}}\n内容：{{content}}\n\n评估维度：\n1. 内容原创性（是否有价值、是否独特）\n2. 逻辑结构（结构是否清晰、层次是否分明）\n3. 语言表达（语言是否流畅、是否有错别字）\n4. 专业深度（内容是否专业、是否有深度）\n5. 可读性（是否易读、是否吸引人）\n6. 实用性（是否有实用价值）\n\n请以 JSON 格式输出评估结果：\n{\n  \"originality\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"structure\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"language\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"depth\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"readability\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"practicality\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"overallScore\": 0-100,\n  \"overallComment\": \"总体评价\",\n  \"improvements\": [\"改进建议1\", \"改进建议2\"]\n}",
+    "systemPrompt": "你是一个专业的内容质量评估专家。",
+    "variables": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "文章标题"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "文章内容"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 800,
+      "temperature": 0.3,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["quality", "assessment", "chinese"],
+    "category": "content_analysis"
+  },
+  {
+    "taskType": "title_generation",
+    "language": "en-US",
+    "name": "Article Title Generation (English)",
+    "description": "Generate attractive titles based on article content",
+    "template": "Please generate a concise, attractive title (no more than 60 characters) based on the following article content:\n\n{{content}}\n\nRequirements:\n1. Accurately summarize the article's theme\n2. Use concise and powerful language\n3. Avoid using punctuation\n4. Return only the title text without explanation",
+    "systemPrompt": "You are a professional content editor skilled in creating attractive article titles.",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "Article content"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 100,
+      "temperature": 0.8,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["title", "english", "content-generation"],
+    "category": "content_generation"
+  },
+  {
+    "taskType": "tag_extraction",
+    "language": "en-US",
+    "name": "Tag Extraction (English)",
+    "description": "Extract key tags from article content",
+    "template": "Please extract 5-8 most relevant tags from the following article content:\n\n{{content}}\n\nRequirements:\n1. Tags should accurately reflect the article's theme and keywords\n2. Each tag should be 2-15 characters\n3. Separate tags with commas\n4. Return only the tag list without explanation\n5. Example format: technology,programming,python,ai,machine-learning",
+    "systemPrompt": "You are a professional content analyst skilled in extracting key tags from articles.",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "Article content"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "temperature": 0.5,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["tag", "english", "extraction"],
+    "category": "content_analysis"
+  },
+  {
+    "taskType": "summary_generation",
+    "language": "en-US",
+    "name": "Summary Generation (English)",
+    "description": "Generate article summary",
+    "template": "Please generate a 100-200 word summary for the following article:\n\n{{content}}\n\nRequirements:\n1. Summarize the core content and key points\n2. Use concise and fluent language\n3. Maintain an objective and neutral attitude\n4. Return only the summary text without explanation",
+    "systemPrompt": "You are a professional content editor skilled in summarizing article key points.",
+    "variables": [
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "description": "Article content"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 300,
+      "temperature": 0.7,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["summary", "english", "content-generation"],
+    "category": "content_generation"
+  },
+  {
+    "taskType": "image_prompt_optimization",
+    "language": "zh-CN",
+    "name": "图片生成提示词优化",
+    "description": "将用户的简单描述转换为详细的图片生成提示词",
+    "template": "你是一位专业的AI图片生成提示词专家。请根据用户提供的简单描述，生成一个详细、具体的图片生成提示词。\n\n要求：\n1. 包含主体、场景、风格、光影、色彩等要素\n2. 使用专业的摄影或艺术术语\n3. 描述要具体、形象，避免抽象和模糊\n4. 长度控制在50-200字之间\n5. 只返回优化后的提示词，不要其他说明文字\n\n用户描述：{{userInput}}\n\n优化后的提示词：",
+    "systemPrompt": "你是一位专业的AI图片生成提示词专家，擅长将简单描述转换为详细的图片生成提示词。",
+    "variables": [
+      {
+        "name": "userInput",
+        "type": "string",
+        "required": true,
+        "description": "用户提供的简单图片描述"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 300,
+      "temperature": 0.7,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["图片生成", "提示词优化", "文生图", "image-generation"],
+    "category": "image_generation",
+    "examples": [
+      {
+        "input": {
+          "userInput": "一只猫"
+        },
+        "output": "一只优雅的橘色短毛猫，蜷缩在温暖的阳光下，柔和的自然光从窗户洒在它的毛发上，产生金色的光晕，背景是简约的现代家居环境，景深效果突出主体，专业摄影，高清画质。"
+      },
+      {
+        "input": {
+          "userInput": "未来城市"
+        },
+        "output": "赛博朋克风格的未来都市夜景，高耸入云的摩天大楼上布满霓虹灯广告牌，飞行器在空中穿梭，地面潮湿的街道反射着五彩斑斓的光芒，浓重的科技感与工业风格，电影级构图，超现实主义，8K分辨率。"
+      }
+    ]
+  },
+  {
+    "taskType": "image_prompt_optimization",
+    "language": "en-US",
+    "name": "Image Generation Prompt Optimization",
+    "description": "Convert user's simple description into detailed image generation prompt",
+    "template": "You are a professional AI image generation prompt expert. Please convert the user's simple description into a detailed and specific image generation prompt.\n\nRequirements:\n1. Include elements such as subject, scene, style, lighting, and color\n2. Use professional photography or art terminology\n3. Be specific and vivid, avoid abstract and vague descriptions\n4. Keep the length between 50-200 words\n5. Return only the optimized prompt without additional explanations\n\nUser description: {{userInput}}\n\nOptimized prompt:",
+    "systemPrompt": "You are a professional AI image generation prompt expert, skilled in converting simple descriptions into detailed image generation prompts.",
+    "variables": [
+      {
+        "name": "userInput",
+        "type": "string",
+        "required": true,
+        "description": "User's simple image description"
+      }
+    ],
+    "version": "1.0.0",
+    "config": {
+      "maxLength": 300,
+      "temperature": 0.7,
+      "topP": 0.9
+    },
+    "isEnabled": true,
+    "priority": 10,
+    "tags": ["image-generation", "prompt-optimization", "text-to-image"],
+    "category": "image_generation",
+    "examples": [
+      {
+        "input": {
+          "userInput": "a cat"
+        },
+        "output": "An elegant orange short-haired cat, curled up in warm sunlight, soft natural light streaming through the window creating a golden halo on its fur, simple modern home interior background, shallow depth of field highlighting the subject, professional photography, high-definition quality."
+      },
+      {
+        "input": {
+          "userInput": "futuristic city"
+        },
+        "output": "Cyberpunk-style futuristic city night scene, towering skyscrapers covered with neon advertising boards, flying vehicles shuttling through the air, wet streets reflecting colorful lights, heavy tech and industrial style, cinematic composition, surrealism, 8K resolution."
+      }
+    ]
+  }
+]

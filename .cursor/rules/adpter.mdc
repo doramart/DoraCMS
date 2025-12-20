@@ -1,0 +1,419 @@
+---
+本规则定义了将 EggJS 项目中的模块从单一 MongoDB 架构重构为支持多数据库的 Repository/Adapter 模式的标准流程。重构后的模块将支持 MongoDB 和 MariaDB 两种数据库，并保持与现有 API 的完全兼容。
+
+### 🏗️ 重构文件结构
+
+每个模块重构需要创建以下文件结构：
+
+```
+server/app/repository/
+├── adapters/
+│   ├── mongodb/
+│   │   └── {ModuleName}MongoRepository.js      # MongoDB 适配器实现
+│   └── mariadb/
+│       └── {ModuleName}MariaRepository.js      # MariaDB 适配器实现
+├── interfaces/
+│   └── I{ModuleName}Repository.js              # Repository 接口定义
+├── schemas/
+│   └── mariadb/
+│       └── {ModuleName}Schema.js               # MariaDB 表结构定义
+├── connections/
+│   └── MariaDBConnection.js                    # MariaDB 连接管理
+├── factories/
+│   └── RepositoryFactory.js                    # Repository 工厂类
+└── utils/
+    └── DataTransformer.js              # 数据转换工具
+
+server/app/service/
+└── {moduleName}New.js                          # 新的业务服务层
+
+server/config/
+└── config.repository.js                        # Repository 配置
+
+server/re-build/{moduleName}/
+├── direct-migrate-{moduleName}.js              # 数据迁移脚本
+└── test-{moduleName}-repository.js             # 功能测试脚本
+```
+
+### 📝 文件创建规范
+
+#### 1. Repository 接口文件 (`I{ModuleName}Repository.js`)
+
+```javascript
+/**
+ * {ModuleName} Repository 接口定义
+ * 继承 IBaseRepository 并定义模块特有业务方法
+ */
+'use strict';
+
+const IBaseRepository = require('./IBaseRepository');
+
+class I{ModuleName}Repository extends IBaseRepository {
+  // 继承基础 CRUD 方法
+  // find(payload, options)
+  // findOne(params)
+  // findById(id, options)
+  // count(query)
+  // create(data)
+  // update(id, data)
+  // remove(ids, key)
+  // safeDelete(ids, updateObj)
+  // updateMany(ids, data, query)
+
+  // 模块特有业务方法
+  async findBy{Field}(value) { throw new Error('Method not implemented'); }
+  async check{Field}Exists(value) { throw new Error('Method not implemented'); }
+  async update{Field}(id, value) { throw new Error('Method not implemented'); }
+  // ... 其他业务方法
+}
+
+module.exports = I{ModuleName}Repository;
+```
+
+#### 2. MongoDB 适配器 (`{ModuleName}MongoRepository.js`)
+
+```javascript
+/**
+ * {ModuleName} MongoDB Repository 实现
+ * 基于现有 Mongoose 模型的适配器
+ */
+'use strict';
+
+const I{ModuleName}Repository = require('../interfaces/I{ModuleName}Repository');
+const BaseMongoRepository = require('./BaseMongoRepository');
+
+class {ModuleName}MongoRepository extends BaseMongoRepository {
+  constructor(ctx) {
+    super(ctx, 'User'); // 指定模型名称
+  }
+
+  // 实现模块特有业务方法
+  async findBy{Field}(value) {
+    // 实现逻辑
+  }
+
+  async check{Field}Exists(value) {
+    // 实现逻辑
+  }
+
+  // ... 其他方法实现
+}
+
+module.exports = {ModuleName}MongoRepository;
+```
+
+#### 3. MariaDB 适配器 (`{ModuleName}MariaRepository.js`)
+
+```javascript
+/**
+ * {ModuleName} MariaDB Repository 实现
+ * 基于 Sequelize 的关系型数据库适配器
+ */
+'use strict';
+
+const I{ModuleName}Repository = require('../interfaces/I{ModuleName}Repository');
+const BaseMariaRepository = require('./BaseMariaRepository');
+const {ModuleName}Schema = require('../schemas/mariadb/{ModuleName}Schema');
+
+class {ModuleName}MariaRepository extends BaseMariaRepository {
+  constructor(ctx) {
+    super(ctx, {ModuleName}Schema);
+  }
+
+  // 实现模块特有业务方法
+  async findBy{Field}(value) {
+    // 实现逻辑
+  }
+
+  async check{Field}Exists(value) {
+    // 实现逻辑
+  }
+
+  // ... 其他方法实现
+}
+
+module.exports = {ModuleName}MariaRepository;
+```
+
+#### 4. MariaDB Schema (`{ModuleName}Schema.js`)
+
+```javascript
+/**
+ * {ModuleName} MariaDB 表结构定义
+ */
+'use strict';
+
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
+  const {ModuleName}Schema = sequelize.define('{moduleName}', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    mongo_id: {
+      type: DataTypes.STRING(24),
+      unique: true,
+      allowNull: true,
+      comment: 'MongoDB _id 映射',
+    },
+    // ... 其他字段定义
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+  }, {
+    tableName: 'dora_{moduleName}s',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  });
+
+  return {ModuleName}Schema;
+};
+```
+
+#### 5. 新的业务服务层 (`{moduleName}New.js`)
+
+```javascript
+/**
+ * {ModuleName} 新业务服务层
+ * 使用 Repository 模式，支持多数据库
+ */
+'use strict';
+
+const RepositoryFactory = require('../repository/factories/RepositoryFactory');
+
+class {ModuleName}Service {
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.repository = RepositoryFactory.create('{ModuleName}', ctx);
+  }
+
+  // 业务方法实现
+  async find(payload, options) {
+    return await this.repository.find(payload, options);
+  }
+
+  async create(data) {
+    return await this.repository.create(data);
+  }
+
+  // ... 其他业务方法
+}
+
+module.exports = {ModuleName}Service;
+```
+
+### 🧪 测试文件规范
+
+#### 功能测试文件 (`test-{moduleName}-repository.js`)
+
+```javascript
+/**
+ * {ModuleName} Repository 功能验证测试脚本
+ * 直接创建 Repository 实例，不依赖完整 EggJS 应用
+ */
+'use strict';
+
+// 设置测试环境变量
+process.env.NODE_ENV = 'test';
+// ... 数据库连接配置
+
+const {ModuleName}MongoRepository = require('../../app/repository/adapters/mongodb/{ModuleName}MongoRepository');
+const {ModuleName}MariaRepository = require('../../app/repository/adapters/mariadb/{ModuleName}MariaRepository');
+
+// 模拟 EggJS 上下文
+const mockApp = {
+  config: {
+    encrypt_key: process.env.ENCRYPT_KEY,
+    database: { type: 'mongodb' },
+    repository: { databaseType: 'mongodb' },
+  },
+  logger: console,
+};
+
+const mockCtx = {
+  app: mockApp,
+  model: {},
+  requestId: 'test-' + Date.now(),
+};
+
+class {ModuleName}RepositoryTester {
+  constructor() {
+    this.mongoRepo = null;
+    this.mariaRepo = null;
+    this.testResults = {
+      mongodb: { passed: 0, failed: 0, errors: [] },
+      mariadb: { passed: 0, failed: 0, errors: [] },
+    };
+  }
+
+  async initialize() {
+    // 初始化 Repository 实例
+    this.mongoRepo = new {ModuleName}MongoRepository(mockCtx);
+    this.mariaRepo = new {ModuleName}MariaRepository(mockCtx);
+  }
+
+  async runTests() {
+    // 测试基础 CRUD 方法
+    await this.testBasicCRUD(this.mongoRepo, 'mongodb');
+    await this.testBasicCRUD(this.mariaRepo, 'mariadb');
+
+    // 测试模块特有业务方法
+    await this.testBusinessMethods(this.mongoRepo, 'mongodb');
+    await this.testBusinessMethods(this.mariaRepo, 'mariadb');
+
+    // 显示测试结果
+    this.showTestResults();
+  }
+
+  // ... 具体测试方法实现
+}
+
+// 运行测试
+async function runAllTests() {
+  const tester = new {ModuleName}RepositoryTester();
+  await tester.runTests();
+}
+
+if (require.main === module) {
+  runAllTests().catch(console.error);
+}
+```
+
+#### 数据迁移文件 (`direct-migrate-{moduleName}.js`)
+
+```javascript
+/**
+ * {ModuleName} 模块数据迁移脚本
+ * 不依赖 EggJS，直接使用数据库驱动
+ */
+'use strict';
+
+// 设置环境变量
+process.env.MONGODB_HOST = 'micoai.cn';
+// ... 其他数据库配置
+
+const readline = require('readline');
+
+// 创建命令行交互接口
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+async function perform{ModuleName}Migration() {
+  console.log('🚀 {ModuleName} 数据迁移工具\n');
+
+  try {
+    // 第1步：连接 MongoDB 并获取数据
+    console.log('�� 第1步：连接 MongoDB 并获取{moduleName}数据');
+    const mongoose = require('mongoose');
+    // ... 连接逻辑
+
+    // 第2步：连接 MariaDB
+    console.log('�� 第2步：连接 MariaDB');
+    const { Sequelize } = require('sequelize');
+    // ... 连接逻辑
+
+    // 第3步：数据转换和迁移
+    console.log('�� 第3步：数据转换和迁移');
+    // ... 迁移逻辑
+
+    // 第4步：验证迁移结果
+    console.log('📊 第4步：验证迁移结果');
+    // ... 验证逻辑
+
+  } catch (error) {
+    console.error('❌ 迁移失败:', error);
+  } finally {
+    rl.close();
+  }
+}
+
+// 询问用户确认
+function askQuestion(question) {
+  return new Promise(resolve => {
+    rl.question(question, answer => {
+      resolve(answer.toLowerCase());
+    });
+  });
+}
+
+if (require.main === module) {
+  perform{ModuleName}Migration();
+}
+```
+
+### ⚙️ 配置更新规范
+
+#### 更新 `config.repository.js`
+
+```javascript
+// 在 supportedEntities 数组中添加新模块
+supportedEntities: [
+  'SystemConfig',
+  'User',
+  'Role',
+  'Menu',
+  'ContentTag',
+  'ContentCategory',
+  '{ModuleName}', // 添加新模块
+],
+```
+
+### 🔄 重构流程
+
+1. **分析现有模块**
+   - 识别模块的业务方法和数据模型
+   - 确定需要迁移的数据字段和关系
+
+2. **创建 Repository 接口**
+   - 定义模块特有的业务方法接口
+   - 继承基础 CRUD 方法
+
+3. **实现 MongoDB 适配器**
+   - 基于现有 Mongoose 模型
+   - 实现所有业务方法
+
+4. **设计 MariaDB Schema**
+   - 设计表结构和字段映射
+   - 处理数据类型转换
+
+5. **实现 MariaDB 适配器**
+   - 基于 Sequelize 实现
+   - 确保与 MongoDB 适配器功能一致
+
+6. **创建测试文件**
+   - 功能测试：验证 Repository 方法
+   - 迁移测试：验证数据迁移
+
+7. **更新配置**
+   - 在 Repository 配置中注册新模块
+
+8. **创建新的业务服务层**
+   - 使用 Repository 工厂创建实例
+   - 保持与现有 API 兼容
+
+### 📊 质量保证
+
+- **功能测试**：确保所有业务方法在两个数据库上都能正常工作
+- **性能测试**：验证查询性能和数据转换效率
+- **兼容性测试**：确保与现有 API 的完全兼容
+- **数据完整性**：验证迁移过程中数据的完整性和一致性
+
+### �� 禁止事项
+
+- ❌ 不要创建任何总结性的 Markdown 文档（在重构完成后统一创建）
+- ❌ 不要依赖 EggJS 应用进行测试
+- ❌ 不要在迁移脚本中依赖 EggJS 以及迁移脚本之外程序相关配置
+- ❌ 不要忽略错误处理和日志记录
+- 深入分析 Mongodb 处理数据的逻辑，包括但不限于聚合函数，深度查询等，需要同样在 MariaDB service 中完整实现
+
+---

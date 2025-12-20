@@ -1,0 +1,185 @@
+{# Ads 广告组件宏 - 基于 Tailwind CSS 的轮播实现 #}
+{# 根据 carousel 字段决定显示单张图片还是轮播图 #}
+
+{% macro renderAds(adsData, className="", style="", showOverlay=false) %}
+  {% if adsData and adsData.items and adsData.items.length > 0 %}
+    <div class="ads-container relative rounded-2xl overflow-hidden shadow-md group {{ className }}" {% if style %}style="{{ style }}"{% endif %}>
+      
+      {# 检查是否应该显示轮播 #}
+      {% set shouldCarousel = (adsData.carousel !== false) and (adsData.items.length > 1) %}
+      
+      {% if not shouldCarousel %}
+        {# 单张图片显示模式 #}
+        {% set ad = adsData.items[0] %}
+        <div class="ads-single h-full w-full">
+          {% if ad.link %}
+            <a href="{{ ad.link }}" target="{{ ad.target or '_blank' }}" class="ads-link block h-full w-full relative">
+          {% endif %}
+          
+          {% if ad.sImg %}
+            <div class="ads-image-container relative h-full w-full">
+              <img 
+                src="{{ ad.sImg }}" 
+                alt="{{ ad.alt or ad.title or '广告图片' }}"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              {% if showOverlay %}
+                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+              {% endif %}
+              
+              {% if ad.title and showOverlay %}
+                <div class="ads-overlay absolute bottom-0 left-0 right-0 p-6 z-10 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 class="text-white font-bold text-xl mb-1">{{ ad.title }}</h3>
+                  {% if ad.description %}
+                     <p class="text-gray-200 text-sm line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">{{ ad.description }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          {% else %}
+            {# 纯文本广告 #}
+            <div class="ads-text-only h-full w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-6 flex flex-col justify-center text-center">
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ ad.title }}</h3>
+              {% if ad.description %}
+                <p class="text-gray-600 dark:text-gray-400 mt-2 text-sm">{{ ad.description }}</p>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          {% if ad.link %}
+            </a>
+          {% endif %}
+        </div>
+        
+      {% else %}
+        {# 轮播图显示模式 #}
+        {% set carouselId = "ads-carousel-" + (adsData.id or "default") %}
+        {% set autoPlay = (adsData.autoPlay !== false) %}
+        <div class="ads-carousel relative w-full h-full" id="{{ carouselId }}" data-autoplay="{{ autoPlay }}">
+          
+          {# 轮播容器 - 使用绝对定位实现 Fade/Slide 效果 #}
+          <div class="ads-slides relative w-full h-full overflow-hidden">
+            {% for ad in adsData.items %}
+                {% set isFirst = loop.first %}
+                <div class="ads-slide absolute inset-0 w-full h-full transition-opacity duration-500 ease-in-out {% if isFirst %}opacity-100 z-10{% else %}opacity-0 z-0{% endif %}" data-index="{{ loop.index0 }}">
+                  {% if ad.link %}
+                    <a href="{{ ad.link }}" target="{{ ad.target or '_blank' }}" class="block h-full w-full">
+                  {% endif %}
+                  
+                  <img src="{{ ad.sImg }}" alt="{{ ad.title }}" class="w-full h-full object-cover" />
+                  
+                  {% if showOverlay and ad.title %}
+                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                     <div class="absolute bottom-0 left-0 p-6 w-full">
+                        <h3 class="text-white font-bold text-lg md:text-xl">{{ ad.title }}</h3>
+                     </div>
+                  {% endif %}
+
+                  {% if ad.link %}
+                    </a>
+                  {% endif %}
+                </div>
+            {% endfor %}
+          </div>
+          
+          {# 导航按钮 #}
+          <div class="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
+             <button class="ads-prev-btn pointer-events-auto p-2 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white transition-colors" aria-label="Previous">
+                <span class="material-icons">chevron_left</span>
+             </button>
+             <button class="ads-next-btn pointer-events-auto p-2 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white transition-colors" aria-label="Next">
+                <span class="material-icons">chevron_right</span>
+             </button>
+          </div>
+          
+          {# 指示器 #}
+          <div class="absolute bottom-4 right-4 flex space-x-2 z-20">
+             {% for ad in adsData.items %}
+                <button class="ads-indicator w-2 h-2 rounded-full transition-all duration-300 {% if loop.first %}bg-white w-4{% else %}bg-white/50 hover:bg-white/80{% endif %}" data-slide="{{ loop.index0 }}" aria-label="Slide {{ loop.index }}"></button>
+             {% endfor %}
+          </div>
+          
+          {# JS #}
+          <script>
+            (function() {
+                const container = document.getElementById('{{ carouselId }}');
+                if(!container) return;
+                
+                const slides = container.querySelectorAll('.ads-slide');
+                const indicators = container.querySelectorAll('.ads-indicator');
+                const prevBtn = container.querySelector('.ads-prev-btn');
+                const nextBtn = container.querySelector('.ads-next-btn');
+                const autoPlay = container.dataset.autoplay === 'true';
+                let currentIndex = 0;
+                let timer = null;
+                
+                function showSlide(index) {
+                    slides.forEach((slide, i) => {
+                        if(i === index) {
+                            slide.classList.remove('opacity-0', 'z-0');
+                            slide.classList.add('opacity-100', 'z-10');
+                        } else {
+                            slide.classList.remove('opacity-100', 'z-10');
+                            slide.classList.add('opacity-0', 'z-0');
+                        }
+                    });
+                    
+                    indicators.forEach((ind, i) => {
+                        if(i === index) {
+                            ind.classList.remove('bg-white/50');
+                            ind.classList.add('bg-white', 'w-4');
+                        } else {
+                            ind.classList.remove('bg-white', 'w-4');
+                            ind.classList.add('bg-white/50');
+                        }
+                    });
+                    currentIndex = index;
+                }
+                
+                function next() {
+                    let nextIndex = (currentIndex + 1) % slides.length;
+                    showSlide(nextIndex);
+                }
+                
+                function prev() {
+                    let prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+                    showSlide(prevIndex);
+                }
+                
+                if(nextBtn) nextBtn.addEventListener('click', () => { next(); resetTimer(); });
+                if(prevBtn) prevBtn.addEventListener('click', () => { prev(); resetTimer(); });
+                
+                indicators.forEach((ind, i) => {
+                    ind.addEventListener('click', () => {
+                        showSlide(i);
+                        resetTimer();
+                    });
+                });
+                
+                function startTimer() {
+                    if(autoPlay) {
+                        timer = setInterval(next, 5000);
+                    }
+                }
+                
+                function resetTimer() {
+                    clearInterval(timer);
+                    startTimer();
+                }
+                
+                startTimer();
+            })();
+          </script>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro ads(adsData) %}
+  {{ renderAds(adsData) }}
+{% endmacro %}
+
+{% macro adsWithStyle(adsData, className="", style="", showOverlay=false) %}
+  {{ renderAds(adsData, className, style, showOverlay) }}
+{% endmacro %}

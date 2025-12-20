@@ -1,0 +1,181 @@
+<!-- hot.html - 热门内容展示组件 -->
+{% from "./article-list.html" import articleList %}
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="hot-debug">
+  <div
+    class="bg-gradient-to-r from-red-600 to-orange-600 px-6 py-4 flex items-center justify-between"
+  >
+    <div class="flex items-center">
+      <div
+        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"
+          ></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-white">🔥 热门内容</h3>
+    </div>
+    <button
+      class="text-white hover:text-red-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+      onclick="toggleSection('hot-debug')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="debug-content p-6">
+    <!-- 基础用法测试 -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h4 class="text-lg font-semibold text-gray-900">热门文章排行</h4>
+        <div class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+          <code class="text-xs"
+            >{% raw %}{% hot key="hotItemListData", pageSize="9" %}{% endraw %}</code
+          >
+        </div>
+      </div>
+
+      {% hot key="hotItemListData", pageSize="9" %} {% if hotItemListData and hotItemListData.length
+      > 0 %}
+      <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+          <svg
+            class="w-5 h-5 text-green-600 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <p class="text-green-800 font-medium">
+            ✅ 成功获取到 {{ hotItemListData.length }} 篇热门文章
+          </p>
+        </div>
+      </div>
+
+      {{ articleList(hotItemListData, layout='featured', showImage=true, showMeta=true,
+      showDescription=true, showAuthor=false, descriptionLength=100) }} {% else %}
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <svg
+            class="w-5 h-5 text-red-600 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <p class="text-red-800">❌ 未获取到热门内容数据</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 按分类获取热门内容 -->
+    <div class="test-case">
+      <h4>2. 按分类获取热门内容</h4>
+      <code>{% raw %}{% hot key="categoryHot", typeId="4", pageSize="5" %}{% endraw %}</code>
+
+      {% hot key="categoryHot", typeId="4", pageSize="5" %} {% if categoryHot and categoryHot.length
+      > 0 %}
+      <div class="category-hot-section">
+        <p class="success">✅ 成功获取到分类热门内容 {{ categoryHot.length }} 篇</p>
+        {{ articleList(categoryHot, layout='compact', showImage=false, showDescription=false,
+        showMeta=true, showAuthor=false) }}
+      </div>
+      {% else %}
+      <p class="warning">⚠️ 未获取到指定分类的热门内容</p>
+      {% endif %}
+    </div>
+
+    <!-- 启用分页的热门内容 -->
+    <div class="test-case">
+      <h4>3. 启用分页的热门内容</h4>
+      <code>{% raw %}{% hot key="pagedHot", pageSize="4", isPaging="1" %}{% endraw %}</code>
+
+      {% hot key="pagedHot", pageSize="4", isPaging="1" %} {% if pagedHot and pagedHot.length > 0 %}
+      <div class="paged-hot-section">
+        <p class="success">✅ 分页热门数据获取成功 {{ pagedHot.length }} 篇</p>
+        {{ articleList(pagedHot, layout='grid', showImage=false, showMeta=true,
+        showDescription=true, showAuthor=false, descriptionLength=60) }}
+      </div>
+      {% else %}
+      <p class="warning">⚠️ 分页热门数据获取失败</p>
+      {% endif %}
+    </div>
+
+    <!-- 热门排行榜展示 -->
+    <div class="test-case">
+      <h4>4. 热门排行榜</h4>
+      {% if hotItemListData and hotItemListData.length > 0 %}
+      <div class="hot-ranking">
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>排名</th>
+              <th>标题</th>
+              <th>浏览量</th>
+              <th>点赞数</th>
+              <th>评论数</th>
+              <th>发布时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in hotItemListData %} {% if loop.index0 < 5 %}
+            <tr class="{% if loop.index0 < 3 %}top-three{% endif %}">
+              <td>
+                {% if loop.index0 == 0 %}🥇 {% elif loop.index0 == 1 %}🥈 {% elif loop.index0 == 2
+                %}🥉 {% else %}{{ loop.index }} {% endif %}
+              </td>
+              <td><a href="/details/{{ item.id }}.html">{{ item.title | cutwords(30) }}</a></td>
+              <td>{{ item.clickNum }}</td>
+              <td>{{ item.likeNum }}</td>
+              <td>{{ item.commentNum }}</td>
+              <td>{{ item.createdAt | date('MM-DD') }}</td>
+            </tr>
+            {% endif %} {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 数据结构展示 -->
+    <div class="test-case">
+      <h4>5. 数据结构调试</h4>
+      {% if hotItemListData and hotItemListData.length > 0 %}
+      <details>
+        <summary>点击查看热门文章的完整数据结构</summary>
+        <pre class="debug-data">{{ hotItemListData[0] | dump }}</pre>
+      </details>
+      {% endif %}
+    </div>
+  </div>
+</div>

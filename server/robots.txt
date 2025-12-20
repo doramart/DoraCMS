@@ -1,0 +1,33 @@
+User-Agent: *
+Allow: /
+
+# 🔥 Sitemap 位置声明 (SEO 优化)
+Sitemap: /sitemap.xml
+
+# 禁止抓取的管理后台
+Disallow: /admin-center/
+Disallow: /user-center/
+Disallow: /manage/
+Disallow: /api/manage/
+
+# 禁止抓取的临时和私有目录
+Disallow: /upload/temp/
+Disallow: /upload/private/
+Disallow: /cache/
+Disallow: /logs/
+
+# 允许抓取的静态资源
+Allow: /upload/images/
+Allow: /public/css/
+Allow: /public/js/
+Allow: /public/themes/
+
+# 搜索引擎抓取延迟 (可选，避免过于频繁的抓取)
+Crawl-delay: 1
+
+# 特定搜索引擎的额外规则
+User-Agent: Googlebot
+Crawl-delay: 0
+
+User-Agent: Bingbot
+Crawl-delay: 1

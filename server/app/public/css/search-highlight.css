@@ -1,0 +1,133 @@
+/* 搜索关键词高亮样式 */
+
+/* 基础高亮样式 */
+.search-highlight,
+mark.search-highlight {
+  background-color: #fef08a; /* yellow-200 */
+  color: #1f2937; /* gray-800 */
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 500;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* 暗色主题下的高亮样式 */
+@media (prefers-color-scheme: dark) {
+  .search-highlight,
+  mark.search-highlight {
+    background-color: #a16207; /* yellow-700 */
+    color: #fef3c7; /* yellow-100 */
+  }
+}
+
+/* 明确的暗色主题类 */
+.dark .search-highlight,
+.dark mark.search-highlight {
+  background-color: #a16207; /* yellow-700 */
+  color: #fef3c7; /* yellow-100 */
+}
+
+/* 搜索摘要容器 */
+.search-summary {
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+/* 内容匹配框样式 */
+.content-match-box {
+  background-color: #f9fafb; /* gray-50 */
+  border-left: 4px solid #fbbf24; /* yellow-400 */
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.dark .content-match-box {
+  background-color: #374151; /* gray-700 */
+}
+
+/* 匹配标签样式 */
+.match-source-tag {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  background-color: #dbeafe; /* blue-100 */
+  color: #1e40af; /* blue-800 */
+  border-radius: 4px;
+}
+
+.dark .match-source-tag {
+  background-color: #1e3a8a; /* blue-900 */
+  color: #bfdbfe; /* blue-200 */
+}
+
+/* 匹配统计样式 */
+.match-stats {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #2563eb; /* blue-600 */
+}
+
+.dark .match-stats {
+  color: #60a5fa; /* blue-400 */
+}
+
+/* 搜索结果动画 */
+.search-result-item {
+  transition: all 0.3s ease;
+}
+
+.search-result-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* 关键词跳动动画（可选） */
+@keyframes highlight-pulse {
+  0%, 100% {
+    background-color: #fef08a;
+  }
+  50% {
+    background-color: #fde047; /* yellow-300 */
+  }
+}
+
+.search-highlight.animate-pulse {
+  animation: highlight-pulse 2s ease-in-out infinite;
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .search-summary {
+    font-size: 0.9rem;
+  }
+  
+  .content-match-box {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .match-source-tag {
+    font-size: 0.7rem;
+    padding: 1px 6px;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .search-highlight,
+  mark.search-highlight {
+    background-color: #d1d5db !important; /* gray-300 */
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  
+  .content-match-box {
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb !important;
+  }
+}

@@ -1,0 +1,491 @@
+<!-- tags.html - 标签云展示组件 -->
+{% from "./tag-display.html" import tagDisplay %}
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="tags-debug">
+  <div
+    class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-4 flex items-center justify-between"
+  >
+    <div class="flex items-center">
+      <div
+        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-white">🏷️ 标签云</h3>
+    </div>
+    <button
+      class="text-white hover:text-green-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+      onclick="toggleSection('tags-debug')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="debug-content p-6">
+    <!-- 基础用法测试 -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h4 class="text-lg font-semibold text-gray-900">标签云</h4>
+        <div class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+          <code class="text-xs">{% raw %}{% tags key="allTags" %}{% endraw %}</code>
+        </div>
+      </div>
+
+      {% tags key="allTags" %}
+      <div
+        class="bg-gradient-to-br from-green-50 to-teal-50 border border-green-200 rounded-xl p-6"
+      >
+        {% if allTags and allTags.length > 0 %}
+        <div class="flex items-center mb-4">
+          <svg
+            class="w-5 h-5 text-green-600 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <p class="text-green-800 font-medium">✅ 成功获取到 {{ allTags.length }} 个标签</p>
+        </div>
+        {{ tagDisplay(allTags, layout='cloud', showCount=true, colorScheme='green',
+        customClass='tag-cloud-main') }} {% else %}
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div class="flex items-center">
+            <svg
+              class="w-5 h-5 text-red-600 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <p class="text-red-800">❌ 未获取到标签数据</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 限制数量的标签 -->
+    <div class="mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+      <div class="flex items-center mb-4">
+        <div
+          class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3"
+        >
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-bold text-gray-900">2. 限制数量的标签卡片</h4>
+      </div>
+      <code class="block bg-gray-100 rounded-lg p-3 mb-4 text-sm font-mono text-gray-700"
+        >{% raw %}{% tags key="limitedTags", pageSize="20" %}{% endraw %}</code
+      >
+
+      {% tags key="limitedTags", pageSize="20" %}
+      <div
+        class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200"
+      >
+        {% if limitedTags and limitedTags.length > 0 %}
+        <div class="flex items-center mb-4">
+          <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+          <p class="text-green-700 font-medium">✅ 限制获取到 {{ limitedTags.length }} 个标签</p>
+        </div>
+        {{ tagDisplay(limitedTags, layout='grid', showCount=true, showDescription=true,
+        showAlias=true, colorScheme='cool', maxCount=20) }} {% else %}
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div class="flex items-center">
+            <svg
+              class="w-5 h-5 text-yellow-400 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+              ></path>
+            </svg>
+            <p class="text-yellow-700 font-medium">⚠️ 限制数量的标签获取失败</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 分页标签 -->
+    <div class="mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+      <div class="flex items-center mb-4">
+        <div
+          class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3"
+        >
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-bold text-gray-900">3. 分页标签列表</h4>
+      </div>
+      <code class="block bg-gray-100 rounded-lg p-3 mb-4 text-sm font-mono text-gray-700"
+        >{% raw %}{% tags key="pagedTags", isPaging="1", pageSize="10" %}{% endraw %}</code
+      >
+
+      {% tags key="pagedTags", isPaging="1", pageSize="10" %}
+      <div
+        class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200"
+      >
+        {% if pagedTags and pagedTags.length > 0 %}
+        <div class="flex items-center mb-4">
+          <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+          <p class="text-green-700 font-medium">✅ 分页标签获取成功 {{ pagedTags.length }} 个</p>
+        </div>
+        {{ tagDisplay(pagedTags, layout='compact', showRank=true, showCount=true, maxCount=10) }} {%
+        else %}
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div class="flex items-center">
+            <svg
+              class="w-5 h-5 text-yellow-400 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+              ></path>
+            </svg>
+            <p class="text-yellow-700 font-medium">⚠️ 分页标签数据获取失败</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 标签统计分析 -->
+    <div class="mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+      <div class="flex items-center mb-6">
+        <div
+          class="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mr-4"
+        >
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-xl font-bold text-gray-900">📊 标签统计分析</h4>
+      </div>
+
+      {% if allTags and allTags.length > 0 %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- 总标签数 -->
+        <div
+          class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-blue-600 mb-1">总标签数</p>
+              <p class="text-3xl font-bold text-blue-900">{{ allTags.length }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 启用标签 -->
+        <div
+          class="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6 border border-green-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-green-600 mb-1">启用标签</p>
+              <p class="text-3xl font-bold text-green-900">
+                {% set enabledCount = 0 %} {% for tag in allTags %} {% if tag.enable == 1 %} {% set
+                enabledCount = enabledCount + 1 %} {% endif %} {% endfor %} {{ enabledCount }}
+              </p>
+            </div>
+            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 总引用次数 -->
+        <div
+          class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-purple-600 mb-1">总引用次数</p>
+              <p class="text-3xl font-bold text-purple-900">
+                {% set totalRefs = 0 %} {% for tag in allTags %} {% set totalRefs = totalRefs +
+                (tag.refCount or 0) %} {% endfor %} {{ totalRefs }}
+              </p>
+            </div>
+            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 平均引用 -->
+        <div
+          class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-orange-600 mb-1">平均引用</p>
+              <p class="text-3xl font-bold text-orange-900">
+                {% set totalRefs = 0 %} {% for tag in allTags %} {% set totalRefs = totalRefs +
+                (tag.refCount or 0) %} {% endfor %} {{ (totalRefs / allTags.length) | round(2) }}
+              </p>
+            </div>
+            <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="text-center py-12">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            ></path>
+          </svg>
+        </div>
+        <p class="text-gray-500 text-lg font-medium">暂无统计数据</p>
+        <p class="text-gray-400 text-sm mt-2">请稍后再试或刷新页面</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 热门标签排行 -->
+    <div class="mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+      <div class="flex items-center mb-4">
+        <div
+          class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center mr-3"
+        >
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-bold text-gray-900">5. 热门标签排行榜</h4>
+      </div>
+
+      {% if allTags and allTags.length > 0 %} {% set sortedTags = allTags |
+      sort(attribute='refCount', reverse=true) %} {{ tagDisplay(sortedTags, layout='ranking',
+      showCount=true, showAlias=true, showDescription=true, showRank=true, maxCount=10) }} {% else
+      %}
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <svg
+          class="w-12 h-12 text-gray-400 mx-auto mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          ></path>
+        </svg>
+        <p class="text-gray-500 font-medium">暂无排行数据</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 标签云可视化 -->
+    <div class="mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+      <div class="flex items-center mb-4">
+        <div
+          class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mr-3"
+        >
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-bold text-gray-900">6. 标签云可视化</h4>
+      </div>
+
+      {% if allTags and allTags.length > 0 %}
+      <div
+        class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200"
+      >
+        {{ tagDisplay(allTags, layout='cloud', showCount=true, colorScheme='purple', maxCount=50,
+        customClass='tag-cloud-visual') }}
+      </div>
+      {% else %}
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <svg
+          class="w-12 h-12 text-gray-400 mx-auto mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+          ></path>
+        </svg>
+        <p class="text-gray-500 font-medium">暂无可视化数据</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 数据结构展示 -->
+    <div class="mb-8 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+      <div class="flex items-center mb-4">
+        <div
+          class="w-8 h-8 bg-gradient-to-r from-gray-500 to-gray-700 rounded-lg flex items-center justify-center mr-3"
+        >
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-bold text-gray-900">7. 数据结构调试</h4>
+      </div>
+
+      {% if allTags and allTags.length > 0 %}
+      <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+        <details class="group">
+          <summary
+            class="flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+          >
+            <span class="font-medium text-gray-900">点击查看标签的完整数据结构</span>
+            <svg
+              class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </summary>
+          <div class="p-4 bg-white border-t border-gray-200">
+            <pre
+              class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed"
+            >
+{{ allTags[0] | dump }}</pre
+            >
+          </div>
+        </details>
+      </div>
+      {% else %}
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <svg
+          class="w-12 h-12 text-gray-400 mx-auto mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+          ></path>
+        </svg>
+        <p class="text-gray-500 font-medium">暂无调试数据</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

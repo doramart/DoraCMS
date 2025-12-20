@@ -1,0 +1,38 @@
+# Docker 相关文件忽略规则
+
+# ============ 初始化数据 ============
+# 忽略实际的数据文件，但保留目录结构
+
+# MongoDB 初始化数据
+mongodb/initdata/*.bson
+mongodb/initdata/*.json
+!mongodb/initdata/.gitkeep
+!mongodb/initdata/README.md
+
+# MariaDB 初始化数据
+mariadb/init/*.sql
+mariadb/init/*.sh
+!mariadb/init/.gitkeep
+!mariadb/init/README.md
+
+# 旧的初始化数据路径（如果还存在）
+initdata/
+
+# ============ 日志文件 ============
+*.log
+
+# ============ 临时文件 ============
+*.tmp
+*.temp
+.DS_Store
+
+# ============ SSL 证书 ============
+ssl/*.pem
+ssl/*.key
+ssl/*.crt
+!ssl/.gitkeep
+
+# ============ 备份文件 ============
+*.backup
+*.bak
+

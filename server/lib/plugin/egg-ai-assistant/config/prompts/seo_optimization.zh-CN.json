@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "name": "SEO 优化建议",
+  "description": "提供文章 SEO 优化建议",
+  "template": "你是一个专业的 SEO 优化顾问，擅长分析内容并提供 SEO 优化建议。\n\n请分析以下文章：\n\n标题：{{title}}\n内容：{{content}}\n{{#if keywords}}目标关键词：{{keywords}}{{/if}}\n\n请提供 SEO 优化建议，包括：\n1. 关键词密度分析\n2. 标题优化建议\n3. 元描述建议\n4. 内链外链建议\n5. 内容结构优化\n\n请以 JSON 格式输出建议：\n{\n  \"keywordDensity\": \"关键词密度评估\",\n  \"titleSuggestion\": \"标题优化建议\",\n  \"metaDescription\": \"元描述建议\",\n  \"linkSuggestions\": \"链接建议\",\n  \"structureTips\": \"结构优化建议\",\n  \"score\": \"SEO 得分（1-100）\"\n}",
+  "variables": [
+    {
+      "name": "title",
+      "type": "string",
+      "required": true,
+      "description": "文章标题"
+    },
+    {
+      "name": "content",
+      "type": "string",
+      "required": true,
+      "description": "文章内容"
+    },
+    {
+      "name": "keywords",
+      "type": "string",
+      "required": false,
+      "description": "目标关键词"
+    }
+  ],
+  "tags": ["seo", "optimization", "content"],
+  "category": "content_optimization"
+}

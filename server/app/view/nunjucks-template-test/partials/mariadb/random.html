@@ -1,0 +1,282 @@
+<!-- random.html - 随机内容展示组件 -->
+{% from "./article-list.html" import articleList %}
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="random-debug">
+  <div
+    class="bg-gradient-to-r from-pink-600 to-rose-600 px-6 py-4 flex items-center justify-between"
+  >
+    <div class="flex items-center">
+      <div
+        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-white">🎲 随机内容</h3>
+    </div>
+    <button
+      class="text-white hover:text-pink-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+      onclick="toggleSection('random-debug')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="debug-content p-6">
+    <!-- 基础用法测试 -->
+    <div class="test-case">
+      <h4>1. 基础用法 - 随机获取文章</h4>
+      <code>{% raw %}{% random pageSize="6" %}{% endraw %}</code>
+
+      {% random pageSize="6" %} {% if random and random.length > 0 %}
+      <div class="random-posts">
+        <p class="success">✅ 成功随机获取到 {{ random.length }} 篇文章</p>
+        {{ articleList(random, layout='grid', showImage=true, showMeta=true, showDescription=true,
+        showAuthor=true, imageSize='medium', descriptionLength=80) }}
+        <button onclick="location.reload()" class="refresh-btn">🔄 刷新获取新的随机内容</button>
+      </div>
+      {% else %}
+      <p class="error">❌ 未获取到随机内容数据</p>
+      {% endif %}
+    </div>
+
+    <!-- 指定变量名的随机内容 -->
+    <div class="test-case">
+      <h4>2. 指定变量名的随机内容</h4>
+      <code>{% raw %}{% random key="randomPosts", pageSize="4" %}{% endraw %}</code>
+
+      {% random key="randomPosts", pageSize="4" %} {% if randomPosts and randomPosts.length > 0 %}
+      <div class="named-random-section">
+        <p class="success">✅ 使用自定义变量名获取成功 {{ randomPosts.length }} 篇</p>
+        {{ articleList(randomPosts, layout='compact', showImage=false, showDescription=false,
+        showMeta=true) }}
+      </div>
+      {% else %}
+      <p class="warning">⚠️ 自定义变量名的随机数据获取失败</p>
+      {% endif %}
+    </div>
+
+    <!-- 按分类随机获取 -->
+    <div class="test-case">
+      <h4>3. 按分类随机获取</h4>
+      <code>{% raw %}{% random key="categoryRandom", typeId="1", pageSize="3" %}{% endraw %}</code>
+
+      {% random key="categoryRandom", typeId="1", pageSize="3" %} {% if categoryRandom and
+      categoryRandom.length > 0 %}
+      <div class="category-random-section">
+        <p class="success">✅ 分类随机内容获取成功 {{ categoryRandom.length }} 篇</p>
+        {{ articleList(categoryRandom, layout='card', showImage=false, showMeta=false,
+        showDescription=true, showAuthor=false, descriptionLength=60) }}
+      </div>
+      {% else %}
+      <p class="warning">⚠️ 分类随机内容获取失败</p>
+      {% endif %}
+    </div>
+
+    <!-- 随机内容轮播展示 -->
+    <div class="test-case">
+      <h4>4. 随机内容轮播展示</h4>
+      {% if random and random.length > 0 %} {#
+      轮播展示使用特殊布局，暂时保留原有结构，但可以考虑后续优化 #} {{ articleList(random,
+      layout='grid', showImage=true, showMeta=true, showDescription=true, showAuthor=true,
+      imageSize='medium', descriptionLength=100, customClass='random-carousel-grid') }} {% endif %}
+    </div>
+
+    <!-- 随机内容统计 -->
+    <div class="mb-8 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+      <div class="flex items-center mb-6">
+        <div
+          class="w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg flex items-center justify-center mr-4"
+        >
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-xl font-bold text-gray-900">📊 随机内容统计分析</h4>
+      </div>
+
+      {% if random and random.length > 0 %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- 总文章数 -->
+        <div
+          class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-blue-600 mb-1">总文章数</p>
+              <p class="text-3xl font-bold text-blue-900">{{ random.length }}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 平均浏览量 -->
+        <div
+          class="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6 border border-green-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-green-600 mb-1">平均浏览量</p>
+              <p class="text-3xl font-bold text-green-900">
+                {% set totalViews = 0 %} {% for item in random %} {% set totalViews = totalViews +
+                (item.clickNum or 0) %} {% endfor %} {{ (totalViews / random.length) | round }}
+              </p>
+            </div>
+            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 总点赞数 -->
+        <div
+          class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-purple-600 mb-1">总点赞数</p>
+              <p class="text-3xl font-bold text-purple-900">
+                {% set totalLikes = 0 %} {% for item in random %} {% set totalLikes = totalLikes +
+                (item.likeNum or 0) %} {% endfor %} {{ totalLikes }}
+              </p>
+            </div>
+            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 涉及分类 -->
+        <div
+          class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200 hover:shadow-md transition-all duration-300"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-orange-600 mb-1">涉及分类</p>
+              <p class="text-3xl font-bold text-orange-900">
+                {% set categoryCount = 0 %} {% for item in random %} {% if item.categories and
+                item.categories.length > 0 %} {% set categoryCount = categoryCount + 1 %} {% endif
+                %} {% endfor %} {{ categoryCount }}
+              </p>
+            </div>
+            <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 统计趋势指示 -->
+      <div class="mt-6 pt-6 border-t border-gray-200">
+        <div class="flex items-center justify-between text-sm text-gray-600">
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+            <span>实时统计数据</span>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center">
+              <svg
+                class="w-4 h-4 mr-1 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                ></path>
+              </svg>
+              数据趋势良好
+            </span>
+            <span class="text-gray-400">|</span>
+            <span>更新时间: {{ "now" | date("HH:mm") }}</span>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="text-center py-12">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            ></path>
+          </svg>
+        </div>
+        <p class="text-gray-500 text-lg font-medium">暂无统计数据</p>
+        <p class="text-gray-400 text-sm mt-2">请稍后再试或刷新页面</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 数据结构展示 -->
+    <div class="test-case">
+      <h4>6. 数据结构调试</h4>
+      {% if random and random.length > 0 %}
+      <details>
+        <summary>点击查看随机文章的完整数据结构</summary>
+        <pre class="debug-data">{{ random[0] | dump }}</pre>
+      </details>
+      {% endif %}
+    </div>
+  </div>
+</div>

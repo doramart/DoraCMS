@@ -1,0 +1,7 @@
+backstage
+databak
+*/**/node_modules
+*/**/dist
+app/assets
+app/public
+dist

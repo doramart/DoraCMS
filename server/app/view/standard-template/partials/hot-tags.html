@@ -1,0 +1,25 @@
+<div class="bg-white dark:bg-dark-surface rounded-2xl shadow-sm border border-gray-100 dark:border-dark-border p-6 mt-8">
+  <div class="flex items-center justify-between mb-6">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center">
+      <span class="material-icons text-primary-500 mr-2">local_offer</span>
+      热门标签
+    </h3>
+  </div>
+  
+  {% hottags key="hotTags", pageSize=20 %}
+  {% if hotTags and hotTags.length > 0 %}
+    <div class="flex flex-wrap gap-2">
+      {% for tag in hotTags %}
+        <a href="/tag/{{ tag.name }}" 
+           class="px-3 py-1.5 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm rounded-lg hover:bg-primary-500 hover:text-white dark:hover:bg-primary-600 transition-all duration-200 transform hover:-translate-y-0.5"
+           >
+          #{{ tag.name }}
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-4 text-gray-400 dark:text-gray-500 text-sm">
+      暂无热门标签
+    </div>
+  {% endif %}
+</div>

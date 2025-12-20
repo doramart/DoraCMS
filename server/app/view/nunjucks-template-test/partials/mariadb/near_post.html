@@ -1,0 +1,237 @@
+<!-- near_post.html - 相关文章导航展示组件 -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="near-post-debug">
+  <div
+    class="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 flex items-center justify-between"
+  >
+    <div class="flex items-center">
+      <div
+        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-white">🔗 相关文章导航</h3>
+    </div>
+    <button
+      class="text-white hover:text-purple-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+      onclick="toggleSection('near-post-debug')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="debug-content p-6">
+    <!-- 说明文本 -->
+    <div class="info-note">
+      <p>
+        <strong>注意:</strong> near_post
+        标签需要在文章详情页使用，需要传入当前文章的ID。在首页调试时，我们使用模拟ID进行测试。
+      </p>
+    </div>
+
+    <!-- 基础用法测试 -->
+    <div class="test-case">
+      <h4>1. 基础用法 - 获取相关文章导航</h4>
+      <code>{% raw %}{% nearpost key="navigation", id="288" %}{% endraw %}</code>
+
+      {% nearpost key="navigation", id="288" %} {% if navigation %}
+      <div class="post-navigation">
+        <p class="success">✅ 成功获取到文章导航数据</p>
+
+        <div class="nav-container">
+          {% if navigation.prePost %}
+          <div class="nav-prev">
+            <div class="nav-direction">← 上一篇</div>
+            <a href="/details/{{ navigation.prePost.id }}.html" class="nav-link">
+              <h6>{{ navigation.prePost.title }}</h6>
+              {% if navigation.prePost.discription %}
+              <p>{{ navigation.prePost.discription | cutwords(60) }}</p>
+              {% endif %}
+              <div class="nav-meta">
+                <span>{{ navigation.prePost.createdAt | date('YYYY-MM-DD') }}</span>
+                <span>{{ navigation.prePost.clickNum }} 浏览</span>
+              </div>
+            </a>
+          </div>
+          {% else %}
+          <div class="nav-prev nav-empty">
+            <div class="nav-direction">← 上一篇</div>
+            <div class="nav-empty-content">
+              <p>已经是第一篇文章了</p>
+            </div>
+          </div>
+          {% endif %} {% if navigation.nextPost %}
+          <div class="nav-next">
+            <div class="nav-direction">下一篇 →</div>
+            <a href="/details/{{ navigation.nextPost.id }}.html" class="nav-link">
+              <h6>{{ navigation.nextPost.title }}</h6>
+              {% if navigation.nextPost.discription %}
+              <p>{{ navigation.nextPost.discription | cutwords(60) }}</p>
+              {% endif %}
+              <div class="nav-meta">
+                <span>{{ navigation.nextPost.createdAt | date('YYYY-MM-DD') }}</span>
+                <span>{{ navigation.nextPost.clickNum }} 浏览</span>
+              </div>
+            </a>
+          </div>
+          {% else %}
+          <div class="nav-next nav-empty">
+            <div class="nav-direction">下一篇 →</div>
+            <div class="nav-empty-content">
+              <p>已经是最后一篇文章了</p>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <p class="error">❌ 未获取到文章导航数据</p>
+      {% endif %}
+    </div>
+
+    <!-- 使用不同ID测试 -->
+    <div class="test-case">
+      <h4>2. 使用不同ID测试导航</h4>
+      <code>{% raw %}{% nearpost key="navigation2", id="5" %}{% endraw %}</code>
+
+      {% nearpost key="navigation2", id="5" %} {% if navigation2 %}
+      <div class="post-navigation-alt">
+        <p class="success">✅ ID=5的文章导航数据获取成功</p>
+
+        <div class="nav-simple">
+          {% if navigation2.prePost %}
+          <div class="nav-item prev">
+            <span class="nav-label">上一篇:</span>
+            <a href="/details/{{ navigation2.prePost.id }}.html">
+              {{ navigation2.prePost.title | cutwords(40) }}
+            </a>
+          </div>
+          {% endif %} {% if navigation2.nextPost %}
+          <div class="nav-item next">
+            <span class="nav-label">下一篇:</span>
+            <a href="/details/{{ navigation2.nextPost.id }}.html">
+              {{ navigation2.nextPost.title | cutwords(40) }}
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <p class="warning">⚠️ ID=5的文章导航数据获取失败</p>
+      {% endif %}
+    </div>
+
+    <!-- 导航状态测试 -->
+    <div class="test-case">
+      <h4>3. 导航状态测试</h4>
+      <code>{% raw %}{% nearpost key="navigation3", id="999" %}{% endraw %}</code>
+
+      {% nearpost key="navigation3", id="999" %} {% if navigation3 %}
+      <div class="navigation-status">
+        <p class="success">✅ ID=999的导航数据获取成功</p>
+
+        <div class="status-info">
+          <div class="status-item">
+            <span class="status-label">上一篇状态:</span>
+            <span class="status-value">
+              {% if navigation3.prePost %} ✅ 存在 (ID: {{ navigation3.prePost.id }}) {% else %} ❌
+              不存在 {% endif %}
+            </span>
+          </div>
+
+          <div class="status-item">
+            <span class="status-label">下一篇状态:</span>
+            <span class="status-value">
+              {% if navigation3.nextPost %} ✅ 存在 (ID: {{ navigation3.nextPost.id }}) {% else %}
+              ❌ 不存在 {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="warning">⚠️ ID=999的文章可能不存在</p>
+      {% endif %}
+    </div>
+
+    <!-- 导航面包屑样式 -->
+    <div class="test-case">
+      <h4>4. 导航面包屑样式</h4>
+      {% if navigation %}
+      <div class="breadcrumb-nav">
+        <div class="breadcrumb-container">
+          {% if navigation.prePost %}
+          <a href="/details/{{ navigation.prePost.id }}.html" class="breadcrumb-item prev">
+            <span class="icon">←</span>
+            <span class="text">{{ navigation.prePost.title | cutwords(20) }}</span>
+          </a>
+          {% endif %}
+
+          <span class="breadcrumb-current">当前文章</span>
+
+          {% if navigation.nextPost %}
+          <a href="/details/{{ navigation.nextPost.id }}.html" class="breadcrumb-item next">
+            <span class="text">{{ navigation.nextPost.title | cutwords(20) }}</span>
+            <span class="icon">→</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 实际使用场景展示 -->
+    <div class="test-case">
+      <h4>5. 实际使用场景展示</h4>
+      <div class="usage-example">
+        <h6>在文章详情页的使用方法:</h6>
+        <pre class="code-example">
+&lt;!-- 在文章详情页模板中使用 --&gt;
+{% raw %}{% nearpost key="navigation", id="{{ post.id }}" %}{% endraw %}
+{% raw %}{% if navigation %}{% endraw %}
+  &lt;nav class="post-navigation"&gt;
+    {% raw %}{% if navigation.prePost %}{% endraw %}
+      &lt;div class="nav-prev"&gt;
+        &lt;a href="/details/{% raw %}{{ navigation.prePost.id }}{% endraw %}.html"&gt;
+          上一篇: {% raw %}{{ navigation.prePost.title }}{% endraw %}
+        &lt;/a&gt;
+      &lt;/div&gt;
+    {% raw %}{% endif %}{% endraw %}
+    
+    {% raw %}{% if navigation.nextPost %}{% endraw %}
+      &lt;div class="nav-next"&gt;
+        &lt;a href="/details/{% raw %}{{ navigation.nextPost.id }}{% endraw %}.html"&gt;
+          下一篇: {% raw %}{{ navigation.nextPost.title }}{% endraw %}
+        &lt;/a&gt;
+      &lt;/div&gt;
+    {% raw %}{% endif %}{% endraw %}
+  &lt;/nav&gt;
+{% raw %}{% endif %}{% endraw %}
+        </pre>
+      </div>
+    </div>
+
+    <!-- 数据结构展示 -->
+    <div class="test-case">
+      <h4>6. 数据结构调试</h4>
+      {% if navigation %}
+      <details>
+        <summary>点击查看导航数据的完整结构</summary>
+        <pre class="debug-data">{{ navigation | dump }}</pre>
+      </details>
+      {% endif %}
+    </div>
+  </div>
+</div>

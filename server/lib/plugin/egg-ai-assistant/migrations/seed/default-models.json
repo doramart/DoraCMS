@@ -1,0 +1,338 @@
+[
+  {
+    "provider": "openai",
+    "modelName": "gpt-3.5-turbo",
+    "displayName": "GPT-3.5 Turbo",
+    "description": "Fast and cost-effective model for most tasks",
+    "config": {
+      "apiKey": "",
+      "apiEndpoint": "https://api.openai.com/v1",
+      "maxTokens": 4096,
+      "temperature": 0.7,
+      "topP": 1.0,
+      "timeout": 30000
+    },
+    "supportedTasks": [
+      "title_generation",
+      "tag_extraction",
+      "summary_generation",
+      "category_matching",
+      "seo_optimization",
+      "content_quality_check"
+    ],
+    "costPerRequest": 0.002,
+    "costPer1kTokens": 0.0015,
+    "priority": 10,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["openai", "gpt", "general-purpose"],
+    "metadata": {
+      "contextWindow": 16385,
+      "trainingCutoff": "2021-09"
+    }
+  },
+  {
+    "provider": "openai",
+    "modelName": "gpt-4",
+    "displayName": "GPT-4",
+    "description": "Most capable model, best for complex tasks",
+    "config": {
+      "apiKey": "",
+      "apiEndpoint": "https://api.openai.com/v1",
+      "maxTokens": 8192,
+      "temperature": 0.7,
+      "topP": 1.0,
+      "timeout": 60000
+    },
+    "supportedTasks": [
+      "title_generation",
+      "tag_extraction",
+      "summary_generation",
+      "category_matching",
+      "seo_optimization",
+      "content_quality_check"
+    ],
+    "costPerRequest": 0.03,
+    "costPer1kTokens": 0.03,
+    "priority": 5,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["openai", "gpt-4", "high-quality"],
+    "metadata": {
+      "contextWindow": 8192,
+      "trainingCutoff": "2023-04"
+    }
+  },
+  {
+    "provider": "deepseek",
+    "modelName": "deepseek-chat",
+    "displayName": "DeepSeek Chat",
+    "description": "DeepSeek 通用对话模型，支持中英文，成本极低（比 GPT-3.5 便宜 90%）",
+    "config": {
+      "apiKey": "",
+      "apiEndpoint": "https://api.deepseek.com/v1",
+      "maxTokens": 4096,
+      "temperature": 0.7,
+      "topP": 1.0,
+      "timeout": 30000
+    },
+    "supportedTasks": [
+      "title_generation",
+      "tag_extraction",
+      "summary_generation",
+      "category_matching",
+      "seo_optimization",
+      "content_quality_check"
+    ],
+    "costPerRequest": 0.0002,
+    "costPer1kTokens": 0.00014,
+    "priority": 15,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["deepseek", "chinese", "cost-effective", "bilingual"],
+    "metadata": {
+      "contextWindow": 32768,
+      "language": "zh-CN,en-US",
+      "pricing": "$0.14/1M input, $0.28/1M output"
+    }
+  },
+  {
+    "provider": "deepseek",
+    "modelName": "deepseek-coder",
+    "displayName": "DeepSeek Coder",
+    "description": "DeepSeek 代码生成模型，专注于编程任务",
+    "config": {
+      "apiKey": "",
+      "apiEndpoint": "https://api.deepseek.com/v1",
+      "maxTokens": 4096,
+      "temperature": 0.5,
+      "topP": 1.0,
+      "timeout": 30000
+    },
+    "supportedTasks": ["title_generation", "tag_extraction", "summary_generation"],
+    "costPerRequest": 0.0002,
+    "costPer1kTokens": 0.00014,
+    "priority": 12,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["deepseek", "coding", "specialized"],
+    "metadata": {
+      "contextWindow": 32768,
+      "specialization": "code-generation"
+    }
+  },
+  {
+    "provider": "ollama",
+    "modelName": "qwen2:7b",
+    "displayName": "Qwen 2 7B (本地)",
+    "description": "阿里通义千问 2，7B 参数，支持中英文，本地部署无成本",
+    "config": {
+      "apiEndpoint": "http://localhost:11434",
+      "maxTokens": 2048,
+      "temperature": 0.7,
+      "topP": 1.0,
+      "timeout": 60000
+    },
+    "supportedTasks": [
+      "title_generation",
+      "tag_extraction",
+      "summary_generation",
+      "category_matching",
+      "seo_optimization"
+    ],
+    "costPerRequest": 0,
+    "costPer1kTokens": 0,
+    "priority": 20,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["ollama", "local", "qwen", "chinese", "free"],
+    "metadata": {
+      "contextWindow": 32768,
+      "requiresLocalSetup": true,
+      "modelSize": "4.4 GB",
+      "recommendedRAM": "8 GB"
+    }
+  },
+  {
+    "provider": "ollama",
+    "modelName": "llama3:8b",
+    "displayName": "Llama 3 8B (本地)",
+    "description": "Meta Llama 3，8B 参数，通用模型，本地部署无成本",
+    "config": {
+      "apiEndpoint": "http://localhost:11434",
+      "maxTokens": 2048,
+      "temperature": 0.7,
+      "topP": 1.0,
+      "timeout": 60000
+    },
+    "supportedTasks": [
+      "title_generation",
+      "tag_extraction",
+      "summary_generation",
+      "category_matching",
+      "content_quality_check"
+    ],
+    "costPerRequest": 0,
+    "costPer1kTokens": 0,
+    "priority": 18,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["ollama", "local", "llama", "open-source", "free"],
+    "metadata": {
+      "contextWindow": 8192,
+      "requiresLocalSetup": true,
+      "modelSize": "4.7 GB",
+      "recommendedRAM": "8 GB"
+    }
+  },
+  {
+    "provider": "doubao",
+    "modelName": "doubao-seedream-3-0-t2i-250415",
+    "displayName": "豆包 SeeDream 3.0",
+    "description": "豆包 SeeDream 3.0 文生图模型，支持多种尺寸图片生成，性能稳定",
+    "config": {
+      "apiKey": "",
+      "apiEndpoint": "https://ark.cn-beijing.volces.com/api/v3",
+      "size": "1024x1024",
+      "guidanceScale": 3,
+      "watermark": true,
+      "timeout": 60000
+    },
+    "supportedTasks": ["image_generation", "text_to_image"],
+    "costPerRequest": 0.02,
+    "costPer1kTokens": 0,
+    "priority": 12,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["doubao", "image-generation", "text-to-image", "seedream"],
+    "metadata": {
+      "apiProvider": "volcengine",
+      "supportedSizes": ["1024x1024", "1024x768", "768x1024", "1280x720", "720x1280"],
+      "guidanceScaleRange": [1, 20],
+      "modelVersion": "3.0"
+    }
+  },
+  {
+    "provider": "doubao",
+    "modelName": "doubao-seedream-4-0-250828",
+    "displayName": "豆包 SeeDream 4.0",
+    "description": "豆包 SeeDream 4.0 文生图模型，支持高分辨率（2K/4K）图片生成，质量更高",
+    "config": {
+      "apiKey": "",
+      "apiEndpoint": "https://ark.cn-beijing.volces.com/api/v3",
+      "size": "2K",
+      "sequentialImageGeneration": "disabled",
+      "watermark": true,
+      "timeout": 90000
+    },
+    "supportedTasks": ["image_generation", "text_to_image", "high_resolution_image"],
+    "costPerRequest": 0.03,
+    "costPer1kTokens": 0,
+    "priority": 15,
+    "isEnabled": false,
+    "statistics": {
+      "totalCalls": 0,
+      "totalTokens": 0,
+      "totalCost": 0,
+      "successRate": 1.0,
+      "averageResponseTime": 0
+    },
+    "health": {
+      "isHealthy": true,
+      "lastCheckTime": null,
+      "errorCount": 0
+    },
+    "maxRetries": 2,
+    "tags": ["doubao", "image-generation", "text-to-image", "seedream", "high-resolution"],
+    "metadata": {
+      "apiProvider": "volcengine",
+      "supportedSizes": ["1024x1024", "2K", "4K", "1280x720", "720x1280"],
+      "streamSupport": true,
+      "modelVersion": "4.0"
+    }
+  }
+]

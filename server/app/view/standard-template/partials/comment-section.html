@@ -1,0 +1,271 @@
+<!-- 独立的留言模块组件 (partials/comment-section.html) -->
+<!-- 
+  使用方法：
+  1. 先设置变量 contentId 为文章ID
+  2. 然后包含此模板文件
+-->
+
+<section class="comment-section bg-white dark:bg-dark-surface rounded-2xl shadow-lg border border-gray-100 dark:border-dark-border p-6 md:p-8 mt-12 scroll-mt-24" id="comments">
+  <div class="comment-header mb-8 pb-4 border-b border-gray-100 dark:border-dark-border flex items-center justify-between">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+      <span class="inline-block p-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg mr-3">
+        <svg class="w-6 h-6 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
+      </span>
+      评论区
+      <span id="comment-count" class="ml-3 text-sm font-normal px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">加载中...</span>
+    </h2>
+  </div>
+
+  <!-- 发表评论表单 -->
+  <div class="comment-form mb-10">
+    <div id="login-prompt" class="hidden p-6 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/30 text-center">
+      <div class="mb-3">
+          <span class="inline-block p-2 bg-blue-100 dark:bg-blue-800 rounded-full text-blue-600 dark:text-blue-300">
+              <span class="material-icons">lock</span>
+          </span>
+      </div>
+      <p class="text-blue-800 dark:text-blue-200">
+        请先 
+        <a href="/user-center/login" class="text-blue-600 dark:text-blue-400 hover:underline font-bold">登录</a> 
+        或 
+        <a href="/user-center/register" class="text-blue-600 dark:text-blue-400 hover:underline font-bold">注册</a> 
+        后参与讨论
+      </p>
+    </div>
+    
+    <form id="comment-form" class="hidden group relative">
+      <div class="flex items-start space-x-4">
+        <div class="flex-shrink-0">
+             <img id="user-avatar" class="w-12 h-12 rounded-full border-2 border-white dark:border-gray-700 shadow-sm object-cover" src="" alt="用户头像" />
+        </div>
+        <div class="flex-1">
+          <div class="relative">
+            <textarea
+              id="comment-content"
+              class="w-full p-4 min-h-[120px] bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:text-white resize-y transition-shadow duration-200 placeholder-gray-400"
+              placeholder="分享您的真知灼见..."
+              rows="3"
+              maxlength="200"
+            ></textarea>
+            <div class="absolute bottom-3 right-3 text-xs text-gray-400 pointer-events-none">
+                <span id="char-count">0/200</span>
+            </div>
+          </div>
+          
+          <div class="flex justify-end items-center mt-4 space-x-3">
+             <button
+              type="button"
+              id="cancel-comment"
+              class="hidden px-5 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              id="submit-comment"
+              class="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-lg shadow-lg shadow-primary-500/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0 flex items-center"
+              disabled
+            >
+              <span class="material-icons text-[18px] mr-1">send</span>
+              发表评论
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- 评论列表 -->
+  <div class="comment-list relative">
+    <div id="comments-loading" class="absolute inset-0 z-10 bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm flex flex-col items-center justify-center min-h-[200px]">
+        <svg class="animate-spin h-8 w-8 text-primary-500 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="text-sm text-gray-500 font-medium">加载精彩评论中...</span>
+    </div>
+    
+    <div id="comments-container" class="hidden space-y-8 min-h-[100px]">
+      <!-- 评论将通过JavaScript动态加载 -->
+    </div>
+    
+    <div id="comments-empty" class="hidden py-12 text-center rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-dashed border-gray-200 dark:border-gray-700">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-white dark:bg-gray-700 rounded-full shadow-sm mb-4">
+           <span class="material-icons text-3xl text-gray-300 dark:text-gray-500">chat_bubble_outline</span>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-1">暂无评论</h3>
+      <p class="text-gray-500 dark:text-gray-400">成为第一个发表观点的人吧！</p>
+    </div>
+  </div>
+
+  <!-- 分页 -->
+  <div id="comment-pagination" class="hidden mt-10 flex justify-center border-t border-gray-100 dark:border-dark-border pt-6">
+    <nav class="flex items-center space-x-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <button id="prev-page" class="px-3 py-1.5 rounded-md text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm disabled:shadow-none" disabled>
+        <span class="material-icons text-[16px] align-middle">chevron_left</span>
+      </button>
+      <div id="page-numbers" class="flex space-x-1 px-2">
+        <!-- 页码将通过JavaScript动态生成 -->
+      </div>
+      <button id="next-page" class="px-3 py-1.5 rounded-md text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm disabled:shadow-none">
+        <span class="material-icons text-[16px] align-middle">chevron_right</span>
+      </button>
+    </nav>
+  </div>
+</section>
+
+<!-- 评论模板 -->
+<template id="comment-template">
+  <!-- 单条评论 -->
+  <div class="comment-item group animate-fade-in" data-comment-id="">
+    <div class="flex space-x-4">
+      <div class="flex-shrink-0">
+          <img class="comment-avatar w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700" src="" alt="用户头像" />
+      </div>
+      <div class="flex-1 min-w-0">
+        <!-- 评论头部 -->
+        <div class="comment-header flex items-center justify-between mb-2">
+          <div class="flex items-center space-x-2">
+            <span class="comment-author font-bold text-gray-900 dark:text-white text-sm hover:text-primary-500 cursor-pointer transition-colors"></span>
+            
+            <span class="comment-type-badge hidden px-1.5 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 rounded">ADMIN</span>
+          </div>
+          <span class="comment-time text-xs text-gray-400 dark:text-gray-500 font-mono"></span>
+        </div>
+        
+        <!-- 评论内容 -->
+        <div class="comment-content text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 break-words bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg rounded-tl-none inline-block max-w-full"></div>
+        
+        <!-- 评论操作栏 -->
+        <div class="comment-actions flex items-center space-x-6 text-xs font-medium text-gray-500 dark:text-gray-400 select-none">
+           <!-- 点赞 -->
+          <button class="praise-btn flex items-center space-x-1 hover:text-primary-500 transition-colors group/btn">
+            <span class="material-icons text-[16px] group-hover/btn:scale-110 transition-transform">thumb_up_off_alt</span>
+            <span class="praise-count">0</span>
+          </button>
+          
+          <!-- 踩 -->
+          <button class="despise-btn flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors group/btn">
+            <span class="material-icons text-[16px] group-hover/btn:scale-110 transition-transform">thumb_down_off_alt</span>
+            <span class="despise-count">0</span>
+          </button>
+          
+           <!-- 回复按钮 -->
+          <button class="reply-btn flex items-center space-x-1 hover:text-primary-500 transition-colors">
+            <span class="material-icons text-[16px]">chat_bubble_outline</span>
+            <span>回复</span>
+          </button>
+          
+           <!-- 回复数展示 -->
+           <span class="reply-count-info hidden">
+               <span class="reply-count">0</span> 条回复
+           </span>
+        </div>
+        
+        <!-- 子评论/回复表单容器 -->
+        <div class="mt-4">
+             <!-- 回复表单 -->
+             <div class="reply-form hidden mb-4 pl-4 border-l-2 border-primary-200 dark:border-primary-900/50">
+                <div class="flex space-x-3">
+                    <img class="reply-user-avatar w-8 h-8 rounded-full opacity-80" src="" alt="用户头像" />
+                    <div class="flex-1">
+                    <textarea
+                        class="reply-content w-full p-3 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:text-white resize-none shadow-sm"
+                        placeholder="回复..."
+                        rows="2"
+                        maxlength="200"
+                    ></textarea>
+                    <div class="flex justify-between items-center mt-2.5">
+                        <span class="reply-char-count text-xs text-gray-400">0/200</span>
+                        <div class="flex space-x-2">
+                        <button type="button" class="cancel-reply px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors">取消</button>
+                        <button type="button" class="submit-reply px-4 py-1.5 text-xs bg-primary-500 text-white rounded hover:bg-primary-600 disabled:opacity-50 transition-colors shadow-sm" disabled>回复</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 子评论列表 -->
+            <div class="replies-container space-y-4 pl-4 md:pl-6 border-l-2 border-dashed border-gray-100 dark:border-gray-700/50">
+             <!-- 子评论动态加载 -->
+            </div>
+            
+            <!-- 加载更多回复 -->
+            <div class="load-more-replies hidden mt-2 pl-6">
+                 <button class="text-xs font-medium text-primary-500 hover:underline flex items-center">
+                    <span class="material-icons text-[14px] mr-1">expand_more</span>
+                    查看更多回复 (<span class="remaining-replies-count">0</span>)
+                </button>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- 引入评论功能的JavaScript -->
+<script>
+// 评论模块配置
+window.CommentConfig = {
+  contentId: '{{ contentId }}', // 从模板参数传入
+  apiBase: '/api/contentMessage',
+  pageSize: 10,
+  maxNestLevel: 3, // 最大嵌套层级
+};
+</script>
+
+<script src="/static/js/comment-module.js"></script>
+
+<style>
+/* 覆盖或补充样式 */
+.comment-item {
+    scroll-margin-top: 100px;
+}
+button.praise-btn.active .material-icons {
+    color: #ef4444; /* primary-500 */
+    font-variation-settings: 'FILL' 1;
+}
+button.praise-btn.active {
+    color: #ef4444;
+}
+
+button.despise-btn.active .material-icons {
+     color: #4b5563; /* gray-600 */
+     font-variation-settings: 'FILL' 1;
+}
+.dark button.despise-btn.active .material-icons {
+    color: #d1d5db; /* gray-300 */
+}
+
+/* 分页页码激活态 */
+#page-numbers button.active {
+  background-color: white;
+  color: #ef4444;
+  font-weight: 700;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.dark #page-numbers button.active {
+    background-color: #374151;
+    color: #f87171;
+}
+
+/* 评论进入动画 */
+@keyframes commentSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.animate-fade-in {
+    animation: commentSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+</style>

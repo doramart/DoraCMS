@@ -1,0 +1,499 @@
+<!-- navtree.html - 分类树导航展示组件 -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="navtree-debug">
+  <div
+    class="bg-gradient-to-r from-teal-600 to-cyan-600 px-6 py-4 flex items-center justify-between"
+  >
+    <div class="flex items-center">
+      <div
+        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-white">🌳 分类树导航</h3>
+    </div>
+    <button
+      class="text-white hover:text-teal-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+      onclick="toggleSection('navtree-debug')"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="debug-content p-6">
+    <!-- 基础用法测试 -->
+    <div class="test-case">
+      <h4>1. 基础用法 - 获取完整分类树</h4>
+      <code>{% raw %}{% navtree key="categories" %}{% endraw %}</code>
+
+      {% navtree key="categories" %} {% if categories and categories.length > 0 %}
+      <div class="category-navigation">
+        <div class="alert alert-success mb-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>✅ 成功获取到 {{ categories.length }} 个顶级分类</span>
+        </div>
+
+        <ul class="menu bg-base-200 w-full rounded-box">
+          {% for category in categories %}
+          <li>
+            {% if category.children and category.children.length > 0 %}
+            <details open>
+              <summary class="menu-title">
+                {% if category.icon %}
+                <i class="{{ category.icon }}"></i>
+                {% endif %}
+                <a href="{{ category.url }}">{{ category.name }}</a>
+                <span class="badge badge-outline badge-sm">{{ category.contentCount }}</span>
+              </summary>
+              {% if category.comments %}
+              <div class="text-sm text-base-content/70 px-4 py-1">{{ category.comments }}</div>
+              {% endif %}
+              <ul class="menu menu-sm">
+                {% for child in category.children %}
+                <li>
+                  {% if child.children and child.children.length > 0 %}
+                  <details>
+                    <summary>
+                      {% if child.icon %}
+                      <i class="{{ child.icon }}"></i>
+                      {% endif %}
+                      <a href="{{ child.url }}" title="{{ child.comments }}">{{ child.name }}</a>
+                      <span class="badge badge-ghost badge-xs">{{ child.contentCount }}</span>
+                    </summary>
+                    <ul>
+                      {% for grandchild in child.children %}
+                      <li>
+                        <a href="{{ grandchild.url }}">
+                          {% if grandchild.icon %}
+                          <i class="{{ grandchild.icon }}"></i>
+                          {% endif %} {{ grandchild.name }}
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </details>
+                  {% else %}
+                  <a href="{{ child.url }}" title="{{ child.comments }}">
+                    {% if child.icon %}
+                    <i class="{{ child.icon }}"></i>
+                    {% endif %} {{ child.name }}
+                    <span class="badge badge-ghost badge-xs">{{ child.contentCount }}</span>
+                  </a>
+                  {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+            </details>
+            {% else %}
+            <a href="{{ category.url }}">
+              {% if category.icon %}
+              <i class="{{ category.icon }}"></i>
+              {% endif %} {{ category.name }}
+              <span class="badge badge-outline badge-sm">{{ category.contentCount }}</span>
+            </a>
+            {% if category.comments %}
+            <div class="text-sm text-base-content/70 px-4 py-1">{{ category.comments }}</div>
+            {% endif %}
+            <div class="text-xs text-base-content/50 px-4">暂无子分类</div>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% else %}
+      <div class="alert alert-error">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-current shrink-0 h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span>❌ 未获取到分类树数据</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 指定父级分类的子分类 -->
+    <div class="test-case">
+      <h4>2. 获取指定分类下的子分类</h4>
+      <code>{% raw %}{% navtree key="subCategories", parentId="1" %}{% endraw %}</code>
+
+      {% navtree key="subCategories", parentId="1" %} {% if subCategories and subCategories.length >
+      0 %}
+      <div class="sub-categories-section">
+        <div class="alert alert-success mb-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>✅ 成功获取到指定分类的 {{ subCategories.length }} 个子分类</span>
+        </div>
+
+        <ul class="menu bg-base-200 w-full rounded-box">
+          {% for subCat in subCategories %}
+          <li>
+            <div class="flex flex-col w-full">
+              <div class="flex items-center justify-between w-full">
+                <a href="{{ subCat.url }}" class="flex items-center gap-2">
+                  {% if subCat.icon %}
+                  <i class="{{ subCat.icon }}"></i>
+                  {% endif %}
+                  <span class="font-medium">{{ subCat.name }}</span>
+                </a>
+                <div class="flex gap-1">
+                  <span class="badge badge-primary badge-xs">{{ subCat.sortId }}</span>
+                  <span class="badge badge-secondary badge-xs">深度 {{ subCat.depth }}</span>
+                  <span class="badge badge-secondary badge-xs"
+                    >文章总数 {{ subCat.contentCount }}</span
+                  >
+                  <span
+                    class="badge {{ 'badge-success' if subCat.enable else 'badge-error' }} badge-xs"
+                  >
+                    {{ "启用" if subCat.enable else "禁用" }}
+                  </span>
+                </div>
+              </div>
+              {% if subCat.comments %}
+              <div class="text-sm text-base-content/70 mt-1">
+                {{ subCat.comments | cutwords(80) }}
+              </div>
+              {% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% else %}
+      <div class="alert alert-warning">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-current shrink-0 h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+          />
+        </svg>
+        <span>⚠️ 指定分类下暂无子分类</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 分类树结构可视化 -->
+    <div class="test-case">
+      <h4>3. 分类树结构可视化</h4>
+      {% if categories and categories.length > 0 %}
+      <div class="tree-visualization">
+        <ul class="menu bg-base-200 w-full rounded-box">
+          {% for category in categories %}
+          <li>
+            <details open>
+              <summary class="menu-title flex items-center gap-2">
+                <span class="text-lg">📁</span>
+                <a href="{{ category.url }}" class="link link-primary">{{ category.name }}</a>
+                <span class="badge badge-ghost badge-sm">ID: {{ category.id }}</span>
+                <span class="badge badge-outline badge-xs">排序: {{ category.sortId }}</span>
+                <span class="badge badge-secondary badge-xs"
+                  >文章总数 {{ category.contentCount }}</span
+                >
+              </summary>
+
+              {% if category.children and category.children.length > 0 %}
+              <ul class="menu menu-sm">
+                {% for child in category.children %}
+                <li>
+                  {% if child.children and child.children.length > 0 %}
+                  <details>
+                    <summary class="flex items-center gap-2">
+                      <span class="text-base">📂</span>
+                      <a href="{{ child.url }}" class="link link-secondary">{{ child.name }}</a>
+                      <span class="badge badge-ghost badge-xs">ID: {{ child.id }}</span>
+                    </summary>
+                    <ul>
+                      {% for grandchild in child.children %}
+                      <li>
+                        <a href="{{ grandchild.url }}" class="flex items-center gap-2">
+                          <span class="text-sm">📄</span>
+                          <span>{{ grandchild.name }}</span>
+                          <span class="badge badge-ghost badge-xs">ID: {{ grandchild.id }}</span>
+                          <span class="badge badge-secondary badge-xs"
+                            >文章总数 {{ grandchild.contentCount }}</span
+                          >
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </details>
+                  {% else %}
+                  <a href="{{ child.url }}" class="flex items-center gap-2">
+                    <span class="text-base">📂</span>
+                    <span>{{ child.name }}</span>
+                    <span class="badge badge-ghost badge-xs">ID: {{ child.id }}</span>
+                    <span class="badge badge-secondary badge-xs"
+                      >文章总数 {{ child.contentCount }}</span
+                    >
+                  </a>
+                  {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </details>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 分类统计信息 横向排列 -->
+    <div class="test-case">
+      <h4>4. 分类统计信息</h4>
+      {% if categories and categories.length > 0 %}
+      <div class="categories-stats">
+        {% set totalCategories = 0 %} {% set enabledCategories = 0 %} {% set maxDepth = 0 %} {% for
+        category in categories %} {% set totalCategories = totalCategories + 1 %} {% if
+        category.enable %}{% set enabledCategories = enabledCategories + 1 %}{% endif %} {% if
+        category.depth > maxDepth %}{% set maxDepth = category.depth %}{% endif %} {% if
+        category.children %} {% for child in category.children %} {% set totalCategories =
+        totalCategories + 1 %} {% if child.enable %}{% set enabledCategories = enabledCategories + 1
+        %}{% endif %} {% if child.depth > maxDepth %}{% set maxDepth = child.depth %}{% endif %} {%
+        if child.children %} {% for grandchild in child.children %} {% set totalCategories =
+        totalCategories + 1 %} {% if grandchild.enable %}{% set enabledCategories =
+        enabledCategories + 1 %}{% endif %} {% if grandchild.depth > maxDepth %}{% set maxDepth =
+        grandchild.depth %}{% endif %} {% endfor %} {% endif %} {% endfor %} {% endif %} {% endfor
+        %}
+
+        <div class="stats-grid flex flex-row gap-6 mt-4">
+          <div class="stat-item flex flex-col items-center px-6 py-4 bg-gray-50 rounded-lg shadow">
+            <h6 class="text-gray-600">总分类数</h6>
+            <span class="stat-value text-xl font-bold text-indigo-600">{{ totalCategories }}</span>
+          </div>
+          <div class="stat-item flex flex-col items-center px-6 py-4 bg-gray-50 rounded-lg shadow">
+            <h6 class="text-gray-600">顶级分类</h6>
+            <span class="stat-value text-xl font-bold text-indigo-600"
+              >{{ categories.length }}</span
+            >
+          </div>
+          <div class="stat-item flex flex-col items-center px-6 py-4 bg-gray-50 rounded-lg shadow">
+            <h6 class="text-gray-600">启用分类</h6>
+            <span class="stat-value text-xl font-bold text-indigo-600"
+              >{{ enabledCategories }}</span
+            >
+          </div>
+          <div class="stat-item flex flex-col items-center px-6 py-4 bg-gray-50 rounded-lg shadow">
+            <h6 class="text-gray-600">最大深度</h6>
+            <span class="stat-value text-xl font-bold text-indigo-600">{{ maxDepth }} 级</span>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 面包屑导航展示 -->
+    <div class="test-case">
+      <h4>5. 面包屑导航展示</h4>
+      {% if categories and categories.length > 0 %}
+      <div class="breadcrumb-examples space-y-4">
+        {% for category in categories %} {% if loop.index0 < 3 and category.children and
+        category.children.length > 0 %} {% for child in category.children %} {% if loop.index0 < 2
+        %}
+        <div class="breadcrumb-example">
+          <div class="breadcrumbs">
+            <ul>
+              <li>
+                <a href="/" class="link link-hover">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    class="w-4 h-4 stroke-current"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m3 7 6-3 6 3-6 3-6-3zm0 8l6-3 6 3-6 3-6-3z"
+                    ></path>
+                  </svg>
+                  首页
+                </a>
+              </li>
+              <li>
+                <a href="{{ category.url }}" class="link link-hover">
+                  {% if category.icon %}
+                  <i class="{{ category.icon }}"></i>
+                  {% endif %} {{ category.name }}
+                </a>
+              </li>
+              <li>
+                <span class="text-base-content/70">
+                  {% if child.icon %}
+                  <i class="{{ child.icon }}"></i>
+                  {% endif %} {{ child.name }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        {% endif %} {% endfor %} {% endif %} {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 下拉菜单展示 -->
+    <div class="test-case">
+      <h4>6. 下拉菜单展示</h4>
+      {% if categories and categories.length > 0 %}
+      <div class="dropdown-navigation">
+        <div class="dropdown dropdown-bottom">
+          <div tabindex="0" role="button" class="btn btn-outline m-1">
+            选择分类
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </div>
+          <ul
+            tabindex="0"
+            class="dropdown-content menu bg-base-100 rounded-box z-[1] w-80 p-2 shadow-lg"
+          >
+            {% for category in categories %}
+            <li>
+              <div class="menu-title">
+                {% if category.icon %}
+                <i class="{{ category.icon }}"></i>
+                {% endif %} {{ category.name }}
+              </div>
+            </li>
+            {% if category.children and category.children.length > 0 %} {% for child in
+            category.children %}
+            <li>
+              <a href="{{ child.url }}" class="pl-6">
+                {% if child.icon %}
+                <i class="{{ child.icon }}"></i>
+                {% endif %} {{ child.name }}
+                <span class="badge badge-ghost badge-xs ml-auto">{{ child.type }}</span>
+              </a>
+            </li>
+            {% endfor %} {% endif %} {% if not loop.last %}
+            <li><hr class="my-2" /></li>
+            {% endif %} {% endfor %}
+          </ul>
+        </div>
+
+        <!-- 多列下拉菜单变体 -->
+        <div class="dropdown dropdown-bottom ml-4">
+          <div tabindex="0" role="button" class="btn btn-primary m-1">
+            多列分类菜单
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </div>
+          <div
+            tabindex="0"
+            class="dropdown-content bg-base-100 rounded-box z-[1] w-96 p-4 shadow-lg"
+          >
+            <div class="grid grid-cols-2 gap-4">
+              {% for category in categories %} {% if loop.index0 < 4 %}
+              <div class="space-y-2">
+                <div class="font-semibold text-primary border-b border-base-300 pb-1">
+                  {% if category.icon %}
+                  <i class="{{ category.icon }}"></i>
+                  {% endif %} {{ category.name }}
+                </div>
+                {% if category.children and category.children.length > 0 %}
+                <ul class="space-y-1">
+                  {% for child in category.children %} {% if loop.index0 < 4 %}
+                  <li>
+                    <a
+                      href="{{ child.url }}"
+                      class="block text-sm text-base-content/70 hover:text-primary hover:bg-base-200 rounded px-2 py-1 transition-colors"
+                    >
+                      {% if child.icon %}
+                      <i class="{{ child.icon }} text-xs"></i>
+                      {% endif %} {{ child.name }}
+                    </a>
+                  </li>
+                  {% endif %} {% endfor %} {% if category.children.length > 4 %}
+                  <li class="text-xs text-base-content/50 px-2">
+                    +{{ category.children.length - 4 }} 更多...
+                  </li>
+                  {% endif %}
+                </ul>
+                {% endif %}
+              </div>
+              {% endif %} {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 数据结构展示 -->
+    <div class="test-case">
+      <h4>7. 数据结构调试</h4>
+      {% if categories and categories.length > 0 %}
+      <details>
+        <summary>点击查看分类树的完整数据结构</summary>
+        <pre class="debug-data">{{ categories[0] | dump }}</pre>
+      </details>
+      {% endif %}
+    </div>
+  </div>
+</div>

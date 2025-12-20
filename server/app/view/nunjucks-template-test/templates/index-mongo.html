@@ -1,0 +1,245 @@
+{% extends "../layouts/default.html" %} {% block content %}
+<!-- Hero Section -->
+<div class="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 overflow-hidden">
+  <div class="absolute inset-0 bg-black opacity-20"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <div class="text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+        欢迎来到
+        <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+          >DoraCMS</span
+        >
+        <span class="text-lg bg-green-500 text-white px-3 py-1 rounded-full ml-4">MongoDB 模式</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+        现代化的内容管理系统，为您提供优雅的内容展示和管理体验 - MongoDB 数据库模式调试
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/articles"
+          class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition-all duration-300 transform hover:scale-105"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            ></path>
+          </svg>
+          浏览文章
+        </a>
+        <a
+          href="#features"
+          class="inline-flex items-center px-8 py-3 border-2 border-white text-base font-medium rounded-lg text-white hover:bg-white hover:text-blue-600 transition-all duration-300"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          了解更多
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative elements -->
+  <div
+    class="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"
+  ></div>
+  <div
+    class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"
+  ></div>
+  <div
+    class="absolute -bottom-8 left-20 w-64 h-64 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-4000"
+  ></div>
+</div>
+
+<!-- DoraCMS 模板标签展示区域 -->
+<div class="bg-gradient-to-b from-gray-50 to-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">🔧 模板标签展示中心 <span class="text-xl bg-green-100 text-green-800 px-3 py-1 rounded-full">MongoDB</span></h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        这里展示了 DoraCMS 在 MongoDB 数据库模式下的各种模板标签功能，包括最新文章、推荐内容、热门文章等丰富的内容展示组件
+      </p>
+    </div>
+
+    <!-- 功能特性卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16" id="features">
+      <div
+        class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+      >
+        <div
+          class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">内容管理</h3>
+        <p class="text-gray-600">强大的内容管理功能，支持文章、分类、标签等多种内容类型的管理</p>
+      </div>
+
+      <div
+        class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+      >
+        <div
+          class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">高性能</h3>
+        <p class="text-gray-600">基于 Egg.js 框架，提供高性能的服务端渲染和数据处理能力</p>
+      </div>
+
+      <div
+        class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+      >
+        <div
+          class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <svg
+            class="w-8 h-8 text-purple-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">响应式设计</h3>
+        <p class="text-gray-600">完美适配各种设备，提供优秀的移动端和桌面端用户体验</p>
+      </div>
+    </div>
+
+    <!-- 调试提示卡片 -->
+    <div
+      class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-8 mb-12"
+    >
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+        <div class="ml-6">
+          <h3 class="text-lg font-semibold text-blue-900 mb-2">💡 开发者调试提示</h3>
+          <p class="text-blue-800 mb-4">
+            当前页面展示了所有模板标签的功能演示。在生产环境中，您可以根据需要选择性使用这些组件。
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white bg-opacity-60 rounded-lg p-4">
+              <h4 class="font-semibold text-blue-900 mb-2">调试建议：</h4>
+              <ul class="text-sm text-blue-800 space-y-1">
+                <li>• 逐个展开每个标签部件，检查数据获取情况</li>
+                <li>• 观察控制台是否有错误信息</li>
+                <li>• 检查数据库连接和数据完整性</li>
+              </ul>
+            </div>
+            <div class="bg-white bg-opacity-60 rounded-lg p-4">
+              <h4 class="font-semibold text-blue-900 mb-2">性能优化：</h4>
+              <ul class="text-sm text-blue-800 space-y-1">
+                <li>• 测试不同参数配置的效果</li>
+                <li>• 监控页面加载性能</li>
+                <li>• 优化图片和静态资源加载</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 引入完整的调试面板 -->
+{% include "../partials/mongodb/debug-panel.html" %}
+
+<!-- 调试脚本 -->
+<script>
+  // 从模板传递的数据
+  var pageType = '{{pageType}}';
+  var loginedStr = '{{logined}}';
+  var siteInfo = '{{site | dump | safe}}';
+
+  // 转换布尔值和对象
+  var logined = loginedStr === 'true';
+  var parsedSiteInfo = null;
+  try {
+    parsedSiteInfo = siteInfo ? JSON.parse(siteInfo) : null;
+  } catch (e) {
+    parsedSiteInfo = null;
+  }
+
+  window.debugConfig = {
+    pageType: pageType ? pageType : 'unknown',
+    logined: logined,
+    siteInfo: parsedSiteInfo,
+  };
+</script>
+
+<script>
+  console.log('🔧 DoraCMS 模板标签调试模式已启动');
+  console.log('📊 页面类型:', window.debugConfig.pageType);
+  console.log('👤 登录状态:', window.debugConfig.logined ? '已登录' : '未登录');
+
+  if (window.debugConfig.hasSite && window.debugConfig.siteInfo) {
+    console.log('🌐 站点信息:', window.debugConfig.siteInfo);
+  } else {
+    console.log('🌐 站点信息: null');
+  }
+
+  // 监控标签加载状态
+  document.addEventListener('DOMContentLoaded', function () {
+    const successElements = document.querySelectorAll('.success');
+    const errorElements = document.querySelectorAll('.error');
+    const warningElements = document.querySelectorAll('.warning');
+
+    console.log('✅ 成功加载的标签:', successElements.length);
+    console.log('❌ 失败的标签:', errorElements.length);
+    console.log('⚠️ 警告的标签:', warningElements.length);
+
+    // 自动折叠所有区块，便于逐个调试
+    document.querySelectorAll('.debug-content').forEach(function (content, index) {
+      if (index > 0) {
+        // 保持第一个区块展开
+        content.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,923 @@
+{
+  "user": {
+    "profile": {
+      "gender": {
+        "male": "男",
+        "female": "女"
+      },
+      "basic": {
+        "username": "用户名",
+        "name": "姓名",
+        "email": "邮箱",
+        "phoneNum": "手机号",
+        "birthday": "生日",
+        "gender": "性别",
+        "comments": "备注",
+        "introduction": "简介",
+        "experience": "经验",
+        "profession": "职业"
+      },
+      "placeholder": {
+        "username": "请输入用户名",
+        "name": "请填写姓名",
+        "tel": "请填写手机号",
+        "comments": "请填写备注",
+        "email": "请填写邮箱",
+        "currentEmail": "请填写正确的邮箱地址"
+      }
+    },
+    "auth": {
+      "login": "登录",
+      "loginJust": "立即登录",
+      "register": "注册",
+      "newAccount": "注册",
+      "logout": "登出",
+      "password": {
+        "label": "密码",
+        "new": "新密码",
+        "confirm": "确认密码",
+        "reset": "重置密码",
+        "update": "更新信息",
+        "modify": "密码修改",
+        "remember": "记住密码",
+        "nullTips": "请输入密码",
+        "confirmNull": "请确认密码"
+      },
+      "placeholder": {
+        "password": "请输入密码",
+        "rePassword": "请再次输入密码",
+        "currentPassword": "请填写正确的密码"
+      },
+      "verify": {
+        "getCode": "获取验证码",
+        "imageCode": "验证码"
+      }
+    },
+    "center": {
+      "label": "用户中心",
+      "accountSettings": "帐号设置",
+      "basicInfo": "基本资料",
+      "myScore": "积分",
+      "myDocument": "文章",
+      "myMessage": "消息管理",
+      "myJoinComment": "参与话题",
+      "myPostArticles": "投稿",
+      "noDocument": "您还没有发布任何文章",
+      "noMessage": "暂无消息",
+      "noJoinComment": "暂无参与话题",
+      "myIndex": "我的主页",
+      "myHomepage": "我的首页",
+      "countryCode": "国家代码"
+    },
+    "action": {
+      "bind": "绑定",
+      "updateInfo": "更新信息",
+      "modifyPassword": "修改",
+      "tips": {
+        "repeat": "不能重复{0}",
+        "subscribeSelf": "不能关注自己",
+        "addCreator": "关注创作者",
+        "unsubscribeCreator": "取消关注创作者",
+        "sendMessage": "发送验证码",
+        "praiseSelf": "不能给自己点赞"
+      },
+      "types": {
+        "thumbsUp": "点赞",
+        "favorite": "收藏",
+        "despise": "踩"
+      }
+    },
+    "errors": {
+      "invalidLoginType": "登录类型参数错误"
+    },
+    "messages": {
+      "userLoggedIn": "用户 {0} 登录了"
+    },
+    "warnings": {
+      "resetPasswordEmailFailed": "密码重置邮件发送失败: {0}",
+      "verificationEmailFailed": "验证码邮件发送失败: {0}"
+    }
+  },
+  "system": {
+    "button": {
+      "save": "保存",
+      "cancel": "取消",
+      "add": "添加",
+      "edit": "编辑",
+      "delete": "删除",
+      "search": "搜索",
+      "confirm": "确认",
+      "reset": "重置",
+      "update": "更新",
+      "publish": "发布",
+      "send": "发送"
+    },
+    "tips": {
+      "regSuccess": "恭喜您，注册成功，请重新登录！"
+    },
+    "page": {
+      "noPower": "没有权限访问此页面"
+    },
+    "notice": {
+      "noPower": "没有权限执行此操作"
+    },
+    "config": {
+      "key": "配置键",
+      "value": "配置值",
+      "type": "配置类型"
+    },
+    "error": {
+      "imageType": "文件格式不正确，请重新上传",
+      "upload": "上传失败，请稍后重试"
+    },
+    "operation": {
+      "success": "操作成功"
+    }
+  },
+  "systemConfig": {
+    "fields": {
+      "key": "配置键",
+      "value": "配置值",
+      "type": "配置类型",
+      "public": "是否公开"
+    }
+  },
+  "content": {
+    "article": {
+      "hotDocuments": "热门文档",
+      "newDocuments": "最新文档",
+      "relatedDocuments": "相关文章",
+      "recDocuments": "推荐文章",
+      "guessYouLike": "猜你喜欢",
+      "randomDocuments": "相关推荐",
+      "preDocument": "上一篇",
+      "nextDocument": "下一篇",
+      "readMore": "阅读更多",
+      "documentContent": "文档内容页",
+      "documentDetail": "文档详情"
+    },
+    "tag": {
+      "nameExists": "标签名称已存在，请使用其他名称",
+      "aliasExists": "标签别名已存在，请使用其他别名"
+    },
+    "type": {
+      "video": "视频",
+      "audio": "音频",
+      "article": "文章"
+    },
+    "fields": {
+      "title": "标题",
+      "stitle": "简短标题",
+      "description": "简短描述",
+      "category": "分类",
+      "childCategory": "子类",
+      "tag": "标签",
+      "tags": "标签云",
+      "author": "作者",
+      "thumbnail": "缩略图",
+      "details": "详情",
+      "comments": "文档内容",
+      "readNum": "阅读量",
+      "like": "很赞！",
+      "share": "转",
+      "translate": "翻译"
+    },
+    "placeholder": {
+      "title": "请输入标题",
+      "description": "请填写摘要",
+      "selectCategory": "请选择分类",
+      "selectChildCategory": "请选择子类",
+      "selectTag": "请选择标签",
+      "writeKey": "请输入关键字"
+    },
+    "validation": {
+      "titleRequired": "文章标题不能为空",
+      "descriptionRequired": "文章摘要不能为空"
+    },
+    "state": {
+      "draft": "编辑草稿",
+      "wait": "待审核",
+      "publish": "已发布",
+      "failed": "审核失败"
+    },
+    "action": {
+      "saveDraft": "保存草稿",
+      "publish": "发文",
+      "uploadWord": "上传Word文件",
+      "commitContent": "提交发布"
+    },
+    "message": {
+      "postMessage": "发表评论",
+      "documentMessage": "文章评论",
+      "joinPostMessage": "参与评论",
+      "pleaseWriteMessage": "请输入评论内容",
+      "newComments": "最新评论",
+      "hello": "你好"
+    }
+  },
+  "site": {
+    "friendLink": "友情链接",
+    "helpCenter": "帮助中心",
+    "sitemap": "站点地图",
+    "contactUs": "联系我们",
+    "position": "您现在的位置是：",
+    "panelTitleCate": "分类目录",
+    "listNoContent": "暂无内容",
+    "creative": "创作",
+    "recentEssence": "近期精华",
+    "wantComments": "我要评价",
+    "recommand": "推荐",
+    "noData": "暂无数据",
+    "signedIn": "您已经签到了"
+  },
+  "search": {
+    "label": "搜索",
+    "inputKeyword": "请输入关键字词",
+    "hotSearch": "热门搜索排行",
+    "newSearch": "最新搜索排行",
+    "keywords": {
+      "jesus": "耶稣",
+      "truth": "真理",
+      "church": "教会",
+      "holySpirit": "圣灵"
+    },
+    "change": "换一批"
+  },
+  "ads": {
+    "name": "广告名称"
+  },
+  "validation": {
+    "inputNull": "请输入 {0}",
+    "uploadNull": "请上传 {0}",
+    "inputCorrect": "请输入正确的 {0}",
+    "selectNull": "请选择 {0}",
+    "rangelength": "{0} 输入长度在 {1} 到 {2} 之间",
+    "ranglengthandnormal": "{0} 长度 {1} 到 {2} 位,只能包含字母、数字和下划线!",
+    "maxlength": "最多可以输入 {0} 个字符",
+    "minlength": "不少于 {0} 个字符",
+    "errorField": "{0} 中不能包含特殊字符",
+    "passwordNotMatching": "两次输入密码不一致",
+    "limitUploadImgType": "上传图片只能是 JPG,PNG,GIF 格式",
+    "limitUploadImgSize": "上传图片大小不能超过 {0} MB",
+    "errorParams": "参数非法,请重新操作",
+    "errorRepost": "不可重复提交",
+    "getSuccess": "操作成功 {0}",
+    "errorPassAtypism": "两次输入密码不一致",
+    "userForbiden": "该用户已被限制登录，请稍后重试",
+    "loginNotSuccess": "登录失败",
+    "loginNotSuccess1": "未注册或密码错误",
+    "hadUseUserName": "用户已存在",
+    "hadUseUserNameOrEmail": "邮箱或用户名已存在",
+    "userLoginOk": "登录成功",
+    "userRegOk": "注册成功",
+    "userLogoutOk": "注销成功",
+    "userHadBind": "该号码已被其他账户绑定",
+    "userAddInfo": "请先完善资料",
+    "delAdminUserNotice": "请删除该管理员留言后在执行该操作",
+    "forbidMoreReq": "您的操作太频繁，请歇会吧！",
+    "messageAddErr": "请针对指定文章进行评论",
+    "userContentSImg": "请选择缩略图",
+    "userContentCategory": "请选择类别",
+    "userContentTags": "请选择标签",
+    "field": {
+      "required": "{0} 不能为空",
+      "format": "{0} 格式不正确",
+      "enum": "{0} 必须是有效的选项",
+      "length": "{0} 长度必须在 {1} 到 {2} 之间",
+      "min": "{0} 不能少于 {1} 个字符",
+      "max": "{0} 不能超过 {1} 个字符"
+    },
+    "admin": {
+      "userName": {
+        "required": "用户名不能为空",
+        "format": "用户名格式不正确"
+      },
+      "userPhone": {
+        "required": "手机号不能为空",
+        "format": "请输入正确的手机号码（11位数字，以1开头，第二位为3-9）"
+      },
+      "userEmail": {
+        "required": "邮箱地址不能为空",
+        "format": "请输入正确的邮箱地址"
+      },
+      "userGender": {
+        "required": "性别不能为空",
+        "enum": "性别必须选择男或女"
+      },
+      "nickName": {
+        "required": "昵称不能为空"
+      },
+      "status": {
+        "required": "状态不能为空",
+        "enum": "状态必须选择启用或禁用"
+      },
+      "password": {
+        "required": "密码不能为空",
+        "format": "密码格式不正确",
+        "invalid": "密码必须是有效字符串"
+      },
+      "userRoles": {
+        "invalid": "用户角色必须是有效ID数组"
+      },
+      "id": {
+        "required": "用户ID必填"
+      },
+      "ids": {
+        "required": "删除操作需要用户ID"
+      }
+    },
+    "role": {
+      "roleName": {
+        "required": "角色名称不能为空",
+        "format": "角色名称格式不正确"
+      },
+      "roleDescription": {
+        "required": "角色描述不能为空",
+        "invalid": "角色描述必须是有效字符串"
+      },
+      "status": {
+        "required": "角色状态不能为空",
+        "enum": "角色状态必须选择启用或禁用"
+      },
+      "menus": {
+        "invalid": "菜单权限必须是有效ID数组"
+      },
+      "buttons": {
+        "invalid": "按钮权限必须是有效权限代码数组"
+      },
+      "id": {
+        "required": "角色ID必填"
+      },
+      "ids": {
+        "required": "删除操作需要角色ID"
+      }
+    },
+    "menu": {
+      "menuName": {
+        "required": "菜单名称不能为空",
+        "format": "菜单名称格式不正确"
+      },
+      "menuPath": {
+        "required": "菜单路径不能为空",
+        "format": "菜单路径格式不正确"
+      },
+      "menuIcon": {
+        "format": "菜单图标格式不正确"
+      },
+      "status": {
+        "required": "菜单状态不能为空",
+        "enum": "菜单状态必须选择启用或禁用"
+      },
+      "sort": {
+        "required": "排序不能为空",
+        "format": "排序必须是数字"
+      }
+    },
+    "template": {
+      "name": {
+        "length": "主题名称长度应在1-100个字符之间"
+      },
+      "slug": {
+        "format": "主题标识符只能包含字母、数字、下划线和横线，长度1-50个字符"
+      },
+      "version": {
+        "format": "版本号格式应为 x.y.z"
+      },
+      "author": {
+        "max": "作者名称长度不能超过100个字符"
+      },
+      "description": {
+        "max": "描述长度不能超过500个字符"
+      },
+      "screenshot": {
+        "max": "截图URL长度不能超过255个字符"
+      },
+      "config": {
+        "invalid": "主题配置必须是对象格式"
+      },
+      "active": {
+        "invalid": "激活状态必须是布尔值"
+      },
+      "installed": {
+        "invalid": "安装状态必须是布尔值"
+      },
+      "status": {
+        "enum": "状态值必须是 0 或 1"
+      },
+      "ids": {
+        "deleteRequired": "请选择要删除的主题",
+        "updateRequired": "请选择要更新的主题"
+      },
+      "downloadCount": {
+        "min": "下载次数必须是非负整数"
+      },
+      "rating": {
+        "range": "评分必须在0-5之间"
+      },
+      "reviewCount": {
+        "min": "评价次数必须是非负整数"
+      }
+    },
+    "content": {
+      "title": {
+        "required": "标题不能为空",
+        "format": "标题格式不正确"
+      },
+      "description": {
+        "required": "描述不能为空"
+      },
+      "categoryId": {
+        "required": "分类不能为空",
+        "format": "分类ID格式不正确"
+      },
+      "status": {
+        "required": "内容状态不能为空",
+        "enum": "内容状态必须是有效选项"
+      }
+    },
+    "user": {
+      "phoneNum": {
+        "invalid": "手机号格式不正确"
+      }
+    },
+    "system": {
+      "configKey": {
+        "required": "配置键不能为空",
+        "format": "配置键格式不正确"
+      },
+      "configValue": {
+        "required": "配置值不能为空"
+      },
+      "type": {
+        "required": "配置类型不能为空",
+        "enum": "配置类型必须是有效选项"
+      }
+    },
+    "ai": {
+      "apiKey": {
+        "required": "API Key 不能为空",
+        "format": "API Key 格式不正确"
+      },
+      "provider": {
+        "required": "AI 提供商不能为空",
+        "enum": "AI 提供商必须是有效选项"
+      },
+      "modelName": {
+        "required": "模型名称不能为空",
+        "format": "模型名称格式不正确"
+      },
+      "displayName": {
+        "required": "显示名称不能为空"
+      },
+      "apiEndpoint": {
+        "required": "API 端点不能为空",
+        "format": "API 端点格式不正确"
+      }
+    },
+    "required": "{0}不能为空",
+    "enum": "{0}必须是有效选项",
+    "between": "{0}必须在 {1} 到 {2} 之间"
+  },
+  "email": {
+    "userName": "您的名字",
+    "email": "邮件",
+    "confirmEmail": "邮件确认",
+    "title": "标题",
+    "content": "内容",
+    "sendButton": "发送",
+    "noticeTitle": "复信:",
+    "successNotice": "谢谢您的联系。我会跟着负责人联系，请稍等.",
+    "noticeInfo": "您的联系信息如下:",
+    "resetPwdSuccess": "密码重置邮件发送成功",
+    "noEmail": "未找到对应的邮箱",
+    "linkTimeout": "链接已过期",
+    "errorMessage": "密码重置失败"
+  },
+  "resdata": {
+    "getlistError": "获取 {0} 失败: {1} ",
+    "deldataError": "删除数据失败: {0} ",
+    "savedataError": "保存数据失败: {0} ",
+    "updatedataError": "更新数据失败: {0} ",
+    "checkformdataError": "参数校验失败: {0} ",
+    "checkSysConfigError": "请先完善系统配置信息",
+    "setnoticereadSuccess": "设置已读成功",
+    "setnoticereadError": "设置已读失败: {0}"
+  },
+  "labels": {
+    "profession": "职业",
+    "introduction": "简介",
+    "experience": "经验",
+    "bind": "绑定"
+  },
+  "api": {
+    "response": {
+      "success": "{0}成功"
+    }
+  },
+  "databack": "数据备份",
+  "watchAll": "全部关注",
+  "download": "下载",
+  "your": {
+    "position": "您现在的位置是："
+  },
+  "and": "和",
+  "fensi": "粉丝",
+  "common": {
+    "labels": {
+      "template": "模板主题"
+    },
+    "messages": {
+      "operationSuccess": "{0}操作成功",
+      "createSuccess": "{0}创建成功",
+      "updateSuccess": "{0}更新成功",
+      "deleteSuccess": "{0}删除成功"
+    },
+    "errors": {
+      "notFound": "{0}不存在",
+      "forbiddenAction": "不允许对{0}执行此操作",
+      "invalidStatus": "{0}状态不合法"
+    }
+  },
+  "template": {
+    "label": "模板主题",
+    "fields": {
+      "name": "主题名称",
+      "slug": "唯一标识",
+      "description": "主题描述",
+      "version": "版本",
+      "author": "作者",
+      "screenshot": "预览图",
+      "isSystem": "系统模板"
+    },
+    "status": {
+      "active": "已激活",
+      "inactive": "未激活"
+    },
+    "message": {
+      "activateSuccess": "主题 {0} 激活成功",
+      "deactivateSuccess": "主题 {0} 已停用",
+      "installSuccess": "主题安装成功",
+      "uninstallSuccess": "主题卸载成功",
+      "deleteCountSuccess": "成功删除 {0} 个主题",
+      "updateCountSuccess": "成功更新 {0} 个主题状态",
+      "remoteInstallSuccess": "远程模板安装成功",
+      "uploadInstallSuccess": "模板上传安装成功",
+      "upgradeSuccess": "模板升级成功",
+      "downloadUpdated": "下载次数已更新",
+      "rateSuccess": "评分成功",
+      "installSuccessWithName": "主题 \"{0}\" 安装成功",
+      "remoteInstallSuccessWithName": "远程主题 \"{0}\" 安装成功",
+      "uninstallSuccessWithName": "主题 \"{0}\" 卸载成功",
+      "activateSuccessWithName": "主题 \"{0}\" 激活成功",
+      "deactivateSuccessWithName": "主题 \"{0}\" 停用成功",
+      "updateSuccessWithName": "主题 \"{0}\" 更新成功",
+      "generatedVariants": "为主题 \"{0}\" 生成了 {1} 个模板变体",
+      "batchGenerateSummary": "批量生成完成：{0} 个文件，{1} 个错误",
+      "themeFilesComplete": "主题文件完整，无需生成",
+      "generateMissingFiles": "检查完成：生成了 {0} 个缺失文件"
+    },
+    "error": {
+      "notFound": "模板主题不存在",
+      "deleteActiveForbidden": "无法删除激活中的主题",
+      "deleteSystemForbidden": "系统模板不允许删除",
+      "noActiveTheme": "没有激活的主题",
+      "ratingRange": "评分必须在1-5之间",
+      "deleteActiveList": "无法删除激活中的主题: {0}",
+      "deleteSystemList": "系统模板不允许删除: {0}",
+      "duplicateUpload": "您已上传过该模板，请修改信息后再上传",
+      "invalidFileType": "文件类型不正确",
+      "configFileMissing": "未找到模板配置文件 theme.json",
+      "configParseFailed": "配置文件解析失败: {0}",
+      "invalidConfig": "请正确填写配置文件",
+      "alreadyInstalled": "您已安装该模板",
+      "zipNotFound": "模板压缩包不存在: {0}",
+      "themeFileIncomplete": "主题文件不完整: {0}",
+      "configNameRequired": "配置文件缺少 name 字段",
+      "configAliasRequired": "配置文件缺少 alias/theme.name 字段",
+      "unavailable": "主题不存在或未启用",
+      "exists": "主题 \"{0}\" 已存在",
+      "notFoundWithId": "主题不存在: {0}",
+      "cannotUninstallActive": "无法卸载激活中的主题 \"{0}\"",
+      "cannotUninstallSystem": "系统模板不允许卸载 \"{0}\"",
+      "themeFileMissing": "主题文件不存在: {0}",
+      "generateFileFailed": "生成 {0} 失败: {1}",
+      "extractFailed": "解压主题包失败: {0}",
+      "generateTemplateFailed": "生成模板 {0}-{1} 失败: {2}",
+      "generateVariantsFailed": "生成模板变体失败: {2}",
+      "postInstallFailed": "安装后处理失败: {0}"
+    }
+  },
+  "mail": {
+    "label": "邮件",
+    "delivery": {
+      "label": "邮件任务",
+      "fields": {
+        "title": "任务标题",
+        "type": "任务类型",
+        "timing": "定时",
+        "comments": "备注",
+        "targets": "发送目标",
+        "sender": "发送人",
+        "status": "任务状态",
+        "id": "任务ID"
+      },
+      "error": {
+        "timingRequired": "定时任务必须提供时间",
+        "targetsRequired": "请选择发送目标",
+        "taskNotFound": "邮件任务不存在",
+        "idAndStatusRequired": "任务ID和状态不能为空",
+        "invalidTaskStatus": "无效的任务状态"
+      }
+    },
+    "template": {
+      "label": "邮件模板",
+      "fields": {
+        "name": "模板名称",
+        "type": "模板类型",
+        "content": "模板内容",
+        "comment": "模板备注"
+      }
+    }
+  },
+  "admin": {
+    "label": "管理员",
+    "fields": {
+      "userName": "用户名",
+      "userPhone": "手机号",
+      "userEmail": "邮箱",
+      "nickName": "昵称",
+      "userGender": "性别",
+      "status": "状态",
+      "password": "密码",
+      "roles": "角色"
+    },
+    "messages": {
+      "createSuccess": "管理员创建成功",
+      "updateSuccess": "管理员更新成功",
+      "deleteSuccess": "成功删除 {0} 个管理员",
+      "batchDeleteSuccess": "批量删除管理员成功"
+    },
+    "init": {
+      "alreadyInitialized": "系统已存在管理员，无需重新初始化",
+      "success": "管理员初始化成功"
+    },
+    "errors": {
+      "notFound": "管理员不存在",
+      "userNameExists": "用户名已存在",
+      "phoneExists": "手机号已存在",
+      "emailExists": "邮箱已存在",
+      "deleteSelf": "不能删除当前登录的管理员账户",
+      "lastAdmin": "系统至少保留一名管理员，无法删除",
+      "hasPublishedContent": "管理员 {0} 已发布内容，无法删除"
+    }
+  },
+  "role": {
+    "label": "角色",
+    "fields": {
+      "roleName": "角色名称",
+      "roleDescription": "角色描述",
+      "status": "状态",
+      "permissions": "权限"
+    },
+    "messages": {
+      "createSuccess": "角色创建成功",
+      "updateSuccess": "角色更新成功",
+      "deleteSuccess": "成功删除 {0} 个角色",
+      "batchDeleteSuccess": "批量删除角色成功"
+    },
+    "errors": {
+      "notFound": "角色不存在",
+      "nameExists": "角色名称已存在",
+      "hasUsers": "该角色下还有用户，无法删除",
+      "invalidButtons": "以下按钮权限无效或未绑定菜单：{0}"
+    }
+  },
+  "menu": {
+    "label": "菜单",
+    "fields": {
+      "menuName": "菜单名称",
+      "menuPath": "菜单路径",
+      "menuIcon": "菜单图标",
+      "sort": "排序",
+      "status": "状态",
+      "parentMenu": "父级菜单"
+    },
+    "messages": {
+      "createSuccess": "菜单创建成功",
+      "updateSuccess": "菜单更新成功",
+      "deleteSuccess": "成功删除 {0} 个菜单",
+      "batchDeleteSuccess": "批量删除菜单成功"
+    },
+    "errors": {
+      "notFound": "菜单不存在",
+      "nameExists": "菜单名称已存在",
+      "hasChildren": "该菜单下还有子菜单，无法删除",
+      "invalidButtonMethod": "以下按钮请求方法不合法: {0}",
+      "invalidButtonApiFormat": "按钮 API \"{0}\" 格式不合法，应为 module/action",
+      "buttonApiTooLong": "按钮 API \"{0}\" 超过长度限制",
+      "buttonApiInvalidChars": "按钮 API \"{0}\" 包含非法字符",
+      "buttonMissingPermission": "以下按钮缺少权限标识: {0}",
+      "permissionNotDeclared": "以下权限标识未在权限注册表中声明: {0}",
+      "noMenuToDelete": "没有找到可删除的菜单"
+    }
+  },
+  "plugin": {
+    "label": "插件",
+    "fields": {
+      "name": "插件名称",
+      "description": "插件描述",
+      "version": "版本号",
+      "author": "作者",
+      "pkgName": "包名",
+      "state": "状态",
+      "type": "类型"
+    },
+    "messages": {
+      "installSuccess": "插件安装成功",
+      "uninstallSuccess": "插件卸载成功",
+      "updateSuccess": "插件更新成功",
+      "enableSuccess": "插件启用成功",
+      "disableSuccess": "插件禁用成功",
+      "deleteSuccess": "成功删除 {0} 个插件"
+    },
+    "errors": {
+      "notFound": "插件不存在",
+      "installFailed": "插件安装失败: {0}",
+      "uninstallFailed": "插件卸载失败: {0}",
+      "updateFailed": "插件更新失败: {0}",
+      "alreadyInstalled": "插件已安装",
+      "cannotDeleteBuiltin": "内置插件不允许删除",
+      "packageNotFound": "插件包不存在",
+      "deleteTableFailed": "删除数据表失败: {0}",
+      "deleteResourceFailed": "删除resource数据失败: {0}",
+      "deleteConfigFailed": "删除配置文件失败: {0}"
+    }
+  },
+  "systemLog": {
+    "label": "系统日志",
+    "fields": {
+      "module": "模块",
+      "action": "操作",
+      "operator": "操作人",
+      "operatorId": "操作人ID",
+      "resourceType": "资源类型",
+      "resourceId": "资源ID",
+      "oldValue": "旧值",
+      "newValue": "新值",
+      "logs": "日志内容",
+      "ip": "IP地址",
+      "createdAt": "创建时间"
+    },
+    "messages": {
+      "cleanupSuccess": "成功清理 {0} 天前的日志",
+      "exportSuccess": "日志导出成功",
+      "deleteSuccess": "删除成功",
+      "cleanupComplete": "清理完成，删除了 {0} 条日志",
+      "cleanupTypeComplete": "清理完成，删除了 {0} 条 {1} 类型的日志",
+      "preventRecentDelete": "为防止误删，不能删除3天内的日志"
+    },
+    "errors": {
+      "notFound": "日志不存在",
+      "exportFailed": "日志导出失败"
+    }
+  },
+  "cache": {
+    "label": "缓存",
+    "messages": {
+      "clearSuccess": "缓存清理成功",
+      "refreshSuccess": "缓存刷新成功",
+      "clearAllSuccess": "所有缓存清理成功"
+    },
+    "errors": {
+      "operationFailed": "缓存操作失败: {0}",
+      "keyNotFound": "缓存键不存在"
+    }
+  },
+  "logs": {
+    "admin": {
+      "create": "创建管理员用户: {0}",
+      "update": "更新管理员用户: {0}",
+      "delete": "删除管理员用户: {0}",
+      "batchDelete": "批量删除管理员用户: {0}"
+    },
+    "role": {
+      "create": "创建角色: {0}",
+      "update": "更新角色: {0}",
+      "delete": "删除角色: {0}",
+      "batchDelete": "批量删除角色: {0}"
+    },
+    "menu": {
+      "create": "创建菜单: {0}",
+      "update": "更新菜单: {0}",
+      "delete": "删除菜单: {0}",
+      "batchDelete": "批量删除菜单: {0}"
+    },
+    "content": {
+      "create": "创建内容: {0}",
+      "update": "更新内容: {0}",
+      "delete": "删除内容: {0}",
+      "publish": "发布内容: {0}",
+      "unpublish": "取消发布内容: {0}"
+    },
+    "plugin": {
+      "install": "安装插件: {0}",
+      "uninstall": "卸载插件: {0}",
+      "update": "更新插件: {0}",
+      "enable": "启用插件: {0}",
+      "disable": "禁用插件: {0}"
+    },
+    "template": {
+      "install": "安装主题: {0}",
+      "uninstall": "卸载主题: {0}",
+      "activate": "激活主题: {0}",
+      "deactivate": "停用主题: {0}"
+    }
+  },
+  "message": {
+    "deleteSuccess": "成功删除 {0} 条记录",
+    "updateSuccess": "成功更新 {0} 条记录",
+    "batchUpdateSuccess": "成功更新 {0}/{1} 条记录",
+    "auditSuccess": "成功审核 {0}/{1} 条留言",
+    "operationSuccess": "操作成功",
+    "operationFailed": "操作失败: {0}"
+  },
+  "contentMessage": {
+    "label": "留言",
+    "fields": {
+      "content": "留言内容",
+      "contentTitle": "文章标题",
+      "author": "留言人",
+      "status": "状态",
+      "replyStatus": "回复状态"
+    },
+    "messages": {
+      "createSuccess": "留言创建成功",
+      "deleteSuccess": "成功删除 {0} 条留言",
+      "updateStatusSuccess": "成功更新 {0} 条留言状态",
+      "auditSuccess": "成功审核 {0}/{1} 条留言"
+    },
+    "errors": {
+      "notFound": "留言不存在",
+      "cannotReply": "无法回复该留言"
+    }
+  },
+  "contentCategory": {
+    "label": "分类",
+    "fields": {
+      "name": "分类名称",
+      "alias": "分类别名",
+      "description": "分类描述",
+      "sort": "排序",
+      "defaultUrl": "SEO链接"
+    },
+    "messages": {
+      "createSuccess": "分类创建成功",
+      "updateSuccess": "分类更新成功",
+      "deleteSuccess": "分类删除成功"
+    },
+    "errors": {
+      "notFound": "分类不存在",
+      "nameExists": "分类名称已存在",
+      "hasContent": "该分类下还有内容，无法删除"
+    }
+  },
+  "contentTag": {
+    "label": "标签",
+    "fields": {
+      "id": "标签ID",
+      "ids": "标签ID数组",
+      "tagData": "标签数据数组",
+      "name": "标签名称",
+      "alias": "标签别名",
+      "description": "标签描述"
+    },
+    "messages": {
+      "createSuccess": "标签创建成功",
+      "updateSuccess": "标签更新成功",
+      "deleteSuccess": "标签删除成功"
+    },
+    "errors": {
+      "notFound": "标签不存在",
+      "nameExists": "标签名称已存在",
+      "aliasExists": "标签别名已存在"
+    }
+  },
+  "templateConfig": {
+    "label": "模板配置",
+    "fields": {
+      "name": "配置名称",
+      "forder": "配置文件夹",
+      "comments": "备注"
+    }
+  },
+  "middleware": {
+    "auth": {
+      "noPermission": "无权限访问",
+      "tokenExpired": "Token已过期",
+      "sessionExpired": "登录已过期，请重新登录",
+      "accessDenied": "访问被拒绝，请检查登录状态",
+      "tokenInvalid": "Token无效",
+      "notLoggedIn": "未登录"
+    }
+  }
+}

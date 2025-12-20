@@ -1,0 +1,1348 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AI 模型配置管理 API",
+    "description": "AI 助手插件的模型配置管理接口，提供模型的 CRUD 操作、API Key 管理、测试等功能",
+    "version": "1.0.0",
+    "contact": {
+      "name": "DoraCMS Team",
+      "email": "doramart@qq.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "模型配置管理",
+      "description": "AI 模型的增删改查操作"
+    },
+    {
+      "name": "工具接口",
+      "description": "辅助工具接口，如 API Key 测试、提供商列表等"
+    }
+  ],
+  "paths": {
+    "/manage/ai/models": {
+      "get": {
+        "summary": "获取模型列表",
+        "deprecated": false,
+        "description": "获取 AI 模型配置列表，支持分页、过滤和搜索",
+        "operationId": "getModels",
+        "tags": ["模型配置管理"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "当前页码",
+            "required": false,
+            "example": 1,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页数量",
+            "required": false,
+            "example": 20,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "description": "AI 提供商筛选",
+            "required": false,
+            "example": "openai",
+            "schema": {
+              "type": "string",
+              "enum": ["openai", "deepseek", "anthropic", "google", "ollama"]
+            }
+          },
+          {
+            "name": "isEnabled",
+            "in": "query",
+            "description": "启用状态筛选",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "搜索关键词（模型名称、显示名称）",
+            "required": false,
+            "example": "gpt",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AIModel"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/PaginationInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "创建或更新模型配置",
+        "deprecated": false,
+        "description": "创建新的 AI 模型配置或更新现有配置（如果提供 id）",
+        "operationId": "saveModel",
+        "tags": ["模型配置管理"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIModelInput"
+              },
+              "examples": {
+                "创建 OpenAI 模型": {
+                  "value": {
+                    "provider": "openai",
+                    "modelName": "gpt-4",
+                    "displayName": "GPT-4",
+                    "description": "OpenAI GPT-4 模型",
+                    "config": {
+                      "apiKey": "sk-proj-your-key-here",
+                      "apiEndpoint": "https://api.openai.com/v1",
+                      "maxTokens": 4096,
+                      "temperature": 0.7
+                    },
+                    "supportedTasks": ["title_generation", "tag_extraction", "summary_generation"],
+                    "costPerRequest": 0.03,
+                    "priority": 10,
+                    "isEnabled": true
+                  }
+                },
+                "创建 DeepSeek 模型": {
+                  "value": {
+                    "provider": "deepseek",
+                    "modelName": "deepseek-chat",
+                    "displayName": "DeepSeek Chat",
+                    "description": "DeepSeek 对话模型",
+                    "config": {
+                      "apiKey": "your-deepseek-key",
+                      "apiEndpoint": "https://api.deepseek.com/v1",
+                      "maxTokens": 4096,
+                      "temperature": 0.7
+                    },
+                    "supportedTasks": ["title_generation", "summary_generation"],
+                    "costPerRequest": 0.001,
+                    "priority": 5,
+                    "isEnabled": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "模型配置保存成功"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AIModel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/ai/models/{id}": {
+      "get": {
+        "summary": "获取单个模型配置",
+        "deprecated": false,
+        "description": "根据 ID 获取指定 AI 模型的详细配置",
+        "operationId": "getModel",
+        "tags": ["模型配置管理"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "模型 ID",
+            "required": true,
+            "example": "507f1f77bcf86cd799439011",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AIModel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "更新模型配置",
+        "deprecated": false,
+        "description": "更新指定 ID 的 AI 模型配置",
+        "operationId": "updateModel",
+        "tags": ["模型配置管理"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "模型 ID",
+            "required": true,
+            "example": "507f1f77bcf86cd799439011",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIModelUpdate"
+              },
+              "examples": {
+                "更新显示名称和描述": {
+                  "value": {
+                    "displayName": "GPT-4 Turbo",
+                    "description": "更新后的描述",
+                    "priority": 15
+                  }
+                },
+                "更新 API Key": {
+                  "value": {
+                    "config": {
+                      "apiKey": "sk-proj-new-key-here"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "模型配置更新成功"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AIModel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "删除模型配置",
+        "deprecated": false,
+        "description": "删除指定 ID 的 AI 模型配置",
+        "operationId": "deleteModel",
+        "tags": ["模型配置管理"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "模型 ID",
+            "required": true,
+            "example": "507f1f77bcf86cd799439011",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "模型配置删除成功"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/ai/models/{id}/toggle": {
+      "put": {
+        "summary": "切换模型启用状态",
+        "deprecated": false,
+        "description": "切换指定模型的启用/禁用状态",
+        "operationId": "toggleModel",
+        "tags": ["模型配置管理"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "模型 ID",
+            "required": true,
+            "example": "507f1f77bcf86cd799439011",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["isEnabled"],
+                "properties": {
+                  "isEnabled": {
+                    "type": "boolean",
+                    "description": "启用状态",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "状态切换成功"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AIModel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/ai/models/{id}/stats": {
+      "get": {
+        "summary": "获取模型统计信息",
+        "deprecated": false,
+        "description": "获取指定模型的使用统计信息",
+        "operationId": "getModelStats",
+        "tags": ["模型配置管理"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "模型 ID",
+            "required": true,
+            "example": "507f1f77bcf86cd799439011",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ModelStatistics"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/ai/models/batch": {
+      "delete": {
+        "summary": "批量删除模型",
+        "deprecated": false,
+        "description": "批量删除多个 AI 模型配置",
+        "operationId": "batchDeleteModels",
+        "tags": ["模型配置管理"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["ids"],
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "description": "模型 ID 数组",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "example": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "批量删除成功"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deletedCount": {
+                          "type": "integer",
+                          "description": "删除的数量",
+                          "example": 3
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/ai/providers": {
+      "get": {
+        "summary": "获取 AI 提供商列表",
+        "deprecated": false,
+        "description": "获取所有支持的 AI 提供商及其模型信息",
+        "operationId": "getProviders",
+        "tags": ["工具接口"],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AIProvider"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/manage/ai/test-api-key": {
+      "post": {
+        "summary": "测试 API Key 有效性",
+        "deprecated": false,
+        "description": "测试指定提供商的 API Key 是否有效",
+        "operationId": "testApiKey",
+        "tags": ["工具接口"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["provider", "apiKey"],
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "description": "AI 提供商",
+                    "enum": ["openai", "deepseek", "anthropic", "google", "ollama"],
+                    "example": "openai"
+                  },
+                  "apiKey": {
+                    "type": "string",
+                    "description": "API Key",
+                    "example": "sk-proj-your-key-here"
+                  },
+                  "apiEndpoint": {
+                    "type": "string",
+                    "description": "API 端点（可选）",
+                    "example": "https://api.openai.com/v1"
+                  }
+                }
+              },
+              "examples": {
+                "测试 OpenAI Key": {
+                  "value": {
+                    "provider": "openai",
+                    "apiKey": "sk-proj-your-key-here",
+                    "apiEndpoint": "https://api.openai.com/v1"
+                  }
+                },
+                "测试 DeepSeek Key": {
+                  "value": {
+                    "provider": "deepseek",
+                    "apiKey": "your-deepseek-key",
+                    "apiEndpoint": "https://api.deepseek.com/v1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "API Key 测试成功"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "valid": {
+                          "type": "boolean",
+                          "description": "是否有效",
+                          "example": true
+                        },
+                        "responseTime": {
+                          "type": "integer",
+                          "description": "响应时间（毫秒）",
+                          "example": 1234
+                        },
+                        "modelInfo": {
+                          "type": "object",
+                          "description": "模型信息（如果可用）",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "gpt-4"
+                            },
+                            "version": {
+                              "type": "string",
+                              "example": "0613"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "测试成功": {
+                    "value": {
+                      "success": true,
+                      "message": "API Key 测试成功",
+                      "data": {
+                        "valid": true,
+                        "responseTime": 1234
+                      }
+                    }
+                  },
+                  "测试失败": {
+                    "value": {
+                      "success": false,
+                      "message": "API Key 无效或已过期",
+                      "data": {
+                        "valid": false,
+                        "error": "Incorrect API key provided"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AIModel": {
+        "type": "object",
+        "description": "AI 模型配置完整信息",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "模型 ID",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "provider": {
+            "type": "string",
+            "description": "AI 提供商",
+            "enum": ["openai", "deepseek", "anthropic", "google", "ollama"],
+            "example": "openai"
+          },
+          "modelName": {
+            "type": "string",
+            "description": "模型名称",
+            "example": "gpt-4"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "显示名称",
+            "example": "GPT-4"
+          },
+          "description": {
+            "type": "string",
+            "description": "模型描述",
+            "example": "OpenAI GPT-4 模型"
+          },
+          "config": {
+            "type": "object",
+            "description": "模型配置（API Key 已掩码）",
+            "properties": {
+              "apiKey": {
+                "type": "string",
+                "description": "API Key（掩码显示）",
+                "example": "sk-p****here"
+              },
+              "apiEndpoint": {
+                "type": "string",
+                "description": "API 端点",
+                "example": "https://api.openai.com/v1"
+              },
+              "maxTokens": {
+                "type": "integer",
+                "description": "最大 Token 数",
+                "example": 4096
+              },
+              "temperature": {
+                "type": "number",
+                "description": "温度参数",
+                "example": 0.7
+              },
+              "topP": {
+                "type": "number",
+                "description": "Top P 参数",
+                "example": 1.0
+              },
+              "timeout": {
+                "type": "integer",
+                "description": "超时时间（毫秒）",
+                "example": 30000
+              }
+            }
+          },
+          "supportedTasks": {
+            "type": "array",
+            "description": "支持的任务类型",
+            "items": {
+              "type": "string",
+              "enum": [
+                "title_generation",
+                "tag_extraction",
+                "summary_generation",
+                "category_matching",
+                "seo_optimization",
+                "content_quality_check"
+              ]
+            },
+            "example": ["title_generation", "tag_extraction", "summary_generation"]
+          },
+          "costPerRequest": {
+            "type": "number",
+            "description": "每次请求成本（美元）",
+            "example": 0.03
+          },
+          "costPer1kTokens": {
+            "type": "number",
+            "description": "每 1K Token 成本（美元）",
+            "example": 0.03
+          },
+          "priority": {
+            "type": "integer",
+            "description": "优先级（数字越大越优先）",
+            "example": 10
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "是否启用",
+            "example": true
+          },
+          "statistics": {
+            "$ref": "#/components/schemas/ModelStatistics"
+          },
+          "fallbackModelId": {
+            "type": "string",
+            "description": "降级模型 ID",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "maxRetries": {
+            "type": "integer",
+            "description": "最大重试次数",
+            "example": 2
+          },
+          "tags": {
+            "type": "array",
+            "description": "标签",
+            "items": {
+              "type": "string"
+            },
+            "example": ["chat", "generation", "production"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "创建时间",
+            "example": "2025-01-10T08:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "更新时间",
+            "example": "2025-01-11T10:30:00.000Z"
+          }
+        }
+      },
+      "AIModelInput": {
+        "type": "object",
+        "description": "创建 AI 模型配置的输入数据",
+        "required": ["provider", "modelName", "displayName"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "模型 ID（更新时提供）",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "provider": {
+            "type": "string",
+            "description": "AI 提供商",
+            "enum": ["openai", "deepseek", "anthropic", "google", "ollama"],
+            "example": "openai"
+          },
+          "modelName": {
+            "type": "string",
+            "description": "模型名称",
+            "example": "gpt-4"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "显示名称",
+            "example": "GPT-4"
+          },
+          "description": {
+            "type": "string",
+            "description": "模型描述",
+            "example": "OpenAI GPT-4 模型"
+          },
+          "config": {
+            "type": "object",
+            "description": "模型配置",
+            "properties": {
+              "apiKey": {
+                "type": "string",
+                "description": "API Key（明文，服务端会加密存储）",
+                "example": "sk-proj-your-key-here"
+              },
+              "apiEndpoint": {
+                "type": "string",
+                "description": "API 端点",
+                "example": "https://api.openai.com/v1"
+              },
+              "maxTokens": {
+                "type": "integer",
+                "description": "最大 Token 数",
+                "example": 4096
+              },
+              "temperature": {
+                "type": "number",
+                "description": "温度参数",
+                "example": 0.7
+              }
+            }
+          },
+          "supportedTasks": {
+            "type": "array",
+            "description": "支持的任务类型",
+            "items": {
+              "type": "string"
+            },
+            "example": ["title_generation", "tag_extraction"]
+          },
+          "costPerRequest": {
+            "type": "number",
+            "description": "每次请求成本",
+            "example": 0.03
+          },
+          "priority": {
+            "type": "integer",
+            "description": "优先级",
+            "example": 10
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "是否启用",
+            "example": true
+          }
+        }
+      },
+      "AIModelUpdate": {
+        "type": "object",
+        "description": "更新 AI 模型配置的输入数据（所有字段可选）",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "显示名称",
+            "example": "GPT-4 Turbo"
+          },
+          "description": {
+            "type": "string",
+            "description": "模型描述",
+            "example": "更新后的描述"
+          },
+          "config": {
+            "type": "object",
+            "description": "模型配置（可部分更新）",
+            "properties": {
+              "apiKey": {
+                "type": "string",
+                "description": "API Key",
+                "example": "sk-proj-new-key"
+              },
+              "maxTokens": {
+                "type": "integer",
+                "example": 8192
+              }
+            }
+          },
+          "supportedTasks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "priority": {
+            "type": "integer",
+            "example": 15
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "ModelStatistics": {
+        "type": "object",
+        "description": "模型使用统计信息",
+        "properties": {
+          "totalCalls": {
+            "type": "integer",
+            "description": "总调用次数",
+            "example": 12456
+          },
+          "totalTokens": {
+            "type": "integer",
+            "description": "总 Token 数",
+            "example": 1234567
+          },
+          "totalCost": {
+            "type": "number",
+            "description": "总成本（美元）",
+            "example": 37.89
+          },
+          "successRate": {
+            "type": "number",
+            "description": "成功率",
+            "example": 0.98
+          },
+          "averageResponseTime": {
+            "type": "number",
+            "description": "平均响应时间（毫秒）",
+            "example": 1234
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "最后使用时间",
+            "example": "2025-01-11T10:30:00.000Z"
+          }
+        }
+      },
+      "AIProvider": {
+        "type": "object",
+        "description": "AI 提供商信息",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "提供商标识",
+            "example": "openai"
+          },
+          "label": {
+            "type": "string",
+            "description": "提供商名称",
+            "example": "OpenAI"
+          },
+          "description": {
+            "type": "string",
+            "description": "提供商描述",
+            "example": "OpenAI 是全球领先的 AI 研究公司"
+          },
+          "website": {
+            "type": "string",
+            "description": "官网地址",
+            "example": "https://openai.com"
+          },
+          "apiKeyUrl": {
+            "type": "string",
+            "description": "获取 API Key 的链接",
+            "example": "https://platform.openai.com/api-keys"
+          },
+          "models": {
+            "type": "array",
+            "description": "支持的模型列表",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "gpt-4"
+                },
+                "displayName": {
+                  "type": "string",
+                  "example": "GPT-4"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "最强大的 GPT 模型"
+                }
+              }
+            }
+          },
+          "defaultEndpoint": {
+            "type": "string",
+            "description": "默认 API 端点",
+            "example": "https://api.openai.com/v1"
+          }
+        }
+      },
+      "PaginationInfo": {
+        "type": "object",
+        "description": "分页信息",
+        "properties": {
+          "currentPage": {
+            "type": "integer",
+            "description": "当前页码",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页数量",
+            "example": 20
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "总记录数",
+            "example": 50
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "总页数",
+            "example": 3
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "错误响应",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "错误消息",
+            "example": "操作失败"
+          },
+          "code": {
+            "type": "string",
+            "description": "错误代码",
+            "example": "VALIDATION_ERROR"
+          },
+          "details": {
+            "type": "object",
+            "description": "错误详情"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequestError": {
+        "description": "请求参数错误",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "参数验证失败": {
+                "value": {
+                  "success": false,
+                  "message": "modelName 不能为空",
+                  "code": "VALIDATION_ERROR"
+                }
+              },
+              "无效的提供商": {
+                "value": {
+                  "success": false,
+                  "message": "不支持的 AI 提供商",
+                  "code": "INVALID_PROVIDER"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "未授权访问",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "请先登录"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "UNAUTHORIZED"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "资源不存在",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "模型配置不存在"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "NOT_FOUND"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "服务器内部错误",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "服务器内部错误"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "使用 JWT Token 进行身份验证。格式：Authorization: Bearer <token>"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:7001",
+      "description": "本地开发环境"
+    },
+    {
+      "url": "https://api.yourdomain.com",
+      "description": "生产环境"
+    }
+  ]
+}

@@ -1,0 +1,2341 @@
+<!-- debug-panel.html - 现代化调试面板 -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- 调试面板头部 -->
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+    <div class="bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-6">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div class="flex items-center">
+          <div
+            class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4"
+          >
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-1">🔧 DoraCMS 模板标签调试面板</h2>
+            <p class="text-gray-300 text-sm">实时监控和调试所有模板标签的功能状态</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button
+            id="expand-all"
+            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+              ></path>
+            </svg>
+            展开所有
+          </button>
+          <button
+            id="collapse-all"
+            class="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 12H4"
+              ></path>
+            </svg>
+            折叠所有
+          </button>
+          <button
+            id="toggle-theme"
+            class="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              ></path>
+            </svg>
+            切换主题
+          </button>
+          <button
+            id="export-debug"
+            class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            导出调试
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+      <nav class="flex flex-wrap gap-2">
+        <a
+          href="#content-tags"
+          class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 text-sm font-medium rounded-lg hover:bg-blue-200 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+            ></path>
+          </svg>
+          内容标签
+        </a>
+        <a
+          href="#taxonomy-tags"
+          class="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 text-sm font-medium rounded-lg hover:bg-green-200 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+            ></path>
+          </svg>
+          分类标签
+        </a>
+        <a
+          href="#utility-tags"
+          class="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 text-sm font-medium rounded-lg hover:bg-purple-200 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+            ></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            ></path>
+          </svg>
+          工具标签
+        </a>
+        <a
+          href="#filter-tags"
+          class="inline-flex items-center px-4 py-2 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-lg hover:bg-yellow-200 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+            ></path>
+          </svg>
+          过滤器
+        </a>
+        <a
+          href="#layout-tags"
+          class="inline-flex items-center px-4 py-2 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-lg hover:bg-indigo-200 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+            ></path>
+          </svg>
+          布局标签
+        </a>
+        <a
+          href="#block-tags"
+          class="inline-flex items-center px-4 py-2 bg-pink-100 text-pink-800 text-sm font-medium rounded-lg hover:bg-pink-200 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            ></path>
+          </svg>
+          区块标签
+        </a>
+        <a
+          href="#debug-tools"
+          class="inline-flex items-center px-4 py-2 bg-red-100 text-red-800 text-sm font-medium rounded-lg hover:bg-red-200 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
+            ></path>
+          </svg>
+          调试工具
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="space-y-8">
+    <!-- 快速测试面板 -->
+    {% include "./quick-test.html" %}
+
+    <!-- 系统状态概览 -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8" id="system-overview">
+      <div
+        class="bg-gradient-to-r from-slate-600 to-gray-700 px-6 py-4 flex items-center justify-between"
+      >
+        <div class="flex items-center">
+          <div
+            class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3"
+          >
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white">📊 系统状态概览</h3>
+        </div>
+        <button
+          class="text-white hover:text-gray-200 transition-colors p-2 rounded-lg hover:bg-white hover:bg-opacity-10"
+          onclick="toggleSection('system-overview')"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="debug-content p-6">
+        <!-- 系统统计信息 -->
+        <div class="mb-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6"
+            >
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                  <svg
+                    class="w-6 h-6 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <h6 class="text-sm font-medium text-gray-600 mb-1">页面类型</h6>
+                  <span class="text-xl font-bold text-blue-600">{{ pageType or "未知" }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4"
+                >
+                  <svg
+                    class="w-6 h-6 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <h6 class="text-sm font-medium text-gray-600 mb-1">用户状态</h6>
+                  <span
+                    class="text-xl font-bold {{ 'text-green-600' if logined else 'text-orange-600' }}"
+                  >
+                    {{ "已登录" if logined else "未登录" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-6"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4"
+                >
+                  <svg
+                    class="w-6 h-6 text-purple-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <h6 class="text-sm font-medium text-gray-600 mb-1">当前时间</h6>
+                  <span class="text-xl font-bold text-purple-600" id="current-time">加载中...</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-6"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4"
+                >
+                  <svg
+                    class="w-6 h-6 text-orange-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <h6 class="text-sm font-medium text-gray-600 mb-1">环境</h6>
+                  <span
+                    class="text-xl font-bold {{ 'text-green-600' if NODE_ENV == 'production' else 'text-orange-600' }}"
+                  >
+                    {{ config.environment or "未知" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 全局变量检查 -->
+        <div
+          class="bg-gradient-to-r from-gray-50 to-slate-50 border border-gray-200 rounded-lg p-6"
+        >
+          <div class="flex items-center mb-6">
+            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+              <svg
+                class="w-6 h-6 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                ></path>
+              </svg>
+            </div>
+            <h6 class="text-lg font-semibold text-gray-800">全局变量状态与详情</h6>
+          </div>
+
+          <div class="space-y-6">
+            <!-- Site 变量详情 -->
+            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div
+                class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 border-b border-gray-200"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div
+                      class="w-8 h-8 {{ 'bg-green-100' if site else 'bg-red-100' }} rounded-lg flex items-center justify-center mr-3"
+                    >
+                      {% if site %}
+                      <svg
+                        class="w-4 h-4 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      {% else %}
+                      <svg
+                        class="w-4 h-4 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h6 class="font-semibold text-gray-900">site 变量</h6>
+                      <p class="text-sm text-gray-600">站点基础信息</p>
+                    </div>
+                  </div>
+                  <div class="text-2xl">{{ "✅" if site else "❌" }}</div>
+                </div>
+              </div>
+              {% if site %}
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div class="bg-blue-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-blue-800">网站名称</label>
+                    <p class="text-blue-900 font-semibold">{{ site.title or "未设置" }}</p>
+                  </div>
+                  <div class="bg-blue-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-blue-800">网站域名</label>
+                    <p class="text-blue-900 font-semibold">{{ site.url or "未设置" }}</p>
+                  </div>
+                  <div class="bg-blue-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-blue-800">网站描述</label>
+                    <p class="text-blue-900 font-semibold text-xs">
+                      {{ site.description or "未设置" }}
+                    </p>
+                  </div>
+                  <div class="bg-blue-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-blue-800">关键词</label>
+                    <p class="text-blue-900 font-semibold text-xs">
+                      {{ site.keywords or "未设置" }}
+                    </p>
+                  </div>
+                  <div class="bg-blue-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-blue-800">ICP备案号</label>
+                    <p class="text-blue-900 font-semibold">{{ site.registrationNo or "未设置" }}</p>
+                  </div>
+                  <div class="bg-blue-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-blue-800">统计代码</label>
+                    <p class="text-blue-900 font-semibold">
+                      {{ "已设置" if site.statisticalCode else "未设置" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="p-4 text-center text-gray-500">
+                <svg
+                  class="w-12 h-12 mx-auto mb-2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  ></path>
+                </svg>
+                <p>站点信息变量未加载</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Config 变量详情 -->
+            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div
+                class="bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3 border-b border-gray-200"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div
+                      class="w-8 h-8 {{ 'bg-green-100' if config else 'bg-red-100' }} rounded-lg flex items-center justify-center mr-3"
+                    >
+                      {% if config %}
+                      <svg
+                        class="w-4 h-4 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      {% else %}
+                      <svg
+                        class="w-4 h-4 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h6 class="font-semibold text-gray-900">config 变量</h6>
+                      <p class="text-sm text-gray-600">系统配置信息</p>
+                    </div>
+                  </div>
+                  <div class="text-2xl">{{ "✅" if config else "❌" }}</div>
+                </div>
+              </div>
+              {% if config %}
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div class="bg-green-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-green-800">环境</label>
+                    <p class="text-green-900 font-semibold">{{ config.environment or "未知" }}</p>
+                  </div>
+                  <div class="bg-green-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-green-800">静态目录</label>
+                    <p class="text-green-900 font-semibold">
+                      {{ config.staticRootPath or "未设置" }}
+                    </p>
+                  </div>
+                  <div class="bg-green-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-green-800">模板路径</label>
+                    <p class="text-green-900 font-semibold">
+                      {{ config.staticThemePath or "未设置" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="p-4 text-center text-gray-500">
+                <svg
+                  class="w-12 h-12 mx-auto mb-2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  ></path>
+                </svg>
+                <p>系统配置变量未加载</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Custom 变量详情 -->
+            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div
+                class="bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-3 border-b border-gray-200"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div
+                      class="w-8 h-8 {{ 'bg-green-100' if custom else 'bg-red-100' }} rounded-lg flex items-center justify-center mr-3"
+                    >
+                      {% if custom %}
+                      <svg
+                        class="w-4 h-4 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      {% else %}
+                      <svg
+                        class="w-4 h-4 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h6 class="font-semibold text-gray-900">custom 变量</h6>
+                      <p class="text-sm text-gray-600">主题自定义设置</p>
+                    </div>
+                  </div>
+                  <div class="text-2xl">{{ "✅" if custom else "❌" }}</div>
+                </div>
+              </div>
+              {% if custom %}
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div class="bg-purple-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-purple-800">主题名称</label>
+                    <p class="text-purple-900 font-semibold">{{ custom.theme or "未设置" }}</p>
+                  </div>
+                  <div class="bg-purple-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-purple-800">版本</label>
+                    <p class="text-purple-900 font-semibold">{{ custom.version or "未设置" }}</p>
+                  </div>
+                  <div class="bg-purple-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-purple-800">作者</label>
+                    <p class="text-purple-900 font-semibold">{{ custom.author or "未设置" }}</p>
+                  </div>
+                  <div class="bg-purple-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-purple-800">主色调</label>
+                    <p class="text-purple-900 font-semibold">
+                      {{ custom.primaryColor or "未设置" }}
+                    </p>
+                  </div>
+                  <div class="bg-purple-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-purple-800">布局模式</label>
+                    <p class="text-purple-900 font-semibold">{{ custom.layout or "未设置" }}</p>
+                  </div>
+                  <div class="bg-purple-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-purple-800">自定义CSS</label>
+                    <p class="text-purple-900 font-semibold">
+                      {{ "已启用" if custom.customCSS else "未启用" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="p-4 text-center text-gray-500">
+                <svg
+                  class="w-12 h-12 mx-auto mb-2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  ></path>
+                </svg>
+                <p>主题设置变量未加载</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Member 变量详情 -->
+            <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div
+                class="bg-gradient-to-r from-orange-50 to-amber-50 px-4 py-3 border-b border-gray-200"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div
+                      class="w-8 h-8 {{ 'bg-green-100' if member else 'bg-red-100' }} rounded-lg flex items-center justify-center mr-3"
+                    >
+                      {% if member %}
+                      <svg
+                        class="w-4 h-4 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      {% else %}
+                      <svg
+                        class="w-4 h-4 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h6 class="font-semibold text-gray-900">member 变量</h6>
+                      <p class="text-sm text-gray-600">用户登录信息</p>
+                    </div>
+                  </div>
+                  <div class="text-2xl">{{ "✅" if member else "❌" }}</div>
+                </div>
+              </div>
+              {% if member %}
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div class="bg-orange-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-orange-800">用户ID</label>
+                    <p class="text-orange-900 font-semibold">{{ member._id or "未设置" }}</p>
+                  </div>
+                  <div class="bg-orange-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-orange-800">用户名</label>
+                    <p class="text-orange-900 font-semibold">{{ member.userName or "未设置" }}</p>
+                  </div>
+                  <div class="bg-orange-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-orange-800">昵称</label>
+                    <p class="text-orange-900 font-semibold">{{ member.name or "未设置" }}</p>
+                  </div>
+                  <div class="bg-orange-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-orange-800">邮箱</label>
+                    <p class="text-orange-900 font-semibold">{{ member.email or "未设置" }}</p>
+                  </div>
+                  <div class="bg-orange-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-orange-800">用户组</label>
+                    <p class="text-orange-900 font-semibold">{{ member.group or "未设置" }}</p>
+                  </div>
+                  <div class="bg-orange-50 rounded-lg p-3">
+                    <label class="text-sm font-medium text-orange-800">状态</label>
+                    <p class="text-orange-900 font-semibold">
+                      {{ "正常" if member.enable else "禁用" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="p-4 text-center text-gray-500">
+                <svg
+                  class="w-12 h-12 mx-auto mb-2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  ></path>
+                </svg>
+                <p>用户未登录或用户信息未加载</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容标签区域 -->
+    <div class="debug-category" id="content-tags">
+      <h3 class="category-title">📰 内容标签 (Content Tags)</h3>
+      <div class="category-description">
+        <p>用于获取各类内容数据，包括最新文章、推荐内容、热门文章、随机文章和相关文章等。</p>
+      </div>
+
+      <!-- 引入各个内容标签部件 -->
+      {% include "./news.html" %} {% include "./recommend.html" %} {% include
+      "./hot.html" %} {% include "./random.html" %} {% include
+      "./near_post.html" %}{% include "./remote.html" %}
+    </div>
+
+    <!-- 分类标签区域 -->
+    <div class="debug-category" id="taxonomy-tags">
+      <h3 class="category-title">🏷️ 分类标签 (Taxonomy Tags)</h3>
+      <div class="category-description">
+        <p>用于处理分类和标签数据，包括标签列表、热门标签、分类树和子分类导航等。</p>
+      </div>
+
+      <!-- 引入各个分类标签部件 -->
+      {% include "./tags.html" %} {% include "./hottags.html" %} {% include
+      "./navtree.html" %} {% include "./childnav.html" %}
+    </div>
+
+    <!-- 实用工具标签区域 -->
+    <div class="debug-category" id="utility-tags">
+      <h3 class="category-title">🔧 实用工具标签 (Utility Tags)</h3>
+      <div class="category-description">
+        <p>提供系统功能和资源处理，包括API调用、广告管理、资源文件处理和系统设置等。</p>
+      </div>
+
+      <!-- 其他工具标签的简化测试 -->
+      <div class="debug-section" id="other-utilities">
+        <div class="debug-header">
+          <h3>🛠️ 其他工具标签</h3>
+          <button class="toggle-btn" onclick="toggleSection('other-utilities')">折叠/展开</button>
+        </div>
+
+        <div class="debug-content">
+          <!-- Assets标签测试 -->
+          <div class="test-case">
+            <h4>Assets 标签 - 资源文件处理</h4>
+            <code>{% raw %}{% assets "style.css main.js" %}{% endraw %}</code>
+            <div class="assets-output">{% assets "style.css main.js" %}</div>
+          </div>
+
+          <!-- Remote标签测试 -->
+          <div class="test-case">
+            <h4>Remote 标签 - API数据获取</h4>
+            <code
+              >{% raw %}{% remote key="customDataA",api="content/getList",
+              query='{"sortby":"1"}',pageSize="3" %}{% endraw %}</code
+            >
+            {% remote key="customDataA",api="content/getList", query='{"sortby":"1"}', pageSize="3"
+            %} {% if customDataA and customDataA.docs and customDataA.docs.length > 0 %}
+            <div class="remote-result">
+              <p class="success">✅ 获取到 {{ customDataA.docs.length }} 条自定义数据</p>
+              {% for item in customDataA.docs %}
+              <div class="data-item">
+                <h6>{{ item.title or item.name or "未命名项目" }}</h6>
+                <p>{{ item.description or item.stitle or "无描述" }}</p>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <p class="warning">⚠️ 未获取到自定义数据</p>
+            {% endif %}
+          </div>
+
+          <!-- Ads标签测试 -->
+          <div class="test-case">
+            <h4>Ads 标签 - 广告内容 (使用 DaisyUI Carousel)</h4>
+            <code>{% raw %}{% ads key="headerAds", name="anli" %}{% endraw %}</code>
+
+            {% ads key="headerAds", name="anli" %} {% if headerAds and headerAds.items and
+            headerAds.items.length > 0 %}
+            <div class="ads-demo-section mt-4">
+              <div class="alert alert-success mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span
+                  >✅ 获取到 {{ headerAds.items.length }} 个广告 - 广告位名称: {{ headerAds.name
+                  }}</span
+                >
+              </div>
+
+              <!-- 引入 ads 宏 -->
+              {% from "./ads-macro.html" import ads, adsWithStyle, adsCompact %}
+
+              <!-- 标准版本 -->
+              <div class="mb-6">
+                <h5 class="font-semibold mb-2">标准版本 (完整轮播):</h5>
+                {{ ads(headerAds) }}
+              </div>
+
+              <!-- 带自定义样式版本 -->
+              <div class="mb-6">
+                <h5 class="font-semibold mb-2">自定义样式版本:</h5>
+                {{ adsWithStyle(headerAds, "border border-primary rounded-lg p-4", "background:
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%);") }}
+              </div>
+
+              <!-- 紧凑版本 -->
+              <div class="mb-6">
+                <h5 class="font-semibold mb-2">紧凑版本 (适合侧边栏):</h5>
+                <div class="max-w-xs">{{ adsCompact(headerAds) }}</div>
+              </div>
+
+              <!-- 原始数据显示 (调试用) -->
+              <details class="collapse collapse-arrow border border-base-300 bg-base-100">
+                <summary class="collapse-title text-sm font-medium">🔍 查看原始数据结构</summary>
+                <div class="collapse-content">
+                  <pre
+                    class="text-xs bg-base-200 p-2 rounded overflow-auto"
+                  ><code>{{ headerAds | dump(2) }}</code></pre>
+                </div>
+              </details>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.96-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+              <span>⚠️ 未获取到广告数据</span>
+            </div>
+            {% if headerAds %}
+            <div class="alert alert-info mt-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="stroke-current shrink-0 w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span>调试信息: headerAds 存在但无有效的 items 数组</span>
+            </div>
+            {% endif %} {% endif %}
+          </div>
+
+          <!-- Head标签测试 -->
+          <div class="test-case">
+            <h4>Head 标签 - HTML头部内容生成</h4>
+            <code
+              >{% raw %}{% head %}
+              <meta name="custom" content="value" />
+              <link rel="canonical" href="https://example.com" />
+              {% endhead %}{% endraw %}</code
+            >
+            <div class="head-result">
+              <p class="info">💡 Head标签会生成完整的HTML头部内容，包括SEO meta标签</p>
+              <div class="head-preview">
+                {% head %}
+                <meta name="custom" content="debug-panel" />
+                <link
+                  rel="canonical"
+                  href="{{ ctx.request.protocol }}://{{ ctx.request.host }}{{ ctx.request.url }}"
+                />
+                {% endhead %}
+              </div>
+            </div>
+          </div>
+
+          <!-- ImageProcess标签测试 -->
+          <div class="test-case">
+            <h4>🖼️ ImageProcess 标签 - 多云图片处理</h4>
+            <div class="mb-4 p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
+              <p class="text-sm text-gray-700">
+                <strong>📝 功能说明：</strong> ImageProcess 标签支持七牛云和阿里云的图片处理功能，
+                可以自动检测云服务商并应用相应的图片处理参数。支持缩放、裁剪、格式转换、质量调整等功能。
+              </p>
+            </div>
+
+            <!-- 七牛云示例 -->
+            <div class="demo-section mb-6">
+              <h5 class="font-semibold mb-3 text-blue-600">🌟 七牛云图片处理示例</h5>
+
+              <div class="demo-item mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-2"><strong>基础缩放 (模式1 - 等比缩放):</strong></p>
+                <code class="text-sm"
+                  >{% raw %}{% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="1", width="200", height="150", alt="七牛云示例图片", className="rounded-lg shadow-md" %}{% endraw %}</code
+                >
+                <div class="mt-3">
+                  {% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="1", width="200", height="150", alt="七牛云示例图片", className="rounded-lg shadow-md" %}
+                </div>
+              </div>
+
+              <div class="demo-item mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-2"><strong>固定尺寸 (模式5 - 居中裁剪):</strong></p>
+                <code class="text-sm"
+                  >{% raw %}{% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="5", width="150", height="150", quality="80", alt="正方形裁剪", className="rounded-full" %}{% endraw %}</code
+                >
+                <div class="mt-3">
+                  {% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="5", width="150", height="150", quality="80", alt="正方形裁剪", className="rounded-full" %}
+                </div>
+              </div>
+
+              <div class="demo-item mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-2"><strong>格式转换 + 渐进显示:</strong></p>
+                <code class="text-sm"
+                  >{% raw %}{% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="2", width="250", format="webp", interlace="1", quality="75", alt="WebP格式", className="border border-gray-300" %}{% endraw %}</code
+                >
+                <div class="mt-3">
+                  {% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="2", width="250", format="webp", interlace="1", quality="75", alt="WebP格式", className="border border-gray-300" %}
+                </div>
+              </div>
+            </div>
+
+            <!-- 阿里云示例 -->
+            <div class="demo-section mb-6">
+              <h5 class="font-semibold mb-3 text-green-600">☁️ 阿里云图片处理示例</h5>
+
+              <div class="demo-item mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-2"><strong>等比缩放 (lfit 模式):</strong></p>
+                <code class="text-sm"
+                  >{% raw %}{% imageprocess url="https://example.aliyuncs.com/sample.jpg", mode="lfit", width="200", height="150", provider="aliyun", alt="阿里云示例", className="rounded-lg" %}{% endraw %}</code
+                >
+                <div class="mt-3 text-gray-600 text-sm">
+                  <p>⚠️ 注意：此为阿里云处理示例，实际效果需要有效的阿里云图片URL</p>
+                  <div class="bg-white border border-gray-300 rounded-lg p-2 inline-block">
+                    <span class="text-gray-400">🖼️ [阿里云图片处理示例 - 200x150]</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="demo-item mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-2"><strong>固定尺寸填充 (pad 模式):</strong></p>
+                <code class="text-sm"
+                  >{% raw %}{% imageprocess url="https://example.oss-cn-hangzhou.aliyuncs.com/image.jpg", mode="pad", width="300", height="200", quality="90", provider="aliyun", alt="固定尺寸" %}{% endraw %}</code
+                >
+                <div class="mt-3 text-gray-600 text-sm">
+                  <div class="bg-white border border-gray-300 rounded-lg p-2 inline-block">
+                    <span class="text-gray-400">🖼️ [阿里云图片处理示例 - 300x200 填充]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 自动检测示例 -->
+            <div class="demo-section mb-6">
+              <h5 class="font-semibold mb-3 text-purple-600">🤖 自动检测云服务商</h5>
+
+              <div class="demo-item mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-2"><strong>自动检测 (无需指定 provider):</strong></p>
+                <code class="text-sm"
+                  >{% raw %}{% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="1", width="180", height="120", quality="85", alt="自动检测" %}{% endraw %}</code
+                >
+                <div class="mt-3">
+                  {% imageprocess url="https://dora-doc.qiniu.com/gogopher.jpg", mode="1", width="180", height="120", quality="85", alt="自动检测" %}
+                  <p class="text-sm text-gray-600 mt-2">
+                    ✅ 自动检测为七牛云并应用 imageView2 处理
+                  </p>
+                </div>
+              </div>
+
+              <div class="demo-item mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-2"><strong>普通图片URL (不处理):</strong></p>
+                <code class="text-sm"
+                  >{% raw %}{% imageprocess url="https://example.com/regular-image.jpg", width="160", height="100", alt="普通图片", className="rounded" %}{% endraw %}</code
+                >
+                <div class="mt-3 text-gray-600 text-sm">
+                  <div class="bg-white border border-gray-300 rounded p-2 inline-block">
+                    <span class="text-gray-400">🖼️ [普通图片URL - 不支持云处理]</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-2">ℹ️ 非云服务商图片将返回原始URL</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 参数说明 -->
+            <div class="demo-section">
+              <h5 class="font-semibold mb-3 text-gray-700">📋 参数说明</h5>
+
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg text-sm">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-4 py-2 border-b text-left font-medium text-gray-700">参数</th>
+                      <th class="px-4 py-2 border-b text-left font-medium text-gray-700">说明</th>
+                      <th class="px-4 py-2 border-b text-left font-medium text-gray-700">
+                        七牛云值
+                      </th>
+                      <th class="px-4 py-2 border-b text-left font-medium text-gray-700">
+                        阿里云值
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-gray-600">
+                    <tr>
+                      <td class="px-4 py-2 border-b font-mono">url</td>
+                      <td class="px-4 py-2 border-b">图片URL (必需)</td>
+                      <td class="px-4 py-2 border-b">支持</td>
+                      <td class="px-4 py-2 border-b">支持</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 border-b font-mono">mode</td>
+                      <td class="px-4 py-2 border-b">缩放模式</td>
+                      <td class="px-4 py-2 border-b">1-5</td>
+                      <td class="px-4 py-2 border-b">lfit,mfit,fill,pad,fixed</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 border-b font-mono">width</td>
+                      <td class="px-4 py-2 border-b">目标宽度</td>
+                      <td class="px-4 py-2 border-b">像素值</td>
+                      <td class="px-4 py-2 border-b">像素值</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 border-b font-mono">height</td>
+                      <td class="px-4 py-2 border-b">目标高度</td>
+                      <td class="px-4 py-2 border-b">像素值</td>
+                      <td class="px-4 py-2 border-b">像素值</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 border-b font-mono">quality</td>
+                      <td class="px-4 py-2 border-b">图片质量 (1-100)</td>
+                      <td class="px-4 py-2 border-b">支持</td>
+                      <td class="px-4 py-2 border-b">支持</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 border-b font-mono">format</td>
+                      <td class="px-4 py-2 border-b">输出格式</td>
+                      <td class="px-4 py-2 border-b">jpg,png,webp,avif等</td>
+                      <td class="px-4 py-2 border-b">jpg,png,webp等</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 border-b font-mono">provider</td>
+                      <td class="px-4 py-2 border-b">云服务商</td>
+                      <td class="px-4 py-2 border-b">qiniu / auto</td>
+                      <td class="px-4 py-2 border-b">aliyun / auto</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2 font-mono">className</td>
+                      <td class="px-4 py-2">CSS类名</td>
+                      <td class="px-4 py-2">支持</td>
+                      <td class="px-4 py-2">支持</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 过滤器标签区域 -->
+    <div class="debug-category" id="filter-tags">
+      <h3 class="category-title">🎛️ 过滤器标签 (Filter Tags)</h3>
+      <div class="category-description">
+        <p>用于数据格式化和处理，包括日期格式化、文本摘要、图片处理、阅读时间计算等。</p>
+      </div>
+
+      <div class="debug-section" id="filters-demo">
+        <div class="debug-header">
+          <h3>🔄 过滤器演示</h3>
+          <button class="toggle-btn" onclick="toggleSection('filters-demo')">折叠/展开</button>
+        </div>
+
+        <div class="debug-content">
+          {% set demoText =
+          "这是一段很长的演示文本，用于测试各种过滤器的功能效果。包含了日期格式化、文本截取、URL编码等多种处理方式的演示。
+          <p>这里包含HTML标签</p>
+          用于测试摘要功能。" %} {% set demoDate = "2025-01-15 14:30:25" %} {% set demoImage =
+          "/images/demo.jpg" %} {% set demoCount = 5 %}
+
+          <div class="filter-demos">
+            <!-- 日期过滤器 -->
+            <div class="test-case">
+              <h4>Date 过滤器 - 日期格式化</h4>
+              <code>{% raw %}{{ published_at | date("YYYY-MM-DD HH:mm") }}{% endraw %}</code>
+              <div class="filter-result">
+                <p>原始时间: {{ demoDate }}</p>
+                <p>标准格式: {{ demoDate | date("YYYY-MM-DD HH:mm") }}</p>
+                <p>中文格式: {{ demoDate | date("YYYY年MM月DD日") }}</p>
+                <p>长格式: {{ demoDate | date("YYYY年MM月DD日 dddd HH:mm:ss") }}</p>
+              </div>
+            </div>
+
+            <!-- 摘要过滤器 -->
+            <div class="test-case">
+              <h4>Excerpt 过滤器 - 文本摘要</h4>
+              <code>{% raw %}{{ content | excerpt(30) }}{% endraw %}</code>
+              <div class="filter-result">
+                <p><strong>原文:</strong> {{ demoText }}</p>
+                <p><strong>摘要(30字):</strong> {{ demoText | excerpt(30) }}</p>
+                <p><strong>摘要(50字):</strong> {{ demoText | excerpt(50) }}</p>
+              </div>
+            </div>
+
+            <!-- 图片URL过滤器 -->
+            <div class="test-case">
+              <h4>ImgUrl 过滤器 - 图片URL处理</h4>
+              <code>{% raw %}{{ post.feature_image | imgurl("medium") }}{% endraw %}</code>
+              <div class="filter-result">
+                <p>原始URL: {{ demoImage }}</p>
+                <p>中等尺寸: {{ demoImage | imgurl("medium") }}</p>
+                <p>小尺寸: {{ demoImage | imgurl("small") }}</p>
+                <p>大尺寸: {{ demoImage | imgurl("large") }}</p>
+              </div>
+            </div>
+
+            <!-- 阅读时间过滤器 -->
+            <div class="test-case">
+              <h4>ReadingTime 过滤器 - 阅读时间计算</h4>
+              <code>{% raw %}{{ post.content | readingtime }}{% endraw %}</code>
+              <div class="filter-result">
+                <p>短文本: {{ "这是一段很短的文本。" | readingtime }}</p>
+                <p>中等文本: {{ demoText | readingtime }}</p>
+                <p>长文本: {{ (demoText + demoText + demoText) | readingtime }}</p>
+              </div>
+            </div>
+
+            <!-- URL编码过滤器 -->
+            <div class="test-case">
+              <h4>Encode 过滤器 - URL编码</h4>
+              <code>{% raw %}{{ post.title | encode }}{% endraw %}</code>
+              <div class="filter-result">
+                <p>原文: 这是中文标题 & 特殊字符</p>
+                <p>编码: {{ "这是中文标题 & 特殊字符" | encode }}</p>
+                <p>URL编码: {{ "Hello World! 你好世界" | encode }}</p>
+              </div>
+            </div>
+
+            <!-- 复数处理标签 -->
+            <div class="test-case">
+              <h4>Plural 标签 - 复数处理</h4>
+              <code
+                >{% raw %}{% plural count.posts, empty="No posts", singular="% post", plural="%
+                posts" %}{% endraw %}</code
+              >
+              <div class="filter-result">
+                <p>0个: {% plural 0, empty="暂无文章", singular="% 篇文章", plural="% 篇文章" %}</p>
+                <p>1个: {% plural 1, empty="暂无文章", singular="% 篇文章", plural="% 篇文章" %}</p>
+                <p>5个: {% plural 5, empty="暂无文章", singular="% 篇文章", plural="% 篇文章" %}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 布局标签区域 -->
+    <div class="debug-category" id="layout-tags">
+      <h3 class="category-title">🎨 布局标签 (Layout Tags)</h3>
+      <div class="category-description">
+        <p>用于页面结构和样式处理，包括页面类名生成、导航菜单、分页和搜索表单等。</p>
+      </div>
+
+      <div class="debug-section" id="layout-demo">
+        <div class="debug-header">
+          <h3>🎯 布局标签演示</h3>
+          <button class="toggle-btn" onclick="toggleSection('layout-demo')">折叠/展开</button>
+        </div>
+
+        <div class="debug-content">
+          <div class="layout-demos">
+            <div class="layout-demo">
+              <h6>Body Class</h6>
+              <p>当前页面类: <code>{% bodyclass %}</code></p>
+              <p>自定义类: <code>{% bodyclass class="custom-theme" %}</code></p>
+            </div>
+
+            <div class="layout-demo">
+              <h6>Post Class</h6>
+              <code>{% raw %}{% postclass %}{% endraw %}</code>
+              <div class="postclass-result">
+                <p>文章类名: <code>{% postclass %}</code></p>
+                <p>自定义类: <code>{% postclass class="featured-post" %}</code></p>
+              </div>
+            </div>
+
+            <div class="layout-demo">
+              <h6>Navigation</h6>
+              {% navigation key="menuItems" %} {% if menuItems and menuItems.length > 0 %}
+              <p class="success">✅ 获取到 {{ menuItems.length }} 个菜单项</p>
+              <nav class="demo-nav">
+                {% for item in menuItems %}
+                <a href="/{{ item.defaultUrl }}___{{ item.id }}" class="demo-nav-item">
+                  {{ item.name }}
+                </a>
+                {% endfor %}
+              </nav>
+              {% else %}
+              <p class="warning">⚠️ 未获取到导航菜单</p>
+              {% endif %}
+            </div>
+
+            <div class="layout-demo">
+              <h6>Search Form</h6>
+              {% search placeholder="搜索内容...", formClass="demo-search-form" %}
+            </div>
+
+            <div class="layout-demo">
+              <h6>Pagination Examples</h6>
+              <div class="mb-4 p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
+                <p class="text-sm text-gray-700">
+                  <strong>📝 使用说明：</strong> pagination 标签需要在模板上下文中设置
+                  <code>pageInfo</code> 对象。 该对象应包含：<code>current</code> (当前页),
+                  <code>totalPage</code> (总页数), <code>totalItems</code> (总条数)。 还需要设置
+                  <code>pageType</code> 来指定页面类型 (index, cate, search, tag)。
+                </p>
+              </div>
+
+              <!-- 示例1: 基础分页 -->
+              <div class="demo-item mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-3"><strong>Basic Pagination (Page 3 of 8):</strong></p>
+                {% set pageInfo = { current: 3, totalPage: 8, totalItems: 75, pageSize: 10 } %} {%
+                set pageType = "index" %} {% pagination containerClass="flex items-center
+                justify-center space-x-2 py-4", linkClass="px-3 py-2 text-sm bg-white border
+                border-gray-300 text-gray-700 hover:bg-gray-50 rounded", activeClass="px-3 py-2
+                text-sm bg-blue-600 text-white rounded font-medium" %}
+              </div>
+
+              <!-- 示例2: 首页分页 -->
+              <div class="demo-item mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-3"><strong>First Page:</strong></p>
+                {% set pageInfo = { current: 1, totalPage: 5, totalItems: 50, pageSize: 10 } %} {%
+                pagination containerClass="flex items-center justify-center space-x-2 py-4",
+                linkClass="px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700
+                hover:bg-gray-50 rounded", activeClass="px-3 py-2 text-sm bg-blue-600 text-white
+                rounded font-medium" %}
+              </div>
+
+              <!-- 示例3: 最后一页 -->
+              <div class="demo-item mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-3"><strong>Last Page:</strong></p>
+                {% set pageInfo = { current: 5, totalPage: 5, totalItems: 50, pageSize: 10 } %} {%
+                pagination containerClass="flex items-center justify-center space-x-2 py-4",
+                linkClass="px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700
+                hover:bg-gray-50 rounded", activeClass="px-3 py-2 text-sm bg-blue-600 text-white
+                rounded font-medium" %}
+              </div>
+
+              <!-- 示例4: 分类页面分页 -->
+              <div class="demo-item mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-3"><strong>Category Page Pagination:</strong></p>
+                {% set pageInfo = { current: 2, totalPage: 6, totalItems: 55, pageSize: 10 } %} {%
+                set pageType = "cate" %} {% set cateInfo = { url: "/category/tech" } %} {%
+                pagination containerClass="flex items-center justify-center space-x-2 py-4",
+                linkClass="px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700
+                hover:bg-gray-50 rounded", activeClass="px-3 py-2 text-sm bg-blue-600 text-white
+                rounded font-medium" %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 区块标签区域 -->
+    <div class="debug-category" id="block-tags">
+      <h3 class="category-title">🧩 区块标签 (Block Tags)</h3>
+      <div class="category-description">
+        <p>提供条件判断、循环处理、动态数据获取等高级模板功能，支持复杂的业务逻辑处理。</p>
+      </div>
+
+      <div class="debug-section" id="block-demo">
+        <div class="debug-header">
+          <h3>🎯 区块标签演示</h3>
+          <button class="toggle-btn" onclick="toggleSection('block-demo')">折叠/展开</button>
+        </div>
+
+        <div class="debug-content">
+          <!-- Foreach标签测试 -->
+          <div class="test-case">
+            <h4>Foreach 标签 - 循环处理</h4>
+            <code
+              >{% raw %}{% foreach posts, limit="3" %}
+              <div class="post-item">
+                <h5>
+                  {{title}} {% if loop.first %}(第一篇){% endif %}{% if loop.last %}(最后一篇){%
+                  endif %}
+                </h5>
+                <p>索引: {{loop.index}} | ID: {{id}}</p>
+              </div>
+              {% endforeach %}{% endraw %}</code
+            >
+            <div class="mb-4 p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
+              <p class="text-sm text-gray-700">
+                <strong>📝 使用说明：</strong> foreach 标签支持循环变量访问。使用
+                <code>{{title}}</code> 访问当前项的属性， 使用
+                <code>{{loop.index}}</code>、<code>{{loop.first}}</code>、<code>{{loop.last}}</code>
+                访问循环状态。HTML 内容会正确渲染，不会被转义为字符串。
+              </p>
+            </div>
+
+            <div class="foreach-result space-y-4">
+              {% set samplePosts = [ {"title": "第一篇文章", "id": "1", "author": "张三"}, {"title":
+              "第二篇文章", "id": "2", "author": "李四"}, {"title": "第三篇文章", "id": "3",
+              "author": "王五"}, {"title": "第四篇文章", "id": "4", "author": "赵六"} ] %}
+
+              <div class="demo-item mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-3"><strong>基础循环 (limit=3):</strong></p>
+                {% foreach samplePosts, limit="3" %}
+                <div class="post-item p-3 mb-2 bg-white border rounded">
+                  <h6 class="font-medium text-gray-900">
+                    {{title}} {% if loop.first %}<span class="text-green-600">(第一篇)</span>{%
+                    endif %} {% if loop.last %}<span class="text-red-600">(最后一篇)</span>{% endif
+                    %}
+                  </h6>
+                  <p class="text-sm text-gray-600">
+                    索引: {{loop.index}} | ID: {{id}} | 作者: {{author}}
+                  </p>
+                </div>
+                {% endforeach %}
+              </div>
+
+              <div class="demo-item mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="mb-3"><strong>偏移循环 (offset=1, limit=2):</strong></p>
+                {% foreach samplePosts, offset="1", limit="2" %}
+                <div class="post-item p-3 mb-2 bg-white border rounded">
+                  <h6 class="font-medium text-gray-900">{{title}}</h6>
+                  <p class="text-sm text-gray-600">作者: {{author}} | 位置: {{loop.index}}</p>
+                </div>
+                {% endforeach %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Get标签测试 -->
+          <div class="test-case">
+            <h4>Get 标签 - 动态数据获取</h4>
+            <code
+              >{% raw %}{% get "posts", limit="3", filter="featured:true" %} {% foreach posts %}
+              <h5>{{this.title}}</h5>
+              {% endforeach %} {% endget %}{% endraw %}</code
+            >
+            <div class="get-result">
+              {% get "posts", limit="3" %} {% if posts and posts.length > 0 %}
+              <p class="success">✅ 获取到 {{ posts.length }} 篇文章</p>
+              {% foreach posts, limit="2" %}
+              <div class="post-item">
+                <h6>{{ this.title or this.name or "未命名文章" }}</h6>
+                <p>{{ this.stitle or this.description or "无描述" }}</p>
+              </div>
+              {% endforeach %} {% else %}
+              <p class="warning">⚠️ 未获取到文章数据</p>
+              {% endif %} {% endget %}
+            </div>
+          </div>
+
+          <!-- If标签测试 -->
+          <div class="test-case">
+            <h4>If 标签 - 条件判断</h4>
+            <code
+              >{% raw %}{% if post.featured %}
+              <div class="featured-badge">精选文章</div>
+              {% else %}
+              <div class="normal-post">普通文章</div>
+              {% endif %}{% endraw %}</code
+            >
+            <div class="if-result">
+              {% set testCondition = true %} {% if testCondition %}
+              <div class="featured-badge">✨ 条件为真时显示</div>
+              {% else %}
+              <div class="normal-post">条件为假时显示</div>
+              {% endif %} {% set falseCondition = false %} {% if falseCondition %}
+              <div class="featured-badge">不会显示</div>
+              {% else %}
+              <div class="normal-post">🔄 条件为假时显示</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Has标签测试 -->
+          <div class="test-case">
+            <h4>Has 标签 - 属性检查</h4>
+            <code
+              >{% raw %}{% has tag="featured" %}
+              <span class="tag-badge">包含特色标签</span>
+              {% endhas %} {% has property="post.author" %}
+              <span class="author-info">有作者信息</span>
+              {% endhas %}{% endraw %}</code
+            >
+            <div class="has-result">
+              <!-- 简化测试，直接使用 has 标签 -->
+              {% has tag="featured" %}
+              <span class="tag-badge">🏷️ 包含特色标签</span>
+              {% endhas %} {% has property="post.author" %}
+              <span class="author-info">👤 有作者信息</span>
+              {% endhas %} {% has property="nonexistent.field" %}
+              <span class="missing-field">不存在的字段</span>
+              {% endhas %}
+
+              <p class="info">💡 Has 标签仅在条件为真时显示内容</p>
+            </div>
+          </div>
+          <!-- Is标签测试 -->
+          <div class="test-case">
+            <h4>Is 标签 - 上下文检查</h4>
+            <code
+              >{% raw %}{% is "home" %}
+              <div class="home-content">这是首页内容</div>
+              {% else %}
+              <div class="other-content">这是其他页面内容</div>
+              {% endis %}{% endraw %}</code
+            >
+            <div class="is-result">
+              {% is "home" %}
+              <div class="home-content">🏠 这是首页内容</div>
+              {% else %}
+              <div class="other-content">📄 这是其他页面内容</div>
+              {% endis %} {% is "post" %}
+              <div class="post-content">📝 这是文章页面</div>
+              {% else %}
+              <div class="non-post-content">📋 这不是文章页面</div>
+              {% endis %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 调试工具区域 -->
+    <div class="debug-category" id="debug-tools">
+      <h3 class="category-title">🔍 调试工具</h3>
+
+      <div class="debug-section" id="debug-utilities">
+        <div class="debug-header">
+          <h3>🛠️ 调试实用工具</h3>
+          <button class="toggle-btn" onclick="toggleSection('debug-utilities')">折叠/展开</button>
+        </div>
+
+        <div class="debug-content">
+          <div class="debug-tools-grid">
+            <div class="debug-tool">
+              <h6>性能监控</h6>
+              <div class="performance-info">
+                <p>页面加载时间: <span id="load-time">计算中...</span></p>
+                <p>标签执行次数: <span id="tag-count">统计中...</span></p>
+              </div>
+            </div>
+
+            <div class="debug-tool">
+              <h6>错误日志</h6>
+              <div id="error-log" class="error-log">
+                <p>暂无错误</p>
+              </div>
+            </div>
+
+            <div class="debug-tool">
+              <h6>数据统计</h6>
+              <div class="data-stats">
+                <p>成功加载的标签: <span class="success-count">0</span></p>
+                <p>失败的标签: <span class="error-count">0</span></p>
+                <p>总数据条目: <span class="total-data">0</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 调试面板样式 -->
+  <style>
+    .debug-panel {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .debug-panel-header {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .debug-panel-header h2 {
+      margin: 0;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .debug-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .control-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .control-btn:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    .debug-panel-nav {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .debug-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .nav-item {
+      color: #007bff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(0, 123, 255, 0.1);
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: #007bff;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .debug-category {
+      background: rgba(255, 255, 255, 0.95);
+      margin-bottom: 30px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-title {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+      padding: 20px;
+      font-size: 20px;
+    }
+
+    .category-description {
+      padding: 15px 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .debug-section {
+      margin: 20px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .debug-header {
+      background: #f8f9fa;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .debug-header h3 {
+      margin: 0;
+      color: #495057;
+      font-size: 16px;
+    }
+
+    .toggle-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .debug-content {
+      padding: 20px;
+    }
+
+    .test-case {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .test-case h4 {
+      color: #495057;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .test-case code {
+      background: #f8f9fa;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: 'Monaco', monospace;
+      display: block;
+      margin-bottom: 15px;
+      border-left: 4px solid #007bff;
+    }
+
+    .success {
+      color: #28a745;
+      font-weight: 500;
+    }
+
+    .error {
+      color: #dc3545;
+      font-weight: 500;
+    }
+
+    .warning {
+      color: #ffc107;
+      font-weight: 500;
+    }
+
+    .debug-data {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 15px;
+      border-radius: 4px;
+      font-size: 12px;
+      overflow-x: auto;
+      max-height: 300px;
+    }
+
+    /* 新增样式 */
+    .filter-result,
+    .foreach-result,
+    .get-result,
+    .if-result,
+    .has-result,
+    .is-result {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    .post-item {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .post-item h6 {
+      margin: 0 0 5px 0;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .post-item p {
+      margin: 0;
+      color: #6c757d;
+      font-size: 12px;
+    }
+
+    .featured-badge,
+    .tag-badge,
+    .author-info {
+      background: #28a745;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: inline-block;
+      margin: 2px;
+    }
+
+    .normal-post,
+    .non-post-content {
+      background: #6c757d;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: inline-block;
+      margin: 2px;
+    }
+
+    .home-content,
+    .post-content {
+      background: #007bff;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin: 4px 0;
+    }
+
+    .other-content {
+      background: #6c757d;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin: 4px 0;
+    }
+
+    .info {
+      color: #17a2b8;
+      font-weight: 500;
+    }
+
+    .head-preview {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .data-item {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 6px;
+    }
+
+    .data-item h6 {
+      margin: 0 0 4px 0;
+      color: #495057;
+      font-size: 13px;
+    }
+
+    .data-item p {
+      margin: 0;
+      color: #6c757d;
+      font-size: 11px;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .debug-panel {
+        padding: 10px;
+      }
+
+      .debug-panel-header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .debug-nav {
+        flex-direction: column;
+      }
+
+      .nav-item {
+        text-align: center;
+      }
+    }
+  </style>
+
+  <!-- 调试面板脚本 -->
+  <script>
+    // 页面状态管理 - 使用localStorage记录展开折叠状态和滚动位置
+    (function () {
+      'use strict';
+
+      // 配置项
+      const CONFIG = {
+        STORAGE_KEY_PREFIX: 'debug_panel_',
+        SCROLL_KEY: 'scroll_position',
+        SECTION_STATES_KEY: 'section_states',
+        THEME_KEY: 'theme_mode',
+      };
+
+      // 状态管理对象
+      const StateManager = {
+        /**
+         * 保存区块展开状态到localStorage
+         * @param {string} sectionId - 区块ID
+         * @param {boolean} isExpanded - 是否展开
+         */
+        saveSectionState: function (sectionId, isExpanded) {
+          try {
+            const states = this.getSectionStates();
+            states[sectionId] = isExpanded;
+            localStorage.setItem(
+              CONFIG.STORAGE_KEY_PREFIX + CONFIG.SECTION_STATES_KEY,
+              JSON.stringify(states)
+            );
+            console.log(`保存区块状态: ${sectionId} = ${isExpanded}`);
+          } catch (error) {
+            console.warn('保存区块状态失败:', error);
+          }
+        },
+
+        /**
+         * 获取所有区块状态
+         * @returns {Object} 区块状态对象
+         */
+        getSectionStates: function () {
+          try {
+            const stored = localStorage.getItem(
+              CONFIG.STORAGE_KEY_PREFIX + CONFIG.SECTION_STATES_KEY
+            );
+            return stored ? JSON.parse(stored) : {};
+          } catch (error) {
+            console.warn('获取区块状态失败:', error);
+            return {};
+          }
+        },
+
+        /**
+         * 保存滚动位置
+         */
+        saveScrollPosition: function () {
+          try {
+            const scrollData = {
+              x: window.scrollX || window.pageXOffset,
+              y: window.scrollY || window.pageYOffset,
+              timestamp: Date.now(),
+            };
+            localStorage.setItem(
+              CONFIG.STORAGE_KEY_PREFIX + CONFIG.SCROLL_KEY,
+              JSON.stringify(scrollData)
+            );
+          } catch (error) {
+            console.warn('保存滚动位置失败:', error);
+          }
+        },
+
+        /**
+         * 获取保存的滚动位置
+         * @returns {Object|null} 滚动位置数据
+         */
+        getScrollPosition: function () {
+          try {
+            const stored = localStorage.getItem(CONFIG.STORAGE_KEY_PREFIX + CONFIG.SCROLL_KEY);
+            if (stored) {
+              const scrollData = JSON.parse(stored);
+              // 检查数据是否过期（超过1小时则忽略）
+              if (Date.now() - scrollData.timestamp < 3600000) {
+                return scrollData;
+              }
+            }
+          } catch (error) {
+            console.warn('获取滚动位置失败:', error);
+          }
+          return null;
+        },
+
+        /**
+         * 保存主题状态
+         * @param {string} theme - 主题名称
+         */
+        saveTheme: function (theme) {
+          try {
+            localStorage.setItem(CONFIG.STORAGE_KEY_PREFIX + CONFIG.THEME_KEY, theme);
+          } catch (error) {
+            console.warn('保存主题状态失败:', error);
+          }
+        },
+
+        /**
+         * 获取保存的主题
+         * @returns {string} 主题名称
+         */
+        getTheme: function () {
+          try {
+            return localStorage.getItem(CONFIG.STORAGE_KEY_PREFIX + CONFIG.THEME_KEY) || 'light';
+          } catch (error) {
+            console.warn('获取主题状态失败:', error);
+            return 'light';
+          }
+        },
+      };
+
+      // 增强版的toggleSection函数
+      function enhancedToggleSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (!section) {
+          console.warn(`未找到区块: ${sectionId}`);
+          return;
+        }
+
+        const content = section.querySelector('.debug-content');
+        if (!content) {
+          console.warn(`区块 ${sectionId} 中未找到 .debug-content 元素`);
+          return;
+        }
+
+        // 切换显示状态
+        const isCurrentlyHidden = content.style.display === 'none';
+        const newDisplayState = isCurrentlyHidden ? 'block' : 'none';
+        content.style.display = newDisplayState;
+
+        // 保存状态到localStorage
+        StateManager.saveSectionState(sectionId, isCurrentlyHidden);
+
+        // 更新按钮文本（如果按钮有文本的话）
+        const toggleButton = section.querySelector('.toggle-btn');
+        if (toggleButton) {
+          const isExpanded = isCurrentlyHidden;
+          toggleButton.setAttribute('aria-expanded', isExpanded.toString());
+        }
+
+        console.log(`切换区块 ${sectionId}: ${isCurrentlyHidden ? '展开' : '折叠'}`);
+      }
+
+      // 恢复所有区块状态
+      function restoreSectionStates() {
+        const states = StateManager.getSectionStates();
+        let restoredCount = 0;
+
+        // console.log('开始恢复区块状态，保存的状态:', states);
+
+        // 获取所有具有debug-content的区块
+        const sections = document.querySelectorAll('[id] .debug-content');
+
+        sections.forEach(function (content) {
+          const section = content.closest('[id]');
+          if (!section) return;
+
+          const sectionId = section.id;
+          if (!sectionId) return;
+
+          // console.log(`检查区块: ${sectionId}`);
+
+          // 如果localStorage中有该区块的状态记录
+          if (states.hasOwnProperty(sectionId)) {
+            const shouldExpand = states[sectionId];
+            content.style.display = shouldExpand ? 'block' : 'none';
+
+            // 更新按钮状态
+            const toggleButton = section.querySelector('.toggle-btn');
+            if (toggleButton) {
+              toggleButton.setAttribute('aria-expanded', shouldExpand.toString());
+            }
+
+            restoredCount++;
+            // console.log(
+            //   `✅ 恢复区块 ${sectionId}: ${shouldExpand ? '展开' : '折叠'} (实际设置: ${content.style.display})`
+            // );
+          } else {
+            // console.log(`⚠️ 区块 ${sectionId} 没有保存的状态`);
+          }
+        });
+
+        // console.log(`共恢复了 ${restoredCount} 个区块的状态`);
+
+        // 额外检查：直接通过ID查找特定区块
+        Object.keys(states).forEach(function (savedSectionId) {
+          const section = document.getElementById(savedSectionId);
+          if (section) {
+            const content = section.querySelector('.debug-content');
+            if (content) {
+              const shouldExpand = states[savedSectionId];
+              const currentDisplay = content.style.display;
+              const expectedDisplay = shouldExpand ? 'block' : 'none';
+
+              if (currentDisplay !== expectedDisplay) {
+                console.log(
+                  `🔧 修正区块 ${savedSectionId}: 当前=${currentDisplay}, 期望=${expectedDisplay}`
+                );
+                content.style.display = expectedDisplay;
+              }
+            }
+          } else {
+            console.log(`❌ 找不到保存的区块: ${savedSectionId}`);
+          }
+        });
+      }
+
+      // 恢复滚动位置
+      function restoreScrollPosition() {
+        const scrollData = StateManager.getScrollPosition();
+        if (scrollData) {
+          // 延迟恢复滚动位置，确保页面内容已完全加载
+          setTimeout(function () {
+            window.scrollTo(scrollData.x, scrollData.y);
+            // console.log(`恢复滚动位置: x=${scrollData.x}, y=${scrollData.y}`);
+          }, 100);
+        }
+      }
+
+      // 恢复主题状态
+      function restoreTheme() {
+        const savedTheme = StateManager.getTheme();
+        if (savedTheme === 'dark') {
+          document.body.classList.add('dark-theme');
+          //  console.log('恢复深色主题');
+        }
+      }
+
+      // 节流函数 - 限制滚动事件的触发频率
+      function throttle(func, limit) {
+        let inThrottle;
+        return function () {
+          const args = arguments;
+          const context = this;
+          if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => (inThrottle = false), limit);
+          }
+        };
+      }
+
+      // 初始化页面状态管理
+      function initializeStateManagement() {
+        // 替换原有的toggleSection函数
+        window.toggleSection = enhancedToggleSection;
+
+        // 增强展开所有按钮
+        const expandAllBtn = document.getElementById('expand-all');
+        if (expandAllBtn) {
+          expandAllBtn.addEventListener('click', function () {
+            const contents = document.querySelectorAll('.debug-content');
+            contents.forEach(function (content) {
+              content.style.display = 'block';
+
+              // 保存每个区块的展开状态
+              const section = content.closest('.debug-section, .debug-category');
+              if (section && section.id) {
+                StateManager.saveSectionState(section.id, true);
+              }
+            });
+            console.log('展开所有区块并保存状态');
+          });
+        }
+
+        // 增强折叠所有按钮
+        const collapseAllBtn = document.getElementById('collapse-all');
+        if (collapseAllBtn) {
+          collapseAllBtn.addEventListener('click', function () {
+            const contents = document.querySelectorAll('.debug-content');
+            contents.forEach(function (content) {
+              content.style.display = 'none';
+
+              // 保存每个区块的折叠状态
+              const section = content.closest('.debug-section, .debug-category');
+              if (section && section.id) {
+                StateManager.saveSectionState(section.id, false);
+              }
+            });
+            console.log('折叠所有区块并保存状态');
+          });
+        }
+
+        // 增强主题切换按钮
+        const themeToggleBtn = document.getElementById('toggle-theme');
+        if (themeToggleBtn) {
+          themeToggleBtn.addEventListener('click', function () {
+            const isDarkTheme = document.body.classList.toggle('dark-theme');
+            StateManager.saveTheme(isDarkTheme ? 'dark' : 'light');
+            console.log(`切换主题: ${isDarkTheme ? '深色' : '浅色'}`);
+          });
+        }
+
+        // 监听滚动事件，节流保存滚动位置
+        const throttledSaveScroll = throttle(function () {
+          StateManager.saveScrollPosition();
+        }, 500); // 每500ms最多保存一次
+
+        window.addEventListener('scroll', throttledSaveScroll, { passive: true });
+
+        // 页面卸载时保存最终状态
+        window.addEventListener('beforeunload', function () {
+          StateManager.saveScrollPosition();
+          console.log('页面卸载，保存最终状态');
+        });
+
+        // 监听页面可见性变化，在页面隐藏时保存状态
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'hidden') {
+            StateManager.saveScrollPosition();
+            console.log('页面隐藏，保存当前状态');
+          }
+        });
+
+        console.log('页面状态管理初始化完成');
+      }
+
+      // 页面加载完成后的初始化
+      function onPageReady() {
+        console.log('开始恢复页面状态...');
+        console.log('当前页面DOM状态:', document.readyState);
+
+        // 恢复主题
+        restoreTheme();
+
+        // 多次尝试恢复区块状态，确保DOM完全加载
+        let attemptCount = 0;
+        const maxAttempts = 3;
+
+        function attemptRestore() {
+          attemptCount++;
+          console.log(`第 ${attemptCount} 次尝试恢复区块状态...`);
+
+          // 检查关键元素是否存在
+          const remoteDebugElement = document.getElementById('remote-debug');
+          // console.log('remote-debug 元素:', remoteDebugElement);
+
+          if (remoteDebugElement) {
+            const content = remoteDebugElement.querySelector('.debug-content');
+            //  console.log('remote-debug .debug-content 元素:', content);
+          }
+
+          restoreSectionStates();
+
+          // 如果还有尝试次数，继续尝试
+          if (attemptCount < maxAttempts) {
+            setTimeout(attemptRestore, 100 * attemptCount); // 递增延迟
+          }
+        }
+
+        setTimeout(attemptRestore, 50);
+
+        // 恢复滚动位置
+        restoreScrollPosition();
+
+        // 初始化状态管理
+        initializeStateManagement();
+
+        console.log('页面状态恢复完成');
+      }
+
+      // 确保在页面完全加载后执行
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', onPageReady);
+      } else {
+        // 如果页面已经加载完成，直接执行
+        onPageReady();
+      }
+
+      // 提供清理功能（调试用）
+      window.clearDebugPanelState = function () {
+        try {
+          Object.values(CONFIG).forEach(key => {
+            localStorage.removeItem(CONFIG.STORAGE_KEY_PREFIX + key);
+          });
+          console.log('已清理所有调试面板状态数据');
+          location.reload();
+        } catch (error) {
+          console.error('清理状态数据失败:', error);
+        }
+      };
+
+      // 提供状态查看功能（调试用）
+      window.viewDebugPanelState = function () {
+        console.log('当前保存的状态:');
+        console.log('区块状态:', StateManager.getSectionStates());
+        console.log('滚动位置:', StateManager.getScrollPosition());
+        console.log('主题设置:', StateManager.getTheme());
+      };
+    })();
+
+    // 导出调试信息
+    document.getElementById('export-debug').addEventListener('click', function () {
+      var currentPageType = '{{pageType}}';
+      const debugInfo = {
+        timestamp: new Date().toISOString(),
+        pageType: currentPageType ? currentPageType : 'unknown',
+        userAgent: navigator.userAgent,
+      };
+
+      const blob = new Blob([JSON.stringify(debugInfo, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'debug-info.json';
+      a.click();
+    });
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function () {
+      // 更新当前时间
+      function updateCurrentTime() {
+        const now = new Date();
+        const timeStr =
+          now.getFullYear() +
+          '-' +
+          String(now.getMonth() + 1).padStart(2, '0') +
+          '-' +
+          String(now.getDate()).padStart(2, '0') +
+          ' ' +
+          String(now.getHours()).padStart(2, '0') +
+          ':' +
+          String(now.getMinutes()).padStart(2, '0') +
+          ':' +
+          String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = timeStr;
+      }
+
+      updateCurrentTime();
+      setInterval(updateCurrentTime, 1000);
+
+      // 计算页面加载时间
+      const loadTime = performance.now();
+      document.getElementById('load-time').textContent = Math.round(loadTime) + 'ms';
+
+      // 统计标签数量
+      const tagCount = document.querySelectorAll('.test-case').length;
+      document.getElementById('tag-count').textContent = tagCount;
+
+      // 统计成功/失败的标签
+      const successElements = document.querySelectorAll('.success').length;
+      const errorElements = document.querySelectorAll('.error').length;
+      document.querySelector('.success-count').textContent = successElements;
+      document.querySelector('.error-count').textContent = errorElements;
+    });
+  </script>
+</div>

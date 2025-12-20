@@ -1,0 +1,7 @@
+packages:
+  # 服务端项目
+  - 'server'
+  - 'server/lib/plugin/egg-*-*'
+  # 客户端项目
+  - 'client/user-center'
+  - 'client/remote-page/*'
