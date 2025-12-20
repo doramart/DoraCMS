@@ -119,7 +119,7 @@ docker compose down
 
 ```env
 DATABASE_TYPE=mongodb
-REPOSITORY_ENABLED=false
+REPOSITORY_ENABLED=true
 
 MONGODB_HOST=mongodb
 MONGODB_PORT=27017
@@ -230,7 +230,7 @@ docker compose --profile nginx up -d
 DATABASE_TYPE=mongodb
 
 # Repository 模式（MariaDB 建议开启）
-REPOSITORY_ENABLED=false
+REPOSITORY_ENABLED=true
 ```
 
 #### 安全配置

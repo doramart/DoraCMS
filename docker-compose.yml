@@ -26,7 +26,7 @@ services:
 
       # 数据库类型配置 (mongodb 或 mariadb)
       DATABASE_TYPE: ${DATABASE_TYPE:-mongodb}
-      REPOSITORY_ENABLED: ${REPOSITORY_ENABLED:-false}
+      REPOSITORY_ENABLED: ${REPOSITORY_ENABLED:-true}
 
       # MongoDB 配置
       MONGODB_HOST: mongodb

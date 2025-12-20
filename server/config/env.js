@@ -222,7 +222,7 @@ module.exports = {
   // Repository 配置
   REPOSITORY: {
     DATABASE_TYPE: getEnv('DATABASE_TYPE', 'mongodb'),
-    ENABLED: getBoolEnv('REPOSITORY_ENABLED', false),
+    ENABLED: getBoolEnv('REPOSITORY_ENABLED', true),
   },
 
   // 工具函数
