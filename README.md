@@ -4,9 +4,35 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-%3E%3D8.0.0-orange.svg)](https://pnpm.io/)
 
-> 📦 **GitHub**: [doramart/DoraCMS](https://github.com/doramart/DoraCMS) | 📖 **文档**: [www.doracms.net](https://www.doracms.net)
+> 📦 **GitHub**: [doramart/DoraCMS](https://github.com/doramart/DoraCMS) | 📖 **文档**: [www.doracms.net](https://www.doracms.net) | 🌐 **English**: [README.en.md](./README.en.md)
 
 一个基于 EggJS 3.x + Vue 3 + TypeScript 的现代化内容管理系统，采用 pnpm monorepo 架构管理。
+
+## 📸 界面预览
+
+### 管理后台
+
+![管理后台](https://cdn.html-js.cn/cms/uploadfiles/images/admin-center.png)
+
+### 用户中心
+
+![用户中心](https://cdn.html-js.cn/cms/uploadfiles/images/user-center.png)
+
+### 内容管理
+
+![内容管理](https://cdn.html-js.cn/cms/uploadfiles/images/content-manage.png)
+
+### AI 内容发布
+
+![AI 内容发布](https://cdn.html-js.cn/cms/uploadfiles/images/ai-content.png)
+
+### 模型管理
+
+![模型管理](https://cdn.html-js.cn/cms/uploadfiles/images/model-manage.png)
+
+### 首页
+
+![首页](https://cdn.html-js.cn/cms/uploadfiles/images/home-page.png)
 
 ## 🏗️ 项目架构
 
@@ -253,6 +279,7 @@ openssl rand -hex 32
 - [开发指南](./MONOREPO_GUIDE.md) - 本地开发和项目结构
 - [数据库迁移指南](./DATABASE_MIGRATION.md) - MongoDB ↔ MariaDB 迁移
 - [Repository 模式](./server/app/repository/README.md) - 数据库适配层文档
+- [SoybeanAdmin](https://docs.soybeanjs.cn/zh/) - 管理后台基于 SoybeanAdmin 二次开发
 
 ## 🤝 贡献
 
