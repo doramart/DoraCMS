@@ -12,6 +12,7 @@ const Service = require('egg').Service;
 const RepositoryFactory = require('../repository/factories/RepositoryFactory');
 const _ = require('lodash');
 const siteFunc = require('../utils/siteFunc');
+const xss = require('xss');
 class ContentService extends Service {
   constructor(ctx) {
     super(ctx);
@@ -947,23 +948,20 @@ class ContentService extends Service {
     if (!keywords) return [];
 
     if (Array.isArray(keywords)) {
-      return keywords;
+      return keywords.map(k => xss((k || '').trim())).filter(Boolean);
     }
 
     if (typeof keywords === 'string') {
-      if (keywords.indexOf(',') >= 0) {
+      const splitter = keywords.indexOf(',') >= 0 ? ',' : keywords.indexOf('，') >= 0 ? '，' : null;
+      if (splitter) {
         return keywords
-          .split(',')
-          .map(k => k.trim())
-          .filter(Boolean);
-      } else if (keywords.indexOf('，') >= 0) {
-        return keywords
-          .split('，')
-          .map(k => k.trim())
+          .split(splitter)
+          .map(k => xss((k || '').trim()))
           .filter(Boolean);
       }
       // 单个关键词
-      return [keywords.trim()];
+      const single = xss(keywords.trim());
+      return single ? [single] : [];
     }
 
     return [];
@@ -979,12 +977,11 @@ class ContentService extends Service {
    */
   _buildContentFormObj(sourceData, options = {}) {
     const { isUpdate = false } = options;
-    const xss = require('xss');
     const targetKeyWords = this._parseKeywords(sourceData.keywords);
 
     const contentFormObj = {
-      title: sourceData.title,
-      stitle: sourceData.stitle || sourceData.title,
+      title: xss(sourceData.title || ''),
+      stitle: xss(sourceData.stitle || sourceData.title || ''),
       type: sourceData.type || (isUpdate ? sourceData.type : '1'),
       categories: sourceData.categories,
       sortPath: sourceData.sortPath,
@@ -1022,8 +1019,6 @@ class ContentService extends Service {
    * @private
    */
   _processContentDisplay(contentFormObj, authorId, commentsSource) {
-    const xss = require('xss');
-
     // 设置显示模式
     const checkInfo = siteFunc.checkContentType(contentFormObj.simpleComments);
     contentFormObj.appShowType = checkInfo.type;

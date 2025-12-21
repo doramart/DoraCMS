@@ -7,7 +7,7 @@
  */
 'use strict';
 
-const xss = require('xss');
+// const xss = require('xss');
 const _ = require('lodash');
 const { siteFunc, validatorUtil } = require('../../utils');
 const validator = require('validator');
@@ -423,48 +423,6 @@ const ContentController = {
     // 🔥 业务验证 - 自动抛出异常
     ContentController.checkContentFormData(ctx, fields);
 
-    let targetKeyWords = [];
-    if (fields.keywords) {
-      if (fields.keywords.indexOf(',') >= 0) {
-        targetKeyWords = fields.keywords.split(',');
-      } else if (fields.keywords.indexOf('，') >= 0) {
-        targetKeyWords = fields.keywords.split('，');
-      }
-    }
-
-    const contentFormObj = {
-      title: fields.title,
-      stitle: fields.stitle,
-      type: fields.type,
-      categories: fields.categories,
-      sortPath: fields.sortPath,
-      tags: fields.tags,
-      keywords: targetKeyWords,
-      sImg: fields.sImg,
-      // state 字段将在后面根据业务逻辑设置，不直接使用前端传值
-      dismissReason: fields.dismissReason,
-      isTop: fields.isTop,
-      discription: xss(fields.discription),
-      comments: fields.comments,
-      simpleComments: xss(fields.simpleComments),
-      likeUserIds: [],
-    };
-
-    // 设置显示模式
-    const checkInfo = siteFunc.checkContentType(contentFormObj.simpleComments);
-    contentFormObj.appShowType = checkInfo.type;
-    contentFormObj.imageArr = checkInfo.imgArr;
-    contentFormObj.videoArr = checkInfo.videoArr;
-    if (checkInfo.type === '3') {
-      contentFormObj.videoImg = checkInfo.defaultUrl;
-    }
-
-    contentFormObj.simpleComments = siteFunc.renderSimpleContent(
-      contentFormObj.simpleComments,
-      checkInfo.imgArr,
-      checkInfo.videoArr
-    );
-
     // 🔥 检查用户发布限制
     const rangeTime = getDateStr(-1);
     const hadAddContentsNum = await ctx.service.content.count({
@@ -479,19 +437,18 @@ const ContentController = {
       throw RepositoryExceptions.content.exceedDailyLimit(30, hadAddContentsNum);
     }
 
-    contentFormObj.comments = xss(fields.comments);
-    contentFormObj.stitle = contentFormObj.title;
-    contentFormObj.uAuthor = ctx.session.user.id;
-
-    // 🔥 服务端强制控制：普通用户发布的内容必须待审核（不依赖前端传参）
+    // 🔒 服务端强制控制：普通用户发布的内容必须待审核（或草稿）
     if (fields.draft === '1') {
-      contentFormObj.state = '0'; // 草稿
+      fields.state = '0'; // 草稿
     } else {
-      contentFormObj.state = '1'; // 待审核（普通用户无法直接发布）
+      fields.state = '1'; // 待审核
     }
-    contentFormObj.author = '';
 
-    const newContent = await ctx.service.content.create(contentFormObj);
+    const newContent = await ctx.service.content.createWithPreprocessing(fields, {
+      uAuthor: ctx.session.user.id,
+      authorType: 'user',
+      ctx,
+    });
 
     ctx.helper.renderSuccess(ctx, {
       data: {
@@ -519,54 +476,18 @@ const ContentController = {
       throw RepositoryExceptions.content.notOwner(fields.id, ctx.session.user.id);
     }
 
-    const contentObj = {
-      title: fields.title,
-      stitle: fields.stitle || fields.title,
-      type: fields.type,
-      categories: fields.categories,
-      sortPath: fields.sortPath,
-      tags: fields.tags,
-      keywords: fields.keywords ? fields.keywords.split(',') : [],
-      sImg: fields.sImg,
-      author: !_.isEmpty(ctx.session.adminUserInfo) ? ctx.session.adminUserInfo.id : '',
-      // state 字段将在后面根据业务逻辑设置，不直接使用前端传值
-      dismissReason: fields.dismissReason,
-      isTop: fields.isTop || '',
-      discription: xss(fields.discription),
-      comments: fields.comments,
-      simpleComments: xss(fields.simpleComments),
-    };
-
-    // 设置显示模式
-    const checkInfo = siteFunc.checkContentType(contentObj.simpleComments);
-    contentObj.appShowType = checkInfo.type;
-    contentObj.imageArr = checkInfo.imgArr;
-    contentObj.videoArr = checkInfo.videoArr;
-
-    contentObj.simpleComments = siteFunc.renderSimpleContent(
-      contentObj.simpleComments,
-      checkInfo.imgArr,
-      checkInfo.videoArr
-    );
-
-    if (checkInfo.type === '3') {
-      contentObj.videoImg = checkInfo.defaultUrl;
-    }
-
-    contentObj.comments = xss(fields.comments);
-    contentObj.stitle = contentObj.title;
-    contentObj.uAuthor = ctx.session.user.id;
-
-    // 🔥 服务端强制控制：普通用户更新内容后必须重新审核（不依赖前端传参）
+    // 🔒 服务端强制控制：普通用户更新后需重新审核/草稿
     if (fields.draft === '1') {
-      contentObj.state = '0'; // 草稿
+      fields.state = '0'; // 草稿
     } else {
-      contentObj.state = '1'; // 待审核（普通用户无法直接发布）
+      fields.state = '1'; // 待审核
     }
-    contentObj.author = '';
-    contentObj.updatedAt = new Date();
 
-    await ctx.service.content.update(fields.id, contentObj);
+    await ctx.service.content.updateWithPreprocessing(fields.id, fields, {
+      uAuthor: ctx.session.user.id,
+      authorType: 'user',
+      ctx,
+    });
 
     ctx.helper.renderSuccess(ctx);
   },
@@ -727,43 +648,43 @@ const ContentController = {
   async likeContent(ctx) {
     const contentId = ctx.params.id;
     const action = ctx.query.action || 'like'; // like/unlike
-    
+
     if (!ctx.validateId(contentId)) {
       throw RepositoryExceptions.create.validation(ctx.__('validation.errorParams'));
     }
-    
+
     if (!['like', 'unlike'].includes(action)) {
       throw RepositoryExceptions.business.invalidParams('无效的操作类型，仅支持 like 或 unlike');
     }
-    
+
     // 🔥 检查用户登录状态
     const userInfo = ctx.session.user;
     if (!userInfo) {
       throw RepositoryExceptions.auth.loginRequired();
     }
-    
+
     const userId = userInfo.id;
-    
+
     // 🔥 验证内容是否存在且已发布
     const targetContent = await ctx.service.content.findOne({
       id: { $eq: contentId },
       state: { $eq: '2' },
     });
-    
+
     if (!targetContent) {
       throw RepositoryExceptions.content.notFound(contentId);
     }
-    
+
     // 🔥 不能点赞自己的文章
     if (targetContent.uAuthor === userId) {
       throw RepositoryExceptions.business.operationNotAllowed(ctx.__('user.action.tips.praiseSelf'));
     }
-    
+
     // 🔥 执行点赞/取消点赞操作
     let result;
     if (action === 'like') {
       result = await ctx.service.contentInteraction.praiseContent(contentId, userId);
-      
+
       // 发送提醒消息
       siteFunc.addSiteMessage('4', userInfo, targetContent.uAuthor, contentId, {
         targetMediaType: '0',
@@ -771,19 +692,17 @@ const ContentController = {
     } else {
       result = await ctx.service.contentInteraction.unpraiseContent(contentId, userId);
     }
-    
+
     if (!result.success) {
       throw new Error(result.message);
     }
-    
+
     ctx.helper.renderSuccess(ctx, {
       data: {
         action,
         contentId,
       },
-      message: ctx.__('api.response.success', [
-        action === 'like' ? ctx.__('user.action.types.thumbsUp') : '取消点赞'
-      ]),
+      message: ctx.__('api.response.success', [action === 'like' ? ctx.__('user.action.types.thumbsUp') : '取消点赞']),
     });
   },
 
@@ -795,33 +714,33 @@ const ContentController = {
   async favoriteContent(ctx) {
     const contentId = ctx.params.id;
     const action = ctx.query.action || 'add'; // add/remove
-    
+
     if (!ctx.validateId(contentId)) {
       throw RepositoryExceptions.create.validation(ctx.__('validation.errorParams'));
     }
-    
+
     if (!['add', 'remove'].includes(action)) {
       throw RepositoryExceptions.business.invalidParams('无效的操作类型，仅支持 add 或 remove');
     }
-    
+
     // 🔥 检查用户登录状态
     const userInfo = ctx.session.user;
     if (!userInfo) {
       throw RepositoryExceptions.auth.loginRequired();
     }
-    
+
     const userId = userInfo.id;
-    
+
     // 🔥 验证内容是否存在且已发布
     const targetContent = await ctx.service.content.findOne({
       id: { $eq: contentId },
       state: { $eq: '2' },
     });
-    
+
     if (!targetContent) {
       throw RepositoryExceptions.content.notFound(contentId);
     }
-    
+
     // 🔥 执行收藏/取消收藏操作
     let result;
     if (action === 'add') {
@@ -829,19 +748,17 @@ const ContentController = {
     } else {
       result = await ctx.service.contentInteraction.unfavoriteContent(contentId, userId);
     }
-    
+
     if (!result.success) {
       throw new Error(result.message);
     }
-    
+
     ctx.helper.renderSuccess(ctx, {
       data: {
         action,
         contentId,
       },
-      message: ctx.__('api.response.success', [
-        action === 'add' ? ctx.__('user.action.types.favorite') : '取消收藏'
-      ]),
+      message: ctx.__('api.response.success', [action === 'add' ? ctx.__('user.action.types.favorite') : '取消收藏']),
     });
   },
 
