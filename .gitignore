@@ -35,3 +35,6 @@ databak/
 # 如果后续修改 Dockerfile 添加前端构建步骤，可以重新启用下面的忽略规则
 # server/backstage/
 # !server/backstage/.gitkeep
+
+.claude
+CLAUDE.md
