@@ -49,5 +49,5 @@ export function createUser(data) {
  * @returns {Promise}
  */
 export function updateUser(id, data) {
-  return post(`/api/users/${id}`, data);
+  return post(`/api/v1/users/${id}`, data);  // 🔥 使用 RESTful v1 路由
 }

@@ -43,40 +43,48 @@ export function deleteRequest<T = any>(
 
 /**
  * 标准删除函数（适用于大多数删除接口）
- * @param moduleName 模块名称（如 'ads', 'content', 'user' 等）
- * @param ids 要删除的ID
- * @param extraData 额外参数
+ * @param moduleName 模块名称（如 'v1/ads', 'v1/content', 'v1/users' 等）
+ * @param ids 要删除的ID（单个或数组）
+ * @param extraData 额外参数（通过 query 传递）
  * @returns Promise
+ * 
+ * 🔥 RESTful 风格：DELETE /manage/v1/{resource}/{id}
+ * 
+ * 使用示例：
+ * - standardDelete('v1/ads', '123')  → DELETE /manage/v1/ads/123
+ * - standardDelete('v1/content', ['1', '2'])  → DELETE /manage/v1/content/1,2
+ * - standardDelete('v1/content', '123', { draft: true })  → DELETE /manage/v1/content/123?draft=true
+ * 
+ * 注意：
+ * - 后端通过 ctx.params.id 获取路径参数（支持逗号分隔的批量删除）
+ * - 额外参数通过 query 传递（DELETE 请求不应该有 body）
  */
 export function standardDelete<T = any>(
   moduleName: string,
-  ids: string | string[]|number,
+  ids: string | string[] | number,
   extraData: Record<string, any> = {}
 ): any {
-  const urlMap: Record<string, string> = {
-    ads: '/manage/ads/delete',
-    content: '/manage/content/deleteContent',
-    contentCategory: '/manage/contentCategory/deleteCategory',
-    contentMessage: '/manage/contentMessage/deleteMessage',
-    contentTag: '/manage/contentTag/deleteTag',
-    mailTemplate: '/manage/mailTemplate/delete',
-    menu: '/manage/menu/deleteMenu',
-    regUser: '/manage/regUser/deleteUser',
-    role: '/manage/role/deleteRole',
-    systemConfig: '/manage/systemConfig/deleteConfig',
-    systemOptionLog: '/manage/systemOptionLog/deleteLogItem',
-    template: '/manage/template/deleteOne',
-    templateItem: '/manage/template/delTemplateItem',
-    uploadFile: '/manage/uploadFile/delete',
-    user: '/manage/admin/deleteUser',
-  };
-
-  const url = urlMap[moduleName];
-  if (!url) {
-    throw new Error(`Unknown module name: ${moduleName}`);
+  // 🔥 RESTful 路由：使用路径参数
+  let url: string;
+  let idsParam: string;
+  
+  if (Array.isArray(ids)) {
+    // 批量删除：使用逗号分隔的 ID
+    // 后端会通过 ctx.params.id 获取 "1,2,3"，然后 split(',') 分割
+    idsParam = ids.join(',');
+  } else {
+    // 单个删除
+    idsParam = String(ids);
   }
+  
+  url = `/manage/${moduleName}/${idsParam}`;
 
-  return deleteRequest<T>(url, ids, extraData);
+  // 🔥 RESTful DELETE 请求：额外参数通过 query 传递
+  return request<T>({
+    url,
+    method: 'delete',
+    params: extraData  // 使用 params（query 参数）而不是 data（body）
+  });
 }
 
 export default {

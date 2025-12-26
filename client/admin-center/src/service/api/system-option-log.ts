@@ -34,7 +34,7 @@ export function fetchLogStatistics() {
     bySeverity: Record<string, number>;
     byModule: Record<string, number>;
   }>({
-    url: '/manage/systemOptionLog/getStatistics',
+    url: '/manage/v1/logs/stats',  // 🔥 使用 RESTful 路由
     method: 'get'
   });
 }
@@ -42,7 +42,7 @@ export function fetchLogStatistics() {
 /** Export logs */
 export function exportLogs(params: Api.SystemManage.SystemOptionLogSearchParams) {
   return request({
-    url: '/manage/systemOptionLog/exportLogs',
+    url: '/manage/v1/logs/export',  // 🔥 使用 RESTful 路由
     method: 'get',
     params,
     responseType: 'blob'

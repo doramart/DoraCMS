@@ -1,5 +1,4 @@
 import { request } from '../request';
-import { deleteRequest } from './deleteHelper';
 
 /** get content list */
 export function fetchGetContentList(params?: any) {
@@ -71,7 +70,7 @@ export function createContent(params: any) {
 
 /** delete content */
 export function deleteContent(params: any) {
-  // 🔥 使用通用删除工具，支持额外参数
+  // 🔥 内容删除支持额外参数（如 draft）
   const ids = params.ids || params.id;
   const extraData: any = {};
 
@@ -80,7 +79,21 @@ export function deleteContent(params: any) {
     extraData.draft = params.draft;
   }
 
-  return deleteRequest<any>('/manage/v1/content', ids, extraData);
+  // 🔥 使用 RESTful DELETE，额外参数通过 query 传递
+  // 注意：这里不能使用 standardDelete，因为需要特殊的 URL 构造
+  // 后端路由：DELETE /manage/v1/content/:id
+  let url: string;
+  if (Array.isArray(ids)) {
+    url = `/manage/v1/content/${ids.join(',')}`;
+  } else {
+    url = `/manage/v1/content/${ids}`;
+  }
+
+  return request<any>({
+    url,
+    method: 'delete',
+    params: extraData  // 额外参数通过 query 传递
+  });
 }
 
 /** get nearby content */

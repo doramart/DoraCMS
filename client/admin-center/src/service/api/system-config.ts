@@ -4,7 +4,7 @@ import { standardDelete } from './deleteHelper';
 /** get system configs */
 export function fetchGetSystemConfigs(params: any) {
   return request({
-    url: '/api/systemConfig/getConfig',
+    url: '/api/v1/system/config',  // 🔥 使用 RESTful 路由
     method: 'get',
     params
   });

@@ -44,7 +44,8 @@ export function deleteContentCategory(ids: string | string[]) {
 /** Get my template list */
 export function getMyTemplateList() {
   return request<Api.SystemManage.TemplateList>({
-    url: '/manage/template/getDefaultCustomTemplateList',
-    method: 'get'
+    url: '/manage/v1/templates',
+    method: 'get',
+    params: { type: 'custom' }  // 🔥 使用查询参数过滤自定义模板
   });
 }

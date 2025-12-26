@@ -39,7 +39,7 @@ export function fetchContentMessageStats(params?: {
   adminAuthor?: string;
 }) {
   return request<Api.DocumentManage.ContentMessageStats>({
-    url: '/manage/contentMessage/getStats',
+    url: '/manage/v1/messages/stats',
     method: 'get',
     params
   });

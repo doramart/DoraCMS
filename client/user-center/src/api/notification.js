@@ -3,7 +3,7 @@ import { get, post, put, del } from '@/utils/request';
 // ==================== 通知管理 ====================
 // 获取用户通知列表
 export function getUserNotices(params) {
-  return get('/api/v1/users/me/notices', { params });
+  return get('/api/singleUser/getClientNotice', { params });
 }
 
 // 标记通知为已读
