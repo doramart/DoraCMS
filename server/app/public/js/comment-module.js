@@ -7,7 +7,7 @@ class CommentModule {
   constructor(config) {
     this.config = {
       contentId: '',
-      apiBase: '/api/contentMessage',
+      apiBase: '/api/v1/messages',
       pageSize: 10,
       maxNestLevel: 3,
       ...config,
@@ -150,7 +150,7 @@ class CommentModule {
         params.append('refresh', '1');
       }
 
-      const response = await fetch(`${this.config.apiBase}/getMessages?${params}`, {
+      const response = await fetch(`${this.config.apiBase}?${params}`, {
         credentials: 'include',
       });
 
@@ -401,7 +401,7 @@ class CommentModule {
     if (!content) return;
 
     try {
-      const response = await fetch(`${this.config.apiBase}/postMessages`, {
+      const response = await fetch(`${this.config.apiBase}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -446,7 +446,7 @@ class CommentModule {
     if (!content.trim()) return;
 
     try {
-      const response = await fetch(`${this.config.apiBase}/postMessages`, {
+      const response = await fetch(`${this.config.apiBase}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -483,16 +483,15 @@ class CommentModule {
     }
 
     const isActive = praiseBtn.classList.contains('active');
-    const action = isActive ? 'unpraiseMessage' : 'praiseMessage';
+    const method = isActive ? 'DELETE' : 'POST';
 
     try {
-      const response = await fetch(`${this.config.apiBase}/${action}`, {
-        method: 'POST',
+      const response = await fetch(`${this.config.apiBase}/${commentId}/like`, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ messageId: commentId }),
       });
 
       const result = await response.json();
@@ -525,16 +524,15 @@ class CommentModule {
     }
 
     const isActive = despiseBtn.classList.contains('active');
-    const action = isActive ? 'undespiseMessage' : 'despiseMessage';
+    const method = isActive ? 'DELETE' : 'POST';
 
     try {
-      const response = await fetch(`${this.config.apiBase}/${action}`, {
-        method: 'POST',
+      const response = await fetch(`${this.config.apiBase}/${commentId}/dislike`, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ messageId: commentId }),
       });
 
       const result = await response.json();
