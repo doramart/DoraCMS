@@ -1,4 +1,20 @@
 /**
+ * 重试配置
+ */
+export interface RetryConfig {
+  /** 是否启用自动重试 */
+  enabled?: boolean;
+  /** 最大重试次数 */
+  maxRetries?: number;
+  /** 重试延迟（毫秒） */
+  retryDelay?: number;
+  /** 是否使用指数退避 */
+  exponentialBackoff?: boolean;
+  /** 可重试的 HTTP 状态码 */
+  retryableStatusCodes?: number[];
+}
+
+/**
  * SDK 配置选项
  */
 export interface SDKConfig {
@@ -18,6 +34,8 @@ export interface SDKConfig {
   autoRefreshToken?: boolean;
   /** Token 存储方式 */
   tokenStorage?: 'localStorage' | 'sessionStorage' | 'memory';
+  /** 重试配置 */
+  retry?: RetryConfig;
 }
 
 /**

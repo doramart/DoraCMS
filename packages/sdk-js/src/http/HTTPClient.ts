@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import type { SDKConfig, APIResponse, APIErrorResponse, RequestConfig } from '../types';
+import type { SDKConfig, APIResponse, APIErrorResponse, RequestConfig, RetryConfig } from '../types';
 import { APIError } from '../errors';
 import { generateSignature } from '../utils';
 
@@ -11,9 +11,19 @@ export class HTTPClient {
   private axiosInstance: AxiosInstance;
   private config: SDKConfig;
   private tokenGetter?: () => string | null;
+  private retryConfig: Required<RetryConfig>;
 
   constructor(config: SDKConfig) {
     this.config = config;
+
+    // 设置默认重试配置
+    this.retryConfig = {
+      enabled: config.retry?.enabled ?? true,
+      maxRetries: config.retry?.maxRetries ?? 3,
+      retryDelay: config.retry?.retryDelay ?? 1000,
+      exponentialBackoff: config.retry?.exponentialBackoff ?? true,
+      retryableStatusCodes: config.retry?.retryableStatusCodes ?? [408, 429, 500, 502, 503, 504],
+    };
 
     // 创建 axios 实例
     this.axiosInstance = axios.create({
@@ -100,44 +110,118 @@ export class HTTPClient {
         // 成功响应，直接返回
         return response;
       },
-      (error: AxiosError<APIErrorResponse>) => {
+      async (error: AxiosError<APIErrorResponse>) => {
         // 错误响应，转换为 APIError
-        if (error.response) {
-          // 服务器返回了错误响应
-          const { data, status } = error.response;
-          if (data && data.status === 'error') {
-            throw APIError.fromResponse(data, status);
-          } else {
-            // 非标准错误响应
-            throw new APIError(
-              error.message || 'Unknown error',
-              'UNKNOWN_ERROR',
-              status,
-              'unknown',
-              new Date().toISOString()
-            );
+        const apiError = this.convertToAPIError(error);
+
+        // 检查是否需要重试
+        if (this.shouldRetry(error, apiError)) {
+          const retryCount = (error.config as any)?.__retryCount || 0;
+          
+          if (retryCount < this.retryConfig.maxRetries) {
+            // 增加重试计数
+            (error.config as any).__retryCount = retryCount + 1;
+
+            // 计算延迟时间
+            const delay = this.calculateRetryDelay(retryCount);
+
+            // 等待后重试
+            await this.sleep(delay);
+
+            // 重新发送请求
+            return this.axiosInstance.request(error.config!);
           }
-        } else if (error.request) {
-          // 请求已发送但没有收到响应
-          throw new APIError(
-            'No response from server',
-            'NO_RESPONSE',
-            0,
-            'unknown',
-            new Date().toISOString()
-          );
-        } else {
-          // 请求配置错误
-          throw new APIError(
-            error.message || 'Request configuration error',
-            'REQUEST_ERROR',
-            0,
-            'unknown',
-            new Date().toISOString()
-          );
         }
+
+        // 不重试或重试次数已用完，抛出错误
+        throw apiError;
       }
     );
+  }
+
+  /**
+   * 将 Axios 错误转换为 APIError
+   */
+  private convertToAPIError(error: AxiosError<APIErrorResponse>): APIError {
+    if (error.response) {
+      // 服务器返回了错误响应
+      const { data, status } = error.response;
+      if (data && data.status === 'error') {
+        return APIError.fromResponse(data, status);
+      } else {
+        // 非标准错误响应
+        return new APIError(
+          error.message || 'Unknown error',
+          'UNKNOWN_ERROR',
+          status,
+          'unknown',
+          new Date().toISOString()
+        );
+      }
+    } else if (error.request) {
+      // 请求已发送但没有收到响应
+      if (error.code === 'ECONNABORTED') {
+        return APIError.timeoutError('Request timeout');
+      }
+      return APIError.networkError('No response from server');
+    } else {
+      // 请求配置错误
+      return new APIError(
+        error.message || 'Request configuration error',
+        'REQUEST_ERROR',
+        0,
+        'unknown',
+        new Date().toISOString()
+      );
+    }
+  }
+
+  /**
+   * 判断是否应该重试
+   */
+  private shouldRetry(error: AxiosError, apiError: APIError): boolean {
+    // 如果禁用了重试，直接返回 false
+    if (!this.retryConfig.enabled) {
+      return false;
+    }
+
+    // 只重试 GET 请求（幂等性）
+    const method = error.config?.method?.toUpperCase();
+    if (method && method !== 'GET') {
+      return false;
+    }
+
+    // 检查是否为可重试的错误
+    if (apiError.isRetryable()) {
+      return true;
+    }
+
+    // 检查状态码是否在可重试列表中
+    if (this.retryConfig.retryableStatusCodes.includes(apiError.statusCode)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * 计算重试延迟时间
+   */
+  private calculateRetryDelay(retryCount: number): number {
+    if (this.retryConfig.exponentialBackoff) {
+      // 指数退避：delay * 2^retryCount
+      return this.retryConfig.retryDelay * Math.pow(2, retryCount);
+    } else {
+      // 固定延迟
+      return this.retryConfig.retryDelay;
+    }
+  }
+
+  /**
+   * 延迟函数
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**

@@ -21,7 +21,7 @@ export type * from './modules/content';
 export type * from './types';
 
 // 导出错误类
-export { APIError } from './errors';
+export { APIError, ErrorType } from './errors';
 
 // 导出工具函数
 export { generateSignature, generateNonce, createTokenStorage } from './utils';

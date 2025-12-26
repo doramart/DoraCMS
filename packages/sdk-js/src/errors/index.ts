@@ -1,1 +1,1 @@
-export { APIError } from './APIError';
+export { APIError, ErrorType } from './APIError';
