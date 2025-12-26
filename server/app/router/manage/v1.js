@@ -39,7 +39,7 @@ module.exports = app => {
   router.get(`${prefix}/content`, controller.manage.content.list);
   // @desc 批量更新内容
   router.put(`${prefix}/content/batch`, controller.manage.content.updateContents);
-  
+
   // @desc 获取内容详情（参数化路由，必须在特定路由之后）
   router.get(`${prefix}/content/:id`, controller.manage.content.getOne);
   // @desc 创建内容
@@ -104,7 +104,7 @@ module.exports = app => {
   router.put(`${prefix}/messages/batch/state`, controller.manage.contentMessage.batchUpdateState);
   // @desc 批量审核留言
   router.put(`${prefix}/messages/batch/audit`, controller.manage.contentMessage.batchAuditMessages);
-  
+
   // @desc 获取留言详情（参数化路由，必须在特定路由之后）
   router.get(`${prefix}/messages/:id`, controller.manage.contentMessage.getOne);
   // @desc 创建留言
@@ -131,7 +131,7 @@ module.exports = app => {
   router.put(`${prefix}/menus/reorder`, controller.manage.menu.updateOrder);
   // @desc 批量更新菜单状态
   router.put(`${prefix}/menus/batch/status`, controller.manage.menu.batchUpdateStatus);
-  
+
   // @desc 创建菜单
   router.post(`${prefix}/menus`, controller.manage.menu.addOne);
   // @desc 更新菜单（参数化路由，必须在特定路由之后）
@@ -190,7 +190,7 @@ module.exports = app => {
   router.delete(`${prefix}/templates/batch`, controller.manage.template.deleteMany);
   // @desc 批量更新模板状态
   router.put(`${prefix}/templates/batch/status`, controller.manage.template.batchUpdateStatus);
-  
+
   // @desc 获取模板详情（参数化路由，必须在特定路由之后）
   router.get(`${prefix}/templates/:id`, controller.manage.template.getOne);
   // @desc 创建模板
@@ -229,7 +229,7 @@ module.exports = app => {
   router.post(`${prefix}/plugins/invoices`, controller.manage.plugin.createInvoice);
   // @desc 检查插件发票
   router.post(`${prefix}/plugins/invoices/check`, controller.manage.plugin.checkInvoice);
-  
+
   // @desc 卸载插件（参数化路由，必须在特定路由之后）
   router.delete(`${prefix}/plugins/:id`, controller.manage.plugin.unInstallPlugin);
   // @desc 更新插件
@@ -244,7 +244,7 @@ module.exports = app => {
   router.get(`${prefix}/logs`, controller.manage.systemOptionLog.list);
   // @desc 清空所有日志
   router.delete(`${prefix}/logs/all`, controller.manage.systemOptionLog.removeAll);
-  
+
   // @desc 删除日志（参数化路由，必须在特定路由之后）
   router.delete(`${prefix}/logs/:id`, controller.manage.systemOptionLog.removes);
 
@@ -295,7 +295,7 @@ module.exports = app => {
   router.get(`${prefix}/webhooks/events`, controller.manage.webhook.getEvents);
   // @desc 批量更新 Webhook 状态
   router.put(`${prefix}/webhooks/batch/status`, controller.manage.webhook.batchUpdateStatus);
-  
+
   // @desc 获取 Webhook 详情（参数化路由，必须在特定路由之后）
   router.get(`${prefix}/webhooks/:id`, controller.manage.webhook.getOne);
   // @desc 创建 Webhook
@@ -312,7 +312,7 @@ module.exports = app => {
   router.post(`${prefix}/webhooks/:id/regenerate-secret`, controller.manage.webhook.regenerateSecret);
   // @desc 获取 Webhook 统计信息
   router.get(`${prefix}/webhooks/:id/stats`, controller.manage.webhook.getWebhookStats);
-  
+
   // @desc 获取 Webhook 日志列表
   router.get(`${prefix}/webhooks/:id/logs`, controller.manage.webhook.getLogs);
   // @desc 获取 Webhook 日志详情

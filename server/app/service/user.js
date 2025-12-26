@@ -69,7 +69,23 @@ class UserService extends Service {
    * @return {Promise<Object>} 创建的记录
    */
   async create(data) {
-    return await this.repository.create(data);
+    const user = await this.repository.create(data);
+
+    // 🔥 触发 Webhook 事件：user.registered
+    try {
+      await this.ctx.service.webhook.triggerEvent('user.registered', {
+        userId: user.id,
+        userName: user.userName,
+        email: user.email,
+        phoneNum: user.phoneNum,
+        createdAt: user.createdAt,
+      });
+    } catch (error) {
+      // Webhook 触发失败不应影响业务逻辑
+      this.ctx.logger.error('[User] Failed to trigger webhook for user.registered:', error);
+    }
+
+    return user;
   }
 
   /**
@@ -79,7 +95,23 @@ class UserService extends Service {
    * @return {Promise<Object>} 更新后的记录
    */
   async update(id, data) {
-    return await this.repository.update(id, data);
+    const user = await this.repository.update(id, data);
+
+    // 🔥 触发 Webhook 事件：user.updated
+    try {
+      await this.ctx.service.webhook.triggerEvent('user.updated', {
+        userId: user.id,
+        userName: user.userName,
+        email: user.email,
+        phoneNum: user.phoneNum,
+        updatedAt: user.updatedAt,
+      });
+    } catch (error) {
+      // Webhook 触发失败不应影响业务逻辑
+      this.ctx.logger.error('[User] Failed to trigger webhook for user.updated:', error);
+    }
+
+    return user;
   }
 
   /**
@@ -89,7 +121,21 @@ class UserService extends Service {
    * @return {Promise<Object>} 删除结果
    */
   async remove(ids, key = 'id') {
-    return await this.repository.remove(ids, key);
+    const result = await this.repository.remove(ids, key);
+
+    // 🔥 触发 Webhook 事件：user.deleted
+    try {
+      const deletedIds = Array.isArray(ids) ? ids : [ids];
+      await this.ctx.service.webhook.triggerEvent('user.deleted', {
+        userIds: deletedIds,
+        deletedAt: new Date(),
+      });
+    } catch (error) {
+      // Webhook 触发失败不应影响业务逻辑
+      this.ctx.logger.error('[User] Failed to trigger webhook for user.deleted:', error);
+    }
+
+    return result;
   }
 
   /**
@@ -188,7 +234,7 @@ class UserService extends Service {
   /**
    * 🔥 User模块特有：添加到用户列表（用户关注、标签关注）
    * ⚠️ 注意：点赞、收藏等内容交互请使用 ContentInteractionService
-   * 
+   *
    * @param {String} userId 用户ID
    * @param {String} listType 列表类型（watchers=关注用户, watchTags=关注标签）
    * @param {String} targetId 目标ID
@@ -206,7 +252,7 @@ class UserService extends Service {
   /**
    * 🔥 User模块特有：从用户列表移除（取消关注用户、取消关注标签）
    * ⚠️ 注意：取消点赞、取消收藏等内容交互请使用 ContentInteractionService
-   * 
+   *
    * @param {String} userId 用户ID
    * @param {String} listType 列表类型（watchers=关注用户, watchTags=关注标签）
    * @param {String} targetId 目标ID
@@ -261,10 +307,9 @@ class UserService extends Service {
   }
 
   // ===== 🔥 便捷方法：基于业务场景的高级封装 =====
-  
+
   // 🔥 注意：内容交互（点赞、收藏、踩）请直接使用 ContentInteractionService
   // 🔥 注意：评论交互（点赞、踩）请直接使用 MessageInteractionService
-
 
   /**
    * 用户关注其他用户

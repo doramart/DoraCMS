@@ -4,6 +4,8 @@
  * localeDetector 中间件
  * - 统一解析 query / cookie / Accept-Language / 用户 session 的语言偏好
  * - 调用 ctx.setLocale 并同步 ctx.session.locale，方便模板与 helper 读取
+ * @param options
+ * @param app
  */
 module.exports = (options, app) => {
   const defaultLocale = app.config.i18n?.defaultLocale || 'zh-CN';

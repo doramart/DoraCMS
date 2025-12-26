@@ -85,6 +85,7 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
   /**
    * 添加交互记录
    * 使用 findOrCreate 保证幂等性
+   * @param interactionData
    */
   async addInteraction(interactionData) {
     await this._ensureConnection();
@@ -120,6 +121,9 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 移除交互记录
+   * @param userId
+   * @param contentId
+   * @param interactionType
    */
   async removeInteraction(userId, contentId, interactionType) {
     await this._ensureConnection();
@@ -137,6 +141,9 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 检查用户是否已交互
+   * @param userId
+   * @param contentId
+   * @param interactionType
    */
   async hasInteraction(userId, contentId, interactionType) {
     await this._ensureConnection();
@@ -155,6 +162,7 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 获取文章交互统计
+   * @param contentId
    */
   async getInteractionStats(contentId) {
     await this._ensureConnection();
@@ -177,6 +185,9 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 批量获取用户交互状态
+   * @param userId
+   * @param contentIds
+   * @param interactionType
    */
   async getUserInteractionStatus(userId, contentIds, interactionType) {
     await this._ensureConnection();
@@ -204,6 +215,8 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 批量统计
+   * @param contentIds
+   * @param interactionType
    */
   async batchGetInteractionCounts(contentIds, interactionType) {
     await this._ensureConnection();
@@ -236,6 +249,8 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 获取用户交互历史
+   * @param userId
+   * @param options
    */
   async getUserInteractionHistory(userId, options = {}) {
     await this._ensureConnection();
@@ -270,6 +285,7 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 删除文章所有交互
+   * @param contentId
    */
   async deleteContentInteractions(contentId) {
     await this._ensureConnection();
@@ -286,6 +302,7 @@ class ContentInteractionMariaRepository extends BaseMariaRepository {
 
   /**
    * 删除用户所有交互
+   * @param userId
    */
   async deleteUserInteractions(userId) {
     await this._ensureConnection();

@@ -85,6 +85,10 @@ module.exports = {
 
   /**
    * 成功响应（使用新的统一响应格式）
+   * @param ctx
+   * @param root0
+   * @param root0.data
+   * @param root0.message
    * @deprecated 建议使用 APIResponse.success() 替代
    */
   renderSuccess(ctx, { data = {}, message = '' } = {}) {
@@ -94,17 +98,22 @@ module.exports = {
 
   /**
    * 失败响应（使用新的统一响应格式）
+   * @param ctx
+   * @param root0
+   * @param root0.message
+   * @param root0.data
+   * @param root0.code
    * @deprecated 建议使用 APIResponse.fail() 或其他具体方法替代
    */
   renderFail(ctx, { message = '', data = {}, code = 500 } = {}) {
     const APIResponse = require('../utils/apiResponse');
-    
+
     if (message) {
       // 如果 message 是 Error 对象，提取消息
       if (message instanceof Error) {
         message = message.message;
       }
-      
+
       // 根据状态码选择合适的响应方法
       if (code === 401) {
         APIResponse.unauthorized(ctx, message);

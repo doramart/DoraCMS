@@ -22,41 +22,41 @@ module.exports = app => {
   // ==================== 内容管理 ====================
   // 获取内容列表
   router.get('/api/v1/content', controller.api.content.list);
-  
+
   // 特定路由（必须在 :id 之前）
   router.get('/api/v1/content/random', controller.api.content.getRadomContents);
   router.get('/api/v1/content/random/images', controller.api.content.getRandomContentImg);
   router.get('/api/v1/content/hot-tag-ids', controller.api.content.getHotTagIds);
   router.post('/api/v1/content/word-to-html', controller.api.content.getWordHtmlContent);
-  
+
   // 参数化路由（必须在特定路由之后）
   // 获取单个内容
   router.get('/api/v1/content/:id', controller.api.content.getOneContent);
-  
+
   // 创建内容（需要认证）
   router.post('/api/v1/content', authApiToken, controller.api.content.addContent);
-  
+
   // 更新内容（需要认证）
   router.put('/api/v1/content/:id', authApiToken, controller.api.content.updateContent);
-  
+
   // 删除单个内容（需要认证）
   router.delete('/api/v1/content/:id', authApiToken, controller.api.content.deleteContent);
-  
+
   // 批量删除内容（需要认证）
   router.delete('/api/v1/content', authApiToken, controller.api.content.deleteContents);
-  
+
   // 点赞/取消点赞内容
   router.post('/api/v1/content/:id/like', authApiToken, controller.api.content.likeContent);
-  
+
   // 收藏/取消收藏内容
   router.post('/api/v1/content/:id/favorite', authApiToken, controller.api.content.favoriteContent);
-  
+
   // 获取附近内容
   router.get('/api/v1/content/:id/nearby', controller.api.content.getNearbyContent);
-  
+
   // 获取上一篇/下一篇
   router.get('/api/v1/content/:id/navigation', controller.api.content.getPrevNextPosts);
-  
+
   // 上传封面图
   router.post('/api/v1/content/:id/cover', authApiToken, controller.api.content.uploadPreviewImgByBase64);
 

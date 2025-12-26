@@ -136,30 +136,30 @@ module.exports = app => {
   });
 
   // 日期格式化 Getter
-  WebhookLogSchema.path('createdAt').get(function(v) {
+  WebhookLogSchema.path('createdAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
-  WebhookLogSchema.path('completedAt').get(function(v) {
+  WebhookLogSchema.path('completedAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
-  WebhookLogSchema.path('nextRetryAt').get(function(v) {
+  WebhookLogSchema.path('nextRetryAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
   // 虚拟字段：是否成功
-  WebhookLogSchema.virtual('isSuccess').get(function() {
+  WebhookLogSchema.virtual('isSuccess').get(function () {
     return this.status === 'success';
   });
 
   // 虚拟字段：是否失败
-  WebhookLogSchema.virtual('isFailed').get(function() {
+  WebhookLogSchema.virtual('isFailed').get(function () {
     return this.status === 'failed';
   });
 
   // 虚拟字段：是否需要重试
-  WebhookLogSchema.virtual('needsRetry').get(function() {
+  WebhookLogSchema.virtual('needsRetry').get(function () {
     return this.status === 'retrying' && this.nextRetryAt && new Date() >= this.nextRetryAt;
   });
 

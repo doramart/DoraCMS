@@ -12,7 +12,7 @@ module.exports = [
     path: '/manage/v1/admins/login',
     desc: '管理员登录',
     group: 'admins',
-    aliases: ["admins/login"],
+    aliases: ['admins/login'],
   },
   {
     code: 'admins.status',
@@ -20,7 +20,7 @@ module.exports = [
     path: '/manage/v1/admins/init/status',
     desc: '获取初始化状态',
     group: 'admins',
-    aliases: ["admins/status"],
+    aliases: ['admins/status'],
   },
   {
     code: 'admins.init',
@@ -28,7 +28,7 @@ module.exports = [
     path: '/manage/v1/admins/init',
     desc: '初始化超级管理员',
     group: 'admins',
-    aliases: ["admins/init"],
+    aliases: ['admins/init'],
   },
   {
     code: 'admins.me',
@@ -36,7 +36,7 @@ module.exports = [
     path: '/manage/v1/admins/me',
     desc: '获取当前管理员信息',
     group: 'admins',
-    aliases: ["admins/me"],
+    aliases: ['admins/me'],
   },
   {
     code: 'admins.routes',
@@ -44,7 +44,7 @@ module.exports = [
     path: '/manage/v1/admins/me/routes',
     desc: '获取管理员路由权限',
     group: 'admins',
-    aliases: ["admins/routes"],
+    aliases: ['admins/routes'],
   },
   {
     code: 'admins.logout',
@@ -52,7 +52,7 @@ module.exports = [
     path: '/manage/v1/admins/logout',
     desc: '管理员登出',
     group: 'admins',
-    aliases: ["admins/logout"],
+    aliases: ['admins/logout'],
   },
   {
     code: 'admins.list',
@@ -60,7 +60,7 @@ module.exports = [
     path: '/manage/v1/admins',
     desc: '获取管理员列表',
     group: 'admins',
-    aliases: ["admins/list"],
+    aliases: ['admins/list'],
   },
   {
     code: 'admins.post',
@@ -68,7 +68,7 @@ module.exports = [
     path: '/manage/v1/admins',
     desc: '创建管理员',
     group: 'admins',
-    aliases: ["admins/post"],
+    aliases: ['admins/post'],
   },
   {
     code: 'admins.put',
@@ -76,7 +76,7 @@ module.exports = [
     path: '/manage/v1/admins/:id',
     desc: '更新管理员信息',
     group: 'admins',
-    aliases: ["admins/put"],
+    aliases: ['admins/put'],
   },
   {
     code: 'admins.delete',
@@ -84,7 +84,7 @@ module.exports = [
     path: '/manage/v1/admins/:id',
     desc: '删除管理员',
     group: 'admins',
-    aliases: ["admins/delete"],
+    aliases: ['admins/delete'],
   },
   {
     code: 'content.list',
@@ -92,7 +92,7 @@ module.exports = [
     path: '/manage/v1/content',
     desc: '获取内容列表',
     group: 'content',
-    aliases: ["content/list"],
+    aliases: ['content/list'],
   },
   {
     code: 'content.batch',
@@ -100,7 +100,7 @@ module.exports = [
     path: '/manage/v1/content/batch',
     desc: '批量更新内容',
     group: 'content',
-    aliases: ["content/batch"],
+    aliases: ['content/batch'],
   },
   {
     code: 'content.detail',
@@ -108,7 +108,7 @@ module.exports = [
     path: '/manage/v1/content/:id',
     desc: '获取内容详情（参数化路由，必须在特定路由之后）',
     group: 'content',
-    aliases: ["content/detail"],
+    aliases: ['content/detail'],
   },
   {
     code: 'content.post',
@@ -116,7 +116,7 @@ module.exports = [
     path: '/manage/v1/content',
     desc: '创建内容',
     group: 'content',
-    aliases: ["content/post"],
+    aliases: ['content/post'],
   },
   {
     code: 'content.put',
@@ -124,7 +124,7 @@ module.exports = [
     path: '/manage/v1/content/:id',
     desc: '更新内容',
     group: 'content',
-    aliases: ["content/put"],
+    aliases: ['content/put'],
   },
   {
     code: 'content.delete',
@@ -132,7 +132,7 @@ module.exports = [
     path: '/manage/v1/content/:id',
     desc: '删除内容',
     group: 'content',
-    aliases: ["content/delete"],
+    aliases: ['content/delete'],
   },
   {
     code: 'content.top',
@@ -140,7 +140,7 @@ module.exports = [
     path: '/manage/v1/content/:id/top',
     desc: '置顶内容',
     group: 'content',
-    aliases: ["content/top"],
+    aliases: ['content/top'],
   },
   {
     code: 'content.pin',
@@ -148,7 +148,7 @@ module.exports = [
     path: '/manage/v1/content/:id/pin',
     desc: '固定内容',
     group: 'content',
-    aliases: ["content/pin"],
+    aliases: ['content/pin'],
   },
   {
     code: 'content.assignments',
@@ -156,7 +156,7 @@ module.exports = [
     path: '/manage/v1/content/:id/assignments',
     desc: '分配内容给用户',
     group: 'content',
-    aliases: ["content/assignments"],
+    aliases: ['content/assignments'],
   },
   {
     code: 'content.editor',
@@ -164,7 +164,7 @@ module.exports = [
     path: '/manage/v1/content/:id/editor',
     desc: '更新内容编辑器',
     group: 'content',
-    aliases: ["content/editor"],
+    aliases: ['content/editor'],
   },
   {
     code: 'content.category',
@@ -172,7 +172,7 @@ module.exports = [
     path: '/manage/v1/content/:id/category',
     desc: '移动内容分类',
     group: 'content',
-    aliases: ["content/category"],
+    aliases: ['content/category'],
   },
   {
     code: 'ads.list',
@@ -180,7 +180,7 @@ module.exports = [
     path: '/manage/v1/ads',
     desc: '获取广告列表',
     group: 'ads',
-    aliases: ["ads/list"],
+    aliases: ['ads/list'],
   },
   {
     code: 'ads.detail',
@@ -188,7 +188,7 @@ module.exports = [
     path: '/manage/v1/ads/:id',
     desc: '获取广告详情',
     group: 'ads',
-    aliases: ["ads/detail"],
+    aliases: ['ads/detail'],
   },
   {
     code: 'ads.post',
@@ -196,7 +196,7 @@ module.exports = [
     path: '/manage/v1/ads',
     desc: '创建广告',
     group: 'ads',
-    aliases: ["ads/post"],
+    aliases: ['ads/post'],
   },
   {
     code: 'ads.put',
@@ -204,7 +204,7 @@ module.exports = [
     path: '/manage/v1/ads/:id',
     desc: '更新广告',
     group: 'ads',
-    aliases: ["ads/put"],
+    aliases: ['ads/put'],
   },
   {
     code: 'ads.delete',
@@ -212,7 +212,7 @@ module.exports = [
     path: '/manage/v1/ads/:id',
     desc: '删除广告',
     group: 'ads',
-    aliases: ["ads/delete"],
+    aliases: ['ads/delete'],
   },
   {
     code: 'categories.list',
@@ -220,7 +220,7 @@ module.exports = [
     path: '/manage/v1/categories',
     desc: '获取分类列表',
     group: 'categories',
-    aliases: ["categories/list"],
+    aliases: ['categories/list'],
   },
   {
     code: 'categories.detail',
@@ -228,7 +228,7 @@ module.exports = [
     path: '/manage/v1/categories/:id',
     desc: '获取分类详情',
     group: 'categories',
-    aliases: ["categories/detail"],
+    aliases: ['categories/detail'],
   },
   {
     code: 'categories.post',
@@ -236,7 +236,7 @@ module.exports = [
     path: '/manage/v1/categories',
     desc: '创建分类',
     group: 'categories',
-    aliases: ["categories/post"],
+    aliases: ['categories/post'],
   },
   {
     code: 'categories.put',
@@ -244,7 +244,7 @@ module.exports = [
     path: '/manage/v1/categories/:id',
     desc: '更新分类',
     group: 'categories',
-    aliases: ["categories/put"],
+    aliases: ['categories/put'],
   },
   {
     code: 'categories.delete',
@@ -252,7 +252,7 @@ module.exports = [
     path: '/manage/v1/categories/:id',
     desc: '删除分类',
     group: 'categories',
-    aliases: ["categories/delete"],
+    aliases: ['categories/delete'],
   },
   {
     code: 'tags.list',
@@ -260,7 +260,7 @@ module.exports = [
     path: '/manage/v1/tags',
     desc: '获取标签列表',
     group: 'tags',
-    aliases: ["tags/list"],
+    aliases: ['tags/list'],
   },
   {
     code: 'tags.detail',
@@ -268,7 +268,7 @@ module.exports = [
     path: '/manage/v1/tags/:id',
     desc: '获取标签详情',
     group: 'tags',
-    aliases: ["tags/detail"],
+    aliases: ['tags/detail'],
   },
   {
     code: 'tags.post',
@@ -276,7 +276,7 @@ module.exports = [
     path: '/manage/v1/tags',
     desc: '创建标签',
     group: 'tags',
-    aliases: ["tags/post"],
+    aliases: ['tags/post'],
   },
   {
     code: 'tags.put',
@@ -284,7 +284,7 @@ module.exports = [
     path: '/manage/v1/tags/:id',
     desc: '更新标签',
     group: 'tags',
-    aliases: ["tags/put"],
+    aliases: ['tags/put'],
   },
   {
     code: 'tags.delete',
@@ -292,7 +292,7 @@ module.exports = [
     path: '/manage/v1/tags/:id',
     desc: '删除标签',
     group: 'tags',
-    aliases: ["tags/delete"],
+    aliases: ['tags/delete'],
   },
   {
     code: 'messages.list',
@@ -300,7 +300,7 @@ module.exports = [
     path: '/manage/v1/messages',
     desc: '获取留言列表',
     group: 'messages',
-    aliases: ["messages/list"],
+    aliases: ['messages/list'],
   },
   {
     code: 'messages.stats',
@@ -308,7 +308,7 @@ module.exports = [
     path: '/manage/v1/messages/stats',
     desc: '获取留言统计',
     group: 'messages',
-    aliases: ["messages/stats"],
+    aliases: ['messages/stats'],
   },
   {
     code: 'messages.state',
@@ -316,7 +316,7 @@ module.exports = [
     path: '/manage/v1/messages/batch/state',
     desc: '批量更新留言状态',
     group: 'messages',
-    aliases: ["messages/state"],
+    aliases: ['messages/state'],
   },
   {
     code: 'messages.audit',
@@ -324,7 +324,7 @@ module.exports = [
     path: '/manage/v1/messages/batch/audit',
     desc: '批量审核留言',
     group: 'messages',
-    aliases: ["messages/audit"],
+    aliases: ['messages/audit'],
   },
   {
     code: 'messages.detail',
@@ -332,7 +332,7 @@ module.exports = [
     path: '/manage/v1/messages/:id',
     desc: '获取留言详情（参数化路由，必须在特定路由之后）',
     group: 'messages',
-    aliases: ["messages/detail"],
+    aliases: ['messages/detail'],
   },
   {
     code: 'messages.post',
@@ -340,7 +340,7 @@ module.exports = [
     path: '/manage/v1/messages',
     desc: '创建留言',
     group: 'messages',
-    aliases: ["messages/post"],
+    aliases: ['messages/post'],
   },
   {
     code: 'messages.delete',
@@ -348,7 +348,7 @@ module.exports = [
     path: '/manage/v1/messages/:id',
     desc: '删除留言',
     group: 'messages',
-    aliases: ["messages/delete"],
+    aliases: ['messages/delete'],
   },
   {
     code: 'messages.auditPut',
@@ -356,7 +356,7 @@ module.exports = [
     path: '/manage/v1/messages/:id/audit',
     desc: '审核留言',
     group: 'messages',
-    aliases: ["messages/audit-put"],
+    aliases: ['messages/audit-put'],
   },
   {
     code: 'users.list',
@@ -364,7 +364,7 @@ module.exports = [
     path: '/manage/v1/users',
     desc: '获取用户列表',
     group: 'users',
-    aliases: ["users/list"],
+    aliases: ['users/list'],
   },
   {
     code: 'users.detail',
@@ -372,7 +372,7 @@ module.exports = [
     path: '/manage/v1/users/:id',
     desc: '获取用户详情',
     group: 'users',
-    aliases: ["users/detail"],
+    aliases: ['users/detail'],
   },
   {
     code: 'users.put',
@@ -380,7 +380,7 @@ module.exports = [
     path: '/manage/v1/users/:id',
     desc: '更新用户信息',
     group: 'users',
-    aliases: ["users/put"],
+    aliases: ['users/put'],
   },
   {
     code: 'users.delete',
@@ -388,7 +388,7 @@ module.exports = [
     path: '/manage/v1/users/:id',
     desc: '删除用户',
     group: 'users',
-    aliases: ["users/delete"],
+    aliases: ['users/delete'],
   },
   {
     code: 'menus.list',
@@ -396,7 +396,7 @@ module.exports = [
     path: '/manage/v1/menus',
     desc: '获取菜单列表',
     group: 'menus',
-    aliases: ["menus/list"],
+    aliases: ['menus/list'],
   },
   {
     code: 'menus.reorder',
@@ -404,7 +404,7 @@ module.exports = [
     path: '/manage/v1/menus/reorder',
     desc: '重新排序菜单',
     group: 'menus',
-    aliases: ["menus/reorder"],
+    aliases: ['menus/reorder'],
   },
   {
     code: 'menus.status',
@@ -412,7 +412,7 @@ module.exports = [
     path: '/manage/v1/menus/batch/status',
     desc: '批量更新菜单状态',
     group: 'menus',
-    aliases: ["menus/status"],
+    aliases: ['menus/status'],
   },
   {
     code: 'menus.post',
@@ -420,7 +420,7 @@ module.exports = [
     path: '/manage/v1/menus',
     desc: '创建菜单',
     group: 'menus',
-    aliases: ["menus/post"],
+    aliases: ['menus/post'],
   },
   {
     code: 'menus.put',
@@ -428,7 +428,7 @@ module.exports = [
     path: '/manage/v1/menus/:id',
     desc: '更新菜单（参数化路由，必须在特定路由之后）',
     group: 'menus',
-    aliases: ["menus/put"],
+    aliases: ['menus/put'],
   },
   {
     code: 'menus.delete',
@@ -436,7 +436,7 @@ module.exports = [
     path: '/manage/v1/menus/:id',
     desc: '删除菜单',
     group: 'menus',
-    aliases: ["menus/delete"],
+    aliases: ['menus/delete'],
   },
   {
     code: 'roles.list',
@@ -444,7 +444,7 @@ module.exports = [
     path: '/manage/v1/roles',
     desc: '获取角色列表',
     group: 'roles',
-    aliases: ["roles/list"],
+    aliases: ['roles/list'],
   },
   {
     code: 'roles.all',
@@ -452,7 +452,7 @@ module.exports = [
     path: '/manage/v1/roles/all',
     desc: '获取所有角色',
     group: 'roles',
-    aliases: ["roles/all"],
+    aliases: ['roles/all'],
   },
   {
     code: 'roles.post',
@@ -460,7 +460,7 @@ module.exports = [
     path: '/manage/v1/roles',
     desc: '创建角色',
     group: 'roles',
-    aliases: ["roles/post"],
+    aliases: ['roles/post'],
   },
   {
     code: 'roles.put',
@@ -468,7 +468,7 @@ module.exports = [
     path: '/manage/v1/roles/:id',
     desc: '更新角色',
     group: 'roles',
-    aliases: ["roles/put"],
+    aliases: ['roles/put'],
   },
   {
     code: 'roles.delete',
@@ -476,7 +476,7 @@ module.exports = [
     path: '/manage/v1/roles/:id',
     desc: '删除角色',
     group: 'roles',
-    aliases: ["roles/delete"],
+    aliases: ['roles/delete'],
   },
   {
     code: 'system.config',
@@ -484,7 +484,7 @@ module.exports = [
     path: '/manage/v1/system/config',
     desc: '获取系统配置列表',
     group: 'system',
-    aliases: ["system/config"],
+    aliases: ['system/config'],
   },
   {
     code: 'system.configPost',
@@ -492,7 +492,7 @@ module.exports = [
     path: '/manage/v1/system/config',
     desc: '更新系统配置',
     group: 'system',
-    aliases: ["system/config-post"],
+    aliases: ['system/config-post'],
   },
   {
     code: 'system.configDelete',
@@ -500,7 +500,7 @@ module.exports = [
     path: '/manage/v1/system/config/:id',
     desc: '删除系统配置',
     group: 'system',
-    aliases: ["system/config-delete"],
+    aliases: ['system/config-delete'],
   },
   {
     code: 'mailTemplates.list',
@@ -508,7 +508,7 @@ module.exports = [
     path: '/manage/v1/mail-templates',
     desc: '获取邮件模板列表',
     group: 'mailTemplates',
-    aliases: ["mail-templates/list"],
+    aliases: ['mail-templates/list'],
   },
   {
     code: 'mailTemplates.types',
@@ -516,7 +516,7 @@ module.exports = [
     path: '/manage/v1/mail-templates/types',
     desc: '获取邮件模板类型列表',
     group: 'mailTemplates',
-    aliases: ["mail-templates/types"],
+    aliases: ['mail-templates/types'],
   },
   {
     code: 'mailTemplates.detail',
@@ -524,7 +524,7 @@ module.exports = [
     path: '/manage/v1/mail-templates/:id',
     desc: '获取邮件模板详情',
     group: 'mailTemplates',
-    aliases: ["mail-templates/detail"],
+    aliases: ['mail-templates/detail'],
   },
   {
     code: 'mailTemplates.post',
@@ -532,7 +532,7 @@ module.exports = [
     path: '/manage/v1/mail-templates',
     desc: '创建邮件模板',
     group: 'mailTemplates',
-    aliases: ["mail-templates/post"],
+    aliases: ['mail-templates/post'],
   },
   {
     code: 'mailTemplates.put',
@@ -540,7 +540,7 @@ module.exports = [
     path: '/manage/v1/mail-templates/:id',
     desc: '更新邮件模板',
     group: 'mailTemplates',
-    aliases: ["mail-templates/put"],
+    aliases: ['mail-templates/put'],
   },
   {
     code: 'mailTemplates.delete',
@@ -548,7 +548,7 @@ module.exports = [
     path: '/manage/v1/mail-templates/:id',
     desc: '删除邮件模板',
     group: 'mailTemplates',
-    aliases: ["mail-templates/delete"],
+    aliases: ['mail-templates/delete'],
   },
   {
     code: 'templates.list',
@@ -556,7 +556,7 @@ module.exports = [
     path: '/manage/v1/templates',
     desc: '获取模板列表',
     group: 'templates',
-    aliases: ["templates/list"],
+    aliases: ['templates/list'],
   },
   {
     code: 'templates.active',
@@ -564,7 +564,7 @@ module.exports = [
     path: '/manage/v1/templates/active',
     desc: '获取当前激活的主题',
     group: 'templates',
-    aliases: ["templates/active"],
+    aliases: ['templates/active'],
   },
   {
     code: 'templates.stats',
@@ -572,7 +572,7 @@ module.exports = [
     path: '/manage/v1/templates/stats',
     desc: '获取模板统计信息',
     group: 'templates',
-    aliases: ["templates/stats"],
+    aliases: ['templates/stats'],
   },
   {
     code: 'templates.market',
@@ -580,7 +580,7 @@ module.exports = [
     path: '/manage/v1/templates/market',
     desc: '从市场获取模板列表',
     group: 'templates',
-    aliases: ["templates/market"],
+    aliases: ['templates/market'],
   },
   {
     code: 'templates.remote',
@@ -588,7 +588,7 @@ module.exports = [
     path: '/manage/v1/templates/install/remote',
     desc: '从远程安装模板',
     group: 'templates',
-    aliases: ["templates/remote"],
+    aliases: ['templates/remote'],
   },
   {
     code: 'templates.install',
@@ -596,7 +596,7 @@ module.exports = [
     path: '/manage/v1/templates/install',
     desc: '安装模板',
     group: 'templates',
-    aliases: ["templates/install"],
+    aliases: ['templates/install'],
   },
   {
     code: 'templates.batch',
@@ -604,7 +604,7 @@ module.exports = [
     path: '/manage/v1/templates/batch',
     desc: '批量删除模板',
     group: 'templates',
-    aliases: ["templates/batch"],
+    aliases: ['templates/batch'],
   },
   {
     code: 'templates.status',
@@ -612,7 +612,7 @@ module.exports = [
     path: '/manage/v1/templates/batch/status',
     desc: '批量更新模板状态',
     group: 'templates',
-    aliases: ["templates/status"],
+    aliases: ['templates/status'],
   },
   {
     code: 'templates.detail',
@@ -620,7 +620,7 @@ module.exports = [
     path: '/manage/v1/templates/:id',
     desc: '获取模板详情（参数化路由，必须在特定路由之后）',
     group: 'templates',
-    aliases: ["templates/detail"],
+    aliases: ['templates/detail'],
   },
   {
     code: 'templates.post',
@@ -628,7 +628,7 @@ module.exports = [
     path: '/manage/v1/templates',
     desc: '创建模板',
     group: 'templates',
-    aliases: ["templates/post"],
+    aliases: ['templates/post'],
   },
   {
     code: 'templates.put',
@@ -636,7 +636,7 @@ module.exports = [
     path: '/manage/v1/templates/:id',
     desc: '更新模板',
     group: 'templates',
-    aliases: ["templates/put"],
+    aliases: ['templates/put'],
   },
   {
     code: 'templates.delete',
@@ -644,7 +644,7 @@ module.exports = [
     path: '/manage/v1/templates/:id',
     desc: '删除模板',
     group: 'templates',
-    aliases: ["templates/delete"],
+    aliases: ['templates/delete'],
   },
   {
     code: 'templates.activate',
@@ -652,7 +652,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/activate',
     desc: '激活模板',
     group: 'templates',
-    aliases: ["templates/activate"],
+    aliases: ['templates/activate'],
   },
   {
     code: 'templates.deactivate',
@@ -660,7 +660,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/deactivate',
     desc: '停用模板',
     group: 'templates',
-    aliases: ["templates/deactivate"],
+    aliases: ['templates/deactivate'],
   },
   {
     code: 'templates.installDelete',
@@ -668,7 +668,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/install',
     desc: '卸载模板',
     group: 'templates',
-    aliases: ["templates/install-delete"],
+    aliases: ['templates/install-delete'],
   },
   {
     code: 'templates.export',
@@ -676,7 +676,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/export',
     desc: '导出模板',
     group: 'templates',
-    aliases: ["templates/export"],
+    aliases: ['templates/export'],
   },
   {
     code: 'templates.check',
@@ -684,7 +684,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/check',
     desc: '检查模板完整性',
     group: 'templates',
-    aliases: ["templates/check"],
+    aliases: ['templates/check'],
   },
   {
     code: 'templates.files',
@@ -692,7 +692,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/files',
     desc: '获取模板文件列表',
     group: 'templates',
-    aliases: ["templates/files"],
+    aliases: ['templates/files'],
   },
   {
     code: 'templates.statsPut',
@@ -700,7 +700,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/stats',
     desc: '更新模板统计',
     group: 'templates',
-    aliases: ["templates/stats-put"],
+    aliases: ['templates/stats-put'],
   },
   {
     code: 'templates.preview',
@@ -708,7 +708,7 @@ module.exports = [
     path: '/manage/v1/templates/:id/preview',
     desc: '预览模板',
     group: 'templates',
-    aliases: ["templates/preview"],
+    aliases: ['templates/preview'],
   },
   {
     code: 'plugins.list',
@@ -716,7 +716,7 @@ module.exports = [
     path: '/manage/v1/plugins',
     desc: '获取插件列表',
     group: 'plugins',
-    aliases: ["plugins/list"],
+    aliases: ['plugins/list'],
   },
   {
     code: 'plugins.install',
@@ -724,7 +724,7 @@ module.exports = [
     path: '/manage/v1/plugins/install',
     desc: '安装插件',
     group: 'plugins',
-    aliases: ["plugins/install"],
+    aliases: ['plugins/install'],
   },
   {
     code: 'plugins.heartbeat',
@@ -732,7 +732,7 @@ module.exports = [
     path: '/manage/v1/plugins/heartbeat',
     desc: '插件心跳检测',
     group: 'plugins',
-    aliases: ["plugins/heartbeat"],
+    aliases: ['plugins/heartbeat'],
   },
   {
     code: 'plugins.market',
@@ -740,7 +740,7 @@ module.exports = [
     path: '/manage/v1/plugins/market',
     desc: '获取插件市场列表',
     group: 'plugins',
-    aliases: ["plugins/market"],
+    aliases: ['plugins/market'],
   },
   {
     code: 'plugins.invoices',
@@ -748,7 +748,7 @@ module.exports = [
     path: '/manage/v1/plugins/invoices',
     desc: '创建插件发票',
     group: 'plugins',
-    aliases: ["plugins/invoices"],
+    aliases: ['plugins/invoices'],
   },
   {
     code: 'plugins.check',
@@ -756,7 +756,7 @@ module.exports = [
     path: '/manage/v1/plugins/invoices/check',
     desc: '检查插件发票',
     group: 'plugins',
-    aliases: ["plugins/check"],
+    aliases: ['plugins/check'],
   },
   {
     code: 'plugins.delete',
@@ -764,7 +764,7 @@ module.exports = [
     path: '/manage/v1/plugins/:id',
     desc: '卸载插件（参数化路由，必须在特定路由之后）',
     group: 'plugins',
-    aliases: ["plugins/delete"],
+    aliases: ['plugins/delete'],
   },
   {
     code: 'plugins.update',
@@ -772,7 +772,7 @@ module.exports = [
     path: '/manage/v1/plugins/:id/update',
     desc: '更新插件',
     group: 'plugins',
-    aliases: ["plugins/update"],
+    aliases: ['plugins/update'],
   },
   {
     code: 'plugins.enable',
@@ -780,7 +780,7 @@ module.exports = [
     path: '/manage/v1/plugins/:id/enable',
     desc: '启用插件',
     group: 'plugins',
-    aliases: ["plugins/enable"],
+    aliases: ['plugins/enable'],
   },
   {
     code: 'plugins.marketGet',
@@ -788,7 +788,7 @@ module.exports = [
     path: '/manage/v1/plugins/market/:id',
     desc: '获取插件市场详情',
     group: 'plugins',
-    aliases: ["plugins/market-get"],
+    aliases: ['plugins/market-get'],
   },
   {
     code: 'logs.list',
@@ -796,7 +796,7 @@ module.exports = [
     path: '/manage/v1/logs',
     desc: '获取日志列表',
     group: 'logs',
-    aliases: ["logs/list"],
+    aliases: ['logs/list'],
   },
   {
     code: 'logs.all',
@@ -804,7 +804,7 @@ module.exports = [
     path: '/manage/v1/logs/all',
     desc: '清空所有日志',
     group: 'logs',
-    aliases: ["logs/all"],
+    aliases: ['logs/all'],
   },
   {
     code: 'logs.delete',
@@ -812,7 +812,7 @@ module.exports = [
     path: '/manage/v1/logs/:id',
     desc: '删除日志（参数化路由，必须在特定路由之后）',
     group: 'logs',
-    aliases: ["logs/delete"],
+    aliases: ['logs/delete'],
   },
   {
     code: 'files.list',
@@ -820,7 +820,7 @@ module.exports = [
     path: '/manage/v1/files',
     desc: '获取文件列表',
     group: 'files',
-    aliases: ["files/list"],
+    aliases: ['files/list'],
   },
   {
     code: 'files.put',
@@ -828,7 +828,7 @@ module.exports = [
     path: '/manage/v1/files/:id',
     desc: '更新文件信息',
     group: 'files',
-    aliases: ["files/put"],
+    aliases: ['files/put'],
   },
   {
     code: 'files.delete',
@@ -836,7 +836,7 @@ module.exports = [
     path: '/manage/v1/files/:id',
     desc: '删除文件',
     group: 'files',
-    aliases: ["files/delete"],
+    aliases: ['files/delete'],
   },
   {
     code: 'cache.stats',
@@ -844,7 +844,7 @@ module.exports = [
     path: '/manage/v1/cache/stats',
     desc: '获取缓存统计',
     group: 'cache',
-    aliases: ["cache/stats"],
+    aliases: ['cache/stats'],
   },
   {
     code: 'cache.config',
@@ -852,7 +852,7 @@ module.exports = [
     path: '/manage/v1/cache/config',
     desc: '获取缓存配置',
     group: 'cache',
-    aliases: ["cache/config"],
+    aliases: ['cache/config'],
   },
   {
     code: 'cache.hotspots',
@@ -860,7 +860,7 @@ module.exports = [
     path: '/manage/v1/cache/hotspots',
     desc: '获取缓存热点',
     group: 'cache',
-    aliases: ["cache/hotspots"],
+    aliases: ['cache/hotspots'],
   },
   {
     code: 'cache.warmup',
@@ -868,7 +868,7 @@ module.exports = [
     path: '/manage/v1/cache/warmup',
     desc: '预热缓存',
     group: 'cache',
-    aliases: ["cache/warmup"],
+    aliases: ['cache/warmup'],
   },
   {
     code: 'cache.delete',
@@ -876,7 +876,7 @@ module.exports = [
     path: '/manage/v1/cache',
     desc: '清空缓存',
     group: 'cache',
-    aliases: ["cache/delete"],
+    aliases: ['cache/delete'],
   },
   {
     code: 'cache.statsDelete',
@@ -884,7 +884,7 @@ module.exports = [
     path: '/manage/v1/cache/stats',
     desc: '重置缓存统计',
     group: 'cache',
-    aliases: ["cache/stats-delete"],
+    aliases: ['cache/stats-delete'],
   },
   {
     code: 'sitemap.status',
@@ -892,7 +892,7 @@ module.exports = [
     path: '/manage/v1/sitemap/status',
     desc: '获取 Sitemap 状态',
     group: 'sitemap',
-    aliases: ["sitemap/status"],
+    aliases: ['sitemap/status'],
   },
   {
     code: 'sitemap.refresh',
@@ -900,7 +900,7 @@ module.exports = [
     path: '/manage/v1/sitemap/refresh',
     desc: '刷新 Sitemap',
     group: 'sitemap',
-    aliases: ["sitemap/refresh"],
+    aliases: ['sitemap/refresh'],
   },
   {
     code: 'sitemap.cache',
@@ -908,7 +908,7 @@ module.exports = [
     path: '/manage/v1/sitemap/cache',
     desc: '清空 Sitemap 缓存',
     group: 'sitemap',
-    aliases: ["sitemap/cache"],
+    aliases: ['sitemap/cache'],
   },
   {
     code: 'sitemap.preview',
@@ -916,7 +916,7 @@ module.exports = [
     path: '/manage/v1/sitemap/preview',
     desc: '预览 Sitemap',
     group: 'sitemap',
-    aliases: ["sitemap/preview"],
+    aliases: ['sitemap/preview'],
   },
   {
     code: 'sitemap.config',
@@ -924,7 +924,7 @@ module.exports = [
     path: '/manage/v1/sitemap/config',
     desc: '获取 Sitemap 配置',
     group: 'sitemap',
-    aliases: ["sitemap/config"],
+    aliases: ['sitemap/config'],
   },
   {
     code: 'sitemap.configPut',
@@ -932,7 +932,7 @@ module.exports = [
     path: '/manage/v1/sitemap/config',
     desc: '更新 Sitemap 配置',
     group: 'sitemap',
-    aliases: ["sitemap/config-put"],
+    aliases: ['sitemap/config-put'],
   },
   {
     code: 'sitemap.test',
@@ -940,7 +940,7 @@ module.exports = [
     path: '/manage/v1/sitemap/test',
     desc: '测试 Sitemap 访问',
     group: 'sitemap',
-    aliases: ["sitemap/test"],
+    aliases: ['sitemap/test'],
   },
   {
     code: 'webhooks.list',
@@ -948,7 +948,7 @@ module.exports = [
     path: '/manage/v1/webhooks',
     desc: '获取 Webhook 列表',
     group: 'webhooks',
-    aliases: ["webhooks/list"],
+    aliases: ['webhooks/list'],
   },
   {
     code: 'webhooks.stats',
@@ -956,7 +956,7 @@ module.exports = [
     path: '/manage/v1/webhooks/stats',
     desc: '获取用户的 Webhook 统计信息',
     group: 'webhooks',
-    aliases: ["webhooks/stats"],
+    aliases: ['webhooks/stats'],
   },
   {
     code: 'webhooks.events',
@@ -964,7 +964,7 @@ module.exports = [
     path: '/manage/v1/webhooks/events',
     desc: '获取所有支持的事件列表',
     group: 'webhooks',
-    aliases: ["webhooks/events"],
+    aliases: ['webhooks/events'],
   },
   {
     code: 'webhooks.status',
@@ -972,7 +972,7 @@ module.exports = [
     path: '/manage/v1/webhooks/batch/status',
     desc: '批量更新 Webhook 状态',
     group: 'webhooks',
-    aliases: ["webhooks/status"],
+    aliases: ['webhooks/status'],
   },
   {
     code: 'webhooks.detail',
@@ -980,7 +980,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id',
     desc: '获取 Webhook 详情（参数化路由，必须在特定路由之后）',
     group: 'webhooks',
-    aliases: ["webhooks/detail"],
+    aliases: ['webhooks/detail'],
   },
   {
     code: 'webhooks.post',
@@ -988,7 +988,7 @@ module.exports = [
     path: '/manage/v1/webhooks',
     desc: '创建 Webhook',
     group: 'webhooks',
-    aliases: ["webhooks/post"],
+    aliases: ['webhooks/post'],
   },
   {
     code: 'webhooks.put',
@@ -996,7 +996,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id',
     desc: '更新 Webhook',
     group: 'webhooks',
-    aliases: ["webhooks/put"],
+    aliases: ['webhooks/put'],
   },
   {
     code: 'webhooks.delete',
@@ -1004,7 +1004,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id',
     desc: '删除 Webhook',
     group: 'webhooks',
-    aliases: ["webhooks/delete"],
+    aliases: ['webhooks/delete'],
   },
   {
     code: 'webhooks.enable',
@@ -1012,7 +1012,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id/enable',
     desc: '启用 Webhook',
     group: 'webhooks',
-    aliases: ["webhooks/enable"],
+    aliases: ['webhooks/enable'],
   },
   {
     code: 'webhooks.disable',
@@ -1020,7 +1020,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id/disable',
     desc: '禁用 Webhook',
     group: 'webhooks',
-    aliases: ["webhooks/disable"],
+    aliases: ['webhooks/disable'],
   },
   {
     code: 'webhooks.regenerateSecret',
@@ -1028,7 +1028,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id/regenerate-secret',
     desc: '重新生成 Webhook Secret',
     group: 'webhooks',
-    aliases: ["webhooks/regenerate-secret"],
+    aliases: ['webhooks/regenerate-secret'],
   },
   {
     code: 'webhooks.statsGet',
@@ -1036,7 +1036,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id/stats',
     desc: '获取 Webhook 统计信息',
     group: 'webhooks',
-    aliases: ["webhooks/stats-get"],
+    aliases: ['webhooks/stats-get'],
   },
   {
     code: 'webhooks.logs',
@@ -1044,7 +1044,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id/logs',
     desc: '获取 Webhook 日志列表',
     group: 'webhooks',
-    aliases: ["webhooks/logs"],
+    aliases: ['webhooks/logs'],
   },
   {
     code: 'webhooks.logsGet',
@@ -1052,7 +1052,7 @@ module.exports = [
     path: '/manage/v1/webhooks/:id/logs/:logId',
     desc: '获取 Webhook 日志详情',
     group: 'webhooks',
-    aliases: ["webhooks/logs-get"],
+    aliases: ['webhooks/logs-get'],
   },
   {
     code: 'webhooks.retry',
@@ -1060,6 +1060,6 @@ module.exports = [
     path: '/manage/v1/webhooks/:id/logs/:logId/retry',
     desc: '手动重试失败的 Webhook',
     group: 'webhooks',
-    aliases: ["webhooks/retry"],
+    aliases: ['webhooks/retry'],
   },
 ];

@@ -80,6 +80,7 @@ const AdsController = {
   /**
    * 获取单个广告信息 - 支持 RESTful 路由
    * GET /api/manage/ads/:id 或 GET /api/manage/ads/getOne?id=xxx
+   * @param ctx
    */
   async getOne(ctx) {
     const id = ctx.params.id || ctx.query.id;
@@ -104,6 +105,7 @@ const AdsController = {
   /**
    * 更新广告信息 - 支持 RESTful 路由
    * PUT /api/manage/ads/:id 或 PUT /api/manage/ads/update
+   * @param ctx
    */
   async update(ctx) {
     const fields = ctx.request.body || {};

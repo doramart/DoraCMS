@@ -260,8 +260,7 @@ class WebhookLogMongoRepository extends BaseMongoRepository {
       updateData.response = {
         statusCode: response.statusCode,
         statusMessage: response.statusMessage,
-        headers:
-          response.headers instanceof Map ? response.headers : new Map(Object.entries(response.headers || {})),
+        headers: response.headers instanceof Map ? response.headers : new Map(Object.entries(response.headers || {})),
         body: response.body ? response.body.substring(0, 10000) : '',
       };
     }

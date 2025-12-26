@@ -348,8 +348,8 @@ const SystemOptionLogSchema = (sequelize, app) => {
       // ==================== 索引定义 ====================
       // 注意：索引已通过数据库迁移脚本创建，此处暂时注释掉以避免Sequelize sync冲突
       // 迁移脚本：database/migrations/20251108_upgrade_system_option_logs.sql
-      // 索引包括：idx_type, idx_created_at, idx_user_id, idx_module, idx_severity, 
-      //         idx_ip_address, idx_is_handled_type, idx_type_created_at, 
+      // 索引包括：idx_type, idx_created_at, idx_user_id, idx_module, idx_severity,
+      //         idx_ip_address, idx_is_handled_type, idx_type_created_at,
       //         idx_user_id_created_at, idx_module_created_at, idx_severity_created_at
       indexes: [
         // 索引已在数据库中存在，暂时禁用Sequelize自动创建

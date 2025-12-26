@@ -32,18 +32,20 @@ module.exports = (options = {}) => {
       // 异步记录异常日志
       setImmediate(() => {
         if (ctx.service?.systemOptionLog) {
-          ctx.service.systemOptionLog.logException(originalError, {
-            severity,
-            status: ctx.status || error.status || 500,
-            extraData: {
-              url: ctx.request.url,
-              method: ctx.request.method,
-              userAgent: ctx.request.header['user-agent'],
-              referer: ctx.request.header.referer,
-            },
-          }).catch(err => {
-            console.error('[ErrorLogger] Failed to log exception:', err.message);
-          });
+          ctx.service.systemOptionLog
+            .logException(originalError, {
+              severity,
+              status: ctx.status || error.status || 500,
+              extraData: {
+                url: ctx.request.url,
+                method: ctx.request.method,
+                userAgent: ctx.request.header['user-agent'],
+                referer: ctx.request.header.referer,
+              },
+            })
+            .catch(err => {
+              console.error('[ErrorLogger] Failed to log exception:', err.message);
+            });
 
           // 如果是严重错误且启用通知
           if (notifyOnCritical && severity === 'critical') {
@@ -121,4 +123,3 @@ module.exports = (options = {}) => {
     });
   }
 };
-

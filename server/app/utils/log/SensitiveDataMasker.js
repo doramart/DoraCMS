@@ -325,9 +325,7 @@ class SensitiveDataMasker {
    */
   _isSensitiveField(fieldName) {
     const lowerFieldName = String(fieldName).toLowerCase();
-    return this.sensitiveFields.some(sensitive =>
-      lowerFieldName.includes(sensitive.toLowerCase())
-    );
+    return this.sensitiveFields.some(sensitive => lowerFieldName.includes(sensitive.toLowerCase()));
   }
 
   /**
@@ -425,4 +423,3 @@ class SensitiveDataMasker {
 }
 
 module.exports = SensitiveDataMasker;
-

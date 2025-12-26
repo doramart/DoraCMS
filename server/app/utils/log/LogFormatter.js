@@ -406,4 +406,3 @@ class LogFormatter {
 }
 
 module.exports = LogFormatter;
-

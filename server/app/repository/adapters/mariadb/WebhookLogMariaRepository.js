@@ -404,34 +404,10 @@ class WebhookLogMariaRepository extends BaseMariaRepository {
         where: whereCondition,
         attributes: [
           [sequelize.fn('COUNT', sequelize.col('id')), 'total'],
-          [
-            sequelize.fn(
-              'SUM',
-              sequelize.literal("CASE WHEN status = 'success' THEN 1 ELSE 0 END")
-            ),
-            'success',
-          ],
-          [
-            sequelize.fn(
-              'SUM',
-              sequelize.literal("CASE WHEN status = 'failed' THEN 1 ELSE 0 END")
-            ),
-            'failed',
-          ],
-          [
-            sequelize.fn(
-              'SUM',
-              sequelize.literal("CASE WHEN status = 'pending' THEN 1 ELSE 0 END")
-            ),
-            'pending',
-          ],
-          [
-            sequelize.fn(
-              'SUM',
-              sequelize.literal("CASE WHEN status = 'retrying' THEN 1 ELSE 0 END")
-            ),
-            'retrying',
-          ],
+          [sequelize.fn('SUM', sequelize.literal("CASE WHEN status = 'success' THEN 1 ELSE 0 END")), 'success'],
+          [sequelize.fn('SUM', sequelize.literal("CASE WHEN status = 'failed' THEN 1 ELSE 0 END")), 'failed'],
+          [sequelize.fn('SUM', sequelize.literal("CASE WHEN status = 'pending' THEN 1 ELSE 0 END")), 'pending'],
+          [sequelize.fn('SUM', sequelize.literal("CASE WHEN status = 'retrying' THEN 1 ELSE 0 END")), 'retrying'],
           [sequelize.fn('AVG', sequelize.col('duration')), 'avgDuration'],
           [sequelize.fn('MAX', sequelize.col('duration')), 'maxDuration'],
           [sequelize.fn('MIN', sequelize.col('duration')), 'minDuration'],
@@ -509,20 +485,8 @@ class WebhookLogMariaRepository extends BaseMariaRepository {
         where: whereCondition,
         attributes: [
           [sequelize.fn('COUNT', sequelize.col('id')), 'total'],
-          [
-            sequelize.fn(
-              'SUM',
-              sequelize.literal("CASE WHEN status = 'success' THEN 1 ELSE 0 END")
-            ),
-            'success',
-          ],
-          [
-            sequelize.fn(
-              'SUM',
-              sequelize.literal("CASE WHEN status = 'failed' THEN 1 ELSE 0 END")
-            ),
-            'failed',
-          ],
+          [sequelize.fn('SUM', sequelize.literal("CASE WHEN status = 'success' THEN 1 ELSE 0 END")), 'success'],
+          [sequelize.fn('SUM', sequelize.literal("CASE WHEN status = 'failed' THEN 1 ELSE 0 END")), 'failed'],
         ],
         raw: true,
       });

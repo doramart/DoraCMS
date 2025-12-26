@@ -90,7 +90,7 @@ class PermissionRegistry {
   /**
    * 根据 code 获取定义
    * @param {String} code
-   * @returns {Object|null}
+   * @return {Object|null}
    */
   getByCode(code) {
     if (!code) return null;
@@ -100,7 +100,7 @@ class PermissionRegistry {
   /**
    * 根据旧版 api 标识（如 menu/getList）解析权限 code
    * @param {String} legacyApi
-   * @returns {Object|null}
+   * @return {Object|null}
    */
   getByLegacyApi(legacyApi) {
     if (!legacyApi) return null;
@@ -116,7 +116,7 @@ class PermissionRegistry {
    * @param {String} method
    * @param {String} requestPath
    * @param {Array<String>} allowedCodes
-   * @returns {Boolean}
+   * @return {Boolean}
    */
   match(method, requestPath, allowedCodes = []) {
     if (!allowedCodes || allowedCodes.length === 0) {

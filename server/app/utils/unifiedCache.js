@@ -277,6 +277,7 @@ class UnifiedCache {
    * @param {string} key 缓存键
    * @param {any} value 缓存值
    * @param {number} ttl 过期时间（秒），null表示使用默认值
+   * @param options
    * @return {Promise<boolean>} 是否成功
    */
   async set(key, value, ttl = null, options = {}) {
@@ -297,6 +298,7 @@ class UnifiedCache {
   /**
    * 删除缓存
    * @param {string} key 缓存键
+   * @param options
    * @return {Promise<boolean>} 是否成功
    */
   async delete(key, options = {}) {
@@ -312,6 +314,7 @@ class UnifiedCache {
 
   /**
    * 清空所有缓存
+   * @param options
    * @return {Promise<boolean>} 是否成功
    */
   async clear(options = {}) {

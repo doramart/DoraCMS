@@ -1,7 +1,7 @@
 /**
  * 统一 API 响应格式工具类
  * 提供标准化的成功和失败响应格式
- * 
+ *
  * 标准响应格式：
  * {
  *   status: 200 | 400 | 401 | 403 | 404 | 500,
@@ -43,7 +43,7 @@ class APIResponse {
    */
   static success(ctx, { data = {}, message = '', status = 200 } = {}) {
     const requestId = ctx.requestId || this.generateRequestId();
-    
+
     ctx.body = {
       status,
       data: data || {},
@@ -52,7 +52,7 @@ class APIResponse {
       requestId,
     };
     ctx.status = status;
-    
+
     // 设置标准响应头
     ctx.set('Content-Type', 'application/json; charset=utf-8');
     ctx.set('X-Request-ID', requestId);
@@ -69,12 +69,12 @@ class APIResponse {
    */
   static fail(ctx, { message = '', code = 'UNKNOWN_ERROR', data = {}, status = 500 } = {}) {
     const requestId = ctx.requestId || this.generateRequestId();
-    
+
     // 如果 message 是 Error 对象，提取消息
     if (message instanceof Error) {
       message = message.message;
     }
-    
+
     ctx.body = {
       status,
       code,
@@ -84,7 +84,7 @@ class APIResponse {
       requestId,
     };
     ctx.status = status;
-    
+
     // 设置标准响应头
     ctx.set('Content-Type', 'application/json; charset=utf-8');
     ctx.set('X-Request-ID', requestId);

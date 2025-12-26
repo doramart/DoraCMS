@@ -36,7 +36,7 @@ module.exports = app => {
       required: true,
       trim: true,
       validate: {
-        validator: function(v) {
+        validator(v) {
           // 验证 URL 格式（必须是 http 或 https）
           return /^https?:\/\/.+/.test(v);
         },
@@ -48,7 +48,7 @@ module.exports = app => {
       type: [String],
       required: true,
       validate: {
-        validator: function(v) {
+        validator(v) {
           return Array.isArray(v) && v.length > 0;
         },
         message: 'At least one event must be subscribed',
@@ -152,7 +152,7 @@ module.exports = app => {
   WebhookSchema.set('toJSON', {
     getters: true,
     virtuals: true,
-    transform: function(doc, ret) {
+    transform(doc, ret) {
       // 移除敏感字段
       delete ret.secret;
       // 添加脱敏的 secret
@@ -167,33 +167,33 @@ module.exports = app => {
   });
 
   // 日期格式化 Getter
-  WebhookSchema.path('createdAt').get(function(v) {
+  WebhookSchema.path('createdAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
-  WebhookSchema.path('updatedAt').get(function(v) {
+  WebhookSchema.path('updatedAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
-  WebhookSchema.path('stats.lastDeliveryAt').get(function(v) {
+  WebhookSchema.path('stats.lastDeliveryAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
-  WebhookSchema.path('stats.lastSuccessAt').get(function(v) {
+  WebhookSchema.path('stats.lastSuccessAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
-  WebhookSchema.path('stats.lastFailureAt').get(function(v) {
+  WebhookSchema.path('stats.lastFailureAt').get(function (v) {
     return v ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
   });
 
   // 更新时间中间件
-  WebhookSchema.pre('save', function(next) {
+  WebhookSchema.pre('save', function (next) {
     this.updatedAt = new Date();
     next();
   });
 
-  WebhookSchema.pre('findOneAndUpdate', function(next) {
+  WebhookSchema.pre('findOneAndUpdate', function (next) {
     this.set({ updatedAt: new Date() });
     next();
   });

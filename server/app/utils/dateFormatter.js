@@ -28,6 +28,7 @@ class DateFormatter {
    * @param {Date|String|Number} date 日期
    * @param {String} format 格式字符串
    * @param {String} timezone 时区
+   * @param locale
    * @return {String} 格式化后的日期字符串
    */
   format(date, format = this.defaultFormat, timezone = this.timezone, locale) {
@@ -52,6 +53,7 @@ class DateFormatter {
    * @param {Object|Array} data 数据对象或数组
    * @param {Array} dateFields 需要格式化的日期字段名数组
    * @param {String} format 格式字符串
+   * @param locale
    * @return {Object|Array} 格式化后的数据
    */
   formatDateFields(data, dateFields = ['createdAt', 'updatedAt'], format = this.defaultFormat, locale) {
@@ -103,6 +105,7 @@ class DateFormatter {
   /**
    * 获取相对时间（如：3分钟前）
    * @param {Date|String|Number} date 日期
+   * @param locale
    * @return {String} 相对时间字符串
    */
   fromNow(date, locale) {
@@ -133,6 +136,7 @@ class DateFormatter {
   /**
    * 获取当前时间
    * @param {String} format 格式字符串
+   * @param locale
    * @return {String} 当前时间字符串
    */
   now(format = this.defaultFormat, locale) {

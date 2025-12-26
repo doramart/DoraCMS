@@ -70,23 +70,17 @@ class LogDataBuilder {
 
     // 请求参数（脱敏处理）
     if (request.params && Object.keys(request.params).length > 0) {
-      this.data.request_params = maskSensitiveData
-        ? this.masker.maskObject(request.params)
-        : request.params;
+      this.data.request_params = maskSensitiveData ? this.masker.maskObject(request.params) : request.params;
     }
 
     // 请求体（脱敏处理）
     if (request.body && Object.keys(request.body).length > 0) {
-      this.data.request_body = maskSensitiveData
-        ? this.masker.maskObject(request.body)
-        : request.body;
+      this.data.request_body = maskSensitiveData ? this.masker.maskObject(request.body) : request.body;
     }
 
     // 查询字符串（脱敏处理）
     if (request.query && Object.keys(request.query).length > 0) {
-      this.data.request_query = maskSensitiveData
-        ? this.masker.maskObject(request.query)
-        : request.query;
+      this.data.request_query = maskSensitiveData ? this.masker.maskObject(request.query) : request.query;
     }
 
     // IP地址
@@ -253,14 +247,7 @@ class LogDataBuilder {
    * @return {LogDataBuilder}
    */
   fromContext(ctx, options = {}) {
-    const {
-      type,
-      logs,
-      severity,
-      business = {},
-      error = null,
-      tags = [],
-    } = options;
+    const { type, logs, severity, business = {}, error = null, tags = [] } = options;
 
     // 基本信息
     if (type) this.setType(type);
@@ -272,9 +259,10 @@ class LogDataBuilder {
 
     // 用户信息
     if (ctx.user) {
-      const userType = ctx.user.role === 'admin'
-        ? SYSTEM_CONSTANTS.SYSTEM_OPTION_LOG.USER_TYPE.ADMIN
-        : SYSTEM_CONSTANTS.SYSTEM_OPTION_LOG.USER_TYPE.USER;
+      const userType =
+        ctx.user.role === 'admin'
+          ? SYSTEM_CONSTANTS.SYSTEM_OPTION_LOG.USER_TYPE.ADMIN
+          : SYSTEM_CONSTANTS.SYSTEM_OPTION_LOG.USER_TYPE.USER;
       this.setUser(ctx.user, { userType });
     }
 
@@ -393,4 +381,3 @@ class LogDataBuilder {
 }
 
 module.exports = LogDataBuilder;
-

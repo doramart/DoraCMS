@@ -248,41 +248,42 @@ const serializeDefinitions = definitions => {
  * 支持格式：
  * // @desc 中文描述
  * router.method(path, ...)
+ * @param source
  */
 const extractRouteComments = source => {
   const commentMap = new Map();
   const lines = source.split('\n');
-  
+
   // 提取 prefix 变量
   const prefixMatch = source.match(/const\s+prefix\s*=\s*['"`]([^'"`]+)['"`]/);
   const prefix = prefixMatch ? prefixMatch[1] : '';
-  
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
-    
+
     // 匹配 @desc 注释
     const descMatch = line.match(/^\/\/\s*@desc\s+(.+)$/);
     if (descMatch && i + 1 < lines.length) {
       const desc = descMatch[1].trim();
       const nextLine = lines[i + 1];
-      
+
       // 提取下一行的路由定义，支持模板字符串
       const routeMatch = nextLine.match(/router\.(get|post|put|patch|delete)\s*\(\s*[`'"]([^`'"]+)[`'"]/);
       if (routeMatch) {
         const method = routeMatch[1].toUpperCase();
         let path = routeMatch[2];
-        
+
         // 替换模板字符串中的 ${prefix}
         if (path.includes('${prefix}') && prefix) {
           path = path.replace('${prefix}', prefix);
         }
-        
+
         const key = `${method} ${path}`;
         commentMap.set(key, desc);
       }
     }
   }
-  
+
   return commentMap;
 };
 
@@ -333,7 +334,7 @@ const main = () => {
     const key = `${route.method} ${route.path}`;
     const base = createDefinition(route);
     const existing = existingByKey.get(key);
-    
+
     // 优先级：注释 > 已有定义 > 自动生成
     const commentDesc = commentMap.get(key);
     if (commentDesc) {
@@ -341,7 +342,7 @@ const main = () => {
     } else if (existing && existing.desc && !existing.desc.startsWith('[AUTO]')) {
       base.desc = existing.desc;
     }
-    
+
     if (existing && existing.meta) {
       base.meta = existing.meta;
     }

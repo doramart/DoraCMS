@@ -81,7 +81,7 @@ const RegUserController = {
             }
           );
           userItem.content_num = userContents.length;
-          
+
           // 用户关注数（watchers）和被关注数（followers）
           userItem.watch_num = _.uniq(userItem.watchers).length;
           userItem.follow_num = _.uniq(userItem.followers).length;
@@ -105,23 +105,23 @@ const RegUserController = {
           if (params.apiName === 'getUserInfoById') {
             let total_likeNum = 0,
               total_despiseNum = 0;
-            
+
             // 获取该用户所有文章的ID列表
             const contentIds = userContents.map(c => c.id);
-            
+
             if (contentIds.length > 0) {
               // 🔥 使用 ContentInteractionService 批量统计
               total_likeNum = await ctx.service.contentInteraction.count({
                 contentId: { $in: contentIds },
                 type: { $eq: 'praise' },
               });
-              
+
               total_despiseNum = await ctx.service.contentInteraction.count({
                 contentId: { $in: contentIds },
                 type: { $eq: 'despise' },
               });
             }
-            
+
             userItem.total_likeNum = total_likeNum;
             userItem.total_despiseNum = total_despiseNum;
           }
@@ -687,6 +687,21 @@ const RegUserController = {
           console.error('[LoginLog] Failed to log:', err.message);
         });
 
+      // 🔥 触发 Webhook 事件：user.login
+      try {
+        await ctx.service.webhook.triggerEvent('user.login', {
+          userId: user.id,
+          userName: user.userName,
+          email: user.email,
+          phoneNum: user.phoneNum,
+          loginAt: new Date(),
+          loginType,
+        });
+      } catch (error) {
+        // Webhook 触发失败不应影响业务逻辑
+        ctx.logger.error('[User] Failed to trigger webhook for user.login:', error);
+      }
+
       // console.log('--111---',renderUser)
       ctx.helper.renderSuccess(ctx, {
         data: renderUser,
@@ -746,6 +761,22 @@ const RegUserController = {
         .catch(err => {
           console.error('[LoginLog] Failed to log:', err.message);
         });
+
+      // 🔥 触发 Webhook 事件：user.login（新用户首次登录）
+      try {
+        await ctx.service.webhook.triggerEvent('user.login', {
+          userId: currentUser.id,
+          userName: renderUser.userName,
+          email: renderUser.email,
+          phoneNum: renderUser.phoneNum,
+          loginAt: new Date(),
+          loginType,
+          isFirstLogin: true,
+        });
+      } catch (error) {
+        // Webhook 触发失败不应影响业务逻辑
+        ctx.logger.error('[User] Failed to trigger webhook for user.login:', error);
+      }
 
       ctx.helper.renderSuccess(ctx, {
         data: renderUser,
@@ -1068,6 +1099,18 @@ const RegUserController = {
         .catch(err => {
           console.error('[LogoutLog] Failed to log:', err.message);
         });
+
+      // 🔥 触发 Webhook 事件：user.logout
+      try {
+        await ctx.service.webhook.triggerEvent('user.logout', {
+          userId,
+          userName,
+          logoutAt: new Date(),
+        });
+      } catch (error) {
+        // Webhook 触发失败不应影响业务逻辑
+        ctx.logger.error('[User] Failed to trigger webhook for user.logout:', error);
+      }
     }
 
     ctx.session = null;
@@ -1693,8 +1736,6 @@ const RegUserController = {
       });
     }
   },
-
-
 
   async despiseContent(ctx) {
     try {

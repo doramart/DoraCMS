@@ -124,9 +124,7 @@ module.exports = (sequelize, _app) => {
         set(value) {
           this.setDataValue(
             'stats',
-            value
-              ? JSON.stringify(value)
-              : '{"totalDeliveries":0,"successfulDeliveries":0,"failedDeliveries":0}'
+            value ? JSON.stringify(value) : '{"totalDeliveries":0,"successfulDeliveries":0,"failedDeliveries":0}'
           );
         },
       },
@@ -174,7 +172,7 @@ module.exports = (sequelize, _app) => {
     }
   );
 
-  Webhook.associate = function(models) {
+  Webhook.associate = function (models) {
     Webhook.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
@@ -183,14 +181,14 @@ module.exports = (sequelize, _app) => {
   };
 
   // 类方法
-  Webhook.findByUserId = function(userId) {
+  Webhook.findByUserId = function (userId) {
     return this.findAll({
       where: { userId, status: { [sequelize.Sequelize.Op.ne]: 'deleted' } },
       order: [['createdAt', 'DESC']],
     });
   };
 
-  Webhook.findActiveByEvent = function(event) {
+  Webhook.findActiveByEvent = function (event) {
     return this.findAll({
       where: {
         active: true,
@@ -202,7 +200,7 @@ module.exports = (sequelize, _app) => {
     });
   };
 
-  Webhook.checkNameUniqueForUser = async function(name, userId, excludeId = null) {
+  Webhook.checkNameUniqueForUser = async function (name, userId, excludeId = null) {
     const where = { name, userId };
     if (excludeId) {
       where.id = { [sequelize.Sequelize.Op.ne]: excludeId };
@@ -212,7 +210,7 @@ module.exports = (sequelize, _app) => {
   };
 
   // 实例方法
-  Webhook.prototype.toJSON = function() {
+  Webhook.prototype.toJSON = function () {
     const values = Object.assign({}, this.get());
 
     // 添加状态文本
@@ -225,9 +223,7 @@ module.exports = (sequelize, _app) => {
 
     // 添加成功率
     if (values.stats && values.stats.totalDeliveries > 0) {
-      values.stats.successRate = ((values.stats.successfulDeliveries / values.stats.totalDeliveries) * 100).toFixed(
-        2
-      );
+      values.stats.successRate = ((values.stats.successfulDeliveries / values.stats.totalDeliveries) * 100).toFixed(2);
     } else if (values.stats) {
       values.stats.successRate = '0.00';
     }
@@ -278,19 +274,19 @@ module.exports = (sequelize, _app) => {
     return values;
   };
 
-  Webhook.prototype.isActive = function() {
+  Webhook.prototype.isActive = function () {
     return this.active && this.status === 'active';
   };
 
-  Webhook.prototype.isDisabled = function() {
+  Webhook.prototype.isDisabled = function () {
     return !this.active || this.status === 'disabled';
   };
 
-  Webhook.prototype.isDeleted = function() {
+  Webhook.prototype.isDeleted = function () {
     return this.status === 'deleted';
   };
 
-  Webhook.prototype.subscribesTo = function(event) {
+  Webhook.prototype.subscribesTo = function (event) {
     return this.events && this.events.includes(event);
   };
 

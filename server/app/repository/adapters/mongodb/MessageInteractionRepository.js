@@ -120,7 +120,11 @@ class MessageInteractionMongoRepository extends BaseMongoRepository {
     try {
       const result = await this.model.deleteOne({ userId, messageId, interactionType });
 
-      this._logOperation('removeInteraction', { userId, messageId, interactionType }, { deletedCount: result.deletedCount });
+      this._logOperation(
+        'removeInteraction',
+        { userId, messageId, interactionType },
+        { deletedCount: result.deletedCount }
+      );
       return { deletedCount: result.deletedCount };
     } catch (error) {
       this._handleError(error, 'removeInteraction', { userId, messageId, interactionType });

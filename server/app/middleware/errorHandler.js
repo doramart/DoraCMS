@@ -21,14 +21,14 @@ module.exports = (options = {}) => {
       let statusCode;
       let errorCode;
       let errorMessage;
-      let errorData = {};
+      const errorData = {};
 
       // 1. 业务异常（BusinessError）
       if (error instanceof BusinessError) {
         errorCode = error.code;
         errorMessage = error.message;
         statusCode = error.statusCode || 500;
-        
+
         if (error.field) {
           errorData.field = error.field;
         }
@@ -76,7 +76,7 @@ module.exports = (options = {}) => {
       else if (error.status) {
         statusCode = error.status;
         errorMessage = error.message;
-        
+
         // 根据状态码映射错误码
         if (statusCode === 400) {
           errorCode = 'BAD_REQUEST';
@@ -148,6 +148,7 @@ module.exports = (options = {}) => {
 
 /**
  * 辅助函数：检查错误码是否存在
+ * @param code
  */
 function hasErrorCode(code) {
   return !!ErrorCodes[code];

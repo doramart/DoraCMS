@@ -80,7 +80,23 @@ class ContentService extends Service {
    * @return {Promise<Object>} 创建的内容
    */
   async create(data) {
-    return await this.repository.create(data);
+    const content = await this.repository.create(data);
+
+    // 🔥 触发 Webhook 事件：content.created
+    try {
+      await this.ctx.service.webhook.triggerEvent('content.created', {
+        contentId: content.id,
+        title: content.title,
+        author: content.author || content.uAuthor,
+        state: content.state,
+        createdAt: content.createdAt,
+      });
+    } catch (error) {
+      // Webhook 触发失败不应影响业务逻辑
+      this.ctx.logger.error('[Content] Failed to trigger webhook for content.created:', error);
+    }
+
+    return content;
   }
 
   /**
@@ -148,7 +164,23 @@ class ContentService extends Service {
    * @return {Promise<Object>} 更新后的内容
    */
   async update(id, data) {
-    return await this.repository.update(id, data);
+    const content = await this.repository.update(id, data);
+
+    // 🔥 触发 Webhook 事件：content.updated
+    try {
+      await this.ctx.service.webhook.triggerEvent('content.updated', {
+        contentId: content.id,
+        title: content.title,
+        author: content.author || content.uAuthor,
+        state: content.state,
+        updatedAt: content.updatedAt,
+      });
+    } catch (error) {
+      // Webhook 触发失败不应影响业务逻辑
+      this.ctx.logger.error('[Content] Failed to trigger webhook for content.updated:', error);
+    }
+
+    return content;
   }
 
   /**
@@ -216,7 +248,21 @@ class ContentService extends Service {
    * @return {Promise<Object>} 删除结果
    */
   async remove(ids, key = 'id') {
-    return await this.repository.remove(ids, key);
+    const result = await this.repository.remove(ids, key);
+
+    // 🔥 触发 Webhook 事件：content.deleted
+    try {
+      const deletedIds = Array.isArray(ids) ? ids : [ids];
+      await this.ctx.service.webhook.triggerEvent('content.deleted', {
+        contentIds: deletedIds,
+        deletedAt: new Date(),
+      });
+    } catch (error) {
+      // Webhook 触发失败不应影响业务逻辑
+      this.ctx.logger.error('[Content] Failed to trigger webhook for content.deleted:', error);
+    }
+
+    return result;
   }
 
   /**
@@ -403,7 +449,31 @@ class ContentService extends Service {
    * @return {Promise<Object>} 更新结果
    */
   async updateContentStatus(contentIds, state, dismissReason = null) {
-    return await this.repository.updateContentStatus(contentIds, state, dismissReason);
+    const result = await this.repository.updateContentStatus(contentIds, state, dismissReason);
+
+    // 🔥 触发 Webhook 事件：content.published 或 content.unpublished
+    try {
+      if (state === '2') {
+        // 状态 '2' 表示已发布
+        await this.ctx.service.webhook.triggerEvent('content.published', {
+          contentIds,
+          publishedAt: new Date(),
+        });
+      } else if (state === '0' || state === '1') {
+        // 状态 '0' 或 '1' 表示未发布
+        await this.ctx.service.webhook.triggerEvent('content.unpublished', {
+          contentIds,
+          state,
+          dismissReason,
+          unpublishedAt: new Date(),
+        });
+      }
+    } catch (error) {
+      // Webhook 触发失败不应影响业务逻辑
+      this.ctx.logger.error('[Content] Failed to trigger webhook for content status change:', error);
+    }
+
+    return result;
   }
 
   /**

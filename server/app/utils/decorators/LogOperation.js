@@ -2,11 +2,11 @@
  * @Author: AI Assistant
  * @Date: 2025-11-08
  * @Description: LogOperation 装饰器 - 自动记录Service方法的操作日志
- * 
+ *
  * 使用方法：
  * ```javascript
  * const LogOperation = require('../utils/decorators/LogOperation');
- * 
+ *
  * class UserService extends Service {
  *   @LogOperation({
  *     operation: 'createUser',
@@ -18,7 +18,7 @@
  *   }
  * }
  * ```
- * 
+ *
  * 注意：由于JavaScript原生不支持装饰器，这里提供了两种使用方式：
  * 1. 使用Babel插件 @babel/plugin-proposal-decorators
  * 2. 使用工厂函数手动包装
@@ -50,10 +50,10 @@ function LogOperation(options = {}) {
   } = options;
 
   // 返回装饰器函数
-  return function(target, propertyKey, descriptor) {
+  return function (target, propertyKey, descriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function(...args) {
+    descriptor.value = async function (...args) {
       const ctx = this.ctx;
       const startTime = Date.now();
 
@@ -84,13 +84,11 @@ function LogOperation(options = {}) {
               logOptions.extraData.argsCount = args.length;
             }
 
-            ctx.service.systemOptionLog.logOperation(
-              operation || propertyKey,
-              description || `执行 ${propertyKey}`,
-              logOptions
-            ).catch(err => {
-              console.error('[LogOperation] Failed to log:', err.message);
-            });
+            ctx.service.systemOptionLog
+              .logOperation(operation || propertyKey, description || `执行 ${propertyKey}`, logOptions)
+              .catch(err => {
+                console.error('[LogOperation] Failed to log:', err.message);
+              });
           }
         });
 
@@ -99,17 +97,19 @@ function LogOperation(options = {}) {
         // 失败：记录错误日志
         setImmediate(() => {
           if (ctx.service?.systemOptionLog) {
-            ctx.service.systemOptionLog.logException(error, {
-              severity: 'high',
-              extraData: {
-                operation: operation || propertyKey,
-                module: module || this.constructor.name.replace('Service', '').toLowerCase(),
-                methodName: propertyKey,
-                executionTime: Date.now() - startTime,
-              },
-            }).catch(err => {
-              console.error('[LogOperation] Failed to log exception:', err.message);
-            });
+            ctx.service.systemOptionLog
+              .logException(error, {
+                severity: 'high',
+                extraData: {
+                  operation: operation || propertyKey,
+                  module: module || this.constructor.name.replace('Service', '').toLowerCase(),
+                  methodName: propertyKey,
+                  executionTime: Date.now() - startTime,
+                },
+              })
+              .catch(err => {
+                console.error('[LogOperation] Failed to log exception:', err.message);
+              });
           }
         });
 
@@ -127,15 +127,8 @@ function LogOperation(options = {}) {
  * @param {Object} options 配置选项
  * @return {Function} 包装后的方法
  */
-LogOperation.wrap = function(method, options = {}) {
-  const {
-    operation,
-    description,
-    module,
-    severity = 'medium',
-    captureResult = false,
-    tags = [],
-  } = options;
+LogOperation.wrap = function (method, options = {}) {
+  const { operation, description, module, severity = 'medium', captureResult = false, tags = [] } = options;
 
   return async function wrappedMethod(...args) {
     const ctx = this.ctx;
@@ -158,13 +151,11 @@ LogOperation.wrap = function(method, options = {}) {
             logOptions.resourceId = result.id || result._id;
           }
 
-          ctx.service.systemOptionLog.logOperation(
-            operation || method.name,
-            description || `执行 ${method.name}`,
-            logOptions
-          ).catch(err => {
-            console.error('[LogOperation] Failed to log:', err.message);
-          });
+          ctx.service.systemOptionLog
+            .logOperation(operation || method.name, description || `执行 ${method.name}`, logOptions)
+            .catch(err => {
+              console.error('[LogOperation] Failed to log:', err.message);
+            });
         }
       });
 
@@ -172,16 +163,18 @@ LogOperation.wrap = function(method, options = {}) {
     } catch (error) {
       setImmediate(() => {
         if (ctx.service?.systemOptionLog) {
-          ctx.service.systemOptionLog.logException(error, {
-            severity: 'high',
-            extraData: {
-              operation: operation || method.name,
-              module: module || this.constructor.name.replace('Service', '').toLowerCase(),
-              executionTime: Date.now() - startTime,
-            },
-          }).catch(err => {
-            console.error('[LogOperation] Failed to log exception:', err.message);
-          });
+          ctx.service.systemOptionLog
+            .logException(error, {
+              severity: 'high',
+              extraData: {
+                operation: operation || method.name,
+                module: module || this.constructor.name.replace('Service', '').toLowerCase(),
+                executionTime: Date.now() - startTime,
+              },
+            })
+            .catch(err => {
+              console.error('[LogOperation] Failed to log exception:', err.message);
+            });
         }
       });
 
@@ -191,4 +184,3 @@ LogOperation.wrap = function(method, options = {}) {
 };
 
 module.exports = LogOperation;
-

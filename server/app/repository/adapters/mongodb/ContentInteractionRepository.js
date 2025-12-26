@@ -56,6 +56,7 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
   /**
    * 添加交互记录
    * 使用 upsert 保证幂等性
+   * @param interactionData
    */
   async addInteraction(interactionData) {
     const { userId, contentId, interactionType, ipAddress, userAgent } = interactionData;
@@ -94,11 +95,18 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 移除交互记录
+   * @param userId
+   * @param contentId
+   * @param interactionType
    */
   async removeInteraction(userId, contentId, interactionType) {
     try {
       const result = await this.model.deleteOne({ userId, contentId, interactionType });
-      this._logOperation('removeInteraction', { userId, contentId, interactionType }, { deletedCount: result.deletedCount });
+      this._logOperation(
+        'removeInteraction',
+        { userId, contentId, interactionType },
+        { deletedCount: result.deletedCount }
+      );
       return { deletedCount: result.deletedCount };
     } catch (error) {
       this._handleError(error, 'removeInteraction', { userId, contentId, interactionType });
@@ -107,6 +115,9 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 检查用户是否已交互
+   * @param userId
+   * @param contentId
+   * @param interactionType
    */
   async hasInteraction(userId, contentId, interactionType) {
     try {
@@ -121,6 +132,7 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 获取文章交互统计
+   * @param contentId
    */
   async getInteractionStats(contentId) {
     try {
@@ -141,6 +153,9 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 批量获取用户交互状态
+   * @param userId
+   * @param contentIds
+   * @param interactionType
    */
   async getUserInteractionStatus(userId, contentIds, interactionType) {
     try {
@@ -166,6 +181,8 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 批量统计
+   * @param contentIds
+   * @param interactionType
    */
   async batchGetInteractionCounts(contentIds, interactionType) {
     try {
@@ -200,6 +217,8 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 获取用户交互历史
+   * @param userId
+   * @param options
    */
   async getUserInteractionHistory(userId, options = {}) {
     try {
@@ -228,6 +247,7 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 删除文章所有交互
+   * @param contentId
    */
   async deleteContentInteractions(contentId) {
     try {
@@ -242,6 +262,7 @@ class ContentInteractionMongoRepository extends BaseMongoRepository {
 
   /**
    * 删除用户所有交互
+   * @param userId
    */
   async deleteUserInteractions(userId) {
     try {

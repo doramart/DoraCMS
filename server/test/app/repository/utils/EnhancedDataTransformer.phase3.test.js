@@ -24,9 +24,7 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
 
     it('未启用深度检查时，应该允许深层嵌套查询', () => {
       const deepQuery = {
-        $or: [
-          { $and: [{ $or: [{ $and: [{ field: 1 }] }] }] },
-        ],
+        $or: [{ $and: [{ $or: [{ $and: [{ field: 1 }] }] }] }],
       };
 
       // 应该不抛出异常
@@ -83,10 +81,7 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
     it('应该通过浅层嵌套查询', () => {
       const { Op } = require('sequelize');
       const shallowQuery = {
-        $or: [
-          { field1: 1 },
-          { field2: 2 },
-        ],
+        $or: [{ field1: 1 }, { field2: 2 }],
       };
 
       const result = transformer.buildMariaDBWhereCondition(shallowQuery, Op);
@@ -96,15 +91,23 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
     it('应该拒绝过深的嵌套查询', () => {
       const { Op } = require('sequelize');
       const deepQuery = {
-        $or: [{
-          $and: [{
-            $or: [{
-              $and: [{
-                $or: [{ field: 1 }], // 深度 = 5
-              }],
-            }],
-          }],
-        }],
+        $or: [
+          {
+            $and: [
+              {
+                $or: [
+                  {
+                    $and: [
+                      {
+                        $or: [{ field: 1 }], // 深度 = 5
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       };
 
       assert.throws(() => {
@@ -115,15 +118,23 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
     it('应该在错误消息中显示当前深度', () => {
       const { Op } = require('sequelize');
       const deepQuery = {
-        $or: [{
-          $and: [{
-            $or: [{
-              $and: [{
-                $or: [{ field: 1 }],
-              }],
-            }],
-          }],
-        }],
+        $or: [
+          {
+            $and: [
+              {
+                $or: [
+                  {
+                    $and: [
+                      {
+                        $or: [{ field: 1 }],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       };
 
       try {
@@ -155,11 +166,7 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
 
     it('应该正确计算带$or的复杂度', () => {
       const query = {
-        $or: [
-          { field1: 1 },
-          { field2: 2 },
-          { field3: 3 },
-        ],
+        $or: [{ field1: 1 }, { field2: 2 }, { field3: 3 }],
       };
       const complexity = transformer._calculateQueryComplexity(query);
       // 基础1 + $or数组长度*2 + 每个子查询1*3 = 1 + 6 + 3 = 10
@@ -173,9 +180,11 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
       const flatComplexity = transformer._calculateQueryComplexity(flatQuery);
 
       const nestedQuery = {
-        $or: [{
-          $and: [{ field1: 1 }, { field2: 2 }],
-        }],
+        $or: [
+          {
+            $and: [{ field1: 1 }, { field2: 2 }],
+          },
+        ],
       };
       const nestedComplexity = transformer._calculateQueryComplexity(nestedQuery);
 
@@ -248,58 +257,26 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
 
   describe('日期字段检测', () => {
     it('应该识别常见的日期字段', () => {
-      const dateFields = [
-        'createdAt',
-        'updatedAt',
-        'deletedAt',
-        'publishAt',
-        'expireAt',
-        'startTime',
-        'endTime',
-      ];
+      const dateFields = ['createdAt', 'updatedAt', 'deletedAt', 'publishAt', 'expireAt', 'startTime', 'endTime'];
 
       dateFields.forEach(field => {
-        assert.strictEqual(
-          transformer._isDateField(field),
-          true,
-          `应该识别 ${field} 为日期字段`
-        );
+        assert.strictEqual(transformer._isDateField(field), true, `应该识别 ${field} 为日期字段`);
       });
     });
 
     it('应该识别包含日期关键词的字段', () => {
-      const dateFields = [
-        'createDate',
-        'updateTime',
-        'loginTimestamp',
-        'birthday',
-        'deadline',
-      ];
+      const dateFields = ['createDate', 'updateTime', 'loginTimestamp', 'birthday', 'deadline'];
 
       dateFields.forEach(field => {
-        assert.strictEqual(
-          transformer._isDateField(field),
-          true,
-          `应该识别 ${field} 为日期字段`
-        );
+        assert.strictEqual(transformer._isDateField(field), true, `应该识别 ${field} 为日期字段`);
       });
     });
 
     it('应该不识别普通字段', () => {
-      const nonDateFields = [
-        'name',
-        'email',
-        'count',
-        'status',
-        'description',
-      ];
+      const nonDateFields = ['name', 'email', 'count', 'status', 'description'];
 
       nonDateFields.forEach(field => {
-        assert.strictEqual(
-          transformer._isDateField(field),
-          false,
-          `不应该识别 ${field} 为日期字段`
-        );
+        assert.strictEqual(transformer._isDateField(field), false, `不应该识别 ${field} 为日期字段`);
       });
     });
 
@@ -451,15 +428,23 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
 
       // 深层嵌套查询
       const deepQuery = {
-        $or: [{
-          $and: [{
-            $or: [{
-              $and: [{
-                $or: [{ field: 1 }],
-              }],
-            }],
-          }],
-        }],
+        $or: [
+          {
+            $and: [
+              {
+                $or: [
+                  {
+                    $and: [
+                      {
+                        $or: [{ field: 1 }],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       };
 
       // 应该不抛出任何异常
@@ -489,11 +474,15 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
 
       const { Op } = require('sequelize');
       const deepQuery = {
-        $or: [{
-          $and: [{
-            $or: [{ field: 1 }], // 深度 = 3
-          }],
-        }],
+        $or: [
+          {
+            $and: [
+              {
+                $or: [{ field: 1 }], // 深度 = 3
+              },
+            ],
+          },
+        ],
       };
 
       try {
@@ -529,4 +518,3 @@ describe('EnhancedDataTransformer - Phase3 增强功能', () => {
     });
   });
 });
-

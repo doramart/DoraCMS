@@ -10,16 +10,16 @@ module.exports = (options = {}) => {
   const defaultOptions = {
     // 默认 API 版本
     defaultVersion: 'v1',
-    
+
     // 支持的 API 版本列表
     supportedVersions: ['v1'],
-    
+
     // 是否严格模式（不支持的版本返回 400）
     strictMode: false,
-    
+
     // 版本提取正则表达式
     versionPattern: /^\/api\/(v\d+)\//,
-    
+
     // 请求头字段名
     headerField: 'API-Version',
   };

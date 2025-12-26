@@ -140,6 +140,7 @@ const ContentMessageController = {
   /**
    * 获取单条留言 - 支持 RESTful 路由
    * GET /api/manage/contentMessage/:id 或 GET /api/manage/contentMessage/getOne?id=xxx
+   * @param ctx
    */
   async getOne(ctx) {
     const id = ctx.params.id || ctx.query.id;
@@ -245,6 +246,7 @@ const ContentMessageController = {
   /**
    * 🔥 新增：审核留言 - 支持 RESTful 路由
    * POST /api/manage/contentMessage/:id/audit 或 POST /api/manage/contentMessage/auditMessage
+   * @param ctx
    */
   async auditMessage(ctx) {
     const { messageId, auditStatus, auditReason } = ctx.request.body;

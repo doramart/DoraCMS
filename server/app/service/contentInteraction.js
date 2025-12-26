@@ -31,6 +31,9 @@ class ContentInteractionService extends Service {
 
   /**
    * 点赞文章
+   * @param contentId
+   * @param userId
+   * @param metadata
    */
   async praiseContent(contentId, userId, metadata = {}) {
     return this._handleInteraction(contentId, userId, 'praise', metadata, ['despise']);
@@ -38,6 +41,8 @@ class ContentInteractionService extends Service {
 
   /**
    * 取消点赞
+   * @param contentId
+   * @param userId
    */
   async unpraiseContent(contentId, userId) {
     return this._removeInteraction(contentId, userId, 'praise');
@@ -45,6 +50,9 @@ class ContentInteractionService extends Service {
 
   /**
    * 踩文章
+   * @param contentId
+   * @param userId
+   * @param metadata
    */
   async despiseContent(contentId, userId, metadata = {}) {
     return this._handleInteraction(contentId, userId, 'despise', metadata, ['praise']);
@@ -52,6 +60,8 @@ class ContentInteractionService extends Service {
 
   /**
    * 取消踩
+   * @param contentId
+   * @param userId
    */
   async undespiseContent(contentId, userId) {
     return this._removeInteraction(contentId, userId, 'despise');
@@ -59,6 +69,9 @@ class ContentInteractionService extends Service {
 
   /**
    * 收藏文章
+   * @param contentId
+   * @param userId
+   * @param metadata
    */
   async favoriteContent(contentId, userId, metadata = {}) {
     return this._handleInteraction(contentId, userId, 'favorite', metadata, []);
@@ -66,6 +79,8 @@ class ContentInteractionService extends Service {
 
   /**
    * 取消收藏
+   * @param contentId
+   * @param userId
    */
   async unfavoriteContent(contentId, userId) {
     return this._removeInteraction(contentId, userId, 'favorite');
@@ -121,6 +136,9 @@ class ContentInteractionService extends Service {
 
   /**
    * 移除交互（通用逻辑）
+   * @param contentId
+   * @param userId
+   * @param type
    */
   async _removeInteraction(contentId, userId, type) {
     const { ctx } = this;
@@ -149,23 +167,23 @@ class ContentInteractionService extends Service {
     // praise -> likeNum (旧)
     // favorite -> 暂无明确旧字段，通常不存计数或放在 User
     // despise -> 暂无明确旧字段
-    
+
     // 我们应该在 Content 模型中添加 dedicated 字段：praise_count, favorite_count, despise_count
     // 这里暂时只处理 likeNum (对应 praise)
-    
+
     let updateData = {};
     if (type === 'praise') {
-        // MongoDB 使用 $inc, MariaDB 使用 increment
-        // 这里需要 repository 提供 atomic update 支持，或者由 service 处理
-        // 为简单起见，这里假设 MongoDB 风格的 $inc 支持（Repository层处理差异）
-        updateData = { $inc: { likeNum: delta } };
+      // MongoDB 使用 $inc, MariaDB 使用 increment
+      // 这里需要 repository 提供 atomic update 支持，或者由 service 处理
+      // 为简单起见，这里假设 MongoDB 风格的 $inc 支持（Repository层处理差异）
+      updateData = { $inc: { likeNum: delta } };
     }
-    
+
     // 如果是 MariaDB，contentRepository.update 方法可能不支持 $inc 语法
     // 需要检查 ContentRepository 实现。
     // 为了稳健，这里先空着，依赖实时 count（虽然慢一点，但准确）。
     // 在用户要求验证统计逻辑时，使用 batchGetInteractionCounts 方法才是正道。
-    
+
     // TODO: 实现计数更新
   }
 
@@ -191,13 +209,13 @@ class ContentInteractionService extends Service {
    * @return {Promise<Object>} { praiseCounts, favoriteCounts, despiseCounts } (Maps)
    */
   async getInteractionCounts(contentIds) {
-      const [praiseCounts, favoriteCounts, despiseCounts] = await Promise.all([
-          this.repository.batchGetInteractionCounts(contentIds, 'praise'),
-          this.repository.batchGetInteractionCounts(contentIds, 'favorite'),
-          this.repository.batchGetInteractionCounts(contentIds, 'despise')
-      ]);
-      
-      return { praiseCounts, favoriteCounts, despiseCounts };
+    const [praiseCounts, favoriteCounts, despiseCounts] = await Promise.all([
+      this.repository.batchGetInteractionCounts(contentIds, 'praise'),
+      this.repository.batchGetInteractionCounts(contentIds, 'favorite'),
+      this.repository.batchGetInteractionCounts(contentIds, 'despise'),
+    ]);
+
+    return { praiseCounts, favoriteCounts, despiseCounts };
   }
 }
 

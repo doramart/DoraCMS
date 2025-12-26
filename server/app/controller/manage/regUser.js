@@ -40,6 +40,7 @@ const RegUserController = {
   /**
    * 获取单个用户信息 - 支持 RESTful 路由
    * GET /api/manage/regUser/:id 或 GET /api/manage/regUser/getOne?id=xxx
+   * @param ctx
    */
   async getOne(ctx) {
     const id = ctx.params.id || ctx.query.id;
@@ -86,6 +87,7 @@ const RegUserController = {
   /**
    * 更新用户信息 - 支持 RESTful 路由
    * PUT /api/manage/regUser/:id 或 PUT /api/manage/regUser/update
+   * @param ctx
    */
   async update(ctx) {
     const fields = ctx.request.body || {};

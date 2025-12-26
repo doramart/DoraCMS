@@ -250,7 +250,7 @@
   - 测试失败重试机制
   - _Requirements: 10.2, 10.3_
 
-- [ ] 7.4 实现 Webhook 签名验证
+- [x] 7.4 实现 Webhook 签名验证
   - 实现 HMAC-SHA256 签名生成
   - 实现签名验证工具
   - 在 Webhook 请求中添加签名头
@@ -262,7 +262,7 @@
   - 测试签名生成和验证
   - _Requirements: 10.4_
 
-- [-] 7.6 在业务逻辑中集成 Webhook
+- [x] 7.6 在业务逻辑中集成 Webhook
   - 在 Content Service 中触发 content.created 事件
   - 在 User Service 中触发 user.registered 事件
   - 使用 try-catch 包裹，失败不影响业务

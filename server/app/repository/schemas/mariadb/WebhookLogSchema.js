@@ -152,7 +152,7 @@ module.exports = (sequelize, _app) => {
     }
   );
 
-  WebhookLog.associate = function(models) {
+  WebhookLog.associate = function (models) {
     WebhookLog.belongsTo(models.Webhook, {
       foreignKey: 'webhookId',
       as: 'webhook',
@@ -161,7 +161,7 @@ module.exports = (sequelize, _app) => {
   };
 
   // 类方法
-  WebhookLog.findByWebhookId = function(webhookId, limit = 100) {
+  WebhookLog.findByWebhookId = function (webhookId, limit = 100) {
     return this.findAll({
       where: { webhookId },
       order: [['createdAt', 'DESC']],
@@ -169,7 +169,7 @@ module.exports = (sequelize, _app) => {
     });
   };
 
-  WebhookLog.findByEvent = function(event, limit = 100) {
+  WebhookLog.findByEvent = function (event, limit = 100) {
     return this.findAll({
       where: { event },
       order: [['createdAt', 'DESC']],
@@ -177,7 +177,7 @@ module.exports = (sequelize, _app) => {
     });
   };
 
-  WebhookLog.findPendingRetries = function(limit = 100) {
+  WebhookLog.findPendingRetries = function (limit = 100) {
     return this.findAll({
       where: {
         status: 'retrying',
@@ -189,7 +189,7 @@ module.exports = (sequelize, _app) => {
     });
   };
 
-  WebhookLog.cleanupOldLogs = async function(daysToKeep = 90) {
+  WebhookLog.cleanupOldLogs = async function (daysToKeep = 90) {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
 
@@ -208,7 +208,7 @@ module.exports = (sequelize, _app) => {
   };
 
   // 实例方法
-  WebhookLog.prototype.toJSON = function() {
+  WebhookLog.prototype.toJSON = function () {
     const values = Object.assign({}, this.get());
 
     // 添加状态文本
@@ -223,7 +223,8 @@ module.exports = (sequelize, _app) => {
     // 添加虚拟字段
     values.isSuccess = values.status === 'success';
     values.isFailed = values.status === 'failed';
-    values.needsRetry = values.status === 'retrying' && values.nextRetryAt && new Date() >= new Date(values.nextRetryAt);
+    values.needsRetry =
+      values.status === 'retrying' && values.nextRetryAt && new Date() >= new Date(values.nextRetryAt);
 
     // 确保 JSON 字段的正确格式
     if (typeof values.payload === 'string') {
@@ -261,23 +262,23 @@ module.exports = (sequelize, _app) => {
     return values;
   };
 
-  WebhookLog.prototype.isSuccess = function() {
+  WebhookLog.prototype.isSuccess = function () {
     return this.status === 'success';
   };
 
-  WebhookLog.prototype.isFailed = function() {
+  WebhookLog.prototype.isFailed = function () {
     return this.status === 'failed';
   };
 
-  WebhookLog.prototype.isPending = function() {
+  WebhookLog.prototype.isPending = function () {
     return this.status === 'pending';
   };
 
-  WebhookLog.prototype.isRetrying = function() {
+  WebhookLog.prototype.isRetrying = function () {
     return this.status === 'retrying';
   };
 
-  WebhookLog.prototype.needsRetry = function() {
+  WebhookLog.prototype.needsRetry = function () {
     return this.status === 'retrying' && this.nextRetryAt && new Date() >= new Date(this.nextRetryAt);
   };
 

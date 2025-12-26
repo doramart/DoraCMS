@@ -5,8 +5,8 @@
  * @Last Modified time: 2025-12-25 13:05:39
  */
 'use strict';
-  const { authToken } = require('../utils');
-  const _ = require('lodash');
+const { authToken } = require('../utils');
+const _ = require('lodash');
 
 module.exports = (options, app) => {
   const routeWhiteList = [

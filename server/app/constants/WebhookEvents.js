@@ -51,7 +51,7 @@ const WebhookEvents = {
  * 获取所有事件列表
  * @return {Array<String>} 所有事件的数组
  */
-WebhookEvents.getAllEvents = function() {
+WebhookEvents.getAllEvents = function () {
   const events = [];
   for (const category of Object.values(WebhookEvents)) {
     if (typeof category === 'object') {
@@ -65,7 +65,7 @@ WebhookEvents.getAllEvents = function() {
  * 获取事件分类
  * @return {Object} 事件分类对象
  */
-WebhookEvents.getCategories = function() {
+WebhookEvents.getCategories = function () {
   return {
     content: Object.values(WebhookEvents.CONTENT),
     user: Object.values(WebhookEvents.USER),
@@ -80,7 +80,7 @@ WebhookEvents.getCategories = function() {
  * @param {String} event 事件名称
  * @return {Boolean} 是否有效
  */
-WebhookEvents.isValidEvent = function(event) {
+WebhookEvents.isValidEvent = function (event) {
   return WebhookEvents.getAllEvents().includes(event);
 };
 
@@ -89,7 +89,7 @@ WebhookEvents.isValidEvent = function(event) {
  * @param {String} event 事件名称
  * @return {String|null} 分类名称
  */
-WebhookEvents.getCategoryName = function(event) {
+WebhookEvents.getCategoryName = function (event) {
   if (!event || typeof event !== 'string') {
     return null;
   }
@@ -102,7 +102,7 @@ WebhookEvents.getCategoryName = function(event) {
  * @param {String} event 事件名称
  * @return {String|null} 操作名称
  */
-WebhookEvents.getActionName = function(event) {
+WebhookEvents.getActionName = function (event) {
   if (!event || typeof event !== 'string') {
     return null;
   }
@@ -115,7 +115,7 @@ WebhookEvents.getActionName = function(event) {
  * @param {String} event 事件名称
  * @return {String} 可读文本
  */
-WebhookEvents.formatEventName = function(event) {
+WebhookEvents.formatEventName = function (event) {
   if (!event) return '';
   return event
     .split('.')
