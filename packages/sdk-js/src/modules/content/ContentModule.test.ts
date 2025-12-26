@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ContentModule } from './ContentModule';
 import type { HTTPClient } from '../../http';
-import type { Content, ContentListResponse } from './types';
+import type { Content } from './types';
 
 describe('ContentModule', () => {
   let contentModule: ContentModule;

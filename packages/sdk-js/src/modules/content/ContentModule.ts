@@ -5,6 +5,11 @@ import type {
   UpdateContentData,
   ContentQueryParams,
   ContentListResponse,
+  TagQueryParams,
+  TagListResponse,
+  Category,
+  CategoryQueryParams,
+  CategoryListResponse,
 } from './types';
 
 /**
@@ -137,5 +142,95 @@ export class ContentModule {
     }
 
     throw new Error(response.message || 'Failed to delete contents');
+  }
+
+  /**
+   * 获取标签列表
+   * @param params 查询参数
+   * @returns 标签列表（分页）
+   */
+  async getTags(params?: TagQueryParams): Promise<TagListResponse> {
+    const queryParams: Record<string, any> = {
+      current: params?.page || 1,
+      pageSize: params?.pageSize || 20,
+    };
+
+    // 添加可选参数
+    if (params?.keyword) {
+      queryParams.searchkey = params.keyword;
+    }
+    if (params?.sortBy) {
+      queryParams.sortBy = params.sortBy;
+    }
+    if (params?.sortOrder) {
+      queryParams.sortOrder = params.sortOrder;
+    }
+
+    // 如果请求热门标签，使用不同的端点
+    const endpoint = params?.hot ? '/tags/hot' : '/tags';
+
+    const response = await this.httpClient.get<TagListResponse>(endpoint, {
+      params: queryParams,
+    });
+
+    if (response.status === 'success' && response.data) {
+      return response.data;
+    }
+
+    throw new Error(response.message || 'Failed to fetch tags');
+  }
+
+  /**
+   * 获取分类列表
+   * @param params 查询参数
+   * @returns 分类列表（分页或树形结构）
+   */
+  async getCategories(params?: CategoryQueryParams): Promise<CategoryListResponse | Category[]> {
+    const queryParams: Record<string, any> = {};
+
+    // 如果不是树形结构，添加分页参数
+    if (!params?.tree) {
+      queryParams.current = params?.page || 1;
+      queryParams.pageSize = params?.pageSize || 20;
+    }
+
+    // 添加可选参数
+    if (params?.enable !== undefined) {
+      queryParams.enable = params.enable;
+    }
+    if (params?.sortBy) {
+      queryParams.sortBy = params.sortBy;
+    }
+    if (params?.sortOrder) {
+      queryParams.sortOrder = params.sortOrder;
+    }
+
+    // 如果请求树形结构，使用不同的端点
+    const endpoint = params?.tree ? '/categories/tree' : '/categories';
+
+    const response = await this.httpClient.get<CategoryListResponse | Category[]>(endpoint, {
+      params: queryParams,
+    });
+
+    if (response.status === 'success' && response.data) {
+      return response.data;
+    }
+
+    throw new Error(response.message || 'Failed to fetch categories');
+  }
+
+  /**
+   * 获取单个分类详情
+   * @param id 分类ID
+   * @returns 分类详情
+   */
+  async getCategory(id: string): Promise<Category> {
+    const response = await this.httpClient.get<Category>(`/categories/${id}`);
+
+    if (response.status === 'success' && response.data) {
+      return response.data;
+    }
+
+    throw new Error(response.message || 'Failed to fetch category');
   }
 }

@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import axios from 'axios';
 import { HTTPClient } from './HTTPClient';
-import { APIError } from '../errors';
 import type { SDKConfig } from '../types';
 
 // Mock axios

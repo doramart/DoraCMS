@@ -114,3 +114,77 @@ export interface ContentQueryParams extends PaginationParams {
  * 内容列表响应
  */
 export type ContentListResponse = PaginatedResponse<Content>;
+
+/**
+ * 标签对象
+ */
+export interface Tag {
+  /** 标签ID */
+  id: string;
+  /** 标签名称 */
+  name: string;
+  /** 标签描述 */
+  description?: string;
+  /** 使用次数 */
+  count?: number;
+  /** 创建时间 */
+  createdAt?: string;
+  /** 更新时间 */
+  updatedAt?: string;
+}
+
+/**
+ * 标签查询参数
+ */
+export interface TagQueryParams extends PaginationParams {
+  /** 搜索关键词 */
+  keyword?: string;
+  /** 是否只获取热门标签 */
+  hot?: boolean;
+}
+
+/**
+ * 标签列表响应
+ */
+export type TagListResponse = PaginatedResponse<Tag>;
+
+/**
+ * 分类对象
+ */
+export interface Category {
+  /** 分类ID */
+  id: string;
+  /** 分类名称 */
+  name: string;
+  /** 分类描述 */
+  description?: string;
+  /** 默认URL */
+  defaultUrl?: string;
+  /** 排序 */
+  sortId?: number;
+  /** 是否启用 */
+  enable?: boolean;
+  /** 父分类ID */
+  parentId?: string;
+  /** 子分类列表 */
+  children?: Category[];
+  /** 创建时间 */
+  createdAt?: string;
+  /** 更新时间 */
+  updatedAt?: string;
+}
+
+/**
+ * 分类查询参数
+ */
+export interface CategoryQueryParams extends PaginationParams {
+  /** 是否启用 */
+  enable?: boolean;
+  /** 是否获取树形结构 */
+  tree?: boolean;
+}
+
+/**
+ * 分类列表响应
+ */
+export type CategoryListResponse = PaginatedResponse<Category>;
