@@ -6,6 +6,7 @@ require('./env');
 const path = require('path');
 
 const pluginConfigs = require('./ext/plugin');
+
 // add you build-in plugin here, example:
 exports.nunjucks = {
   enable: true,
@@ -62,7 +63,14 @@ exports.static = true;
 //   enable: true,
 //   package: 'egg-cors',
 // };
+
 exports.aiAssistant = {
   enable: true,
   path: path.join(__dirname, '../lib/plugin/egg-ai-assistant'),
+};
+
+// 🔥 Phase 1: Swagger API 文档插件
+exports.swaggerdoc = {
+  enable: true,
+  package: 'egg-swagger-doc',
 };

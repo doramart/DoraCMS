@@ -5,11 +5,16 @@ const { Controller } = require('egg');
 /**
  * 健康检查控制器
  * 用于Docker健康检查和服务监控
+ * @controller Health
  */
 class HealthController extends Controller {
   /**
-   * 健康检查接口
-   * GET /api/health
+   * @summary 健康检查接口
+   * @description 检查系统整体健康状态，包括数据库、Redis等服务
+   * @router get /api/health
+   * @router get /api/v1/health
+   * @response 200 healthCheckResponse 健康检查成功
+   * @response 503 healthCheckResponse 服务不可用
    */
   async check() {
     const { ctx, app } = this;
@@ -159,8 +164,11 @@ class HealthController extends Controller {
   }
 
   /**
-   * 简单存活检查
-   * GET /api/health/alive
+   * @summary 简单存活检查
+   * @description 快速检查服务是否存活（不检查依赖服务）
+   * @router get /api/health/alive
+   * @router get /api/v1/health/alive
+   * @response 200 aliveResponse 服务存活
    */
   async alive() {
     const { ctx } = this;
@@ -174,8 +182,12 @@ class HealthController extends Controller {
   }
 
   /**
-   * 就绪检查
-   * GET /api/health/ready
+   * @summary 就绪检查
+   * @description 检查服务是否就绪（数据库连接等）
+   * @router get /api/health/ready
+   * @router get /api/v1/health/ready
+   * @response 200 readyResponse 服务就绪
+   * @response 503 readyResponse 服务未就绪
    */
   async ready() {
     const { ctx, app } = this;

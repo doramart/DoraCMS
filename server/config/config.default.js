@@ -79,6 +79,8 @@ module.exports = appInfo => {
 
   // 配置需要的中间件,数组顺序即为中间件的加载顺序
   config.middleware = [
+    'requestId', // 请求追踪 ID 中间件 - 必须在最前面
+    'apiVersion', // API 版本管理中间件 - 在 errorHandler 之后
     'errorHandler', // 统一错误处理中间件 - 需要在最前面
     'errorLogger', // 🔥 统一日志系统：错误日志中间件 - 自动捕获异常
     'apiVersionLogger', // API版本标识中间件 - 需要在最前面执行
@@ -92,6 +94,64 @@ module.exports = appInfo => {
     'spaFallback', // SPA 回退中间件 - 处理微前端路由
     'notfoundHandler', // 移到最后，并使用正确的文件名
   ];
+
+  // API 版本管理配置
+  config.apiVersion = {
+    // 默认 API 版本
+    defaultVersion: 'v1',
+    
+    // 支持的 API 版本列表
+    supportedVersions: ['v1'],
+    
+    // 是否严格模式（不支持的版本返回 400）
+    strictMode: false,
+    
+    // 版本提取正则表达式
+    versionPattern: /^\/api\/(v\d+)\//,
+    
+    // 请求头字段名
+    headerField: 'API-Version',
+  };
+
+  // Swagger API 文档配置
+  config.swaggerdoc = {
+    dirScanner: './app/controller',
+    apiInfo: {
+      title: 'DoraCMS API Documentation',
+      description: 'DoraCMS RESTful API 文档 - 应用底座平台',
+      version: '3.0.0',
+    },
+    schemes: ['http', 'https'],
+    consumes: ['application/json'],
+    produces: ['application/json'],
+    securityDefinitions: {
+      // JWT 认证
+      Bearer: {
+        type: 'apiKey',
+        name: 'Authorization',
+        in: 'header',
+        description: 'JWT Token 认证，格式：Bearer {token}',
+      },
+      // API Key 认证
+      ApiKey: {
+        type: 'apiKey',
+        name: 'X-API-Key',
+        in: 'header',
+        description: 'API Key 认证',
+      },
+      // API 签名认证
+      ApiSignature: {
+        type: 'apiKey',
+        name: 'X-API-Signature',
+        in: 'header',
+        description: 'API 签名认证（HMAC-SHA256）',
+      },
+    },
+    enableSecurity: true,
+    // 路由前缀
+    routerMap: true,
+    enable: true,
+  };
 
   // gzip压缩
   config.compress = {

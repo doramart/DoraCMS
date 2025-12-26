@@ -18,6 +18,7 @@
     "egg-mongoose": "^4.0.1",
     "egg-redis": "^2.5.0",
     "egg-scripts": "^2.17.0",
+    "egg-swagger-doc": "^2.3.2",
     "egg-view-nunjucks": "^2.3.0",
     "fs-extra": "^11.1.1",
     "iconv-lite": "^0.6.3",

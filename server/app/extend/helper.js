@@ -83,29 +83,46 @@ module.exports = {
     this.setMemoryCache(currentKey, '', 2000);
   },
 
+  /**
+   * 成功响应（使用新的统一响应格式）
+   * @deprecated 建议使用 APIResponse.success() 替代
+   */
   renderSuccess(ctx, { data = {}, message = '' } = {}) {
-    ctx.body = {
-      status: 200,
-      data: data || {},
-      message: message || '',
-    };
-    ctx.status = 200;
+    const APIResponse = require('../utils/apiResponse');
+    APIResponse.success(ctx, { data, message });
   },
 
+  /**
+   * 失败响应（使用新的统一响应格式）
+   * @deprecated 建议使用 APIResponse.fail() 或其他具体方法替代
+   */
   renderFail(ctx, { message = '', data = {}, code = 500 } = {}) {
+    const APIResponse = require('../utils/apiResponse');
+    
     if (message) {
-      // throw new Error(message);
-      if (message instanceof Object) {
+      // 如果 message 是 Error 对象，提取消息
+      if (message instanceof Error) {
         message = message.message;
       }
-      ctx.body = {
-        status: code,
-        message,
-        data: data || {},
-      };
-      ctx.status = 200;
+      
+      // 根据状态码选择合适的响应方法
+      if (code === 401) {
+        APIResponse.unauthorized(ctx, message);
+      } else if (code === 403) {
+        APIResponse.forbidden(ctx, message);
+      } else if (code === 404) {
+        APIResponse.notFound(ctx, message);
+      } else if (code === 400) {
+        APIResponse.badRequest(ctx, message, data);
+      } else if (code === 422) {
+        APIResponse.businessError(ctx, message);
+      } else if (code === 429) {
+        APIResponse.tooManyRequests(ctx, message);
+      } else {
+        APIResponse.fail(ctx, { message, data, status: code });
+      }
     } else {
-      throw new Error(message);
+      throw new Error('Error message is required');
     }
   },
 
