@@ -4,7 +4,10 @@
       "Bash(node:*)",
       "Bash(pnpm lint:server:*)",
       "Bash(npx prettier:*)",
-      "Bash(pnpm build:server:*)"
+      "Bash(pnpm build:server:*)",
+      "Bash(find:*)",
+      "Bash(pnpm dev)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []

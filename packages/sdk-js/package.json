@@ -1,0 +1,64 @@
+{
+  "name": "@doracms/sdk",
+  "version": "0.1.0",
+  "description": "Official JavaScript/TypeScript SDK for DoraCMS",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepublishOnly": "pnpm run build"
+  },
+  "keywords": [
+    "doracms",
+    "cms",
+    "sdk",
+    "api-client",
+    "typescript"
+  ],
+  "author": "DoraCMS Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doramart/DoraCMS.git",
+    "directory": "packages/sdk-js"
+  },
+  "bugs": {
+    "url": "https://github.com/doramart/DoraCMS/issues"
+  },
+  "homepage": "https://github.com/doramart/DoraCMS/tree/main/packages/sdk-js#readme",
+  "dependencies": {
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vite-plugin-dts": "^3.7.0",
+    "vitest": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

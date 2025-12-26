@@ -1,0 +1,75 @@
+/**
+ * SDK 配置选项
+ */
+export interface SDKConfig {
+  /** API 基础 URL */
+  apiUrl: string;
+  /** API 密钥（用于 API Key 认证） */
+  apiKey?: string;
+  /** API 密钥 Secret（用于签名） */
+  apiSecret?: string;
+  /** JWT Token（用于 JWT 认证） */
+  token?: string;
+  /** API 版本 */
+  version?: string;
+  /** 请求超时时间（毫秒） */
+  timeout?: number;
+  /** 是否自动刷新 Token */
+  autoRefreshToken?: boolean;
+  /** Token 存储方式 */
+  tokenStorage?: 'localStorage' | 'sessionStorage' | 'memory';
+}
+
+/**
+ * API 响应格式
+ */
+export interface APIResponse<T = any> {
+  status: 'success' | 'error';
+  data?: T;
+  message?: string;
+  code?: string;
+  timestamp: string;
+  requestId: string;
+}
+
+/**
+ * API 错误响应
+ */
+export interface APIErrorResponse {
+  status: 'error';
+  code: string;
+  message: string;
+  timestamp: string;
+  requestId: string;
+  details?: any;
+}
+
+/**
+ * 分页参数
+ */
+export interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * 分页响应
+ */
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+/**
+ * 请求配置
+ */
+export interface RequestConfig {
+  headers?: Record<string, string>;
+  params?: Record<string, any>;
+  timeout?: number;
+}

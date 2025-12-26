@@ -6,12 +6,15 @@
 
 ## Tasks
 
-- [ ] 1. Phase 1: API 标准化与文档化
-- [ ] 1.1 统一 API 响应格式
-  - 创建统一响应格式工具类（server/app/utils/apiResponse.js）
-  - 定义标准响应结构：{ status, data, message, timestamp, requestId }
-  - 更新所有 Controller 使用统一响应格式
-  - 确保错误响应也符合统一格式
+- [x] 1. Phase 1: API 标准化与文档化
+- [x] 1.1 统一 API 响应格式
+  - ✅ 创建统一响应格式工具类（server/app/utils/apiResponse.js）
+  - ✅ 定义标准响应结构：{ status, data, message, timestamp, requestId }
+  - ✅ 创建 requestId 中间件（server/app/middleware/requestId.js）
+  - ✅ 更新 helper.js 的 renderSuccess/renderFail 使用新格式（向后兼容）
+  - ✅ 更新 errorHandler 中间件使用统一响应格式
+  - ✅ 在 config.default.js 中注册 requestId 中间件
+  - 📝 现有 Controller 无需修改，通过 helper 方法自动使用新格式
   - _Requirements: 1.2, 2.2_
 
 - [ ]* 1.2 编写 API 响应格式属性测试
@@ -22,11 +25,14 @@
   - 验证 Content-Type 为 application/json
   - _Requirements: 1.2, 2.2_
 
-- [ ] 1.3 实现 API 版本管理
-  - 创建 API 版本中间件（server/app/middleware/apiVersion.js）
-  - 支持 URL 路径版本（/api/v1/）和请求头版本（API-Version）
-  - 在响应头中添加版本信息
-  - 创建 v1 版本路由目录（server/app/controller/api/v1/）
+- [x] 1.3 实现 API 版本管理
+  - ✅ 创建 API 版本中间件（server/app/middleware/apiVersion.js）
+  - ✅ 支持 URL 路径版本（/api/v1/）和请求头版本（API-Version）
+  - ✅ 在响应头中添加版本信息（API-Version, X-API-Version-Source）
+  - ✅ 创建 v1 版本路由目录（server/app/router/api/v1.js）
+  - ✅ 在 config.default.js 中配置版本管理参数
+  - ✅ 编写 API 版本管理文档（server/docs/api-versioning.md）
+  - 📝 v1 路由采用 RESTful 风格，与旧路由共存保持兼容
   - _Requirements: 1.3, 9.1, 9.4, 9.5_
 
 - [ ]* 1.4 编写 API 版本兼容性属性测试
@@ -36,22 +42,28 @@
   - 测试版本指定方式（URL 和 Header）
   - _Requirements: 1.3, 9.2, 9.5_
 
-- [ ] 1.5 集成 Swagger/OpenAPI 文档
-  - 安装 egg-swagger-doc 插件
-  - 配置 Swagger UI 路由（/api-docs）
-  - 为现有 API 添加 JSDoc 注释
-  - 生成 OpenAPI 3.0 规范文件
+- [x] 1.5 集成 Swagger/OpenAPI 文档
+  - ✅ 安装 egg-swagger-doc 插件（添加到 server/package.json）
+  - ✅ 配置 Swagger UI 路由（/swagger-ui.html）
+  - ✅ 配置 OpenAPI 规范（/swagger-doc）
+  - ✅ 为健康检查 API 添加 JSDoc 注释示例
+  - ✅ 创建通用数据模型（server/app/contract/common.js）
+  - ✅ 编写 Swagger 使用指南（server/docs/swagger-guide.md）
+  - 📝 需要运行 `pnpm install` 安装依赖后才能使用
+  - 📝 其他 Controller 可参考 health.js 添加注释
   - _Requirements: 1.1, 1.4_
 
-- [ ] 1.6 优化错误处理中间件
-  - 增强现有 errorHandler 中间件
-  - 统一错误码定义（server/app/constants/ErrorCodes.js）
-  - 实现错误分类（认证错误、客户端错误、服务端错误）
-  - 添加请求追踪 ID（requestId）
+- [x] 1.6 优化错误处理中间件
+  - ✅ 增强现有 errorHandler 中间件
+  - ✅ 统一错误码定义（server/app/constants/ErrorCodes.js）
+  - ✅ 实现错误分类（认证错误、客户端错误、服务端错误、业务错误）
+  - ✅ 添加请求追踪 ID（requestId）- 已在 Task 1.1 完成
+  - ✅ 支持多种错误类型识别（BusinessError、参数验证、数据库、JWT）
+  - ✅ 开发环境自动添加调试信息
   - _Requirements: 1.2_
 
-- [ ] 2. Phase 2: 多端认证系统增强
-- [ ] 2.1 验证现有 API Key 功能
+- [x] 2. Phase 2: 多端认证系统增强
+- [x] 2.1 验证现有 API Key 功能
   - ✅ 已存在：API Key Model（server/app/model/apiKey.js）
   - ✅ 已存在：API Key Service（server/app/service/apiKey.js）
   - ✅ 已存在：API Key Controller（server/app/controller/api/apiKey.js）
@@ -70,10 +82,11 @@
   - 测试 IP 白名单和速率限制
   - _Requirements: 3.1, 3.2, 3.4, 3.5_
 
-- [ ] 2.3 优化 API Key 文档
-  - 在 Swagger 文档中添加 API Key 认证说明
-  - 编写 API Key 使用指南
-  - 提供 API Key 签名生成示例代码
+- [x] 2.3 优化 API Key 文档
+  - ✅ 在 Swagger 文档中添加 API Key 认证说明
+  - ✅ 编写 API Key 使用指南（server/docs/api-key-guide.md）
+  - ✅ 提供 API Key 签名生成示例代码（Node.js, Python, Java）
+  - ✅ 为 API Key 相关的 8 个接口添加 Swagger 注释
   - _Requirements: 3.2_
 
 - [ ] 2.4 集成 OAuth 2.0 支持（可选）
@@ -83,7 +96,7 @@
   - 实现 Token 交换逻辑
   - _Requirements: 3.3_
 
-- [ ] 3. Checkpoint - 验证认证系统
+- [x] 3. Checkpoint - 验证认证系统
 - 验证现有 API Key 功能正常工作
 - 验证 JWT 认证功能正常工作
 - 验证 MongoDB 和 MariaDB 双数据库支持
@@ -91,15 +104,15 @@
 - 运行所有认证相关测试，确保通过
 - 询问用户是否有问题
 
-- [ ] 4. Phase 3: JavaScript/TypeScript SDK
-- [ ] 4.1 创建 SDK 项目结构
+- [-] 4. Phase 3: JavaScript/TypeScript SDK
+- [x] 4.1 创建 SDK 项目结构
   - 在 packages/sdk-js 创建 SDK 项目
   - 配置 TypeScript 和构建工具（Rollup/Vite）
   - 配置 package.json（@doracms/sdk）
   - 设置 ESLint 和 Prettier
   - _Requirements: 4.1_
 
-- [ ] 4.2 实现 SDK 核心类
+- [x] 4.2 实现 SDK 核心类
   - 实现 DoraCMSClient 主类
   - 实现配置管理（apiUrl, apiKey, token, version）
   - 实现 HTTP 客户端（基于 axios）

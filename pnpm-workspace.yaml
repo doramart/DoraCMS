@@ -5,3 +5,5 @@ packages:
   # 客户端项目
   - 'client/user-center'
   - 'client/remote-page/*'
+  # 独立包（SDK、CLI、工具等）
+  - 'packages/*'

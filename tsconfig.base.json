@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    // 类型检查
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    
+    // 模块解析
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    
+    // 输出
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    
+    // 其他
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage"
+  ]
+}

@@ -36,16 +36,23 @@
 
 ## 🏗️ 项目架构
 
-本项目采用 monorepo 架构，包含三个主要模块：
+本项目采用 **pnpm monorepo** 架构，包含多个相关模块：
 
 ```
-egg-cms/
+doracms/
 ├── server/                    # EggJS 后端服务
 ├── client/
 │   ├── user-center/          # Vue3 用户前端
 │   └── admin-center/         # Vue3 + TypeScript 管理后台
+├── packages/                  # 🆕 独立发布的 npm 包
+│   ├── sdk-js/               # @doracms/sdk (计划中)
+│   ├── types/                # @doracms/types (计划中)
+│   ├── cli/                  # @doracms/cli (计划中)
+│   └── utils/                # @doracms/utils (计划中)
 └── package.json              # 根目录配置
 ```
+
+> 📚 详细的 monorepo 结构说明请参考 [MONOREPO_STRUCTURE.md](./MONOREPO_STRUCTURE.md)
 
 ## 🛠️ 技术栈
 
