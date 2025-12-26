@@ -1077,6 +1077,43 @@ const RegUserController = {
     });
   },
 
+  /**
+   * 🔥 新增：刷新 Token
+   * POST /api/v1/auth/refresh
+   * @param ctx
+   */
+  async refreshToken(ctx) {
+    // 🔥 检查用户登录状态
+    const userInfo = ctx.session.user;
+    if (!userInfo) {
+      throw RepositoryExceptions.auth.loginRequired();
+    }
+
+    // 🔥 生成新的 Token
+    const newToken = jwt.sign(
+      {
+        userId: userInfo.id,
+        userName: userInfo.userName,
+        email: userInfo.email,
+      },
+      this.app.config.encrypt_key,
+      {
+        expiresIn: this.app.config.userMaxAge,
+      }
+    );
+
+    // 🔥 更新 Cookie
+    RegUserController._setAuthCookie(this.app, ctx, newToken, this.app.config.userMaxAge);
+
+    ctx.helper.renderSuccess(ctx, {
+      data: {
+        token: newToken,
+        expiresIn: this.app.config.userMaxAge,
+      },
+      message: 'Token 刷新成功',
+    });
+  },
+
   async sentConfirmEmail(ctx) {
     const fields = ctx.request.body || {};
     const targetEmail = fields.email;

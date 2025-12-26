@@ -72,4 +72,5 @@ export interface RequestConfig {
   headers?: Record<string, string>;
   params?: Record<string, any>;
   timeout?: number;
+  data?: any; // 支持 DELETE 等请求的 body
 }

@@ -23,7 +23,7 @@ export class AuthModule {
    * @returns 登录响应（包含用户信息和 Token）
    */
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const response = await this.httpClient.post<LoginResponse>('/reguser/doLogin', {
+    const response = await this.httpClient.post<LoginResponse>('/auth/login', {
       userName: credentials.username,
       password: credentials.password,
       imageCode: credentials.imageCode,
@@ -48,11 +48,16 @@ export class AuthModule {
    * 用户登出
    */
   async logout(): Promise<void> {
-    // 清除本地 Token
-    this.tokenStorage.removeToken();
-
-    // 可选：调用服务端登出接口
-    // await this.httpClient.post('/reguser/logout');
+    try {
+      // 调用服务端登出接口
+      await this.httpClient.post('/auth/logout');
+    } catch (error) {
+      // 即使服务端登出失败，也清除本地 Token
+      console.warn('Server logout failed:', error);
+    } finally {
+      // 清除本地 Token
+      this.tokenStorage.removeToken();
+    }
   }
 
   /**
@@ -81,7 +86,7 @@ export class AuthModule {
    * @returns 当前用户信息
    */
   async getCurrentUser(): Promise<CurrentUser> {
-    const response = await this.httpClient.get<CurrentUser>('/reguser/getSession');
+    const response = await this.httpClient.get<CurrentUser>('/users/me');
 
     if (response.status === 'success' && response.data) {
       return response.data;

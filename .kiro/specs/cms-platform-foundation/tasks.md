@@ -132,10 +132,15 @@
   - 测试 Token 存储和恢复
   - _Requirements: 4.5_
 
-- [ ] 4.5 实现内容管理模块
-  - 实现 ContentModule（list, get, create, update, delete）
-  - 提供类型安全的方法签名
-  - 实现分页和过滤参数
+- [x] 4.5 实现内容管理模块
+  - ✅ 实现 ContentModule（list, get, create, update, delete, deleteMany）
+  - ✅ 提供类型安全的方法签名
+  - ✅ 实现分页和过滤参数
+  - ✅ 创建单元测试（12 个测试用例）
+  - ✅ 集成到 DoraCMSClient
+  - ✅ 更新示例代码
+  - ✅ 所有测试通过（68/68）
+  - ✅ 构建成功
   - _Requirements: 4.3_
 
 - [ ] 4.6 实现统一错误处理

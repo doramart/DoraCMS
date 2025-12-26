@@ -33,10 +33,6 @@ async function main() {
     console.log('\n检查登录状态...');
     console.log('是否已登录:', client.auth.isLoggedIn());
 
-    // 注意：content 模块将在后续任务中实现
-    // 以下代码暂时无法运行，仅作为示例
-
-    /*
     // 4. 获取内容列表
     console.log('\n获取内容列表...');
     const contents = await client.content.list({
@@ -64,7 +60,6 @@ async function main() {
     console.log('\n删除内容...');
     await client.content.delete(newContent.id);
     console.log('内容删除成功');
-    */
 
     // 8. 登出
     console.log('\n登出...');

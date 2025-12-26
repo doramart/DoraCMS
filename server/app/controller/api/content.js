@@ -772,6 +772,94 @@ const ContentController = {
   },
 
   /**
+   * 🔥 新增：RESTful - 删除内容
+   * DELETE /api/v1/content/:id
+   * @param ctx
+   */
+  async deleteContent(ctx) {
+    const contentId = ctx.params.id;
+
+    if (!ctx.validateId(contentId)) {
+      throw RepositoryExceptions.create.validation(ctx.__('validation.errorParams'));
+    }
+
+    // 🔥 检查用户登录状态
+    const userInfo = ctx.session.user;
+    if (!userInfo) {
+      throw RepositoryExceptions.auth.loginRequired();
+    }
+
+    // 🔥 验证内容是否存在且属于当前用户
+    const targetContent = await ctx.service.content.findOne({
+      id: { $eq: contentId },
+      uAuthor: { $eq: userInfo.id },
+    });
+
+    if (!targetContent) {
+      throw RepositoryExceptions.content.notOwner(contentId, userInfo.id);
+    }
+
+    // 🔥 删除内容
+    await ctx.service.content.removes([contentId]);
+
+    ctx.helper.renderSuccess(ctx, {
+      message: ctx.__('api.response.success', [ctx.__('user.action.types.delete')]),
+    });
+  },
+
+  /**
+   * 🔥 新增：RESTful - 批量删除内容
+   * DELETE /api/v1/content
+   * @param ctx
+   */
+  async deleteContents(ctx) {
+    const { ids } = ctx.request.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw RepositoryExceptions.create.validation('请提供要删除的内容ID列表');
+    }
+
+    // 🔥 验证所有ID格式
+    for (const id of ids) {
+      if (!ctx.validateId(id)) {
+        throw RepositoryExceptions.create.validation(`无效的内容ID: ${id}`);
+      }
+    }
+
+    // 🔥 检查用户登录状态
+    const userInfo = ctx.session.user;
+    if (!userInfo) {
+      throw RepositoryExceptions.auth.loginRequired();
+    }
+
+    // 🔥 验证所有内容都属于当前用户
+    const targetContents = await ctx.service.content.find(
+      { isPaging: '0' },
+      {
+        filters: {
+          id: { $in: ids },
+          uAuthor: { $eq: userInfo.id },
+        },
+        fields: ['id'],
+      }
+    );
+
+    if (targetContents.length !== ids.length) {
+      throw RepositoryExceptions.business.operationNotAllowed('部分内容不存在或不属于当前用户');
+    }
+
+    // 🔥 批量删除内容
+    await ctx.service.content.removes(ids);
+
+    ctx.helper.renderSuccess(ctx, {
+      data: {
+        deletedCount: ids.length,
+      },
+      message: ctx.__('api.response.success', [`批量删除 ${ids.length} 条内容`]),
+    });
+  },
+
+  /**
    * 🔥 优化版：随机获取图片
    * @param ctx
    */

@@ -205,6 +205,7 @@ export class HTTPClient {
       headers: config.headers,
       params: config.params,
       timeout: config.timeout,
+      data: config.data, // 支持 DELETE 请求的 body
     };
   }
 

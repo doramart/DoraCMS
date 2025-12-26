@@ -14,6 +14,9 @@ export { HTTPClient } from './http';
 export { AuthModule } from './modules/auth';
 export type * from './modules/auth';
 
+export { ContentModule } from './modules/content';
+export type * from './modules/content';
+
 // 导出类型定义
 export type * from './types';
 

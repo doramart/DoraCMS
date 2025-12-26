@@ -39,6 +39,12 @@ module.exports = app => {
   // 更新内容（需要认证）
   router.put('/api/v1/content/:id', authApiToken, controller.api.content.updateContent);
   
+  // 删除单个内容（需要认证）
+  router.delete('/api/v1/content/:id', authApiToken, controller.api.content.deleteContent);
+  
+  // 批量删除内容（需要认证）
+  router.delete('/api/v1/content', authApiToken, controller.api.content.deleteContents);
+  
   // 点赞/取消点赞内容
   router.post('/api/v1/content/:id/like', authApiToken, controller.api.content.likeContent);
   
@@ -97,6 +103,7 @@ module.exports = app => {
   router.post('/api/v1/auth/login', controller.api.regUser.loginAction);
   router.post('/api/v1/auth/register', controller.api.regUser.regAction);
   router.post('/api/v1/auth/logout', authApiToken, controller.api.regUser.logOut);
+  router.post('/api/v1/auth/refresh', authApiToken, controller.api.regUser.refreshToken);
   router.post('/api/v1/auth/reset-password', controller.api.regUser.resetMyPassword);
   router.post('/api/v1/auth/send-code', controller.api.regUser.sendVerificationCode);
 

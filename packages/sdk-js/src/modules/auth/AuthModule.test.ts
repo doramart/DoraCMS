@@ -56,7 +56,7 @@ describe('AuthModule', () => {
         password: 'password123',
       });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith('/reguser/doLogin', {
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/auth/login', {
         userName: 'testuser',
         password: 'password123',
         imageCode: undefined,
@@ -87,7 +87,7 @@ describe('AuthModule', () => {
         imageCode: '1234',
       });
 
-      expect(mockHttpClient.post).toHaveBeenCalledWith('/reguser/doLogin', {
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/auth/login', {
         userName: 'testuser',
         password: 'password123',
         imageCode: '1234',
@@ -115,7 +115,24 @@ describe('AuthModule', () => {
   });
 
   describe('logout', () => {
-    it('should clear token from storage', async () => {
+    it('should call server logout and clear token from storage', async () => {
+      const mockResponse = {
+        status: 'success' as const,
+        timestamp: '2024-01-01T00:00:00Z',
+        requestId: 'req-123',
+      };
+
+      vi.mocked(mockHttpClient.post).mockResolvedValue(mockResponse);
+
+      await authModule.logout();
+
+      expect(mockHttpClient.post).toHaveBeenCalledWith('/auth/logout');
+      expect(mockTokenStorage.removeToken).toHaveBeenCalled();
+    });
+
+    it('should clear token even if server logout fails', async () => {
+      vi.mocked(mockHttpClient.post).mockRejectedValue(new Error('Server error'));
+
       await authModule.logout();
 
       expect(mockTokenStorage.removeToken).toHaveBeenCalled();
@@ -176,7 +193,7 @@ describe('AuthModule', () => {
 
       const result = await authModule.getCurrentUser();
 
-      expect(mockHttpClient.get).toHaveBeenCalledWith('/reguser/getSession');
+      expect(mockHttpClient.get).toHaveBeenCalledWith('/users/me');
       expect(result).toEqual(mockResponse.data);
     });
 
