@@ -77,8 +77,12 @@ const AdsController = {
     ctx.helper.renderSuccess(ctx);
   },
 
+  /**
+   * 获取单个广告信息 - 支持 RESTful 路由
+   * GET /api/manage/ads/:id 或 GET /api/manage/ads/getOne?id=xxx
+   */
   async getOne(ctx) {
-    const id = ctx.query.id;
+    const id = ctx.params.id || ctx.query.id;
 
     // 🔥 标准化查询选项
     const options = {
@@ -97,6 +101,10 @@ const AdsController = {
     });
   },
 
+  /**
+   * 更新广告信息 - 支持 RESTful 路由
+   * PUT /api/manage/ads/:id 或 PUT /api/manage/ads/update
+   */
   async update(ctx) {
     const fields = ctx.request.body || {};
     const formObj = {
@@ -136,8 +144,12 @@ const AdsController = {
 
     formObj.items = itemIdArr;
 
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || fields.id;
+    fields.id = id;
+
     // 🔥 业务验证（唯一性检查、类型验证等）在Service层自动处理
-    await ctx.service.ads.update(fields.id, formObj);
+    await ctx.service.ads.update(id, formObj);
 
     ctx.helper.renderSuccess(ctx);
   },

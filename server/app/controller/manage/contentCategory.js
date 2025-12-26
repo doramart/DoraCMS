@@ -73,9 +73,15 @@ const ContentCategoryController = {
     ctx.helper.renderSuccess(ctx, { data: cateObj });
   },
 
+  /**
+   * 🔥 优化版：获取单个分类
+   * @param ctx
+   * @description 支持 RESTful 路由：GET /manage/v1/categories/:id
+   */
   async getOne(ctx) {
     // 🔥 统一异常处理版本 - 移除try-catch
-    const { id } = ctx.query;
+    // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+    const { id } = ctx.params.id ? { id: ctx.params.id } : ctx.query;
 
     // 🔥 使用语义化异常验证
     if (!id) {
@@ -100,9 +106,18 @@ const ContentCategoryController = {
     });
   },
 
+  /**
+   * 🔥 优化版：更新分类
+   * @param ctx
+   * @description 支持 RESTful 路由：PUT /manage/v1/categories/:id
+   */
   async update(ctx) {
     // 🔥 统一异常处理版本 - 移除try-catch
     const fields = ctx.request.body || {};
+
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 id
+    const categoryId = ctx.params.id || fields.id;
+    fields.id = categoryId; // 确保 fields 中有 id
 
     const formObj = {
       name: fields.name,
@@ -123,7 +138,7 @@ const ContentCategoryController = {
     ctx.validate(contentCategoryRule.form(ctx), formObj);
 
     // 🔥 Repository会自动进行业务验证并抛出语义化异常
-    const result = await ctx.service.contentCategory.update(fields.id, formObj);
+    const result = await ctx.service.contentCategory.update(categoryId, formObj);
 
     ctx.helper.renderSuccess(ctx, { data: result });
   },

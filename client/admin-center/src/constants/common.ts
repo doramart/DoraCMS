@@ -7,4 +7,4 @@ export const yesOrNoRecord: Record<CommonType.YesOrNo, App.I18n.I18nKey> = {
 
 export const yesOrNoOptions = transformRecordToOption(yesOrNoRecord);
 // 上传文件的url
-export const uploadUrl = `${import.meta.env.VITE_SERVICE_BASE_URL}/api/upload/files`;
+export const uploadUrl = `${import.meta.env.VITE_SERVICE_BASE_URL}/api/v1/files`;

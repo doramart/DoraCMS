@@ -1,22 +1,23 @@
 /**
- * AI 助手插件 - API 路由配置
+ * AI 助手插件 - API 路由配置 (v1)
  * 提供给普通用户的 AI 功能接口
  *
  * @author DoraCMS Team
  * @date 2025-01-10
+ * @version 1.0.0
  */
 
 'use strict';
 
 module.exports = app => {
   const { router } = app;
-  const prefix = '/api';
+  const prefix = '/api/v1/ai';
 
   // 获取插件目录的 controller（插件 controller 需要手动加载）
-  const AIConfigController = require('../../controller/aiConfig');
-  const AIContentController = require('../../controller/aiContent');
-  const ContentPublishController = require('../../controller/contentPublish');
-  const ImageGenerationController = require('../../controller/imageGeneration');
+  const AIConfigController = require('../../../controller/aiConfig');
+  const AIContentController = require('../../../controller/aiContent');
+  const ContentPublishController = require('../../../controller/contentPublish');
+  const ImageGenerationController = require('../../../controller/imageGeneration');
 
   // 可选的 API Token 验证中间件（根据项目需要决定是否启用）
   const authApiToken = app.middleware.authApiToken ? app.middleware.authApiToken({}) : null;
@@ -99,10 +100,10 @@ module.exports = app => {
 
   /**
    * 获取 AI 模型列表（只读）
-   * GET /api/ai/models?page=1&pageSize=20&isEnabled=true
+   * GET /api/v1/ai/models?page=1&pageSize=20&isEnabled=true
    * 注意：普通用户只能查询已启用的模型，不能进行增删改操作
    */
-  router.get(`${prefix}/ai/models`, aiConfig.getModels);
+  router.get(`${prefix}/models`, aiConfig.getModels);
 
   // ============================================================
   // AI 内容生成 API（普通用户可用）
@@ -112,90 +113,90 @@ module.exports = app => {
 
   /**
    * 生成文章标题
-   * POST /api/ai/content/generate-title
+   * POST /api/v1/ai/content/generate-title
    * Body: { content: string, count?: number }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/generate-title`, authApiToken, aiContent.generateTitle);
+    router.post(`${prefix}/content/generate-title`, authApiToken, aiContent.generateTitle);
   } else {
-    router.post(`${prefix}/ai/content/generate-title`, aiContent.generateTitle);
+    router.post(`${prefix}/content/generate-title`, aiContent.generateTitle);
   }
 
   /**
    * 生成文章摘要
-   * POST /api/ai/content/generate-summary
+   * POST /api/v1/ai/content/generate-summary
    * Body: { content: string, maxLength?: number }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/generate-summary`, authApiToken, aiContent.generateSummary);
+    router.post(`${prefix}/content/generate-summary`, authApiToken, aiContent.generateSummary);
   } else {
-    router.post(`${prefix}/ai/content/generate-summary`, aiContent.generateSummary);
+    router.post(`${prefix}/content/generate-summary`, aiContent.generateSummary);
   }
 
   /**
    * 提取文章标签
-   * POST /api/ai/content/extract-tags
+   * POST /api/v1/ai/content/extract-tags
    * Body: { title?: string, content: string, count?: number }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/extract-tags`, authApiToken, aiContent.extractTags);
+    router.post(`${prefix}/content/extract-tags`, authApiToken, aiContent.extractTags);
   } else {
-    router.post(`${prefix}/ai/content/extract-tags`, aiContent.extractTags);
+    router.post(`${prefix}/content/extract-tags`, aiContent.extractTags);
   }
 
   /**
    * 提取 SEO 关键词
-   * POST /api/ai/content/extract-keywords
+   * POST /api/v1/ai/content/extract-keywords
    * Body: { title?: string, content: string, count?: number }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/extract-keywords`, authApiToken, aiContent.extractKeywords);
+    router.post(`${prefix}/content/extract-keywords`, authApiToken, aiContent.extractKeywords);
   } else {
-    router.post(`${prefix}/ai/content/extract-keywords`, aiContent.extractKeywords);
+    router.post(`${prefix}/content/extract-keywords`, aiContent.extractKeywords);
   }
 
   /**
    * 匹配文章分类
-   * POST /api/ai/content/match-category
+   * POST /api/v1/ai/content/match-category
    * Body: { title: string, content: string, categories: Array }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/match-category`, authApiToken, aiContent.matchCategory);
+    router.post(`${prefix}/content/match-category`, authApiToken, aiContent.matchCategory);
   } else {
-    router.post(`${prefix}/ai/content/match-category`, aiContent.matchCategory);
+    router.post(`${prefix}/content/match-category`, aiContent.matchCategory);
   }
 
   /**
    * SEO 优化建议
-   * POST /api/ai/content/optimize-seo
+   * POST /api/v1/ai/content/optimize-seo
    * Body: { title: string, content: string, keywords?: Array }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/optimize-seo`, authApiToken, aiContent.optimizeSEO);
+    router.post(`${prefix}/content/optimize-seo`, authApiToken, aiContent.optimizeSEO);
   } else {
-    router.post(`${prefix}/ai/content/optimize-seo`, aiContent.optimizeSEO);
+    router.post(`${prefix}/content/optimize-seo`, aiContent.optimizeSEO);
   }
 
   /**
    * 检查内容质量
-   * POST /api/ai/content/check-quality
+   * POST /api/v1/ai/content/check-quality
    * Body: { title: string, content: string }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/check-quality`, authApiToken, aiContent.checkQuality);
+    router.post(`${prefix}/content/check-quality`, authApiToken, aiContent.checkQuality);
   } else {
-    router.post(`${prefix}/ai/content/check-quality`, aiContent.checkQuality);
+    router.post(`${prefix}/content/check-quality`, aiContent.checkQuality);
   }
 
   /**
    * 批量生成内容（标题、标签、摘要）
-   * POST /api/ai/content/generate-batch
+   * POST /api/v1/ai/content/generate-batch
    * Body: { content: string, options: { title?, summary?, tags?, keywords? } }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/generate-batch`, authApiToken, aiContent.generateBatch);
+    router.post(`${prefix}/content/generate-batch`, authApiToken, aiContent.generateBatch);
   } else {
-    router.post(`${prefix}/ai/content/generate-batch`, aiContent.generateBatch);
+    router.post(`${prefix}/content/generate-batch`, aiContent.generateBatch);
   }
 
   // ============================================================
@@ -204,48 +205,48 @@ module.exports = app => {
 
   /**
    * AI 辅助发布内容
-   * POST /api/ai/content/publish
+   * POST /api/v1/ai/content/publish
    * Body: { content: object, mode: string, enhanceOptions?: object }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/publish`, authApiToken, contentPublish.publishContent);
+    router.post(`${prefix}/content/publish`, authApiToken, contentPublish.publishContent);
   } else {
-    router.post(`${prefix}/ai/content/publish`, contentPublish.publishContent);
+    router.post(`${prefix}/content/publish`, contentPublish.publishContent);
   }
 
   /**
    * 批量 AI 增强发布
-   * POST /api/ai/content/batch-publish
+   * POST /api/v1/ai/content/batch-publish
    * Body: { contents: Array, mode: string, enhanceOptions?: object }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/batch-publish`, authApiToken, contentPublish.batchPublish);
+    router.post(`${prefix}/content/batch-publish`, authApiToken, contentPublish.batchPublish);
   } else {
-    router.post(`${prefix}/ai/content/batch-publish`, contentPublish.batchPublish);
+    router.post(`${prefix}/content/batch-publish`, contentPublish.batchPublish);
   }
 
   /**
    * 获取 AI 增强预览（不保存）
-   * POST /api/ai/content/preview
+   * POST /api/v1/ai/content/preview
    * Body: { content: object, enhanceOptions?: object }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/content/preview`, authApiToken, contentPublish.previewEnhancements);
+    router.post(`${prefix}/content/preview`, authApiToken, contentPublish.previewEnhancements);
   } else {
-    router.post(`${prefix}/ai/content/preview`, contentPublish.previewEnhancements);
+    router.post(`${prefix}/content/preview`, contentPublish.previewEnhancements);
   }
 
   /**
    * 获取发布模式说明
-   * GET /api/ai/content/publish-modes
+   * GET /api/v1/ai/content/publish-modes
    */
-  router.get(`${prefix}/ai/content/publish-modes`, contentPublish.getPublishModes);
+  router.get(`${prefix}/content/publish-modes`, contentPublish.getPublishModes);
 
   /**
    * 获取 AI 增强选项说明
-   * GET /api/ai/content/enhancement-options
+   * GET /api/v1/ai/content/enhancement-options
    */
-  router.get(`${prefix}/ai/content/enhancement-options`, contentPublish.getEnhancementOptions);
+  router.get(`${prefix}/content/enhancement-options`, contentPublish.getEnhancementOptions);
 
   // ============================================================
   // AI 图片生成 API（豆包文生图）
@@ -253,60 +254,60 @@ module.exports = app => {
 
   /**
    * 生成图片
-   * POST /api/ai/image/generate
+   * POST /api/v1/ai/image/generate
    * Body: { prompt, modelId?, size?, n?, responseFormat?, optimizePrompt?, language?, extraParams? }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/image/generate`, authApiToken, imageGeneration.generateImage);
+    router.post(`${prefix}/image/generate`, authApiToken, imageGeneration.generateImage);
   } else {
-    router.post(`${prefix}/ai/image/generate`, imageGeneration.generateImage);
+    router.post(`${prefix}/image/generate`, imageGeneration.generateImage);
   }
 
   /**
    * 优化图片生成提示词
-   * POST /api/ai/image/optimize-prompt
+   * POST /api/v1/ai/image/optimize-prompt
    * Body: { prompt, language? }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/image/optimize-prompt`, authApiToken, imageGeneration.optimizePrompt);
+    router.post(`${prefix}/image/optimize-prompt`, authApiToken, imageGeneration.optimizePrompt);
   } else {
-    router.post(`${prefix}/ai/image/optimize-prompt`, imageGeneration.optimizePrompt);
+    router.post(`${prefix}/image/optimize-prompt`, imageGeneration.optimizePrompt);
   }
 
   /**
    * 批量生成图片
-   * POST /api/ai/image/batch-generate
+   * POST /api/v1/ai/image/batch-generate
    * Body: { prompts: [...], modelId? }
    */
   if (authApiToken) {
-    router.post(`${prefix}/ai/image/batch-generate`, authApiToken, imageGeneration.batchGenerateImages);
+    router.post(`${prefix}/image/batch-generate`, authApiToken, imageGeneration.batchGenerateImages);
   } else {
-    router.post(`${prefix}/ai/image/batch-generate`, imageGeneration.batchGenerateImages);
+    router.post(`${prefix}/image/batch-generate`, imageGeneration.batchGenerateImages);
   }
 
   /**
    * 获取支持图片生成的模型列表
-   * GET /api/ai/image/models
+   * GET /api/v1/ai/image/models
    */
-  router.get(`${prefix}/ai/image/models`, imageGeneration.getImageGenerationModels);
+  router.get(`${prefix}/image/models`, imageGeneration.getImageGenerationModels);
 
   /**
    * 获取模型支持的图片尺寸
-   * GET /api/ai/image/sizes/:modelId
+   * GET /api/v1/ai/image/sizes/:modelId
    */
-  router.get(`${prefix}/ai/image/sizes/:modelId`, imageGeneration.getSupportedSizes);
+  router.get(`${prefix}/image/sizes/:modelId`, imageGeneration.getSupportedSizes);
 
   /**
    * 获取图片生成能力说明
-   * GET /api/ai/image/capabilities
+   * GET /api/v1/ai/image/capabilities
    */
-  router.get(`${prefix}/ai/image/capabilities`, imageGeneration.getCapabilities);
+  router.get(`${prefix}/image/capabilities`, imageGeneration.getCapabilities);
 
   /**
    * 获取图片生成示例
-   * GET /api/ai/image/examples
+   * GET /api/v1/ai/image/examples
    */
-  router.get(`${prefix}/ai/image/examples`, imageGeneration.getExamples);
+  router.get(`${prefix}/image/examples`, imageGeneration.getExamples);
 
   // ============================================================
   // AI 服务状态和统计 API（可选）
@@ -316,10 +317,10 @@ module.exports = app => {
 
   /**
    * 检查 AI 服务状态
-   * GET /api/ai/status
+   * GET /api/v1/ai/status
    * 返回：{ status: 'ok'|'error', message: string, models: { available: number, enabled: number } }
    */
-  // router.get(`${prefix}/ai/status`, async (ctx) => {
+  // router.get(`${prefix}/status`, async (ctx) => {
   //   // TODO: 实现 AI 服务状态检查逻辑
   //   ctx.body = {
   //     status: 200,
@@ -333,10 +334,10 @@ module.exports = app => {
 
   /**
    * 获取 AI 使用统计
-   * GET /api/ai/usage-stats
+   * GET /api/v1/ai/usage-stats
    * 返回：{ totalCalls: number, successRate: number, averageResponseTime: number }
    */
-  // router.get(`${prefix}/ai/usage-stats`, async (ctx) => {
+  // router.get(`${prefix}/usage-stats`, async (ctx) => {
   //   // TODO: 实现使用统计逻辑
   //   ctx.body = {
   //     status: 200,

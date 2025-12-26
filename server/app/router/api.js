@@ -1,254 +1,123 @@
+/**
+ * API 路由 (兼容层)
+ *
+ * 🔥 重要说明：
+ *
+ * 1. 所有业务 API 已迁移至 /api/v1/* 路由（见 router/api/v1.js）
+ * 2. 本文件仅保留系统级 API 和页面渲染路由
+ * 3. 未来新功能应在 /api/v1/* 中实现，不建议在此添加新路由
+ *
+ * 路由分类：
+ * - 系统工具：验证码、二维码等（保留）
+ * - 页面渲染：重置密码页面等（保留）
+ * - 健康检查：Docker 容器健康检查（保留）
+ * - 业务逻辑：已全部迁移至 /api/v1/*（已迁移）
+ */
 'use strict';
+
 module.exports = app => {
   const { router, controller } = app;
-  const authApiToken = app.middleware.authApiToken({});
 
-  // 健康检查端点（用于Docker健康检查）
+  // ==================== 系统工具 API（保留）====================
+
+  // 验证码生成
+  router.get('/api/getImgCode', controller.page.home.getImgCode);
+
+  // 二维码生成
+  router.get('/api/createQRCode', controller.page.home.createQRCode);
+
+  // ==================== 页面渲染路由（保留）====================
+
+  // 重置密码链接页面（非 API，用于渲染页面）
+  router.get('/api/user/reset_pass', controller.api.regUser.reSetPass);
+
+  // ==================== 健康检查 API（保留）====================
+
+  // Docker 健康检查端点
   router.get('/api/health', controller.api.health.check);
   router.get('/api/health/alive', controller.api.health.alive);
   router.get('/api/health/ready', controller.api.health.ready);
 
-  router.get('/api/getImgCode', controller.page.home.getImgCode);
-  router.get('/api/createQRCode', controller.page.home.createQRCode);
+  // ==================== 已迁移至 /api/v1/* 的 API ====================
 
   /**
-   * 模板主题相关API
+   * 🔥 以下 API 已迁移至 /api/v1/* 路由，请使用新版本：
+   *
+   * 模板主题 API:
+   *   GET  /api/v1/template/active           → controller.api.template.getActiveTheme
+   *   GET  /api/v1/template                  → controller.api.template.getThemes
+   *   GET  /api/v1/template/:slug            → controller.api.template.getThemeDetail
+   *   GET  /api/v1/template/:slug/config     → controller.api.template.getThemeConfig
+   *   GET  /api/v1/template/:slug/stats      → controller.api.template.getThemeStats
+   *   POST /api/v1/template/:id/download     → controller.api.template.incrementDownload
+   *   POST /api/v1/template/:id/rate         → controller.api.template.rateTheme
+   *
+   * 管理员认证 API:
+   *   POST /api/v1/admin/login               → controller.api.admin.loginUser
+   *   GET  /api/v1/admin/init/status         → controller.api.admin.getInitStatus
+   *   POST /api/v1/admin/init                → controller.api.admin.initSuperAdmin
+   *
+   * 系统配置 API:
+   *   GET  /api/v1/system/config             → controller.api.systemConfig.list
+   *
+   * 用户认证 API:
+   *   POST /api/v1/auth/login                → controller.api.regUser.loginAction
+   *   POST /api/v1/auth/register             → controller.api.regUser.regAction
+   *   POST /api/v1/auth/logout               → controller.api.regUser.logOut
+   *   POST /api/v1/auth/reset-password       → controller.api.regUser.resetMyPassword
+   *   POST /api/v1/auth/send-code            → controller.api.regUser.sendVerificationCode
+   *
+   * 内容管理 API:
+   *   GET  /api/v1/content                   → controller.api.content.list
+   *   GET  /api/v1/content/:id               → controller.api.content.getOneContent
+   *   POST /api/v1/content                   → controller.api.content.addContent
+   *   PUT  /api/v1/content/:id               → controller.api.content.updateContent
+   *   POST /api/v1/content/:id/like          → controller.api.content.likeContent
+   *   POST /api/v1/content/:id/favorite      → controller.api.content.favoriteContent
+   *
+   * 分类标签 API:
+   *   GET  /api/v1/categories                → controller.api.contentCategory.list
+   *   GET  /api/v1/categories/tree           → controller.api.contentCategory.treelist
+   *   GET  /api/v1/categories/:id             → controller.api.contentCategory.getOne
+   *   GET  /api/v1/tags                       → controller.api.contentTag.list
+   *   GET  /api/v1/tags/hot                   → controller.api.contentTag.hot
+   *   POST /api/v1/tags/findOrCreate          → controller.api.contentTag.findOrCreateByNames
+   *
+   * 留言评论 API:
+   *   GET  /api/v1/messages                  → controller.api.contentMessage.list
+   *   POST /api/v1/messages                  → controller.api.contentMessage.postMessages
+   *   POST /api/v1/messages/:id/like         → controller.api.contentMessage.praiseMessage
+   *   DELETE /api/v1/messages/:id/like       → controller.api.contentMessage.unpraiseMessage
+   *   POST /api/v1/messages/:id/dislike      → controller.api.contentMessage.despiseMessage
+   *   DELETE /api/v1/messages/:id/dislike    → controller.api.contentMessage.undespiseMessage
+   *
+   * 文件上传 API:
+   *   POST /api/v1/files                      → controller.api.uploadFile.create
+   *   POST /api/v1/files/path                 → controller.api.uploadFile.createFileByPath
+   *
+   * 广告 API:
+   *   GET  /api/v1/ads/:id                   → controller.api.ads.getOne
+   *
+   * 用户信息 API:
+   *   GET  /api/v1/users/me                  → controller.api.regUser.getUserInfoBySession
+   *   PUT  /api/v1/users/me                  → controller.api.regUser.updateUser
+   *   POST /api/v1/users/me/password         → controller.api.regUser.modifyMyPsd
+   *
+   * 邮件模板 API:
+   *   GET  /api/v1/mail-templates             → controller.api.mailTemplate.list
+   *   GET  /api/v1/mail-templates/:id         → controller.api.mailTemplate.getOne
+   *   POST /api/v1/mail/send                 → controller.api.mailTemplate.sendEmail
+   *
+   * API Key 管理:
+   *   GET    /api/v1/user/api-keys           → controller.api.apiKey.list
+   *   POST   /api/v1/user/api-keys           → controller.api.apiKey.create
+   *   GET    /api/v1/user/api-keys/:id       → controller.api.apiKey.detail
+   *   PUT    /api/v1/user/api-keys/:id       → controller.api.apiKey.update
+   *   DELETE /api/v1/user/api-keys/:id       → controller.api.apiKey.delete
+   *   PUT    /api/v1/user/api-keys/:id/enable  → controller.api.apiKey.enable
+   *   PUT    /api/v1/user/api-keys/:id/disable → controller.api.apiKey.disable
+   *   POST   /api/v1/user/api-keys/:id/rotate  → controller.api.apiKey.rotate
+   *
+   * 完整的 v1 API 列表请参考：server/app/router/api/v1.js
    */
-  // 获取当前激活的主题信息
-  router.get('/api/template/getActiveTheme', controller.api.template.getActiveTheme);
-
-  // 获取主题列表（公开）
-  router.get('/api/template/getThemes', controller.api.template.getThemes);
-
-  // 获取主题详情
-  router.get('/api/template/getThemeDetail/:slug', controller.api.template.getThemeDetail);
-
-  // 获取主题配置
-  router.get('/api/template/getThemeConfig/:slug?', controller.api.template.getThemeConfig);
-
-  // 获取主题统计信息
-  router.get('/api/template/getThemeStats', controller.api.template.getThemeStats);
-
-  // 增加主题下载次数
-  router.post('/api/template/incrementDownload/:id', controller.api.template.incrementDownload);
-
-  // 主题评分
-  router.post('/api/template/rateTheme/:id', controller.api.template.rateTheme);
-
-  // 检查主题更新
-  router.get('/api/template/checkUpdate/:slug', controller.api.template.checkUpdate);
-  // router.get(['/dr-admin', '/admin/login'], controller.api.admin.login);
-  // router.post(`/api/admin/doLogin`, controller.api.admin.loginAction);
-  router.post('/api/admin/login', controller.api.admin.loginUser);
-  router.get('/api/admin/init/status', controller.api.admin.getInitStatus);
-  router.post('/api/admin/init', controller.api.admin.initSuperAdmin);
-  router.get('/api/systemConfig/getConfig', controller.api.systemConfig.list);
-
-  // ApiRouters
-  // 获取单条广告
-  router.get('/api/ads/getOne', controller.api.ads.getOne);
-
-  // 获取收藏的文档列表
-  router.get('/api/content/getMyFavoriteContents', authApiToken, controller.api.content.getMyFavoriteContents);
-
-  // 获取用户的文档列表
-  router.get('/api/content/getUserContents', authApiToken, controller.api.content.list);
-
-  // 获取文档列表
-  router.get('/api/content/getList', controller.api.content.list);
-
-  // 获取随机文档列表
-  router.get('/api/content/getRadomContents', controller.api.content.getRadomContents);
-
-  // 获取随机文档首图
-  router.get('/api/content/getRandomContentImg', controller.api.content.getRandomContentImg);
-
-  // 获取单个文档信息
-  router.get('/api/content/getContent', controller.api.content.getOneContent);
-
-  // 获取Word文档Html信息
-  router.post('/api/content/getWordHtmlContent', controller.api.content.getWordHtmlContent);
-
-  // 新增文档
-  router.post('/api/content/addOne', authApiToken, controller.api.content.addContent);
-
-  // 更新文档
-  router.post('/api/content/updateOne', authApiToken, controller.api.content.updateContent);
-
-  // 相关内容
-  router.get('/api/content/getNearbyContent', controller.api.content.getNearbyContent);
-
-  // 上一篇/下一篇文章
-  router.get('/api/content/getPrevNextPosts', controller.api.content.getPrevNextPosts);
-
-  // 上传封面
-  router.post('/api/content/uploadCover', controller.api.content.uploadPreviewImgByBase64);
-
-  // 根据分类获取分类下文档总数
-  router.get('/api/content/getContentCountsByCateId', controller.api.content.getContentCountsByCateId);
-
-  // 获取热门标签id列表
-  router.get('/api/content/getHotTagIds', controller.api.content.getHotTagIds);
-
-  // 获取类别列表
-  router.get('/api/contentCategory/getList', controller.api.contentCategory.list);
-
-  // 获取带树形结构的类别列表
-  router.get('/api/contentCategory/getTreelist', controller.api.contentCategory.treelist);
-
-  // 根据id获取分类
-  router.get('/api/contentCategory/getCurrentCategoriesById', controller.api.contentCategory.getCurrentCategoriesById);
-
-  // 获取单条类别信息
-  router.get('/api/contentCategory/getOne', controller.api.contentCategory.getOne);
-
-  // 发表留言
-  router.post('/api/contentMessage/postMessages', authApiToken, controller.api.contentMessage.postMessages);
-
-  // 获取留言列表
-  router.get('/api/contentMessage/getMessages', controller.api.contentMessage.list);
-
-  // 🔥 新增：点赞留言
-  router.post('/api/contentMessage/praiseMessage', authApiToken, controller.api.contentMessage.praiseMessage);
-
-  // 🔥 新增：取消点赞留言
-  router.post('/api/contentMessage/unpraiseMessage', authApiToken, controller.api.contentMessage.unpraiseMessage);
-
-  // 🔥 新增：踩留言
-  router.post('/api/contentMessage/despiseMessage', authApiToken, controller.api.contentMessage.despiseMessage);
-
-  // 🔥 新增：取消踩留言
-  router.post('/api/contentMessage/undespiseMessage', authApiToken, controller.api.contentMessage.undespiseMessage);
-
-  // 获取标签列表
-  router.get('/api/contentTag/getList', controller.api.contentTag.list);
-
-  // 获取热门标签列表
-  router.get('/api/contentTag/getHotList', controller.api.contentTag.hot);
-
-  // 根据标签名称搜索标签
-  router.post('/api/contentTag/searchByNames', controller.api.contentTag.searchByNames);
-
-  // 🔥 AI标签智能处理：查找或创建标签
-  router.post('/api/contentTag/findOrCreateByNames', controller.api.contentTag.findOrCreateByNames);
-
-  // 创建标签
-  router.post('/api/contentTag/addOne', authApiToken, controller.api.contentTag.create);
-
-  // 获取邮件模板列表
-  router.get('/api/mailTemplate/getList', controller.api.mailTemplate.list);
-
-  // 获取邮件模板列表
-  router.get('/api/mailTemplate/getOne', controller.api.mailTemplate.getOne);
-
-  // 获取邮件模板类别列表
-  router.get('/api/mailTemplate/getTypeList', controller.api.mailTemplate.typelist);
-
-  // 发送邮件
-  router.post('/api/mailTemplate/sendEmail', controller.api.mailTemplate.sendEmail);
-
-  // 发送验证码
-  router.post('/api/user/sendVerificationCode', controller.api.regUser.sendVerificationCode);
-
-  // 用户登录
-  router.post('/api/user/doLogin', controller.api.regUser.loginAction);
-
-  // 游客登录
-  router.post('/api/user/touristLogin', controller.api.regUser.touristLoginAction);
-
-  // 用户注册
-  router.post('/api/user/doReg', controller.api.regUser.regAction);
-
-  // 信息绑定
-  router.post('/api/user/bindInfo', authApiToken, controller.api.regUser.bindEmailOrPhoneNum);
-
-  // 重设密码
-  router.post('/api/user/resetPassword', controller.api.regUser.resetMyPassword);
-
-  // 修改密码
-  router.post('/api/user/modifyMyPsd', authApiToken, controller.api.regUser.modifyMyPsd);
-
-  // 获取用户信息
-  router.get('/api/user/userInfo', authApiToken, controller.api.regUser.getUserInfoBySession);
-
-  // 关注作者
-  router.get('/api/user/followCreator', authApiToken, controller.api.regUser.followCreator);
-
-  // 关注标签
-  router.get('/api/user/addTags', authApiToken, controller.api.regUser.addTags);
-
-
-
-  // 踩帖
-  router.get('/api/user/despiseContent', authApiToken, controller.api.regUser.despiseContent);
-
-  // ========== 🔥 新增：RESTful 风格路由 ==========
-  
-  // 点赞/取消点赞内容 - RESTful 风格
-  // 用法: POST /api/content/:id/like?action=like 或 POST /api/content/:id/like?action=unlike
-  router.post('/api/content/:id/like', authApiToken, controller.api.content.likeContent);
-
-  // 收藏/取消收藏内容 - RESTful 风格
-  // 用法: POST /api/content/:id/favorite?action=add 或 POST /api/content/:id/favorite?action=remove
-  router.post('/api/content/:id/favorite', authApiToken, controller.api.content.favoriteContent);
-
-  // 检测手机号是否存在
-  router.get('/api/user/checkPhoneNumExist', controller.api.regUser.checkPhoneNumExist);
-
-  // 检测是否已设置登录密码
-  router.get('/api/user/checkHadSetLoginPassword', authApiToken, controller.api.regUser.checkHadSetLoginPassword);
-
-  // 更新用户信息
-  router.post('/api/user/updateInfo', authApiToken, controller.api.regUser.updateUser);
-
-  // 获取我关注的信息
-  router.get('/api/user/getMyFollowInfos', authApiToken, controller.api.regUser.getMyFollowInfos);
-
-  // 退出登录
-  router.get('/api/user/logOut', authApiToken, controller.api.regUser.logOut);
-
-  // 发送确认邮件
-  router.post('/api/user/sentConfirmEmail', controller.api.regUser.sentConfirmEmail);
-
-  // 设置新密码
-  router.post('/api/user/updateNewPsd', controller.api.regUser.updateNewPsd);
-
-  // 重设密码链接
-  router.get('/api/user/reset_pass', controller.api.regUser.reSetPass);
-
-  // 文件上传
-  router.post('/api/upload/files', controller.api.uploadFile.create);
-
-  // 文件上传(根据路径)
-  router.post('/api/upload/filePath', controller.api.uploadFile.createFileByPath);
-
-  // 文件上传初始化配置
-  router.get('/api/upload/ueditor', controller.api.uploadFile.ueditor);
-
-  // 文件上传
-  router.post('/api/upload/ueditor', controller.api.uploadFile.ueditor);
-
-  // API Key 管理
-  router.get('/api/user/api-key/list', authApiToken, controller.api.apiKey.list);
-
-  // 创建 API Key
-  router.post('/api/user/api-key/create', authApiToken, controller.api.apiKey.create);
-
-  // 更新 API Key
-  router.put('/api/user/api-key/update/:id', authApiToken, controller.api.apiKey.update);
-
-  // 删除 API Key
-  router.post('/api/user/api-key/delete', authApiToken, controller.api.apiKey.delete);
-
-  // 启用 API Key
-  router.put('/api/user/api-key/enable/:id', authApiToken, controller.api.apiKey.enable);
-
-  // 禁用 API Key
-  router.put('/api/user/api-key/disable/:id', authApiToken, controller.api.apiKey.disable);
-
-  // 轮换 API Key
-  router.put('/api/user/api-key/rotate/:id', authApiToken, controller.api.apiKey.rotate);
-
-  // 获取 API Key 详情
-  router.get('/api/user/api-key/detail/:id', authApiToken, controller.api.apiKey.detail);
 };

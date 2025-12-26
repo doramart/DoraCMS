@@ -138,13 +138,24 @@ class SystemConfigController extends Controller {
     ctx.helper.renderSuccess(ctx);
   }
 
+  /**
+   * 删除系统配置 - 支持 RESTful 路由
+   * DELETE /api/manage/systemConfig/:id 或 DELETE /api/manage/systemConfig/removes
+   */
   async removes() {
     const { ctx } = this;
 
-    // 🔥 使用统一的参数处理工具
-    const { idsArray } = DeleteParamsHelper.processDeleteParams(ctx, {
-      fieldName: ctx.__('systemConfig.fields.key'),
-    });
+    // 🔥 支持 RESTful 路由参数
+    let idsArray;
+    if (ctx.params.id) {
+      idsArray = [ctx.params.id];
+    } else {
+      // 🔥 使用统一的参数处理工具
+      const result = DeleteParamsHelper.processDeleteParams(ctx, {
+        fieldName: ctx.__('systemConfig.fields.key'),
+      });
+      idsArray = result.idsArray;
+    }
 
     // 参数验证
     // ctx.validate(systemConfigRule.removes, { ids: idsArray });

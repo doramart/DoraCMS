@@ -37,8 +37,12 @@ const RegUserController = {
     });
   },
 
+  /**
+   * 获取单个用户信息 - 支持 RESTful 路由
+   * GET /api/manage/regUser/:id 或 GET /api/manage/regUser/getOne?id=xxx
+   */
   async getOne(ctx) {
-    const id = ctx.query.id;
+    const id = ctx.params.id || ctx.query.id;
 
     // 🔥 参数验证
     if (!id) {
@@ -79,11 +83,19 @@ const RegUserController = {
     });
   },
 
+  /**
+   * 更新用户信息 - 支持 RESTful 路由
+   * PUT /api/manage/regUser/:id 或 PUT /api/manage/regUser/update
+   */
   async update(ctx) {
     const fields = ctx.request.body || {};
 
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || fields.id;
+    fields.id = id;
+
     // 🔥 参数验证
-    if (!fields.id) {
+    if (!id) {
       throw RepositoryExceptions.business.invalidParams('用户ID不能为空');
     }
 
@@ -95,13 +107,13 @@ const RegUserController = {
 
     // 🔥 业务验证 - 使用Repository的统一异常处理版本
     if (fields.userName) {
-      await ctx.service.user.checkUserNameUnique(fields.userName, fields.id);
+      await ctx.service.user.checkUserNameUnique(fields.userName, id);
     }
     if (fields.email) {
-      await ctx.service.user.checkEmailUnique(fields.email, fields.id);
+      await ctx.service.user.checkEmailUnique(fields.email, id);
     }
     if (fields.phoneNum) {
-      await ctx.service.user.checkPhoneUnique(fields.phoneNum, fields.id);
+      await ctx.service.user.checkPhoneUnique(fields.phoneNum, id);
     }
 
     // 🔥 构建更新数据对象
@@ -169,7 +181,7 @@ const RegUserController = {
       userObj.password = fields.password;
     }
 
-    await ctx.service.user.update(fields.id, userObj);
+    await ctx.service.user.update(id, userObj);
 
     ctx.helper.renderSuccess(ctx);
   },

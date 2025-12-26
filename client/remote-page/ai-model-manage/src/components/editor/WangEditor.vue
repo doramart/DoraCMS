@@ -54,7 +54,7 @@ const editorConfig = {
   placeholder: 'Please enter content here...',
   MENU_CONF: {
     uploadImage: {
-      server: '/api/upload/files',
+      server: '/api/v1/files',
       fieldName: 'files',
       maxFileSize: 10 * 1024 * 1024, // 10MB
       maxNumberOfFiles: 10,

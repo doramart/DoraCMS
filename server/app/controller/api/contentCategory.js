@@ -81,9 +81,15 @@ const ContentCategoryController = {
     }
   },
 
+  /**
+   * 🔥 优化版：获取单个分类
+   * @param ctx
+   * @description 支持 RESTful 路由：GET /api/v1/categories/:id
+   */
   async getOne(ctx) {
     // 🔥 统一异常处理版本 - 移除try-catch
-    const { id } = ctx.query;
+    // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+    const { id } = ctx.params.id ? { id: ctx.params.id } : ctx.query;
 
     // 🔥 使用语义化异常验证
     if (!id) {
@@ -97,10 +103,15 @@ const ContentCategoryController = {
     });
   },
 
-  // 根据类别id或者文档id查询子类
+  /**
+   * 🔥 优化版：根据类别id获取祖先分类
+   * @param ctx
+   * @description 支持 RESTful 路由：GET /api/v1/categories/:id/ancestors
+   */
   async getCurrentCategoriesById(ctx) {
-    // 🔥 优化：直接调用Service方法，避免重复代码
-    const { contentId, typeId } = ctx.query;
+    // 🔥 RESTful: 优先使用路径参数中的 id
+    const typeId = ctx.params.id || ctx.query.typeId;
+    const contentId = ctx.query.contentId;
 
     const result = await ctx.service.contentCategory.getCurrentCategoriesById(typeId, contentId);
 

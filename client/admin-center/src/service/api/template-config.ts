@@ -3,7 +3,7 @@ import { request } from '../request';
 /** get installed template list */
 export function fetchGetMyTemplateList() {
   return request<Api.PluginManage.Template[]>({
-    url: '/manage/template/getList',
+    url: '/manage/v1/templates',
     method: 'get'
   });
 }
@@ -11,7 +11,7 @@ export function fetchGetMyTemplateList() {
 /** get template market list */
 export function fetchGetTempsFromShop(params?: { current?: number; size?: number }) {
   return request<Api.PluginManage.TemplateShopResponse>({
-    url: '/manage/template/getTempsFromShop',
+    url: '/manage/v1/templates/market',
     method: 'get',
     params
   });
@@ -21,7 +21,7 @@ export function fetchGetTempsFromShop(params?: { current?: number; size?: number
 /** add template item */
 export function addTemplateItem(params: Api.PluginManage.TemplateItemAdd) {
   return request<{ id: string }>({
-    url: '/manage/template/addTemplateItem',
+    url: '/manage/v1/templates',
     method: 'post',
     data: params
   });
@@ -30,15 +30,15 @@ export function addTemplateItem(params: Api.PluginManage.TemplateItemAdd) {
 /** delete template item */
 export function deleteTemplateItem(id: string) {
   return request({
-    url: `/manage/template/delTemplateItem?id=${id}`,
-    method: 'get'
+    url: `/manage/v1/templates/${id}`,
+    method: 'delete'
   });
 }
 
 /** install template */
 export function installTemplate(tempId: string) {
   return request({
-    url: `/manage/template/installFromRemote`,
+    url: `/manage/v1/templates/install`,
     method: 'post',
     data: {
       tempId,
@@ -49,15 +49,15 @@ export function installTemplate(tempId: string) {
 /** update template */
 export function updateTemplate(tempId: string) {
   return request({
-    url: `/manage/template/updateTemp?tempId=${tempId}`,
-    method: 'get'
+    url: `/manage/v1/templates/${tempId}/update`,
+    method: 'post'
   });
 }
 
 /** enable template */
 export function enableTemplate(tempId: string) {
   return request({
-    url: `/manage/template/activate/${tempId}`,
+    url: `/manage/v1/templates/${tempId}/activate`,
     method: 'post'
   });
 }
@@ -65,7 +65,7 @@ export function enableTemplate(tempId: string) {
 /** uninstall template */
 export function uninstallTemplate(tempId: string) {
   return request({
-    url: `/manage/template/uninstall/${tempId}`,
+    url: `/manage/v1/templates/${tempId}/uninstall`,
     method: 'post'
   });
 }
@@ -73,7 +73,7 @@ export function uninstallTemplate(tempId: string) {
 /** create payment invoice */
 export function createPaymentInvoice(params: { tempId: string; singleUserToken: string }) {
   return request<{ qrCode: string; noInvoice: string }>({
-    url: '/manage/template/createInvoice',
+    url: '/manage/v1/templates/invoice',
     method: 'post',
     data: params
   });
@@ -82,7 +82,7 @@ export function createPaymentInvoice(params: { tempId: string; singleUserToken: 
 /** check payment status */
 export function checkPaymentStatus(params: { noInvoice: string; singleUserToken: string; itemId: string }) {
   return request<{ checkState: boolean }>({
-    url: '/manage/template/checkInvoice',
+    url: '/manage/v1/templates/invoice/check',
     method: 'post',
     data: params
   });
@@ -91,7 +91,7 @@ export function checkPaymentStatus(params: { noInvoice: string; singleUserToken:
 /** upload custom template */
 export function uploadTemplate(formData: FormData) {
   return request({
-    url: '/manage/template/uploadCMSTemplate',
+    url: '/manage/v1/templates/upload',
     method: 'post',
     data: formData,
     headers: {
@@ -103,7 +103,7 @@ export function uploadTemplate(formData: FormData) {
 /** 获取模板统计信息 */
 export function fetchTemplateStats(params?: { status?: string }) {
   return request<Api.PluginManage.TemplateStats>({
-    url: '/manage/template/getStats',
+    url: '/manage/v1/templates/stats',
     method: 'get',
     params
   });
@@ -112,7 +112,7 @@ export function fetchTemplateStats(params?: { status?: string }) {
 /** 获取当前已激活模板 */
 export function fetchActiveTemplate() {
   return request<Api.PluginManage.Template>({
-    url: '/manage/template/getActiveTheme',
+    url: '/manage/v1/templates/active',
     method: 'get'
   });
 }

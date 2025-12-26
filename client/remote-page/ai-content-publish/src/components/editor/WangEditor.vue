@@ -54,7 +54,7 @@ const editorConfig = {
   placeholder: 'Please enter content here...',
   MENU_CONF: {
     uploadImage: {
-      server: `${import.meta.env.VITE_API_BASE_URL}/api/upload/files`,
+      server: `${import.meta.env.VITE_API_BASE_URL}/api/v1/files`,
       fieldName: 'files',
       maxFileSize: 10 * 1024 * 1024, // 10MB
       maxNumberOfFiles: 10,

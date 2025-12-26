@@ -144,13 +144,20 @@ class RoleController extends Controller {
     });
   }
 
+  /**
+   * 更新角色 - 支持 RESTful 路由
+   * PUT /api/manage/role/:id 或 PUT /api/manage/role/updateOne
+   */
   async updateOne() {
     const { ctx, service } = this;
 
     // 参数验证
     ctx.validate(roleRule.updateOne);
 
-    const { roleCode, roleName, id, menus = [], buttons = [] } = ctx.request.body;
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || ctx.request.body.id;
+    const { roleCode, roleName, menus = [], buttons = [] } = ctx.request.body;
+    ctx.request.body.id = id;
 
     // 获取更新前的数据（用于日志记录）
     const oldData = await service.role.findById(id);
@@ -200,13 +207,24 @@ class RoleController extends Controller {
     });
   }
 
+  /**
+   * 删除角色 - 支持 RESTful 路由
+   * DELETE /api/manage/role/:id 或 DELETE /api/manage/role/deleteRole
+   */
   async deleteRole() {
     const { ctx, service } = this;
 
-    // 🔥 使用统一的参数处理工具
-    const { idsArray } = DeleteParamsHelper.processDeleteParams(ctx, {
-      fieldName: ctx.__('role.fields.roleName'),
-    });
+    // 🔥 支持 RESTful 路由参数
+    let idsArray;
+    if (ctx.params.id) {
+      idsArray = [ctx.params.id];
+    } else {
+      // 🔥 使用统一的参数处理工具
+      const result = DeleteParamsHelper.processDeleteParams(ctx, {
+        fieldName: ctx.__('role.fields.roleName'),
+      });
+      idsArray = result.idsArray;
+    }
 
     // 获取删除前的数据（用于日志记录）
     const deletedRoles = await Promise.all(idsArray.map(id => service.role.findById(id).catch(() => null)));

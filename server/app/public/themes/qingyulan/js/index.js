@@ -275,8 +275,8 @@ ArticleManager.prototype.performLogout = function() {
   }
   
   // console.log('开始调用退出登录API...'); // 调试日志
-  this.apiRequest('/api/user/logOut', {
-    method: 'GET'
+  this.apiRequest('/api/v1/auth/logout', {
+    method: 'POST'
   }).then(function(result) {
     // console.log('API调用成功，返回结果:', result); // 调试日志
     if (result && result.status === 200) {
@@ -591,7 +591,7 @@ ArticleManager.prototype.loadMoreArticles = function(tabType) {
     params.model = '1';
   }
   
-  this.apiRequest('/api/content/getList', {
+  this.apiRequest('/api/v1/content', {
     method: 'GET',
     data: params
   }).then(function(result) {
@@ -795,12 +795,9 @@ ArticleManager.prototype.handlePostLike = function(postId, $btn) {
   // 显示加载状态
   $icon.attr('class', 'ri-loader-2-line animate-spin');
   
-  // 调用点赞API
-  this.apiRequest('/api/user/askContentThumbsUp', {
-    method: 'GET',
-    data: {
-      contentId: postId
-    }
+  // 调用点赞API (RESTful: POST /api/v1/content/:id/like)
+  this.apiRequest('/api/v1/content/' + postId + '/like', {
+    method: 'POST'
   }).then(function(data) {
     if (data.status == 200) {
       // 更新点赞状态和数量
@@ -863,12 +860,9 @@ ArticleManager.prototype.handlePostFavorite = function(postId, $btn) {
   // 显示加载状态
   $icon.attr('class', 'ri-loader-2-line animate-spin');
   
-  // 调用收藏API
-  this.apiRequest('/api/user/favoriteContent', {
-    method: 'GET',
-    data: {
-      contentId: postId
-    }
+  // 调用收藏API (RESTful: POST /api/v1/content/:id/favorite)
+  this.apiRequest('/api/v1/content/' + postId + '/favorite', {
+    method: 'POST'
   }).then(function(data) {
     if (data.status == 200) {
       // 更新收藏状态和数量
@@ -1021,8 +1015,8 @@ MessageBoardManager.prototype.bindEvents = function() {
 MessageBoardManager.prototype.loadMessages = function() {
   var self = this;
   
-  // 使用现有的apiRequest方法调用真实API
-  this.apiRequest('/api/contentMessage/getMessages', {
+  // 使用现有的apiRequest方法调用真实API (RESTful: GET /api/v1/messages)
+  this.apiRequest('/api/v1/messages', {
     method: 'GET',
     data: {
       pageSize: 100,
@@ -1174,8 +1168,8 @@ MessageBoardManager.prototype.publishComment = function() {
     relationMsgId: this.relationMsgId
   };
   
-  // 使用现有的apiRequest方法提交评论
-  this.apiRequest('/api/contentMessage/postMessages', {
+  // 使用现有的apiRequest方法提交评论 (RESTful: POST /api/v1/messages)
+  this.apiRequest('/api/v1/messages', {
     method: 'POST',
     data: params
   }).then(function(data) {
@@ -1257,12 +1251,9 @@ MessageBoardManager.prototype.likeComment = function(commentId, $btn) {
   
   $btn.prop('disabled', true);
   
-  // 使用现有的apiRequest方法
-  this.apiRequest('/api/user/askContentThumbsUp', {
-    method: 'GET',
-    data: {
-      contentId: commentId
-    }
+  // 使用现有的apiRequest方法 (RESTful: POST /api/v1/messages/:id/like)
+  this.apiRequest('/api/v1/messages/' + commentId + '/like', {
+    method: 'POST'
   }).then(function(data) {
     if (data.status === 200) {
       // 更新点赞状态和数量

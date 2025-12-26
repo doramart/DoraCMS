@@ -125,9 +125,11 @@ const ContentTagController = {
   /**
    * 🔥 新增：获取标签详情
    * @param ctx
+   * @description 支持 RESTful 路由：GET /api/v1/tags/:id
    */
   async getOne(ctx) {
-    const id = ctx.query.id;
+    // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+    const id = ctx.params.id || ctx.query.id;
 
     // 🔥 使用语义化的异常方法
     if (!id) {

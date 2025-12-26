@@ -31,7 +31,7 @@ class CommentModule {
   // 检查用户登录状态
   async checkUserLogin() {
     try {
-      const response = await fetch('/api/user/userInfo', {
+      const response = await fetch('/api/v1/users/me', {
         credentials: 'include',
       });
 

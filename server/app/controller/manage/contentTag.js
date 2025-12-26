@@ -73,9 +73,11 @@ const ContentTagController = {
    * 🔥 优化版：获取单个标签
    * 使用语义化异常处理
    * @param ctx
+   * @description 支持 RESTful 路由：GET /manage/v1/tags/:id
    */
   async getOne(ctx) {
-    const id = ctx.query.id;
+    // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+    const id = ctx.params.id || ctx.query.id;
 
     // 🔥 使用语义化的异常方法
     if (!id) {
@@ -100,9 +102,15 @@ const ContentTagController = {
    * 🔥 优化版：更新标签 - 统一异常处理标准
    * 专注业务逻辑，无异常处理代码
    * @param ctx
+   * @description 支持 RESTful 路由：PUT /manage/v1/tags/:id
    */
   async update(ctx) {
     const fields = ctx.request.body || {};
+
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 id
+    const tagId = ctx.params.id || fields.id;
+    fields.id = tagId; // 确保 fields 中有 id 供后续验证使用
+
     const formObj = {
       name: fields.name,
       alias: fields.alias,
@@ -113,19 +121,19 @@ const ContentTagController = {
     ctx.validate(contentTagRule.form(ctx), formObj);
 
     // 🔥 ID验证
-    if (!fields.id) {
-      throw RepositoryExceptions.resource.notFound(ctx.__('contentTag.fields.id'), fields.id);
+    if (!tagId) {
+      throw RepositoryExceptions.resource.notFound(ctx.__('contentTag.fields.id'), tagId);
     }
 
     // 🔥 业务验证 - Service会自动抛出具体异常（统一调用方式）
     // 验证标签名称唯一性（排除当前记录）
     if (formObj.name) {
-      await ctx.service.contentTag.checkNameUnique(formObj.name, fields.id);
+      await ctx.service.contentTag.checkNameUnique(formObj.name, tagId);
     }
 
     // 验证别名唯一性（排除当前记录）
     if (formObj.alias) {
-      await ctx.service.contentTag.checkAliasUnique(formObj.alias, fields.id);
+      await ctx.service.contentTag.checkAliasUnique(formObj.alias, tagId);
     }
 
     // 更新标签

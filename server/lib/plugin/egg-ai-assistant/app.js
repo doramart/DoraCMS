@@ -410,10 +410,10 @@ class AIAssistantAppBootHook {
 
     try {
       // 加载管理后台路由（需要管理员权限）
-      require('./app/router/manage/ai')(app);
+      require('./app/router/manage/v1/ai')(app);
 
       // 加载 API 路由（普通用户可用）
-      require('./app/router/api/ai')(app);
+      require('./app/router/api/v1/ai')(app);
 
       // app.logger.info('[egg-ai-assistant] Routes registered successfully');
       // app.logger.info('[egg-ai-assistant] === AI 模型配置管理 ===');

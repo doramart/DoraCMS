@@ -3,7 +3,7 @@ import { request } from '../request';
 /** get constant routes */
 export function fetchGetConstantRoutes() {
   return request<Api.Route.MenuRoute[]>({
-    url: '/manage/admin/getUserRoutes',
+    url: '/manage/v1/admins/me/routes',
     method: 'get',
     params: { hideInMenu: '1' }
   });
@@ -12,7 +12,7 @@ export function fetchGetConstantRoutes() {
 /** get user routes */
 export function fetchGetUserRoutes() {
   return request<Api.Route.UserRoute>({
-    url: '/manage/admin/getUserRoutes',
+    url: '/manage/v1/admins/me/routes',
     method: 'get',
     params: { hideInMenu: '0' }
   });

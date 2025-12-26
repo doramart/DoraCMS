@@ -1388,6 +1388,11 @@ const RegUserController = {
     }
   },
 
+  /**
+   * 🔥 优化版：添加用户标签
+   * @param ctx
+   * @description 支持 RESTful 路由：POST /api/v1/users/:userId/tags
+   */
   async addTags(ctx) {
     const targetUser = ctx.session.user;
     const userInfo = await ctx.service.user.findOne(
@@ -1396,7 +1401,8 @@ const RegUserController = {
         fields: ['watchTags'],
       }
     );
-    const tagId = ctx.query.tagId;
+    // 🔥 RESTful: 优先使用路径参数中的 userId，也兼容查询参数 tagId
+    const tagId = ctx.params.userId || ctx.query.tagId;
     const followState = ctx.query.type;
     if (!ctx.validateId(tagId)) {
       throw RepositoryExceptions.business.invalidParams(ctx.__('validation.errorParams'));
@@ -1440,11 +1446,17 @@ const RegUserController = {
     }
   },
 
+  /**
+   * 🔥 优化版：关注创作者
+   * @param ctx
+   * @description 支持 RESTful 路由：POST /api/v1/users/:userId/following/:creatorId
+   */
   async followCreator(ctx) {
     try {
       const userInfo = ctx.session.user;
       const userId = userInfo.id;
-      const creatorIds = ctx.query.creatorId;
+      // 🔥 RESTful: 优先使用路径参数中的 creatorId
+      const creatorIds = ctx.params.creatorId || ctx.query.creatorId;
       const creatorFollowState = ctx.query.followState || 'in';
 
       if (!creatorIds) {

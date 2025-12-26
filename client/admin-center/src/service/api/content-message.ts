@@ -4,7 +4,7 @@ import { standardDelete } from './deleteHelper';
 /** get content message list */
 export function fetchGetContentMessageList(params?: Api.DocumentManage.ContentMessageSearchParams) {
   return request<Api.DocumentManage.ContentMessageList>({
-    url: '/manage/contentMessage/getList',
+    url: '/manage/v1/messages',
     method: 'get',
     params
   });
@@ -13,7 +13,7 @@ export function fetchGetContentMessageList(params?: Api.DocumentManage.ContentMe
 /** get one content message */
 export function fetchGetOneContentMessage(id: string) {
   return request<Api.DocumentManage.ContentMessage>({
-    url: `/manage/contentMessage/getOne?id=${id}`,
+    url: `/manage/v1/messages/${id}`,
     method: 'get'
   });
 }
@@ -21,7 +21,7 @@ export function fetchGetOneContentMessage(id: string) {
 /** add content message (reply) */
 export function addContentMessage(params: Api.DocumentManage.ContentMessageReply) {
   return request<Api.DocumentManage.ContentMessage>({
-    url: '/manage/contentMessage/addOne',
+    url: '/manage/v1/messages',
     method: 'post',
     data: { ...params }
   });
@@ -29,7 +29,7 @@ export function addContentMessage(params: Api.DocumentManage.ContentMessageReply
 
 /** delete content message */
 export function deleteContentMessage(ids: string | string[]) {
-  return standardDelete('contentMessage', ids);
+  return standardDelete('v1/messages', ids);
 }
 
 /** get content message statistics */

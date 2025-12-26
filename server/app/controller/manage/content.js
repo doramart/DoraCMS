@@ -151,9 +151,11 @@ const ContentController = {
   /**
    * 🔥 优化版：获取单个内容详情
    * @param ctx
+   * @description 支持 RESTful 路由：GET /manage/v1/content/:id
    */
   async getOne(ctx) {
-    const targetId = ctx.query.id;
+    // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+    const targetId = ctx.params.id || ctx.query.id;
 
     if (!targetId || !ctx.validateId(targetId)) {
       throw RepositoryExceptions.create.validation(ctx.__('validation.errorParams'));
@@ -216,20 +218,25 @@ const ContentController = {
   /**
    * 🔥 优化版：更新内容 - 统一异常处理
    * @param ctx
+   * @description 支持 RESTful 路由：PUT /manage/v1/content/:id
    */
   async update(ctx) {
     const fields = ctx.request.body;
+
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 id
+    const contentId = ctx.params.id || fields.id;
+    fields.id = contentId; // 确保 fields 中有 id 供后续验证使用
 
     // 🔥 业务验证 - 自动抛出异常
     ContentController.checkContentFormData(ctx, fields);
 
     // 检查内容是否存在
     const targetContent = await ctx.service.content.findOne({
-      id: { $eq: fields.id },
+      id: { $eq: contentId },
     });
 
     if (_.isEmpty(targetContent)) {
-      throw RepositoryExceptions.content.notFound(fields.id);
+      throw RepositoryExceptions.content.notFound(contentId);
     }
 
     // ✅ 使用 Service 层的预处理方法（统一处理）

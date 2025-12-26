@@ -8,7 +8,7 @@ import { request } from '../request';
  */
 export function fetchLogin(userName: string, password: string, imageCode?: string) {
   return request({
-    url: '/api/admin/login',
+    url: '/api/v1/admin/login',
     method: 'post',
     data: {
       userName,
@@ -21,7 +21,7 @@ export function fetchLogin(userName: string, password: string, imageCode?: strin
 /** 获取管理员初始化状态 */
 export function fetchAdminInitStatus() {
   return request<Api.Auth.InitStatus>({
-    url: '/api/admin/init/status',
+    url: '/api/v1/admin/init/status',
     method: 'get',
   });
 }
@@ -29,7 +29,7 @@ export function fetchAdminInitStatus() {
 /** 初始化超级管理员 */
 export function fetchInitSuperAdmin(data: Api.Auth.InitAdminParams) {
   return request({
-    url: '/api/admin/init',
+    url: '/api/v1/admin/init',
     method: 'post',
     data,
   });
@@ -37,12 +37,12 @@ export function fetchInitSuperAdmin(data: Api.Auth.InitAdminParams) {
 
 /** Get user info */
 export function fetchGetUserInfo() {
-  return request({ url: '/manage/admin/getUserInfo' });
+  return request({ url: '/manage/v1/admins/me' });
 }
 
 /** Get user logout */
 export function userLogout() {
-  return request({ url: '/manage/admin/logOut' });
+  return request({ url: '/manage/v1/admins/logout', method: 'post' });
 }
 
 /**

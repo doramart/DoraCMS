@@ -4,7 +4,7 @@ import { standardDelete } from './deleteHelper';
 /** get role list */
 export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
   return request({
-    url: '/manage/role/getList',
+    url: '/manage/v1/roles',
     method: 'get',
     params
   });
@@ -13,7 +13,7 @@ export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
 /** create role item */
 export function createRoleItem(params: Api.SystemManage.Role) {
   return request<Api.SystemManage.Role>({
-    url: '/manage/role/addOne',
+    url: '/manage/v1/roles',
     method: 'post',
     data: { ...params }
   });
@@ -22,15 +22,15 @@ export function createRoleItem(params: Api.SystemManage.Role) {
 /** update role item */
 export function updateRoleItem(params: Api.SystemManage.Role) {
   return request<Api.SystemManage.Role>({
-    url: '/manage/role/updateOne',
-    method: 'post',
+    url: `/manage/v1/roles/${params.id}`,
+    method: 'put',
     data: { ...params }
   });
 }
 
 /** delete role item */
 export function deleteRoleList(ids: string | string[]) {
-  return standardDelete<Api.SystemManage.RoleList>('role', ids);
+  return standardDelete<Api.SystemManage.RoleList>('v1/roles', ids);
 }
 
 /**
@@ -40,7 +40,7 @@ export function deleteRoleList(ids: string | string[]) {
  */
 export function fetchGetAllRoles() {
   return request({
-    url: '/manage/role/getAllList',
+    url: '/manage/v1/roles/all',
     method: 'get'
   });
 }

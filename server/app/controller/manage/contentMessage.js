@@ -137,8 +137,12 @@ const ContentMessageController = {
     });
   },
 
+  /**
+   * 获取单条留言 - 支持 RESTful 路由
+   * GET /api/manage/contentMessage/:id 或 GET /api/manage/contentMessage/getOne?id=xxx
+   */
   async getOne(ctx) {
-    const id = ctx.query.id;
+    const id = ctx.params.id || ctx.query.id;
 
     // 🔥 参数验证
     if (!id) {
@@ -239,8 +243,8 @@ const ContentMessageController = {
   },
 
   /**
-   * 🔥 新增：审核留言
-   * @param ctx
+   * 🔥 新增：审核留言 - 支持 RESTful 路由
+   * POST /api/manage/contentMessage/:id/audit 或 POST /api/manage/contentMessage/auditMessage
    */
   async auditMessage(ctx) {
     const { messageId, auditStatus, auditReason } = ctx.request.body;
@@ -250,9 +254,12 @@ const ContentMessageController = {
       throw RepositoryExceptions.auth.adminLoginRequired();
     }
 
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || messageId;
+
     // 🔥 参数验证
-    if (!messageId) {
-      throw RepositoryExceptions.message.notFound(messageId);
+    if (!id) {
+      throw RepositoryExceptions.message.notFound(id);
     }
 
     if (!['approved', 'rejected'].includes(auditStatus)) {
@@ -270,7 +277,7 @@ const ContentMessageController = {
       auditAt: new Date(),
     };
 
-    const result = await ctx.service.message.update(messageId, auditData);
+    const result = await ctx.service.message.update(id, auditData);
 
     ctx.helper.renderSuccess(ctx, {
       data: result,

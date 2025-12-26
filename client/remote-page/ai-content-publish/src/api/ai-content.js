@@ -27,7 +27,7 @@ import request from '@/utils/request';
  */
 export function createContentWithAI(data) {
   return request({
-    url: '/manage/ai/content/publish',
+    url: '/manage/v1/ai/content/publish',
     method: 'post',
     data,
     timeout: 60000 * 10, // 60秒超时，AI 生成需要更长时间
@@ -40,7 +40,7 @@ export function createContentWithAI(data) {
  */
 export function updateContentWithAI(data) {
   return request({
-    url: '/manage/ai/content/updateWithAI',
+    url: '/manage/v1/ai/content/updateWithAI',
     method: 'post',
     data,
     timeout: 60000 * 10, // 60秒超时，AI 生成需要更长时间
@@ -62,7 +62,7 @@ export function updateContentWithAI(data) {
  */
 export function previewAIEnhancements(data) {
   return request({
-    url: '/manage/ai/content/preview',
+    url: '/manage/v1/ai/content/preview',
     method: 'post',
     data,
     timeout: 60000 * 10, // 60秒超时，AI 生成需要更长时间
@@ -77,7 +77,7 @@ export function previewAIEnhancements(data) {
  */
 export function batchPublishWithAI(data) {
   return request({
-    url: '/manage/ai/content/batch-publish',
+    url: '/manage/v1/ai/content/batch-publish',
     method: 'post',
     data,
     timeout: 120000 * 10, // 120秒超时，批量处理需要更长时间
@@ -93,7 +93,7 @@ export function batchPublishWithAI(data) {
  */
 export function generateTitle(data) {
   return request({
-    url: '/manage/ai/content/generate-title',
+    url: '/manage/v1/ai/content/generate-title',
     method: 'post',
     data,
     timeout: 30000, // 30秒超时，单次生成较快
@@ -108,7 +108,7 @@ export function generateTitle(data) {
  */
 export function generateSummary(data) {
   return request({
-    url: '/manage/ai/content/generate-summary',
+    url: '/manage/v1/ai/content/generate-summary',
     method: 'post',
     data,
     timeout: 30000, // 30秒超时，单次生成较快
@@ -123,7 +123,7 @@ export function generateSummary(data) {
  */
 export function generateTags(data) {
   return request({
-    url: '/manage/ai/content/extract-tags',
+    url: '/manage/v1/ai/content/extract-tags',
     method: 'post',
     data,
     timeout: 30000, // 30秒超时，单次生成较快
@@ -140,7 +140,7 @@ export function generateTags(data) {
  */
 export function generateKeywords(data) {
   return request({
-    url: '/manage/ai/content/extract-keywords',
+    url: '/manage/v1/ai/content/extract-keywords',
     method: 'post',
     data,
     timeout: 30000, // 30秒超时，单次生成较快
@@ -152,7 +152,7 @@ export function generateKeywords(data) {
  */
 export function checkAIStatus() {
   return request({
-    url: '/manage/ai/status',
+    url: '/manage/v1/ai/status',
     method: 'get',
   });
 }
@@ -162,7 +162,7 @@ export function checkAIStatus() {
  */
 export function getAIUsageStats() {
   return request({
-    url: '/manage/ai/usage-stats',
+    url: '/manage/v1/ai/usage-stats',
     method: 'get',
   });
 }
@@ -174,7 +174,7 @@ export function getAIUsageStats() {
  */
 export function findOrCreateTagsByNames(tagNames) {
   return request({
-    url: '/api/contentTag/findOrCreateByNames',
+    url: '/api/v1/tags/findOrCreate',
     method: 'post',
     data: { tagNames },
   });
@@ -190,7 +190,7 @@ export function findOrCreateTagsByNames(tagNames) {
  */
 export function matchCategory(data) {
   return request({
-    url: '/manage/ai/content/match-category',
+    url: '/manage/v1/ai/content/match-category',
     method: 'post',
     data,
     timeout: 30000, // 30秒超时，分类匹配较快
@@ -210,7 +210,7 @@ export function matchCategory(data) {
  */
 export function generateImage(data) {
   return request({
-    url: '/manage/ai/image/generate',
+    url: '/manage/v1/ai/image/generate',
     method: 'post',
     data,
     timeout: 60000, // 60秒超时，图片生成需要较长时间
@@ -223,7 +223,7 @@ export function generateImage(data) {
  */
 export function getImageGenerationModels() {
   return request({
-    url: '/manage/ai/image/models',
+    url: '/manage/v1/ai/image/models',
     method: 'get',
   });
 }

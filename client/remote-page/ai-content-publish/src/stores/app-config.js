@@ -108,8 +108,9 @@ export const useAppConfigStore = defineStore('app-config', {
         return url;
       }
 
-      // 🔥 排除不需要转换的接口
-      const excludedPaths = ['/api/contentCategory/getList', '/api/contentTag/getList'];
+      // 🔥 排除不需要转换的接口 (v1 API 不需要转换)
+      const excludedPaths = ['/api/v1/contentCategory/getList', '/api/v1/contentTag/getList',
+                              '/api/v1/categories', '/api/v1/tags'];
 
       if (excludedPaths.some(path => url.startsWith(path))) {
         return url;

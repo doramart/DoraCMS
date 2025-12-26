@@ -427,7 +427,7 @@ const editorRef = ref(null);
 const aiPanelRef = ref(null);
 
 // 上传配置
-const uploadUrl = `${import.meta.env.VITE_API_BASE_URL || ''}/api/upload/files`;
+const uploadUrl = `${import.meta.env.VITE_API_BASE_URL || ''}/api/v1/files`;
 const uploadHeaders = {
   // 可以添加认证头等
 };

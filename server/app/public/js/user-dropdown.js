@@ -93,15 +93,15 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 处理退出登录
-  const logoutLink = dropdownMenu.querySelector('a[href="/api/user/logOut"]');
+  const logoutLink = dropdownMenu.querySelector('a[href="/api/v1/auth/logout"], a[href="/api/user/logOut"]');
   if (logoutLink) {
     logoutLink.addEventListener('click', function (e) {
       e.preventDefault();
 
       // 显示确认对话框
       if (confirm('确定要退出登录吗？')) {
-        // 发送退出登录请求
-        fetch('/api/user/logOut', {
+        // 发送退出登录请求 (v1 API)
+        fetch('/api/v1/auth/logout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

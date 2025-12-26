@@ -3,7 +3,7 @@ import { request } from '../request';
 /** Get system option log list */
 export function fetchSystemOptionLogList(params: Api.SystemManage.SystemOptionLogSearchParams) {
   return request<Api.Common.PaginatingQueryRecord<Api.SystemManage.SystemOptionLog>>({
-    url: '/manage/systemOptionLog/getList',
+    url: '/manage/v1/logs',
     method: 'get',
     params
   });
@@ -12,17 +12,16 @@ export function fetchSystemOptionLogList(params: Api.SystemManage.SystemOptionLo
 /** Delete system option log */
 export function deleteSystemOptionLog(ids: string) {
   return request({
-    url: '/manage/systemOptionLog/deleteLogItem',
-    method: 'post',
-    data: { ids }
+    url: `/manage/v1/logs/${ids}`,
+    method: 'delete'
   });
 }
 
 /** Delete all system option logs */
 export function deleteAllSystemOptionLogs() {
   return request({
-    url: '/manage/systemOptionLog/deleteAllLogItem',
-    method: 'post'
+    url: '/manage/v1/logs/all',
+    method: 'delete'
   });
 }
 

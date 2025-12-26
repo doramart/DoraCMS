@@ -13,7 +13,7 @@ import { get, post, put, del } from '@/utils/request';
  * @param {boolean} params.isEnabled - 启用状态筛选
  */
 export function getModels(params) {
-  return get('/manage/ai/models', params);
+  return get('/manage/v1/ai/models', params);
 }
 
 /**
@@ -21,7 +21,7 @@ export function getModels(params) {
  * @param {string} id - 模型ID
  */
 export function getModel(id) {
-  return get(`/manage/ai/models/${id}`);
+  return get(`/manage/v1/ai/models/${id}`);
 }
 
 /**
@@ -29,7 +29,7 @@ export function getModel(id) {
  * @param {Object} data - 模型数据
  */
 export function createModel(data) {
-  return post('/manage/ai/models', data);
+  return post('/manage/v1/ai/models', data);
 }
 
 /**
@@ -38,7 +38,7 @@ export function createModel(data) {
  * @param {Object} data - 更新数据
  */
 export function updateModel(id, data) {
-  return put(`/manage/ai/models/${id}`, data);
+  return put(`/manage/v1/ai/models/${id}`, data);
 }
 
 /**
@@ -46,7 +46,7 @@ export function updateModel(id, data) {
  * @param {string} id - 模型ID
  */
 export function deleteModel(id) {
-  return del(`/manage/ai/models/${id}`);
+  return del(`/manage/v1/ai/models/${id}`);
 }
 
 /**
@@ -57,14 +57,14 @@ export function deleteModel(id) {
  * @param {string} data.apiEndpoint - API 端点
  */
 export function testApiKey(data) {
-  return post('/manage/ai/test-api-key', data);
+  return post('/manage/v1/ai/test-api-key', data);
 }
 
 /**
  * 获取可用的提供商列表
  */
 export function getProviders() {
-  return get('/manage/ai/providers');
+  return get('/manage/v1/ai/providers');
 }
 
 /**
@@ -73,7 +73,7 @@ export function getProviders() {
  * @param {boolean} isEnabled - 启用状态
  */
 export function toggleModel(id, isEnabled) {
-  return put(`/manage/ai/models/${id}/toggle`, { isEnabled });
+  return put(`/manage/v1/ai/models/${id}/toggle`, { isEnabled });
 }
 
 /**
@@ -81,7 +81,7 @@ export function toggleModel(id, isEnabled) {
  * @param {Array<string>} ids - 模型ID数组
  */
 export function batchDelete(ids) {
-  return post('/manage/ai/models/batch-delete', { ids });
+  return post('/manage/v1/ai/models/batch-delete', { ids });
 }
 
 /**
@@ -89,5 +89,5 @@ export function batchDelete(ids) {
  * @param {string} id - 模型ID（可选）
  */
 export function healthCheck(id = null) {
-  return get('/manage/ai/health-check', id ? { id } : {});
+  return get('/manage/v1/ai/health-check', id ? { id } : {});
 }

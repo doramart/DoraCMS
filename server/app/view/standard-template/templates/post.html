@@ -238,9 +238,10 @@
 
         try {
           // 🔥 使用新的 RESTful API
-          const action = isLiked ? 'unlike' : 'like';
-          const response = await fetch(`/api/content/{{ post.id }}/like?action=${action}`, {
-            method: 'POST',
+          const action = isLiked ? 'DELETE' : 'POST';
+          const endpoint = isLiked ? `/api/v1/content/{{ post.id }}/like` : `/api/v1/content/{{ post.id }}/like`;
+          const response = await fetch(endpoint, {
+            method: action,
             headers: {
               'Content-Type': 'application/json',
             },

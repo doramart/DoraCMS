@@ -56,11 +56,13 @@ class MailTemplateController extends Controller {
 
   /**
    * 根据类型获取单个模板
+   * @description 支持 RESTful 路由：GET /api/v1/mail-templates/:id
    */
   async getOne() {
     const { ctx, service } = this;
 
-    const { type } = ctx.query;
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容查询参数 type
+    const type = ctx.params.id || ctx.query.type;
 
     if (!type) {
       throw RepositoryExceptions.business.operationNotAllowed('模板类型不能为空');

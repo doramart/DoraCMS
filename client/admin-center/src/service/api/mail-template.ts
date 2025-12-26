@@ -4,7 +4,7 @@ import { standardDelete } from './deleteHelper';
 /** Get mail template list */
 export function fetchGetMailTemplateList(params?: Api.Email.MailTemplateSearchParams) {
   return request<Api.Email.MailTemplateList>({
-    url: '/manage/mailTemplate/getList',
+    url: '/manage/v1/mail-templates',
     method: 'get',
     params
   });
@@ -13,7 +13,7 @@ export function fetchGetMailTemplateList(params?: Api.Email.MailTemplateSearchPa
 /** Get mail template type list */
 export function fetchGetMailTemplateTypeList() {
   return request<Record<string, string>>({
-    url: '/manage/mailTemplate/getTypeList',
+    url: '/manage/v1/mail-templates/types',
     method: 'get'
   });
 }
@@ -21,17 +21,16 @@ export function fetchGetMailTemplateTypeList() {
 /** Get one mail template */
 export function fetchGetOneMailTemplate(id: string) {
   return request<Api.Email.MailTemplate>({
-    url: '/manage/mailTemplate/getOne',
-    method: 'get',
-    params: { id }
+    url: `/manage/v1/mail-templates/${id}`,
+    method: 'get'
   });
 }
 
 /** Update mail template */
 export function updateMailTemplate(params: Api.Email.MailTemplate) {
   return request<Api.Email.MailTemplate>({
-    url: '/manage/mailTemplate/updateOne',
-    method: 'post',
+    url: `/manage/v1/mail-templates/${params.id}`,
+    method: 'put',
     data: { ...params }
   });
 }
@@ -39,7 +38,7 @@ export function updateMailTemplate(params: Api.Email.MailTemplate) {
 /** Create mail template */
 export function createMailTemplate(params: Api.Email.MailTemplate) {
   return request<Api.Email.MailTemplate>({
-    url: '/manage/mailTemplate/addOne',
+    url: '/manage/v1/mail-templates',
     method: 'post',
     data: { ...params }
   });
@@ -47,5 +46,5 @@ export function createMailTemplate(params: Api.Email.MailTemplate) {
 
 /** Delete mail template */
 export function deleteMailTemplate(ids: string | string[]) {
-  return standardDelete<Api.Email.MailTemplateList>('mailTemplate', ids);
+  return standardDelete<Api.Email.MailTemplateList>('v1/mail-templates', ids);
 }

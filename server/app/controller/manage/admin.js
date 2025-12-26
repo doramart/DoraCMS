@@ -86,10 +86,17 @@ class AdminController extends Controller {
     });
   }
 
+  /**
+   * 更新管理员信息 - 支持 RESTful 路由
+   * PUT /api/manage/admin/:id 或 PUT /api/manage/admin/updateOne
+   */
   async updateOne() {
     const { ctx, service } = this;
 
-    const { id, userName, userPhone, userEmail } = ctx.request.body;
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || ctx.request.body.id;
+    const { userName, userPhone, userEmail } = ctx.request.body;
+    ctx.request.body.id = id;
 
     // 参数验证
     ctx.validate(adminRule.updateOne(ctx), ctx.request.body);
@@ -137,13 +144,24 @@ class AdminController extends Controller {
     });
   }
 
+  /**
+   * 删除管理员 - 支持 RESTful 路由
+   * DELETE /api/manage/admin/:id 或 DELETE /api/manage/admin/deleteUser
+   */
   async deleteUser() {
     const { ctx, service } = this;
 
-    // 🔥 使用统一的参数处理工具
-    const { idsArray } = DeleteParamsHelper.processDeleteParams(ctx, {
-      fieldName: ctx.__('admin.fields.userName'),
-    });
+    // 🔥 支持 RESTful 路由参数
+    let idsArray;
+    if (ctx.params.id) {
+      idsArray = [ctx.params.id];
+    } else {
+      // 🔥 使用统一的参数处理工具
+      const result = DeleteParamsHelper.processDeleteParams(ctx, {
+        fieldName: ctx.__('admin.fields.userName'),
+      });
+      idsArray = result.idsArray;
+    }
 
     // 获取删除前的数据（用于日志记录）
     const deletedUsers = await Promise.all(idsArray.map(id => service.admin.findById(id).catch(() => null)));
@@ -244,9 +262,14 @@ class AdminController extends Controller {
     });
   }
 
+  /**
+   * 获取用户路由 - 支持 RESTful 路由
+   * GET /api/manage/admin/:id/routes 或 GET /api/manage/admin/getUserRoutes
+   */
   async getUserRoutes() {
     const { ctx } = this;
 
+    // 🔥 支持 RESTful 路由参数
     const userId = ctx.session.adminUserInfo?.id;
     if (!userId) {
       throw RepositoryExceptions.auth.sessionExpired();

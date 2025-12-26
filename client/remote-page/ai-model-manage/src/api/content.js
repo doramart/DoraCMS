@@ -1,12 +1,13 @@
 import request from '@/utils/request';
 
+// ==================== 内容管理 ====================
 /**
  * Get user content list
  * @param {Object} params - Query parameters
  */
 export function getUserContents(params) {
   return request({
-    url: '/api/content/getUserContents',
+    url: '/api/v1/users/me/contents',
     method: 'get',
     params,
   });
@@ -14,37 +15,12 @@ export function getUserContents(params) {
 
 /**
  * Get content by ID
- * @param {Object} params - Parameters with id and userId
+ * @param {String} id - Content ID
  */
-export function getContentById(params) {
+export function getContentById(id) {
   return request({
-    url: '/api/content/getContent',
+    url: `/api/v1/content/${id}`,
     method: 'get',
-    params,
-  });
-}
-
-/**
- * Get categories
- * @param {Object} params - Query parameters
- */
-export function getCategories(params) {
-  return request({
-    url: '/api/contentCategory/getList',
-    method: 'get',
-    params,
-  });
-}
-
-/**
- * Get tags
- * @param {Object} params - Query parameters
- */
-export function getTags(params) {
-  return request({
-    url: '/api/contentTag/getList',
-    method: 'get',
-    params,
   });
 }
 
@@ -54,7 +30,7 @@ export function getTags(params) {
  */
 export function addContent(data) {
   return request({
-    url: '/api/content/addOne',
+    url: '/api/v1/content',
     method: 'post',
     data,
   });
@@ -66,35 +42,69 @@ export function addContent(data) {
  */
 export function updateContent(data) {
   return request({
-    url: '/api/content/updateOne',
-    method: 'post',
+    url: `/api/v1/content/${data.id}`,
+    method: 'put',
     data,
   });
 }
 
-// 删除内容
+/**
+ * Delete content
+ * @param {String} id - Content ID
+ */
 export function deleteContent(id) {
   return request({
-    url: '/api/content/delContent',
-    method: 'post',
-    data: { id },
+    url: `/api/v1/content/${id}`,
+    method: 'delete',
   });
 }
 
-// 获取用户评论列表
-export function getUserComments(params) {
+// ==================== 分类管理 ====================
+/**
+ * Get categories
+ * @param {Object} params - Query parameters
+ */
+export function getCategories(params) {
   return request({
-    url: '/api/contentMessage/getMessages',
+    url: '/api/v1/categories',
     method: 'get',
     params,
   });
 }
 
-// 删除评论
+// ==================== 标签管理 ====================
+/**
+ * Get tags
+ * @param {Object} params - Query parameters
+ */
+export function getTags(params) {
+  return request({
+    url: '/api/v1/tags',
+    method: 'get',
+    params,
+  });
+}
+
+// ==================== 留言评论 ====================
+/**
+ * Get user messages/comments
+ * @param {Object} params - Query parameters
+ */
+export function getUserComments(params) {
+  return request({
+    url: '/api/v1/messages',
+    method: 'get',
+    params,
+  });
+}
+
+/**
+ * Delete message/comment
+ * @param {String} id - Message ID
+ */
 export function deleteComment(id) {
   return request({
-    url: '/api/contentMessage/delMessage',
-    method: 'post',
-    data: { id },
+    url: `/api/v1/messages/${id}`,
+    method: 'delete',
   });
 }

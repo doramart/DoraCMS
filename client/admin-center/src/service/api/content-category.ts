@@ -4,7 +4,7 @@ import { standardDelete } from './deleteHelper';
 /** Get content category list */
 export function getContentCategoryList(params: Api.SystemManage.ContentCategorySearchParams) {
   return request({
-    url: '/manage/contentCategory/getList',
+    url: '/manage/v1/categories',
     method: 'get',
     params
   });
@@ -13,16 +13,15 @@ export function getContentCategoryList(params: Api.SystemManage.ContentCategoryS
 /** Get one content category */
 export function getOneContentCategory(id: string) {
   return request<Api.SystemManage.ContentCategory>({
-    url: '/manage/contentCategory/getOne',
-    method: 'get',
-    params: { id }
+    url: `/manage/v1/categories/${id}`,
+    method: 'get'
   });
 }
 
 /** Add content category */
 export function addContentCategory(data: Api.SystemManage.ContentCategory) {
   return request<Api.SystemManage.ContentCategory>({
-    url: '/manage/contentCategory/addOne',
+    url: '/manage/v1/categories',
     method: 'post',
     data
   });
@@ -31,15 +30,15 @@ export function addContentCategory(data: Api.SystemManage.ContentCategory) {
 /** Update content category */
 export function updateContentCategory(data: Api.SystemManage.ContentCategory) {
   return request<Api.SystemManage.ContentCategory>({
-    url: '/manage/contentCategory/updateOne',
-    method: 'post',
+    url: `/manage/v1/categories/${data.id}`,
+    method: 'put',
     data
   });
 }
 
 /** Delete content category */
 export function deleteContentCategory(ids: string | string[]) {
-  return standardDelete<Api.SystemManage.ContentCategory>('contentCategory', ids);
+  return standardDelete<Api.SystemManage.ContentCategory>('v1/categories', ids);
 }
 
 /** Get my template list */

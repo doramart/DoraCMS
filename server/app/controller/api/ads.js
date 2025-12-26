@@ -8,12 +8,18 @@
 // const _ = require('lodash');
 
 const AdsController = {
+  /**
+   * 🔥 优化版：获取广告
+   * @param ctx
+   * @description 支持 RESTful 路由：GET /api/v1/ads/:id
+   */
   async getOne(ctx) {
-    const name = ctx.query.name;
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容查询参数 name
+    const id = ctx.params.id || ctx.query.name;
 
     // 🔥 标准化查询条件
     const filters = {
-      name: { $eq: name },
+      name: { $eq: id },
       state: { $eq: true },
     };
 

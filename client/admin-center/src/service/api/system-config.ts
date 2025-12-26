@@ -13,7 +13,7 @@ export function fetchGetSystemConfigs(params: any) {
 /** get system config list */
 export function fetchGetSystemConfigList(params: Api.Common.CommonSearchParams) {
   return request({
-    url: '/manage/systemConfig/getConfig',
+    url: '/manage/v1/system/config',
     method: 'get',
     params
   });
@@ -22,7 +22,7 @@ export function fetchGetSystemConfigList(params: Api.Common.CommonSearchParams) 
 /** create system config item */
 export function createSystemConfigItem(params: Api.SystemManage.SystemConfig) {
   return request<Api.SystemManage.SystemConfig>({
-    url: '/manage/systemConfig/addOne',
+    url: '/manage/v1/system/config',
     method: 'post',
     data: { ...params }
   });
@@ -31,13 +31,13 @@ export function createSystemConfigItem(params: Api.SystemManage.SystemConfig) {
 /** update system config item */
 export function updateSystemConfigItem(params: Api.SystemManage.SystemConfig) {
   return request<Api.SystemManage.SystemConfig>({
-    url: '/manage/systemConfig/updateConfig',
-    method: 'post',
+    url: '/manage/v1/system/config',
+    method: 'put',
     data: { ...params }
   });
 }
 
 /** delete system config item */
 export function deleteSystemConfigItem(ids: string | string[]) {
-  return standardDelete<Api.SystemManage.SystemConfigList>('systemConfig', ids);
+  return standardDelete<Api.SystemManage.SystemConfigList>('v1/system/config', ids);
 }

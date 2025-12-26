@@ -13,7 +13,7 @@ const path = require('path');
 const vm = require('vm');
 
 const projectRoot = path.resolve(__dirname, '..');
-const routerFile = path.join(projectRoot, 'app', 'router', 'manage.js');
+const routerFile = path.join(projectRoot, 'app', 'router', 'manage', 'v1.js');
 const definitionsFile = path.join(projectRoot, 'app', 'permission', 'definitions', 'manage.js');
 
 const ROUTER_CALL_RE = /router\.(get|post|put|patch|delete)\s*\(([\s\S]*?);/g;
@@ -124,10 +124,10 @@ const extractFirstArgument = argsSource => {
   return readUntilComma();
 };
 
-const literalToArray = literal => {
+const literalToArray = (literal, context = {}) => {
   if (!literal) return [];
   try {
-    const value = vm.runInNewContext(literal);
+    const value = vm.runInNewContext(literal, context);
     if (Array.isArray(value)) {
       return value;
     }
@@ -168,10 +168,27 @@ const normalizeToken = (token, fallback) => {
 const deriveCode = (method, routePath) => {
   const segments = routePath.split('/').filter(Boolean);
   const manageIdx = segments.indexOf('manage');
-  const resourceSegment = segments[manageIdx + 1] || 'common';
-  const actionSegment =
-    segments.slice(manageIdx + 2).find(seg => seg && !seg.startsWith(':')) ||
-    (method === 'GET' ? 'list' : method.toLowerCase());
+
+  // 路由形如 /manage/v1/resource/action，需要跳过版本段
+  const remainder = segments.slice(manageIdx + 1);
+  const remainderWithoutVersion = remainder[0] && /^v\d+$/i.test(remainder[0]) ? remainder.slice(1) : remainder;
+
+  const resourceSegment = remainderWithoutVersion[0] || 'common';
+  const tailSegments = remainderWithoutVersion.slice(1);
+
+  const nonParamSegments = tailSegments.filter(seg => seg && !seg.startsWith(':'));
+
+  let actionSegment = nonParamSegments.length > 0 ? nonParamSegments[nonParamSegments.length - 1] : null;
+  if (!actionSegment) {
+    const hasParam = tailSegments.some(seg => seg && seg.startsWith(':'));
+    if (hasParam && method === 'GET') {
+      actionSegment = 'detail';
+    } else if (method === 'GET') {
+      actionSegment = 'list';
+    } else {
+      actionSegment = method.toLowerCase();
+    }
+  }
 
   const resource = normalizeToken(resourceSegment, 'resource');
   const action = normalizeToken(actionSegment, method.toLowerCase());
@@ -226,14 +243,57 @@ const serializeDefinitions = definitions => {
   return lines.join('\n');
 };
 
-const extractRoutes = source => {
+/**
+ * 从源码中提取路由注释
+ * 支持格式：
+ * // @desc 中文描述
+ * router.method(path, ...)
+ */
+const extractRouteComments = source => {
+  const commentMap = new Map();
+  const lines = source.split('\n');
+  
+  // 提取 prefix 变量
+  const prefixMatch = source.match(/const\s+prefix\s*=\s*['"`]([^'"`]+)['"`]/);
+  const prefix = prefixMatch ? prefixMatch[1] : '';
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // 匹配 @desc 注释
+    const descMatch = line.match(/^\/\/\s*@desc\s+(.+)$/);
+    if (descMatch && i + 1 < lines.length) {
+      const desc = descMatch[1].trim();
+      const nextLine = lines[i + 1];
+      
+      // 提取下一行的路由定义，支持模板字符串
+      const routeMatch = nextLine.match(/router\.(get|post|put|patch|delete)\s*\(\s*[`'"]([^`'"]+)[`'"]/);
+      if (routeMatch) {
+        const method = routeMatch[1].toUpperCase();
+        let path = routeMatch[2];
+        
+        // 替换模板字符串中的 ${prefix}
+        if (path.includes('${prefix}') && prefix) {
+          path = path.replace('${prefix}', prefix);
+        }
+        
+        const key = `${method} ${path}`;
+        commentMap.set(key, desc);
+      }
+    }
+  }
+  
+  return commentMap;
+};
+
+const extractRoutes = (source, context = {}) => {
   const routes = [];
   let match;
   while ((match = ROUTER_CALL_RE.exec(source))) {
     const method = match[1].toUpperCase();
     const argsChunk = match[2];
     const firstArgLiteral = extractFirstArgument(argsChunk);
-    const literalValues = literalToArray(firstArgLiteral);
+    const literalValues = literalToArray(firstArgLiteral, context);
     literalValues
       .filter(value => typeof value === 'string' && value.startsWith('/manage/'))
       .forEach(value => {
@@ -245,36 +305,70 @@ const extractRoutes = source => {
 
 const main = () => {
   const routerSource = fs.readFileSync(routerFile, 'utf8');
-  const routes = extractRoutes(routerSource);
+  // 简单提取 prefix（如 const prefix = '/manage/v1';），便于解析模板字符串
+  const prefixMatch = routerSource.match(/const\s+prefix\s*=\s*['"`]([^'"`]+)['"`]/);
+  const context = {};
+  if (prefixMatch && prefixMatch[1]) {
+    context.prefix = prefixMatch[1];
+  }
+
+  const routes = extractRoutes(routerSource, context);
   if (routes.length === 0) {
     console.error('No /manage routes found. Abort.');
     process.exit(1);
   }
 
-  const existing = loadExistingDefinitions(definitionsFile);
-  const existingKeySet = new Set(existing.map(def => `${def.method} ${def.path}`));
+  // 提取路由注释
+  const commentMap = extractRouteComments(routerSource);
 
-  const newDefinitions = [];
+  const existing = loadExistingDefinitions(definitionsFile);
+  const existingByKey = new Map(existing.map(def => [`${def.method} ${def.path}`, def]));
+
+  // 重新构建 definitions，保证唯一性
+  const codeSet = new Set();
+  const aliasSet = new Set();
+  const rebuilt = [];
+
   routes.forEach(route => {
     const key = `${route.method} ${route.path}`;
-    if (existingKeySet.has(key)) {
-      return;
+    const base = createDefinition(route);
+    const existing = existingByKey.get(key);
+    
+    // 优先级：注释 > 已有定义 > 自动生成
+    const commentDesc = commentMap.get(key);
+    if (commentDesc) {
+      base.desc = commentDesc;
+    } else if (existing && existing.desc && !existing.desc.startsWith('[AUTO]')) {
+      base.desc = existing.desc;
     }
-    const definition = createDefinition(route);
-    newDefinitions.push(definition);
-    existingKeySet.add(key);
+    
+    if (existing && existing.meta) {
+      base.meta = existing.meta;
+    }
+
+    // 保证 code / alias 唯一：若冲突则附加 method 后缀
+    let finalDef = base;
+    const resource = base.code.split('.')[0] || 'resource';
+    const action = base.code.split('.').slice(1).join('.') || base.method.toLowerCase();
+    if (codeSet.has(base.code) || (base.aliases || []).some(alias => aliasSet.has(alias))) {
+      const methodSuffix = base.method.toLowerCase();
+      finalDef = {
+        ...base,
+        code: `${resource}.${normalizeToken(`${action}-${methodSuffix}`, action)}`,
+        aliases: (base.aliases || []).map(alias => `${alias}-${methodSuffix}`),
+      };
+    }
+
+    codeSet.add(finalDef.code);
+    (finalDef.aliases || []).forEach(alias => aliasSet.add(alias));
+    rebuilt.push(finalDef);
   });
 
-  if (newDefinitions.length === 0) {
-    console.log('✅ No new permissions to add. Definitions file stays untouched.');
-    return;
-  }
-
-  const merged = existing.concat(newDefinitions);
-  const output = serializeDefinitions(merged);
+  const output = serializeDefinitions(rebuilt);
   fs.writeFileSync(definitionsFile, output);
 
-  console.log(`✅ Added ${newDefinitions.length} permission definitions.`);
+  console.log(`✅ Permission definitions rebuilt: ${rebuilt.length} records.`);
+  console.log(`   Found ${commentMap.size} route descriptions from comments.`);
   console.log(`   Updated file: ${path.relative(projectRoot, definitionsFile)}`);
 };
 

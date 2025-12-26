@@ -166,7 +166,8 @@ class MenuController extends Controller {
   }
 
   /**
-   * 更新菜单 - 统一异常处理版本
+   * 更新菜单 - 支持 RESTful 路由
+   * PUT /api/manage/menu/:id 或 PUT /api/manage/menu/updateOne
    */
   async updateOne() {
     const { ctx, service } = this;
@@ -174,7 +175,10 @@ class MenuController extends Controller {
     // 参数验证
     ctx.validate(menuRule.updateOne);
 
-    const { id, routePath, routeName, menuType, parentId, buttons = [] } = ctx.request.body;
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || ctx.request.body.id;
+    const { routePath, routeName, menuType, parentId, buttons = [] } = ctx.request.body;
+    ctx.request.body.id = id;
 
     // 🔥 业务验证 - Repository会自动抛出具体异常
     await service.menu.checkRoutePathUnique(routePath, id);
@@ -208,15 +212,23 @@ class MenuController extends Controller {
   }
 
   /**
-   * 删除菜单 - 统一异常处理版本
+   * 删除菜单 - 支持 RESTful 路由
+   * DELETE /api/manage/menu/:id 或 DELETE /api/manage/menu/deleteMenu
    */
   async deleteMenu() {
     const { ctx, service } = this;
 
-    // 🔥 使用统一的参数处理工具
-    const { idsArray } = DeleteParamsHelper.processDeleteParams(ctx, {
-      fieldName: ctx.__('menu.fields.name'),
-    });
+    // 🔥 支持 RESTful 路由参数
+    let idsArray;
+    if (ctx.params.id) {
+      idsArray = [ctx.params.id];
+    } else {
+      // 🔥 使用统一的参数处理工具
+      const result = DeleteParamsHelper.processDeleteParams(ctx, {
+        fieldName: ctx.__('menu.fields.name'),
+      });
+      idsArray = result.idsArray;
+    }
 
     // 获取所有要删除的菜单（包括子菜单）
     const allMenusToDelete = new Set();

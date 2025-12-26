@@ -103,12 +103,14 @@ class MailTemplateController extends Controller {
   }
 
   /**
-   * 获取单个邮件模板
+   * 获取单个邮件模板 - 支持 RESTful 路由
+   * GET /api/manage/mailTemplate/:id 或 GET /api/manage/mailTemplate/getOne?id=xxx
    */
   async getOne() {
     const { ctx, service } = this;
 
-    const { id } = ctx.query;
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || ctx.query.id;
 
     if (!id) {
       throw RepositoryExceptions.mailTemplate.notFound(id);
@@ -127,7 +129,8 @@ class MailTemplateController extends Controller {
   }
 
   /**
-   * 更新邮件模板
+   * 更新邮件模板 - 支持 RESTful 路由
+   * PUT /api/manage/mailTemplate/:id 或 PUT /api/manage/mailTemplate/update
    */
   async update() {
     const { ctx, service } = this;
@@ -136,7 +139,10 @@ class MailTemplateController extends Controller {
     ctx.validate(mailTemplateRule.form(ctx));
 
     const fields = ctx.request.body || {};
-    const { id } = fields;
+
+    // 🔥 支持 RESTful 路由参数
+    const id = ctx.params.id || fields.id;
+    fields.id = id;
 
     if (!id) {
       throw RepositoryExceptions.mailTemplate.notFound(id);

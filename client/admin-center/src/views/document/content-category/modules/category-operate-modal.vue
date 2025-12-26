@@ -89,7 +89,7 @@ const rules: FormRules = {
   ],
 };
 
-const uploadAction = `${import.meta.env.VITE_SERVICE_BASE_URL}/api/upload/files`;
+const uploadAction = `${import.meta.env.VITE_SERVICE_BASE_URL}/api/v1/files`;
 
 async function getTemplateList() {
   // const res: any = await getMyTemplateList();

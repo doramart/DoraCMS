@@ -4,7 +4,7 @@ import { deleteRequest } from './deleteHelper';
 /** get content list */
 export function fetchGetContentList(params?: any) {
   return request<any>({
-    url: '/manage/content/getList',
+    url: '/manage/v1/content',
     method: 'get',
     params
   });
@@ -13,7 +13,7 @@ export function fetchGetContentList(params?: any) {
 /** get content category list */
 export function fetchGetContentCategoryList() {
   return request<any>({
-    url: '/manage/contentCategory/getList',
+    url: '/manage/v1/categories',
     method: 'get'
   });
 }
@@ -21,7 +21,7 @@ export function fetchGetContentCategoryList() {
 /** get content tag list */
 export function fetchGetContentTagList(params?: any) {
   return request<any>({
-    url: '/manage/contentTag/getList',
+    url: '/manage/v1/tags',
     method: 'get',
     params
   });
@@ -30,7 +30,7 @@ export function fetchGetContentTagList(params?: any) {
 /** get content type list */
 export function fetchGetContentTypeList() {
   return request<any>({
-    url: '/manage/content/getTypeList',
+    url: '/manage/v1/content/types',
     method: 'get'
   });
 }
@@ -38,7 +38,7 @@ export function fetchGetContentTypeList() {
 /** get one content */
 export function fetchGetOneContent(id: string) {
   return request<any>({
-    url: `/manage/content/getContent?id=${id}`,
+    url: `/manage/v1/content/${id}`,
     method: 'get'
   });
 }
@@ -46,16 +46,16 @@ export function fetchGetOneContent(id: string) {
 /** update content */
 export function updateContent(params: any) {
   return request<any>({
-    url: '/manage/content/updateOne',
-    method: 'post',
+    url: `/manage/v1/content/${params.id}`,
+    method: 'put',
     data: { ...params }
   });
 }
 
 export function updateManyContent(params: any) {
   return request({
-    url: '/manage/content/updateContents',
-    method: 'post',
+    url: '/manage/v1/content/batch',
+    method: 'put',
     data: { ...params }
   });
 }
@@ -63,7 +63,7 @@ export function updateManyContent(params: any) {
 /** create content */
 export function createContent(params: any) {
   return request<any>({
-    url: '/manage/content/addOne',
+    url: '/manage/v1/content',
     method: 'post',
     data: { ...params }
   });
@@ -74,19 +74,19 @@ export function deleteContent(params: any) {
   // 🔥 使用通用删除工具，支持额外参数
   const ids = params.ids || params.id;
   const extraData: any = {};
-  
+
   // 保留额外参数（如 draft）
   if (params.draft !== undefined) {
     extraData.draft = params.draft;
   }
 
-  return deleteRequest<any>('/manage/content/deleteContent', ids, extraData);
+  return deleteRequest<any>('/manage/v1/content', ids, extraData);
 }
 
 /** get nearby content */
 export function fetchGetNearbyContent(id: string) {
   return request<any>({
-    url: `/api/content/getNearbyContent?id=${id}`,
+    url: `/api/v1/content/${id}/nearby`,
     method: 'get'
   });
 }
@@ -95,7 +95,7 @@ export function fetchGetNearbyContent(id: string) {
 /** upload cover */
 export function uploadCover(params: any) {
   return request<any>({
-    url: '/api/content/uploadCover',
+    url: `/api/v1/content/${params.id}/cover`,
     method: 'post',
     data: { ...params }
   });
@@ -104,7 +104,7 @@ export function uploadCover(params: any) {
 /** get content counts by category id */
 export function fetchGetContentCountsByCateId(cateId: string) {
   return request<any>({
-    url: `/api/content/getContentCountsByCateId?cateId=${cateId}`,
+    url: `/api/v1/categories/${cateId}/content-count`,
     method: 'get'
   });
 }
@@ -112,7 +112,7 @@ export function fetchGetContentCountsByCateId(cateId: string) {
 /** get hot tag ids */
 export function fetchGetHotTagIds() {
   return request<any>({
-    url: '/api/content/getHotTagIds',
+    url: '/api/v1/content/hot-tag-ids',
     method: 'get'
   });
 }
@@ -120,8 +120,8 @@ export function fetchGetHotTagIds() {
 /** move content to category */
 export function moveContentToCategory(params: any) {
   return request<any>({
-    url: '/manage/content/moveCate',
-    method: 'post',
+    url: `/manage/v1/content/${params.id}/category`,
+    method: 'put',
     data: { ...params }
   });
 }

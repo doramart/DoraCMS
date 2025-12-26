@@ -2,14 +2,23 @@
  * @Author: doramart
  * @Date: 2019-08-16 14:51:46
  * @Last Modified by: doramart
- * @Last Modified time: 2025-11-13 14:26:50
+ * @Last Modified time: 2025-12-25 13:05:39
  */
 'use strict';
-const { authToken } = require('../utils');
-const _ = require('lodash');
+  const { authToken } = require('../utils');
+  const _ = require('lodash');
 
 module.exports = (options, app) => {
-  const routeWhiteList = ['/admin/login', '/admin/login*', '/dr-admin', '/dr-admin*', '/admin/logout'];
+  const routeWhiteList = [
+    // v1 版本化后的管理端接口
+    '/api/v1/admin/login',
+    '/api/v1/admin/init/status',
+    '/api/v1/admin/init',
+    '/manage/v1/admins/login',
+    '/manage/v1/admins/init/status',
+    '/manage/v1/admins/init',
+    '/manage/v1/admins/logout',
+  ];
 
   /**
    * 判断是否为API请求

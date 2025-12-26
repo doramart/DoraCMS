@@ -451,9 +451,11 @@ const ContentMessageController = {
   /**
    * 🔥 重构：点赞留言 - 使用MessageInteraction服务
    * @param ctx
+   * @description 支持 RESTful 路由：POST /api/v1/messages/:id/like
    */
   async praiseMessage(ctx) {
-    const { messageId } = ctx.request.body;
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 messageId
+    const messageId = ctx.params.id || ctx.request.body.messageId;
 
     // 🔥 统一异常处理：身份验证
     if (_.isEmpty(ctx.session.user)) {
@@ -479,9 +481,11 @@ const ContentMessageController = {
   /**
    * 🔥 重构：取消点赞留言 - 使用MessageInteraction服务
    * @param ctx
+   * @description 支持 RESTful 路由：DELETE /api/v1/messages/:id/like
    */
   async unpraiseMessage(ctx) {
-    const { messageId } = ctx.request.body;
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 messageId
+    const messageId = ctx.params.id || ctx.request.body.messageId;
 
     // 🔥 统一异常处理：身份验证
     if (_.isEmpty(ctx.session.user)) {
@@ -507,9 +511,11 @@ const ContentMessageController = {
   /**
    * 🔥 重构：踩留言 - 使用MessageInteraction服务
    * @param ctx
+   * @description 支持 RESTful 路由：POST /api/v1/messages/:id/dislike
    */
   async despiseMessage(ctx) {
-    const { messageId } = ctx.request.body;
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 messageId
+    const messageId = ctx.params.id || ctx.request.body.messageId;
 
     // 🔥 统一异常处理：身份验证
     if (_.isEmpty(ctx.session.user)) {
@@ -535,9 +541,11 @@ const ContentMessageController = {
   /**
    * 🔥 重构：取消踩留言 - 使用MessageInteraction服务
    * @param ctx
+   * @description 支持 RESTful 路由：DELETE /api/v1/messages/:id/dislike
    */
   async undespiseMessage(ctx) {
-    const { messageId } = ctx.request.body;
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 messageId
+    const messageId = ctx.params.id || ctx.request.body.messageId;
 
     // 🔥 统一异常处理：身份验证
     if (_.isEmpty(ctx.session.user)) {

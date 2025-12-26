@@ -13,5 +13,5 @@ import { get } from '@/utils/request';
  * @param {boolean} params.isEnabled - 启用状态筛选
  */
 export function getModels(params) {
-  return get('/manage/ai/models', params);
+  return get('/manage/v1/ai/models', params);
 }

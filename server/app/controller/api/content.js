@@ -272,14 +272,14 @@ const ContentController = {
   /**
    * 🔥 优化版：获取单个内容详情
    * @param ctx
-   * @description 不需要传 userId，自动判断：
-   * - 如果是自己的文章，可以查看任何状态
-   * - 如果是别人的文章，只能查看已发布（state=2）的文章
+   * @description 支持 RESTful 路由：/api/v1/content/:id (路径参数)
+   * @description 也兼容旧 API: /api/content/getContent?id=xxx (查询参数)
    */
   async getOneContent(ctx) {
-    const targetId = ctx.query.id;
+    // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+    const targetId = ctx.params.id || ctx.query.id;
 
-    if (!ctx.validateId(targetId)) {
+    if (!targetId || !ctx.validateId(targetId)) {
       throw RepositoryExceptions.create.validation(ctx.__('validation.errorParams'));
     }
 
@@ -321,10 +321,12 @@ const ContentController = {
   /**
    * 🔥 优化版：获取相邻内容 - 使用TemplateService
    * @param ctx
+   * @description 支持 RESTful 路由：GET /api/v1/content/:id/nearby
    */
   async getNearbyContent(ctx) {
     try {
-      const contentId = ctx.query.id;
+      // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+      const contentId = ctx.params.id || ctx.query.id;
 
       if (!contentId || !ctx.validateId(contentId)) {
         throw RepositoryExceptions.create.validation(ctx.__('validation.errorParams'));
@@ -351,10 +353,12 @@ const ContentController = {
   /**
    * 🔥 新增：获取上一篇和下一篇文章 - 使用TemplateService
    * @param ctx
+   * @description 支持 RESTful 路由：GET /api/v1/content/:id/navigation
    */
   async getPrevNextPosts(ctx) {
     try {
-      const contentId = ctx.query.id;
+      // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
+      const contentId = ctx.params.id || ctx.query.id;
 
       if (!contentId || !ctx.validateId(contentId)) {
         throw RepositoryExceptions.create.validation(ctx.__('validation.errorParams'));
@@ -460,20 +464,25 @@ const ContentController = {
   /**
    * 🔥 优化版：更新内容 - 统一异常处理
    * @param ctx
+   * @description 支持 RESTful 路由：PUT /api/v1/content/:id
    */
   async updateContent(ctx) {
     const fields = ctx.request.body;
+
+    // 🔥 RESTful: 优先使用路径参数中的 id，也兼容 body 中的 id
+    const contentId = ctx.params.id || fields.id;
+    fields.id = contentId; // 确保 fields 中有 id 供后续验证使用
 
     // 🔥 业务验证 - 自动抛出异常
     ContentController.checkContentFormData(ctx, fields);
 
     const targetContent = await ctx.service.content.findOne({
-      id: { $eq: fields.id },
+      id: { $eq: contentId },
       uAuthor: { $eq: ctx.session.user.id },
     });
 
     if (_.isEmpty(targetContent)) {
-      throw RepositoryExceptions.content.notOwner(fields.id, ctx.session.user.id);
+      throw RepositoryExceptions.content.notOwner(contentId, ctx.session.user.id);
     }
 
     // 🔒 服务端强制控制：普通用户更新后需重新审核/草稿
