@@ -37,7 +37,7 @@ module.exports = app => {
   // ==================== 内容管理 ====================
   // @desc 获取内容列表
   router.get(`${prefix}/content`, controller.manage.content.list);
-  // @desc 批量更新内容（特定路由，必须在 :id 之前）
+  // @desc 批量更新内容
   router.put(`${prefix}/content/batch`, controller.manage.content.updateContents);
   
   // @desc 获取内容详情（参数化路由，必须在特定路由之后）
@@ -98,11 +98,11 @@ module.exports = app => {
   // ==================== 留言管理 ====================
   // @desc 获取留言列表
   router.get(`${prefix}/messages`, controller.manage.contentMessage.list);
-  // @desc 获取留言统计（特定路由，必须在 :id 之前）
+  // @desc 获取留言统计
   router.get(`${prefix}/messages/stats`, controller.manage.contentMessage.getStats);
-  // @desc 批量更新留言状态（特定路由，必须在 :id 之前）
+  // @desc 批量更新留言状态
   router.put(`${prefix}/messages/batch/state`, controller.manage.contentMessage.batchUpdateState);
-  // @desc 批量审核留言（特定路由，必须在 :id 之前）
+  // @desc 批量审核留言
   router.put(`${prefix}/messages/batch/audit`, controller.manage.contentMessage.batchAuditMessages);
   
   // @desc 获取留言详情（参数化路由，必须在特定路由之后）
@@ -127,9 +127,9 @@ module.exports = app => {
   // ==================== 菜单管理 ====================
   // @desc 获取菜单列表
   router.get(`${prefix}/menus`, controller.manage.menu.getList);
-  // @desc 重新排序菜单（特定路由，必须在 :id 之前）
+  // @desc 重新排序菜单
   router.put(`${prefix}/menus/reorder`, controller.manage.menu.updateOrder);
-  // @desc 批量更新菜单状态（特定路由，必须在 :id 之前）
+  // @desc 批量更新菜单状态
   router.put(`${prefix}/menus/batch/status`, controller.manage.menu.batchUpdateStatus);
   
   // @desc 创建菜单
@@ -176,19 +176,19 @@ module.exports = app => {
   // ==================== 模板主题 ====================
   // @desc 获取模板列表
   router.get(`${prefix}/templates`, controller.manage.template.list);
-  // @desc 获取当前激活的主题（特定路由，必须在 :id 之前）
+  // @desc 获取当前激活的主题
   router.get(`${prefix}/templates/active`, controller.manage.template.getActiveTheme);
-  // @desc 获取模板统计信息（特定路由，必须在 :id 之前）
+  // @desc 获取模板统计信息
   router.get(`${prefix}/templates/stats`, controller.manage.template.getStats);
-  // @desc 从市场获取模板列表（特定路由，必须在 :id 之前）
+  // @desc 从市场获取模板列表
   router.get(`${prefix}/templates/market`, controller.manage.template.getTempsFromShop);
-  // @desc 从远程安装模板（特定路由，必须在 :id 之前）
+  // @desc 从远程安装模板
   router.post(`${prefix}/templates/install/remote`, controller.manage.template.installFromRemote);
-  // @desc 安装模板（特定路由，必须在 :id 之前）
+  // @desc 安装模板
   router.post(`${prefix}/templates/install`, controller.manage.template.install);
-  // @desc 批量删除模板（特定路由，必须在 :id 之前）
+  // @desc 批量删除模板
   router.delete(`${prefix}/templates/batch`, controller.manage.template.deleteMany);
-  // @desc 批量更新模板状态（特定路由，必须在 :id 之前）
+  // @desc 批量更新模板状态
   router.put(`${prefix}/templates/batch/status`, controller.manage.template.batchUpdateStatus);
   
   // @desc 获取模板详情（参数化路由，必须在特定路由之后）
@@ -219,15 +219,15 @@ module.exports = app => {
   // ==================== 插件管理 ====================
   // @desc 获取插件列表
   router.get(`${prefix}/plugins`, controller.manage.plugin.list);
-  // @desc 安装插件（特定路由，必须在 :id 之前）
+  // @desc 安装插件
   router.post(`${prefix}/plugins/install`, controller.manage.plugin.installPlugin);
-  // @desc 插件心跳检测（特定路由，必须在 :id 之前）
+  // @desc 插件心跳检测
   router.get(`${prefix}/plugins/heartbeat`, controller.manage.plugin.pluginHeartBeat);
-  // @desc 获取插件市场列表（特定路由，必须在 :id 之前）
+  // @desc 获取插件市场列表
   router.get(`${prefix}/plugins/market`, controller.manage.plugin.getPluginShopList);
-  // @desc 创建插件发票（特定路由，必须在 :id 之前）
+  // @desc 创建插件发票
   router.post(`${prefix}/plugins/invoices`, controller.manage.plugin.createInvoice);
-  // @desc 检查插件发票（特定路由，必须在 :id 之前）
+  // @desc 检查插件发票
   router.post(`${prefix}/plugins/invoices/check`, controller.manage.plugin.checkInvoice);
   
   // @desc 卸载插件（参数化路由，必须在特定路由之后）
@@ -242,7 +242,7 @@ module.exports = app => {
   // ==================== 日志管理 ====================
   // @desc 获取日志列表
   router.get(`${prefix}/logs`, controller.manage.systemOptionLog.list);
-  // @desc 清空所有日志（特定路由，必须在 :id 之前）
+  // @desc 清空所有日志
   router.delete(`${prefix}/logs/all`, controller.manage.systemOptionLog.removeAll);
   
   // @desc 删除日志（参数化路由，必须在特定路由之后）
@@ -285,4 +285,38 @@ module.exports = app => {
   router.put(`${prefix}/sitemap/config`, controller.manage.sitemap.updateConfig);
   // @desc 测试 Sitemap 访问
   router.get(`${prefix}/sitemap/test`, controller.manage.sitemap.testAccess);
+
+  // ==================== Webhook 管理 ====================
+  // @desc 获取 Webhook 列表
+  router.get(`${prefix}/webhooks`, controller.manage.webhook.list);
+  // @desc 获取用户的 Webhook 统计信息
+  router.get(`${prefix}/webhooks/stats`, controller.manage.webhook.getStats);
+  // @desc 获取所有支持的事件列表
+  router.get(`${prefix}/webhooks/events`, controller.manage.webhook.getEvents);
+  // @desc 批量更新 Webhook 状态
+  router.put(`${prefix}/webhooks/batch/status`, controller.manage.webhook.batchUpdateStatus);
+  
+  // @desc 获取 Webhook 详情（参数化路由，必须在特定路由之后）
+  router.get(`${prefix}/webhooks/:id`, controller.manage.webhook.getOne);
+  // @desc 创建 Webhook
+  router.post(`${prefix}/webhooks`, controller.manage.webhook.create);
+  // @desc 更新 Webhook
+  router.put(`${prefix}/webhooks/:id`, controller.manage.webhook.update);
+  // @desc 删除 Webhook
+  router.delete(`${prefix}/webhooks/:id`, controller.manage.webhook.removes);
+  // @desc 启用 Webhook
+  router.put(`${prefix}/webhooks/:id/enable`, controller.manage.webhook.enable);
+  // @desc 禁用 Webhook
+  router.put(`${prefix}/webhooks/:id/disable`, controller.manage.webhook.disable);
+  // @desc 重新生成 Webhook Secret
+  router.post(`${prefix}/webhooks/:id/regenerate-secret`, controller.manage.webhook.regenerateSecret);
+  // @desc 获取 Webhook 统计信息
+  router.get(`${prefix}/webhooks/:id/stats`, controller.manage.webhook.getWebhookStats);
+  
+  // @desc 获取 Webhook 日志列表
+  router.get(`${prefix}/webhooks/:id/logs`, controller.manage.webhook.getLogs);
+  // @desc 获取 Webhook 日志详情
+  router.get(`${prefix}/webhooks/:id/logs/:logId`, controller.manage.webhook.getLogDetail);
+  // @desc 手动重试失败的 Webhook
+  router.post(`${prefix}/webhooks/:id/logs/:logId/retry`, controller.manage.webhook.retryWebhook);
 };

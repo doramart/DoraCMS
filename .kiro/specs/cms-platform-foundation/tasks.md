@@ -262,14 +262,14 @@
   - 测试签名生成和验证
   - _Requirements: 10.4_
 
-- [ ] 7.6 在业务逻辑中集成 Webhook
+- [-] 7.6 在业务逻辑中集成 Webhook
   - 在 Content Service 中触发 content.created 事件
   - 在 User Service 中触发 user.registered 事件
   - 使用 try-catch 包裹，失败不影响业务
   - 记录 Webhook 触发日志
   - _Requirements: 10.2, 10.5_
 
-- [ ] 7.7 实现 Webhook 管理接口
+- [x] 7.7 实现 Webhook 管理接口
   - 创建 Webhook Controller（server/app/controller/manage/webhook.js）
   - 实现创建、查询、更新、删除 Webhook 接口
   - 实现 Webhook 日志查询接口
