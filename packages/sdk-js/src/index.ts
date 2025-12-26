@@ -17,11 +17,14 @@ export type * from './modules/auth';
 export { ContentModule } from './modules/content';
 export type * from './modules/content';
 
-// 导出类型定义
+// 导出所有类型定义
 export type * from './types';
 
-// 导出错误类
-export { APIError, ErrorType } from './errors';
+// 导出错误类和类型
+export { APIError, ErrorType, ErrorSeverity } from './errors';
+export { ErrorHandler } from './errors';
+export { RetryStrategy } from './errors';
+export type { ErrorHandlerConfig, RetryContext, RetryDecision } from './errors';
 
 // 导出工具函数
 export { generateSignature, generateNonce, createTokenStorage } from './utils';

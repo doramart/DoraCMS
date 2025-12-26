@@ -38,6 +38,12 @@ export interface SDKConfig {
   tokenStorage?: 'localStorage' | 'sessionStorage' | 'memory';
   /** 重试配置 */
   retry?: RetryConfig;
+  /** 是否记录错误日志 */
+  logErrors?: boolean;
+  /** 认证错误回调 */
+  onAuthError?: (error: any) => Promise<boolean>;
+  /** 通用错误回调 */
+  onError?: (error: any) => void;
 }
 
 /**
@@ -62,6 +68,7 @@ export interface APIErrorResponse {
   timestamp: string;
   requestId: string;
   details?: any;
+  retryAfter?: number | string;
 }
 
 /**
@@ -94,3 +101,9 @@ export interface RequestConfig {
   timeout?: number;
   data?: any; // 支持 DELETE 等请求的 body
 }
+
+// 导出业务模型类型
+export * from './models';
+
+// 导出 API 请求/响应类型
+export * from './api';
