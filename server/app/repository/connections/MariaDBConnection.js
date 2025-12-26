@@ -379,6 +379,31 @@ class MariaDBConnection {
       this.app.logger.error('AdsItems 模型加载失败:', error);
       throw error;
     }
+
+    // 加载 Webhook 模型
+    try {
+      const WebhookSchema = require('../schemas/mariadb/WebhookSchema');
+      const Webhook = WebhookSchema(this.sequelize, this.app);
+      this.models.set('Webhook', Webhook);
+
+      // this.app.logger.info('Webhook 模型加载成功');
+    } catch (error) {
+      this.app.logger.error('Webhook 模型加载失败:', error);
+      throw error;
+    }
+
+    // 加载 WebhookLog 模型
+    try {
+      const WebhookLogSchema = require('../schemas/mariadb/WebhookLogSchema');
+      const WebhookLog = WebhookLogSchema(this.sequelize, this.app);
+      this.models.set('WebhookLog', WebhookLog);
+
+      // this.app.logger.info('WebhookLog 模型加载成功');
+    } catch (error) {
+      this.app.logger.error('WebhookLog 模型加载失败:', error);
+      throw error;
+    }
+
     // 🔥 建立所有模型的关联关系
     await this._setupModelAssociations();
 

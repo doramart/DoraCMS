@@ -623,5 +623,22 @@ const response = await axios.get('https://api.example.com/api/v1/content', {
     },
   };
 
+  // Webhook 配置
+  config.webhook = {
+    // 队列并发数
+    concurrency: envConfig.getNumberEnv('WEBHOOK_CONCURRENCY', 5),
+    // 默认超时时间（毫秒）
+    defaultTimeout: envConfig.getNumberEnv('WEBHOOK_DEFAULT_TIMEOUT', 10000),
+    // 默认重试配置
+    defaultRetryConfig: {
+      maxRetries: envConfig.getNumberEnv('WEBHOOK_MAX_RETRIES', 3),
+      retryDelay: envConfig.getNumberEnv('WEBHOOK_RETRY_DELAY', 1000),
+    },
+    // 用户 Webhook 数量限制
+    maxWebhooksPerUser: envConfig.getNumberEnv('WEBHOOK_MAX_PER_USER', 50),
+    // 日志保留天数
+    logRetentionDays: envConfig.getNumberEnv('WEBHOOK_LOG_RETENTION_DAYS', 90),
+  };
+
   return config;
 };

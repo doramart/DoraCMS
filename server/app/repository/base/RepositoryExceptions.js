@@ -558,6 +558,61 @@ class RepositoryExceptions {
   };
 
   /**
+   * Webhook 相关异常
+   */
+  static webhook = {
+    // 唯一性约束异常
+    nameAlreadyExists: name => ErrorFactory.uniqueConstraint('name', name, 'Webhook名称已存在'),
+
+    // 资源未找到异常
+    notFound: id => ErrorFactory.notFound('Webhook', id),
+
+    // 验证异常
+    nameRequired: () => ErrorFactory.validation('Webhook名称不能为空'),
+    nameTooLong: maxLength => ErrorFactory.validation(`Webhook名称长度不能超过${maxLength}个字符`),
+    urlRequired: () => ErrorFactory.validation('Webhook URL不能为空'),
+    invalidUrl: url => ErrorFactory.validation(`无效的URL格式: ${url}，必须以 http:// 或 https:// 开头`),
+    userIdRequired: () => ErrorFactory.validation('用户ID不能为空'),
+    eventsRequired: () => ErrorFactory.validation('至少需要订阅一个事件'),
+    invalidEvent: event => ErrorFactory.validation(`无效的事件类型: ${event}`),
+    descriptionTooLong: maxLength => ErrorFactory.validation(`Webhook描述长度不能超过${maxLength}个字符`),
+    invalidRetryConfig: () => ErrorFactory.validation('重试配置格式不正确'),
+    invalidMaxRetries: () => ErrorFactory.validation('最大重试次数必须在 0-10 之间'),
+    invalidRetryDelay: () => ErrorFactory.validation('重试延迟必须在 100-60000 毫秒之间'),
+    invalidTimeout: () => ErrorFactory.validation('超时时间必须在 1000-60000 毫秒之间'),
+
+    // 业务规则异常
+    disabled: id => ErrorFactory.businessRule('WEBHOOK_DISABLED', `Webhook ${id} 已被禁用`),
+    deleted: id => ErrorFactory.businessRule('WEBHOOK_DELETED', `Webhook ${id} 已被删除`),
+    notOwner: (webhookId, userId) =>
+      ErrorFactory.businessRule('NOT_WEBHOOK_OWNER', `用户 ${userId} 不是 Webhook ${webhookId} 的所有者`),
+    tooManyWebhooks: (userId, maxWebhooks) =>
+      ErrorFactory.businessRule('TOO_MANY_WEBHOOKS', `用户 ${userId} 的Webhook数量已达到上限: ${maxWebhooks}`),
+
+    // 权限相关异常
+    noCreatePermission: () => ErrorFactory.permission('没有创建Webhook的权限'),
+    noManagePermission: webhookId => ErrorFactory.permission(`没有管理Webhook ${webhookId} 的权限`),
+  };
+
+  /**
+   * WebhookLog 相关异常
+   */
+  static webhookLog = {
+    // 资源未找到异常
+    notFound: id => ErrorFactory.notFound('Webhook日志', id),
+
+    // 验证异常
+    webhookIdRequired: () => ErrorFactory.validation('Webhook ID不能为空'),
+    eventRequired: () => ErrorFactory.validation('事件类型不能为空'),
+    payloadRequired: () => ErrorFactory.validation('事件负载不能为空'),
+
+    // 业务规则异常
+    maxRetriesExceeded: (logId, maxRetries) =>
+      ErrorFactory.businessRule('MAX_RETRIES_EXCEEDED', `Webhook日志 ${logId} 已达到最大重试次数: ${maxRetries}`),
+    alreadyCompleted: logId => ErrorFactory.businessRule('ALREADY_COMPLETED', `Webhook日志 ${logId} 已经完成`),
+  };
+
+  /**
    * Ads 相关异常
    */
   static ads = {

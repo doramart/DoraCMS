@@ -132,6 +132,17 @@ class AppBootHook {
     _theApp.cache = new UnifiedCache(_theApp);
     _theApp.logger.info('🚀 统一缓存系统已初始化:', _theApp.cache.getInfo());
 
+    // 🔥 初始化 Webhook 队列
+    try {
+      const WebhookQueue = require('./app/lib/webhookQueue');
+      _theApp.webhookQueue = new WebhookQueue(_theApp);
+      await _theApp.webhookQueue.init();
+      _theApp.logger.info('✅ Webhook 队列初始化成功');
+    } catch (error) {
+      _theApp.logger.error('❌ Webhook 队列初始化失败:', error);
+      // 不阻止应用启动，Webhook 功能可选
+    }
+
     // 初始化权限注册表
     await this.initializePermissionRegistry();
     try {
@@ -259,6 +270,17 @@ class AppBootHook {
         if (!this.permissionDefinitionManagerCleanupRegistered) {
           this.permissionDefinitionManagerCleanupRegistered = true;
           this.app.beforeClose(async () => {
+            // 关闭 Webhook 队列
+            if (this.app.webhookQueue) {
+              try {
+                await this.app.webhookQueue.close();
+                this.app.logger.info('✅ Webhook 队列已关闭');
+              } catch (error) {
+                this.app.logger.error('❌ Webhook 队列关闭失败:', error);
+              }
+            }
+
+            // 关闭权限定义管理器
             if (this.permissionDefinitionManager) {
               await this.permissionDefinitionManager.dispose();
             }

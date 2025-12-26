@@ -25,6 +25,8 @@ const MessageInteractionMongoRepository = require('../adapters/mongodb/MessageIn
 const ContentInteractionMongoRepository = require('../adapters/mongodb/ContentInteractionRepository');
 const TemplateMongoRepository = require('../adapters/mongodb/TemplateMongoRepository');
 const PermissionDefinitionMongoRepository = require('../adapters/mongodb/PermissionDefinitionMongoRepository');
+const WebhookMongoRepository = require('../adapters/mongodb/WebhookMongoRepository');
+const WebhookLogMongoRepository = require('../adapters/mongodb/WebhookLogMongoRepository');
 
 // MariaDB Repository 实现 - 条件加载
 let mariaDBRepositories = {};
@@ -54,6 +56,8 @@ function loadMariaDBRepositories() {
         ContentInteraction: require('../adapters/mariadb/ContentInteractionRepository'),
         Template: require('../adapters/mariadb/TemplateMariaRepository'),
         PermissionDefinition: require('../adapters/mariadb/PermissionDefinitionMariaRepository'),
+        Webhook: require('../adapters/mariadb/WebhookMariaRepository'),
+        WebhookLog: require('../adapters/mariadb/WebhookLogMariaRepository'),
       };
     } catch (error) {
       console.warn('MariaDB repositories not available:', error.message);
@@ -147,6 +151,14 @@ class RepositoryFactory {
       PermissionDefinition: {
         mongodb: PermissionDefinitionMongoRepository,
         mariadb: () => mariaDBRepositories.PermissionDefinition,
+      },
+      Webhook: {
+        mongodb: WebhookMongoRepository,
+        mariadb: () => mariaDBRepositories.Webhook,
+      },
+      WebhookLog: {
+        mongodb: WebhookLogMongoRepository,
+        mariadb: () => mariaDBRepositories.WebhookLog,
       },
     };
   }
@@ -421,6 +433,24 @@ class RepositoryFactory {
    */
   createTemplateRepository(ctx) {
     return this._createRepository('Template', ctx);
+  }
+
+  /**
+   * 创建 Webhook Repository
+   * @param {Context} ctx EggJS 上下文
+   * @return {IWebhookRepository} Webhook Repository 实例
+   */
+  createWebhookRepository(ctx) {
+    return this._createRepository('Webhook', ctx);
+  }
+
+  /**
+   * 创建 WebhookLog Repository
+   * @param {Context} ctx EggJS 上下文
+   * @return {IWebhookLogRepository} WebhookLog Repository 实例
+   */
+  createWebhookLogRepository(ctx) {
+    return this._createRepository('WebhookLog', ctx);
   }
 
   /**

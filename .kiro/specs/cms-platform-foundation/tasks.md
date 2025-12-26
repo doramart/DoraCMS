@@ -229,7 +229,7 @@
   - _Requirements: 6.5, 17.1, 17.2, 17.3_
 
 - [ ] 7. Phase 4: Webhook 系统
-- [ ] 7.1 创建 Webhook 数据模型
+- [x] 7.1 创建 Webhook 数据模型
   - 定义 Webhook Model（server/app/model/webhook.js）
   - 定义 WebhookLog Model
   - 创建 Webhook Repository（使用现有 Repository 模式）
