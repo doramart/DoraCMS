@@ -118,7 +118,91 @@ module.exports = appInfo => {
     dirScanner: './app/controller',
     apiInfo: {
       title: 'DoraCMS API Documentation',
-      description: 'DoraCMS RESTful API 文档 - 应用底座平台',
+      description: `
+# DoraCMS RESTful API 文档 - 应用底座平台
+
+## 认证方式
+
+### 1. JWT Token 认证（Bearer）
+用于前端用户和管理员认证，在请求头中添加：
+\`\`\`
+Authorization: Bearer {your_jwt_token}
+\`\`\`
+
+### 2. API Key 认证
+用于第三方应用和服务端集成，需要同时提供以下请求头：
+
+#### 基本认证头
+\`\`\`
+X-API-Key: {your_api_key}
+X-API-Secret: {your_api_secret}
+X-API-Timestamp: {unix_timestamp_in_milliseconds}
+X-API-Signature: {hmac_sha256_signature}
+\`\`\`
+
+#### 签名生成方法
+使用 HMAC-SHA256 算法生成签名：
+\`\`\`javascript
+const crypto = require('crypto');
+
+// 1. 构造签名字符串
+const signString = \`\${apiKey}:\${timestamp}:\${method}:\${path}\`;
+
+// 2. 使用 API Secret 生成 HMAC-SHA256 签名
+const signature = crypto
+  .createHmac('sha256', apiSecret)
+  .update(signString)
+  .digest('hex');
+\`\`\`
+
+#### 示例（Node.js）
+\`\`\`javascript
+const crypto = require('crypto');
+const axios = require('axios');
+
+const apiKey = 'ak_1234567890abcdef';
+const apiSecret = 'sk_1234567890abcdef1234567890abcdef';
+const timestamp = Date.now();
+const method = 'GET';
+const path = '/api/v1/content';
+
+// 生成签名
+const signString = \`\${apiKey}:\${timestamp}:\${method}:\${path}\`;
+const signature = crypto
+  .createHmac('sha256', apiSecret)
+  .update(signString)
+  .digest('hex');
+
+// 发送请求
+const response = await axios.get('https://api.example.com/api/v1/content', {
+  headers: {
+    'X-API-Key': apiKey,
+    'X-API-Secret': apiSecret,
+    'X-API-Timestamp': timestamp,
+    'X-API-Signature': signature,
+  },
+});
+\`\`\`
+
+更多详细信息请参考 [API Key 使用指南](../docs/api-key-guide.md)
+
+## API 版本管理
+支持通过 URL 路径或请求头指定 API 版本：
+- URL 路径：\`/api/v1/...\`
+- 请求头：\`API-Version: v1\`
+
+## 响应格式
+所有 API 响应遵循统一格式：
+\`\`\`json
+{
+  "status": 200,
+  "data": {},
+  "message": "",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "requestId": "550e8400-e29b-41d4-a716-446655440000"
+}
+\`\`\`
+      `,
       version: '3.0.0',
     },
     schemes: ['http', 'https'],
@@ -137,14 +221,28 @@ module.exports = appInfo => {
         type: 'apiKey',
         name: 'X-API-Key',
         in: 'header',
-        description: 'API Key 认证',
+        description: 'API Key（公开部分）',
       },
-      // API 签名认证
+      // API Secret
+      ApiSecret: {
+        type: 'apiKey',
+        name: 'X-API-Secret',
+        in: 'header',
+        description: 'API Secret（私密部分）',
+      },
+      // API 时间戳
+      ApiTimestamp: {
+        type: 'apiKey',
+        name: 'X-API-Timestamp',
+        in: 'header',
+        description: 'Unix 时间戳（毫秒）',
+      },
+      // API 签名
       ApiSignature: {
         type: 'apiKey',
         name: 'X-API-Signature',
         in: 'header',
-        description: 'API 签名认证（HMAC-SHA256）',
+        description: 'HMAC-SHA256 签名',
       },
     },
     enableSecurity: true,

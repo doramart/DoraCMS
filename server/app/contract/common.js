@@ -30,7 +30,7 @@ module.exports = {
     data: {
       type: 'object',
       properties: {
-        docs: { type: 'array', items: { type: 'object' }, description: '数据列表' },
+        docs: { type: 'array', itemType: 'object', description: '数据列表' },
         total: { type: 'integer', example: 100, description: '总记录数' },
         page: { type: 'integer', example: 1, description: '当前页码' },
         pageSize: { type: 'integer', example: 10, description: '每页数量' },
@@ -100,5 +100,134 @@ module.exports = {
         mongodb: { type: 'string', example: 'ready' },
       },
     },
+  },
+
+  // API Key 列表响应
+  apiKeyListResponse: {
+    status: { type: 'integer', example: 200 },
+    data: {
+      type: 'object',
+      properties: {
+        docs: {
+          type: 'array',
+          itemType: 'object',
+          example: [{
+            id: '507f1f77bcf86cd799439011',
+            name: 'Production API Key',
+            key: 'ak_1234567890abcdef',
+            status: 'active',
+            expiresAt: '2025-12-31T23:59:59.000Z',
+            lastUsedAt: '2024-12-26T10:00:00.000Z',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            permissions: ['read', 'write'],
+            ipWhitelist: ['192.168.1.1'],
+          }],
+          description: 'API Key 列表',
+        },
+        total: { type: 'integer', example: 10, description: '总记录数' },
+        page: { type: 'integer', example: 1, description: '当前页码' },
+        pageSize: { type: 'integer', example: 10, description: '每页数量' },
+        totalPages: { type: 'integer', example: 1, description: '总页数' },
+      },
+    },
+    message: { type: 'string', example: '' },
+    timestamp: { type: 'string', example: '2024-01-01T00:00:00.000Z' },
+    requestId: { type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' },
+  },
+
+  // API Key 详情响应
+  apiKeyDetailResponse: {
+    status: { type: 'integer', example: 200 },
+    data: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', example: '507f1f77bcf86cd799439011', description: 'API Key ID' },
+        name: { type: 'string', example: 'Production API Key', description: 'API Key 名称' },
+        key: { type: 'string', example: 'ak_1234567890abcdef', description: 'API Key（公开部分）' },
+        secret: { type: 'string', example: 'sk_****masked****', description: 'API Secret（已脱敏）' },
+        status: { type: 'string', example: 'active', description: '状态：active/disabled' },
+        expiresAt: { type: 'string', example: '2025-12-31T23:59:59.000Z', description: '过期时间' },
+        lastUsedAt: { type: 'string', example: '2024-12-26T10:00:00.000Z', description: '最后使用时间' },
+        createdAt: { type: 'string', example: '2024-01-01T00:00:00.000Z', description: '创建时间' },
+        permissions: { type: 'array', itemType: 'string', example: ['read', 'write'], description: '权限列表' },
+        ipWhitelist: { type: 'array', itemType: 'string', example: ['192.168.1.1'], description: 'IP 白名单' },
+        rateLimit: { type: 'integer', example: 1000, description: '速率限制（请求/小时）' },
+      },
+    },
+    message: { type: 'string', example: '' },
+    timestamp: { type: 'string', example: '2024-01-01T00:00:00.000Z' },
+    requestId: { type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' },
+  },
+
+  // API Key 创建响应（包含完整 secret）
+  apiKeyCreateResponse: {
+    status: { type: 'integer', example: 200 },
+    data: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', example: '507f1f77bcf86cd799439011', description: 'API Key ID' },
+        name: { type: 'string', example: 'Production API Key', description: 'API Key 名称' },
+        key: { type: 'string', example: 'ak_1234567890abcdef', description: 'API Key（公开部分）' },
+        secret: { type: 'string', example: 'sk_1234567890abcdef1234567890abcdef', description: 'API Secret（完整，仅创建时返回）' },
+        status: { type: 'string', example: 'active', description: '状态' },
+        expiresAt: { type: 'string', example: '2025-12-31T23:59:59.000Z', description: '过期时间' },
+        createdAt: { type: 'string', example: '2024-01-01T00:00:00.000Z', description: '创建时间' },
+        permissions: { type: 'array', itemType: 'string', example: ['read', 'write'], description: '权限列表' },
+        ipWhitelist: { type: 'array', itemType: 'string', example: ['192.168.1.1'], description: 'IP 白名单' },
+        rateLimit: { type: 'integer', example: 1000, description: '速率限制（请求/小时）' },
+      },
+    },
+    message: { type: 'string', example: '' },
+    timestamp: { type: 'string', example: '2024-01-01T00:00:00.000Z' },
+    requestId: { type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' },
+  },
+
+  // API Key 创建请求
+  apiKeyCreateRequest: {
+    name: { type: 'string', required: true, example: 'Production API Key', description: 'API Key 名称' },
+    permissions: { type: 'array', itemType: 'string', example: ['read', 'write'], description: '权限列表' },
+    ipWhitelist: { type: 'array', itemType: 'string', example: ['192.168.1.1'], description: 'IP 白名单' },
+    rateLimit: { type: 'integer', example: 1000, description: '速率限制（请求/小时）' },
+    expiresAt: { type: 'string', example: '2025-12-31T23:59:59.000Z', description: '过期时间' },
+  },
+
+  // API Key 更新请求
+  apiKeyUpdateRequest: {
+    name: { type: 'string', example: 'Updated API Key', description: 'API Key 名称' },
+    permissions: { type: 'array', itemType: 'string', example: ['read'], description: '权限列表' },
+    ipWhitelist: { type: 'array', itemType: 'string', example: ['192.168.1.1', '192.168.1.2'], description: 'IP 白名单' },
+    rateLimit: { type: 'integer', example: 2000, description: '速率限制（请求/小时）' },
+    expiresAt: { type: 'string', example: '2026-12-31T23:59:59.000Z', description: '过期时间' },
+  },
+
+  // API Key 统计响应
+  apiKeyStatsResponse: {
+    status: { type: 'integer', example: 200 },
+    data: {
+      type: 'object',
+      properties: {
+        total: { type: 'integer', example: 10, description: '总数' },
+        active: { type: 'integer', example: 8, description: '活跃数量' },
+        disabled: { type: 'integer', example: 2, description: '禁用数量' },
+        expired: { type: 'integer', example: 1, description: '过期数量' },
+      },
+    },
+    message: { type: 'string', example: '' },
+    timestamp: { type: 'string', example: '2024-01-01T00:00:00.000Z' },
+    requestId: { type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' },
+  },
+
+  // API Key 清理响应
+  apiKeyCleanupResponse: {
+    status: { type: 'integer', example: 200 },
+    data: {
+      type: 'object',
+      properties: {
+        deletedCount: { type: 'integer', example: 3, description: '删除的过期 API Key 数量' },
+      },
+    },
+    message: { type: 'string', example: '' },
+    timestamp: { type: 'string', example: '2024-01-01T00:00:00.000Z' },
+    requestId: { type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' },
   },
 };
