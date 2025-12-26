@@ -18,7 +18,7 @@ describe('APIError', () => {
     expect(error.statusCode).toBe(400);
     expect(error.requestId).toBe('req-123');
     expect(error.timestamp).toBe('2024-01-01T00:00:00Z');
-    expect(error.type).toBe(ErrorType.CLIENT);
+    expect(error.type).toBe(ErrorType.VALIDATION); // 400 is now VALIDATION
   });
 
   it('should create APIError from response', () => {
@@ -67,7 +67,11 @@ describe('APIError', () => {
     expect(serverError.isServerError()).toBe(true);
     expect(serverError.type).toBe(ErrorType.SERVER);
 
-    const clientError = new APIError('Bad request', 'BAD_REQUEST', 400, 'req-3', new Date().toISOString());
+    const validationError = new APIError('Bad request', 'BAD_REQUEST', 400, 'req-3', new Date().toISOString());
+    expect(validationError.isValidationError()).toBe(true);
+    expect(validationError.type).toBe(ErrorType.VALIDATION);
+
+    const clientError = new APIError('Not found', 'NOT_FOUND', 404, 'req-4', new Date().toISOString());
     expect(clientError.isClientError()).toBe(true);
     expect(clientError.type).toBe(ErrorType.CLIENT);
   });
@@ -111,8 +115,10 @@ describe('APIError', () => {
       statusCode: 400,
       requestId: 'req-123',
       timestamp: '2024-01-01T00:00:00Z',
-      type: ErrorType.CLIENT,
+      type: ErrorType.VALIDATION, // 400 is now VALIDATION
+      severity: 'MEDIUM',
       details: { field: 'username' },
+      retryAfter: undefined,
     });
   });
 });

@@ -23,6 +23,14 @@ export class HTTPClient {
       retryDelay: config.retry?.retryDelay ?? 1000,
       exponentialBackoff: config.retry?.exponentialBackoff ?? true,
       retryableStatusCodes: config.retry?.retryableStatusCodes ?? [408, 429, 500, 502, 503, 504],
+      retryableErrorCodes: config.retry?.retryableErrorCodes ?? [
+        'NETWORK_ERROR',
+        'TIMEOUT_ERROR',
+        'ECONNABORTED',
+        'ECONNREFUSED',
+        'ENOTFOUND',
+        'ETIMEDOUT',
+      ],
     };
 
     // 创建 axios 实例

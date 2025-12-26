@@ -12,6 +12,8 @@ export interface RetryConfig {
   exponentialBackoff?: boolean;
   /** 可重试的 HTTP 状态码 */
   retryableStatusCodes?: number[];
+  /** 可重试的错误码 */
+  retryableErrorCodes?: string[];
 }
 
 /**
