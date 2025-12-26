@@ -119,7 +119,7 @@
   - 实现请求/响应拦截器
   - _Requirements: 4.2_
 
-- [ ] 4.3 实现认证模块
+- [x] 4.3 实现认证模块
   - 实现 AuthModule（login, logout, refreshToken）
   - 实现 Token 自动管理和刷新
   - 实现 Token 存储（localStorage/sessionStorage）

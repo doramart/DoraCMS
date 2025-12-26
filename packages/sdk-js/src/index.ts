@@ -10,6 +10,10 @@ export { DoraCMSClient } from './client';
 // 导出 HTTP 客户端（高级用法）
 export { HTTPClient } from './http';
 
+// 导出功能模块
+export { AuthModule } from './modules/auth';
+export type * from './modules/auth';
+
 // 导出类型定义
 export type * from './types';
 

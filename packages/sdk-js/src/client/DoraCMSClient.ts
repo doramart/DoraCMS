@@ -1,6 +1,7 @@
 import type { SDKConfig } from '../types';
 import { HTTPClient } from '../http';
 import { createTokenStorage, type TokenStorage } from '../utils';
+import { AuthModule } from '../modules/auth';
 
 /**
  * DoraCMS 客户端主类
@@ -10,9 +11,9 @@ export class DoraCMSClient {
   private httpClient: HTTPClient;
   private tokenStorage: TokenStorage;
 
-  // 模块（将在后续任务中实现）
-  // public auth: AuthModule;
-  // public content: ContentModule;
+  // 功能模块
+  public auth: AuthModule;
+  // public content: ContentModule; // 将在后续任务中实现
 
   constructor(config: SDKConfig) {
     // 验证必需配置
@@ -43,8 +44,10 @@ export class DoraCMSClient {
     // 设置 Token 获取函数
     this.httpClient.setTokenGetter(() => this.getToken());
 
-    // 初始化模块（将在后续任务中实现）
-    // this.auth = new AuthModule(this.httpClient, this.tokenStorage, this.config);
+    // 初始化认证模块
+    this.auth = new AuthModule(this.httpClient, this.tokenStorage, this.config);
+    
+    // 初始化其他模块（将在后续任务中实现）
     // this.content = new ContentModule(this.httpClient);
   }
 
