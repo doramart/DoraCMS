@@ -92,62 +92,55 @@ export async function generateProject(
  * 复制后端代码
  */
 async function copyServerCode(projectPath: string): Promise<void> {
-  const sourceRoot = path.resolve(__dirname, '../../../..');
-  const serverSource = path.join(sourceRoot, 'server');
+  // 从 CLI 包的 templates 目录复制
+  const templatesRoot = path.resolve(__dirname, '../../templates');
+  const serverSource = path.join(templatesRoot, 'server');
   const serverDest = path.join(projectPath, 'server');
 
-  // 复制整个 server 目录
-  await fs.copy(serverSource, serverDest, {
-    filter: src => {
-      // 排除 node_modules, logs, run 等目录
-      const relativePath = path.relative(serverSource, src);
-      const excludes = ['node_modules', 'logs', 'run', 'coverage', '.nyc_output', 'dist'];
-      return !excludes.some(exclude => relativePath.startsWith(exclude));
-    },
-  });
+  // 检查模板是否存在
+  if (!(await fs.pathExists(serverSource))) {
+    throw new Error('Server 模板不存在，请确保 CLI 工具已正确构建');
+  }
+
+  // 复制整个 server 目录（模板已经过滤，直接复制）
+  await fs.copy(serverSource, serverDest);
 }
 
 /**
  * 复制前端代码
  */
 async function copyClientCode(projectPath: string, projectType: string): Promise<void> {
-  const sourceRoot = path.resolve(__dirname, '../../../..');
+  // 从 CLI 包的 templates 目录复制
+  const templatesRoot = path.resolve(__dirname, '../../templates');
+  const clientSource = path.join(templatesRoot, 'client');
   const clientDest = path.join(projectPath, 'client');
+
+  // 检查模板是否存在
+  if (!(await fs.pathExists(clientSource))) {
+    throw new Error('Client 模板不存在，请确保 CLI 工具已正确构建');
+  }
 
   await fs.ensureDir(clientDest);
 
   if (projectType === 'fullstack') {
-    // 复制所有前端项目
-    const clientSource = path.join(sourceRoot, 'client');
-    await fs.copy(clientSource, clientDest, {
-      filter: src => {
-        const relativePath = path.relative(clientSource, src);
-        const excludes = ['node_modules', 'dist', '.nuxt', 'coverage'];
-        return !excludes.some(exclude => relativePath.startsWith(exclude));
-      },
-    });
+    // 复制所有前端项目（模板已经过滤，直接复制）
+    await fs.copy(clientSource, clientDest);
   } else if (projectType === 'user-separated') {
     // 只复制 user-center
-    const userCenterSource = path.join(sourceRoot, 'client/user-center');
+    const userCenterSource = path.join(clientSource, 'user-center');
     const userCenterDest = path.join(clientDest, 'user-center');
-    await fs.copy(userCenterSource, userCenterDest, {
-      filter: src => {
-        const relativePath = path.relative(userCenterSource, src);
-        const excludes = ['node_modules', 'dist', 'coverage'];
-        return !excludes.some(exclude => relativePath.startsWith(exclude));
-      },
-    });
+    
+    if (await fs.pathExists(userCenterSource)) {
+      await fs.copy(userCenterSource, userCenterDest);
+    }
   } else if (projectType === 'admin-separated') {
     // 只复制 admin-center
-    const adminCenterSource = path.join(sourceRoot, 'client/admin-center');
+    const adminCenterSource = path.join(clientSource, 'admin-center');
     const adminCenterDest = path.join(clientDest, 'admin-center');
-    await fs.copy(adminCenterSource, adminCenterDest, {
-      filter: src => {
-        const relativePath = path.relative(adminCenterSource, src);
-        const excludes = ['node_modules', 'dist', 'coverage'];
-        return !excludes.some(exclude => relativePath.startsWith(exclude));
-      },
-    });
+    
+    if (await fs.pathExists(adminCenterSource)) {
+      await fs.copy(adminCenterSource, adminCenterDest);
+    }
   }
 }
 
@@ -155,13 +148,14 @@ async function copyClientCode(projectPath: string, projectType: string): Promise
  * 复制配置文件
  */
 async function copyConfigFiles(projectPath: string): Promise<void> {
-  const sourceRoot = path.resolve(__dirname, '../../../..');
+  // 从 CLI 包的 templates 目录复制
+  const templatesRoot = path.resolve(__dirname, '../../templates');
 
   // 复制根目录配置文件
   const configFiles = ['.gitignore', '.prettierrc', '.prettierignore', 'pnpm-workspace.yaml', 'tsconfig.base.json'];
 
   for (const file of configFiles) {
-    const source = path.join(sourceRoot, file);
+    const source = path.join(templatesRoot, file);
     const dest = path.join(projectPath, file);
     if (await fs.pathExists(source)) {
       await fs.copy(source, dest);
@@ -169,21 +163,34 @@ async function copyConfigFiles(projectPath: string): Promise<void> {
   }
 
   // 复制 scripts 目录
-  const scriptsSource = path.join(sourceRoot, 'scripts');
+  const scriptsSource = path.join(templatesRoot, 'scripts');
   const scriptsDest = path.join(projectPath, 'scripts');
   if (await fs.pathExists(scriptsSource)) {
-    await fs.copy(scriptsSource, scriptsDest, {
-      filter: src => {
-        const relativePath = path.relative(scriptsSource, src);
-        return !relativePath.startsWith('node_modules');
-      },
-    });
+    await fs.copy(scriptsSource, scriptsDest);
   }
 
-  // 复制 docker 目录（可选）
-  const dockerSource = path.join(sourceRoot, 'docker');
+  // 复制 docker 目录
+  const dockerSource = path.join(templatesRoot, 'docker');
   const dockerDest = path.join(projectPath, 'docker');
   if (await fs.pathExists(dockerSource)) {
     await fs.copy(dockerSource, dockerDest);
+  }
+
+  // 复制 Docker 相关文件
+  const dockerFiles = [
+    'Dockerfile',
+    'docker-compose.yml',
+    'docker-quickstart.sh',
+    '.dockerignore',
+    'docker.env.example',
+    'docker.env.mariadb.example',
+  ];
+
+  for (const file of dockerFiles) {
+    const source = path.join(templatesRoot, file);
+    const dest = path.join(projectPath, file);
+    if (await fs.pathExists(source)) {
+      await fs.copy(source, dest);
+    }
   }
 }

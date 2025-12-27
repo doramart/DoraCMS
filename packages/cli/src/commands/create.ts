@@ -138,8 +138,16 @@ function showSuccessMessage(projectInfo: ProjectInfo, modules: any) {
   // 下一步提示
   console.log(chalk.bold('\n下一步:'));
   console.log(chalk.cyan(`  cd ${projectInfo.name}`));
-  console.log(chalk.cyan('  cp .env.example .env'));
+  
+  // 检查是否跳过了依赖安装
+  if (projectInfo.skipInstall) {
+    console.log(chalk.cyan('  pnpm install'));
+    console.log(chalk.gray('  # 安装项目依赖'));
+  }
+  
+  console.log(chalk.cyan('  nano .env'));
   console.log(chalk.gray('  # 编辑 .env 文件，配置数据库连接'));
+  console.log(chalk.gray('  # .env 文件已自动生成，包含默认配置'));
 
   if (projectInfo.type === 'fullstack') {
     console.log(chalk.cyan('  pnpm run dev:all'));

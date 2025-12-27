@@ -9,11 +9,21 @@
   },
   "scripts": {
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
-    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "build": "npm run build:cli && npm run build:templates",
+    "build:cli": "tsup src/index.ts --format cjs,esm --dts",
+    "build:templates": "node scripts/build-templates.js",
     "test": "vitest",
     "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build"
   },
+  "files": [
+    "dist",
+    "bin",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "doracms",
     "cli",
