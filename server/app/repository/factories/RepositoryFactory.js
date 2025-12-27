@@ -70,8 +70,91 @@ class RepositoryFactory {
     this.app = app;
     this.repositories = new Map(); // 缓存 Repository 实例
 
-    // Repository 映射配置
-    this.repositoryMap = {
+    // 🔥 加载模块配置
+    this.modulesConfig = this.loadModulesConfig();
+
+    // 🔥 根据配置动态构建 Repository 映射
+    this.repositoryMap = this.buildRepositoryMap();
+
+    // 🔥 输出模块加载信息
+    this.logLoadedModules();
+  }
+
+  /**
+   * 🔥 加载模块配置
+   * @return {Object|null} 模块配置对象，如果不存在则返回 null
+   * @private
+   */
+  loadModulesConfig() {
+    try {
+      const path = require('path');
+      const fs = require('fs');
+      const configPath = path.join(this.app.baseDir, 'config/modules.config.js');
+
+      if (fs.existsSync(configPath)) {
+        const config = require(configPath);
+        this.app.logger.info('📦 已加载模块配置文件: config/modules.config.js');
+        return config;
+      }
+    } catch (error) {
+      this.app.logger.warn('⚠️  加载模块配置失败，使用默认配置（所有模块启用）:', error.message);
+    }
+
+    return null;
+  }
+
+  /**
+   * 🔥 根据模块配置动态构建 Repository 映射
+   * @return {Object} Repository 映射对象
+   * @private
+   */
+  buildRepositoryMap() {
+    // 如果没有配置文件，使用默认的全部加载
+    if (!this.modulesConfig) {
+      return this.getDefaultRepositoryMap();
+    }
+
+    const map = {};
+    const enabledRepositories = new Set();
+
+    // 1. 加载核心模块的 Repository
+    const coreModules = this.modulesConfig.core || {};
+    for (const [moduleName, moduleConfig] of Object.entries(coreModules)) {
+      if (moduleConfig.enabled !== false) {
+        const repositories = moduleConfig.repositories || [];
+        repositories.forEach(repoName => enabledRepositories.add(repoName));
+      }
+    }
+
+    // 2. 加载业务模块的 Repository
+    const businessModules = this.modulesConfig.business || {};
+    for (const [moduleName, moduleConfig] of Object.entries(businessModules)) {
+      if (moduleConfig.enabled) {
+        const repositories = moduleConfig.repositories || [];
+        repositories.forEach(repoName => enabledRepositories.add(repoName));
+      }
+    }
+
+    // 3. 构建 Repository 映射
+    const allConfigs = this.getAllRepositoryConfigs();
+    for (const repoName of enabledRepositories) {
+      if (allConfigs[repoName]) {
+        map[repoName] = allConfigs[repoName];
+      } else {
+        this.app.logger.warn(`⚠️  Repository ${repoName} 配置不存在，已跳过`);
+      }
+    }
+
+    return map;
+  }
+
+  /**
+   * 🔥 获取所有 Repository 的配置映射
+   * @return {Object} 所有 Repository 配置
+   * @private
+   */
+  getAllRepositoryConfigs() {
+    return {
       SystemConfig: {
         mongodb: SystemConfigMongoRepository,
         mariadb: () => mariaDBRepositories.SystemConfig,
@@ -161,6 +244,49 @@ class RepositoryFactory {
         mariadb: () => mariaDBRepositories.WebhookLog,
       },
     };
+  }
+
+  /**
+   * 🔥 获取默认的 Repository 映射（向后兼容）
+   * @return {Object} 默认 Repository 映射
+   * @private
+   */
+  getDefaultRepositoryMap() {
+    return this.getAllRepositoryConfigs();
+  }
+
+  /**
+   * 🔥 输出加载的模块信息
+   * @private
+   */
+  logLoadedModules() {
+    if (!this.modulesConfig) {
+      this.app.logger.info('📦 使用默认配置，所有模块已启用');
+      this.app.logger.info(`📊 Repository 数量: ${Object.keys(this.repositoryMap).length}`);
+      return;
+    }
+
+    const enabledModules = [];
+    const disabledModules = [];
+
+    // 统计启用的业务模块
+    const businessModules = this.modulesConfig.business || {};
+    for (const [moduleName, moduleConfig] of Object.entries(businessModules)) {
+      if (moduleConfig.enabled) {
+        enabledModules.push(moduleConfig.name || moduleName);
+      } else {
+        disabledModules.push(moduleConfig.name || moduleName);
+      }
+    }
+
+    this.app.logger.info('📦 模块加载状态:');
+    if (enabledModules.length > 0) {
+      this.app.logger.info(`  ✅ 已启用: ${enabledModules.join(', ')}`);
+    }
+    if (disabledModules.length > 0) {
+      this.app.logger.info(`  ❌ 已禁用: ${disabledModules.join(', ')}`);
+    }
+    this.app.logger.info(`  📊 Repository 数量: ${Object.keys(this.repositoryMap).length}`);
   }
 
   /**

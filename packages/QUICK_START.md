@@ -56,13 +56,13 @@ pnpm init
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/doraorg/doracms",
+    "url": "https://github.com/doramart/doracms",
     "directory": "packages/your-package-name"
   },
   "bugs": {
-    "url": "https://github.com/doraorg/doracms/issues"
+    "url": "https://github.com/doramart/doracms/issues"
   },
-  "homepage": "https://github.com/doraorg/doracms/tree/main/packages/your-package-name#readme"
+  "homepage": "https://github.com/doramart/doracms/tree/main/packages/your-package-name#readme"
 }
 ```
 

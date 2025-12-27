@@ -171,7 +171,7 @@ pnpm init
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/doraorg/doracms",
+    "url": "https://github.com/doramart/doracms",
     "directory": "packages/your-package-name"
   }
 }
