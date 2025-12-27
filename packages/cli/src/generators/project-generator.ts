@@ -12,6 +12,7 @@ import { installDependencies } from '../utils/package-manager';
 import { generateModulesConfig } from './modules-config-generator';
 import { generateEnvFile } from './env-generator';
 import { generatePackageJson } from './package-json-generator';
+import { generatePluginConfig } from './plugin-config-generator';
 
 export async function generateProject(
   projectPath: string,
@@ -25,15 +26,13 @@ export async function generateProject(
 
   // 2. 复制后端代码
   spinner = ora('复制后端代码').start();
-  await copyServerCode(projectPath);
+  await copyServerCode(projectPath, projectInfo.type);
   spinner.succeed('复制后端代码');
 
   // 3. 复制前端代码（根据项目类型）
-  if (projectInfo.type !== 'backend-only') {
-    spinner = ora('复制前端代码').start();
-    await copyClientCode(projectPath, projectInfo.type);
-    spinner.succeed('复制前端代码');
-  }
+  spinner = ora('复制前端代码').start();
+  await copyClientCode(projectPath, projectInfo.type);
+  spinner.succeed('复制前端代码');
 
   // 4. 生成环境配置文件
   spinner = ora('生成环境配置文件').start();
@@ -45,17 +44,22 @@ export async function generateProject(
   await generateModulesConfig(projectPath, modules);
   spinner.succeed('生成模块配置文件');
 
-  // 6. 生成 package.json
+  // 6. 生成插件配置文件
+  spinner = ora('生成插件配置文件').start();
+  await generatePluginConfig(projectPath, projectInfo);
+  spinner.succeed('生成插件配置文件');
+
+  // 7. 生成 package.json
   spinner = ora('优化 package.json').start();
   await generatePackageJson(projectPath, projectInfo);
   spinner.succeed('优化 package.json');
 
-  // 7. 复制配置文件
+  // 8. 复制配置文件
   spinner = ora('复制配置文件').start();
   await copyConfigFiles(projectPath);
   spinner.succeed('复制配置文件');
 
-  // 8. 安装依赖
+  // 9. 安装依赖
   if (!projectInfo.skipInstall) {
     spinner = ora('安装依赖 (这可能需要几分钟)').start();
     try {
@@ -91,9 +95,10 @@ export async function generateProject(
 /**
  * 复制后端代码
  */
-async function copyServerCode(projectPath: string): Promise<void> {
+async function copyServerCode(projectPath: string, projectType: string): Promise<void> {
   // 从 CLI 包的 templates 目录复制
-  const templatesRoot = path.resolve(__dirname, '../../templates');
+  // 在编译后，__dirname 指向 dist/，所以需要向上一级到 cli 目录，然后进入 templates
+  const templatesRoot = path.resolve(__dirname, '../templates');
   const serverSource = path.join(templatesRoot, 'server');
   const serverDest = path.join(projectPath, 'server');
 
@@ -102,8 +107,39 @@ async function copyServerCode(projectPath: string): Promise<void> {
     throw new Error('Server 模板不存在，请确保 CLI 工具已正确构建');
   }
 
-  // 复制整个 server 目录（模板已经过滤，直接复制）
-  await fs.copy(serverSource, serverDest);
+  // 根据项目类型过滤文件
+  await fs.copy(serverSource, serverDest, {
+    filter: (src) => {
+      // backend-only: 排除用户前端和远程页面
+      if (projectType === 'backend-only') {
+        if (src.includes('/backstage/user-center')) {
+          return false;
+        }
+        if (src.includes('/backstage/remote-page')) {
+          return false;
+        }
+      }
+      
+      // mobile-optimized: 排除远程页面
+      if (projectType === 'mobile-optimized') {
+        if (src.includes('/backstage/remote-page')) {
+          return false;
+        }
+      }
+      
+      // admin-separated: 排除用户中心和远程页面
+      if (projectType === 'admin-separated') {
+        if (src.includes('/backstage/user-center')) {
+          return false;
+        }
+        if (src.includes('/backstage/remote-page')) {
+          return false;
+        }
+      }
+      
+      return true;
+    },
+  });
 }
 
 /**
@@ -111,7 +147,7 @@ async function copyServerCode(projectPath: string): Promise<void> {
  */
 async function copyClientCode(projectPath: string, projectType: string): Promise<void> {
   // 从 CLI 包的 templates 目录复制
-  const templatesRoot = path.resolve(__dirname, '../../templates');
+  const templatesRoot = path.resolve(__dirname, '../templates');
   const clientSource = path.join(templatesRoot, 'client');
   const clientDest = path.join(projectPath, 'client');
 
@@ -123,17 +159,22 @@ async function copyClientCode(projectPath: string, projectType: string): Promise
   await fs.ensureDir(clientDest);
 
   if (projectType === 'fullstack') {
-    // 复制所有前端项目（模板已经过滤，直接复制）
+    // 复制所有前端项目
     await fs.copy(clientSource, clientDest);
-  } else if (projectType === 'user-separated') {
-    // 只复制 user-center
+  } else if (projectType === 'mobile-optimized') {
+    // 复制 admin-center 和 user-center（不包含 remote-page）
+    const adminCenterSource = path.join(clientSource, 'admin-center');
+    const adminCenterDest = path.join(clientDest, 'admin-center');
     const userCenterSource = path.join(clientSource, 'user-center');
     const userCenterDest = path.join(clientDest, 'user-center');
     
+    if (await fs.pathExists(adminCenterSource)) {
+      await fs.copy(adminCenterSource, adminCenterDest);
+    }
     if (await fs.pathExists(userCenterSource)) {
       await fs.copy(userCenterSource, userCenterDest);
     }
-  } else if (projectType === 'admin-separated') {
+  } else if (projectType === 'admin-separated' || projectType === 'backend-only') {
     // 只复制 admin-center
     const adminCenterSource = path.join(clientSource, 'admin-center');
     const adminCenterDest = path.join(clientDest, 'admin-center');
@@ -149,7 +190,7 @@ async function copyClientCode(projectPath: string, projectType: string): Promise
  */
 async function copyConfigFiles(projectPath: string): Promise<void> {
   // 从 CLI 包的 templates 目录复制
-  const templatesRoot = path.resolve(__dirname, '../../templates');
+  const templatesRoot = path.resolve(__dirname, '../templates');
 
   // 复制根目录配置文件
   const configFiles = ['.gitignore', '.prettierrc', '.prettierignore', 'pnpm-workspace.yaml', 'tsconfig.base.json'];

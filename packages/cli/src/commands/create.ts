@@ -13,6 +13,7 @@ import { validateProjectName, checkDirectoryExists, isDirectoryEmpty, getProject
 import { detectPackageManager, installDependencies } from '../utils/package-manager';
 import { promptProjectInfo } from './prompts/project-info';
 import { promptModuleSelection } from './prompts/module-selection';
+import { promptPluginSelection } from './prompts/plugin-selection';
 import { generateProject } from '../generators/project-generator';
 
 export async function createProject(projectName: string, options: CreateOptions) {
@@ -42,7 +43,11 @@ export async function createProject(projectName: string, options: CreateOptions)
     // 4. 选择模块
     const modules = await promptModuleSelection(projectInfo.type);
 
-    // 5. 确认创建
+    // 5. 选择插件（根据模块选择智能推荐）
+    const plugins = await promptPluginSelection(projectInfo.type, modules);
+    projectInfo.enableAiAssistant = plugins.enableAiAssistant;
+
+    // 6. 确认创建
     logger.separator();
     logger.title('📋 项目配置确认');
     console.log(chalk.gray('项目名称:'), chalk.white(projectInfo.name));
@@ -53,9 +58,10 @@ export async function createProject(projectName: string, options: CreateOptions)
     console.log(
       chalk.gray('启用模块:'),
       chalk.white(
-        modules.enabled.filter(m => !['user', 'systemConfig', 'uploadFile', 'apiKey'].includes(m)).length + ' 个'
+        modules.enabled.filter(m => !['user', 'admin', 'role', 'menu', 'systemConfig', 'uploadFile', 'apiKey', 'mail'].includes(m)).length + ' 个'
       )
     );
+    console.log(chalk.gray('AI 助手:'), chalk.white(projectInfo.enableAiAssistant ? '启用' : '禁用'));
 
     const { confirm } = await inquirer.prompt([
       {
@@ -118,7 +124,7 @@ function showSuccessMessage(projectInfo: ProjectInfo, modules: any) {
 
   // 显示启用的模块
   const enabledBusinessModules = modules.enabled.filter(
-    (m: string) => !['user', 'systemConfig', 'uploadFile', 'apiKey'].includes(m)
+    (m: string) => !['user', 'admin', 'role', 'menu', 'systemConfig', 'uploadFile', 'apiKey', 'mail'].includes(m)
   );
 
   if (enabledBusinessModules.length > 0) {
@@ -133,6 +139,16 @@ function showSuccessMessage(projectInfo: ProjectInfo, modules: any) {
     modules.disabled.forEach((m: string) => {
       console.log(chalk.gray('  ✗'), m);
     });
+  }
+
+  // 显示插件状态
+  console.log(chalk.bold('\n插件状态:'));
+  console.log(chalk.green('  ✓ Dora 中台管理'));
+  console.log(chalk.green('  ✓ Swagger API 文档'));
+  if (projectInfo.enableAiAssistant) {
+    console.log(chalk.green('  ✓ AI 助手'));
+  } else {
+    console.log(chalk.gray('  ✗ AI 助手 (已禁用)'));
   }
 
   // 下一步提示

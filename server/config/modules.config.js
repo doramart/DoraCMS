@@ -10,9 +10,29 @@
  * 3. 修改后需要重启应用
  * 4. 如果删除此文件，系统将使用默认配置（所有模块启用）
  *
+ * 模块分类：
+ * - core: 核心模块（系统运行必需，包含后台管理基础功能）
+ *   • user: 前台用户管理
+ *   • admin: 后台管理员管理
+ *   • role: 角色权限管理
+ *   • menu: 菜单管理
+ *   • systemConfig: 系统配置
+ *   • uploadFile: 文件上传
+ *   • apiKey: API Key 管理
+ *
+ * - business: 业务模块（可选，根据需求启用）
+ *   • content: 内容管理
+ *   • comment: 评论系统
+ *   • webhook: 事件通知
+ *   • mail: 邮件通知
+ *   • ads: 广告管理
+ *   • template: 模板管理
+ *   • plugin: 插件系统
+ *
  * 性能优化：
- * - 禁用不需要的模块可以减少内存占用和启动时间
+ * - 禁用不需要的业务模块可以减少内存占用和启动时间
  * - 精简配置（仅核心+内容管理）可减少约 60% 的 Repository 数量
+ * - 核心模块（admin、role、menu）是后台管理必需的，不建议禁用
  */
 
 'use strict';
@@ -23,9 +43,31 @@ module.exports = {
     user: {
       enabled: true,
       name: '用户管理',
-      description: '用户认证和管理',
+      description: '前台用户认证和管理',
       repositories: ['User'],
       dependencies: [],
+      // 注意: 用户注册验证和密码重置功能需要 mail 模块
+    },
+    admin: {
+      enabled: true,
+      name: '管理员管理',
+      description: '后台管理员认证和管理',
+      repositories: ['Admin'],
+      dependencies: [],
+    },
+    role: {
+      enabled: true,
+      name: '角色权限',
+      description: '角色和权限管理',
+      repositories: ['Role', 'PermissionDefinition'],
+      dependencies: ['admin'],
+    },
+    menu: {
+      enabled: true,
+      name: '菜单管理',
+      description: '导航菜单配置',
+      repositories: ['Menu'],
+      dependencies: ['admin'],
     },
     systemConfig: {
       enabled: true,
@@ -47,6 +89,14 @@ module.exports = {
       description: 'API Key 管理',
       repositories: ['ApiKey'],
       dependencies: ['user'],
+    },
+    mail: {
+      enabled: true,
+      name: '邮件通知',
+      description: '邮件发送和模板（用户注册验证、密码重置等）',
+      repositories: ['MailTemplate'],
+      dependencies: [],
+      // 注意: user 和 admin 模块的邮件通知功能依赖此模块
     },
   },
 
@@ -80,33 +130,12 @@ module.exports = {
       repositories: ['Template'],
       dependencies: [],
     },
-    mail: {
-      enabled: true,
-      name: '邮件通知',
-      description: '邮件发送和模板',
-      repositories: ['MailTemplate'],
-      dependencies: [],
-    },
     webhook: {
       enabled: true,
       name: 'Webhook',
       description: '事件通知和集成',
       repositories: ['Webhook', 'WebhookLog'],
       dependencies: ['user', 'content'],
-    },
-    menu: {
-      enabled: true,
-      name: '菜单管理',
-      description: '导航菜单配置',
-      repositories: ['Menu'],
-      dependencies: [],
-    },
-    role: {
-      enabled: true,
-      name: '角色权限',
-      description: '角色和权限管理',
-      repositories: ['Role', 'Admin', 'PermissionDefinition'],
-      dependencies: ['user'],
     },
     plugin: {
       enabled: true,

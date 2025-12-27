@@ -16,6 +16,7 @@ export interface ProjectInfo {
   sampleData: boolean;
   skipInstall?: boolean;
   skipGit?: boolean;
+  enableAiAssistant?: boolean; // 是否启用 AI 助手插件
 }
 
 export interface ModuleConfig {
@@ -37,6 +38,10 @@ export interface ModuleSelection {
   conflicts: string[];
 }
 
+export interface PluginSelection {
+  enableAiAssistant: boolean;
+}
+
 export interface CreateOptions {
   template?: string;
   database?: string;
@@ -44,4 +49,5 @@ export interface CreateOptions {
   skipInstall?: boolean;
   skipGit?: boolean;
   yes?: boolean;
+  enableAiAssistant?: boolean; // 命令行选项：是否启用 AI 助手
 }

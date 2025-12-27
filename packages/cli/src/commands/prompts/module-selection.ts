@@ -16,10 +16,18 @@ export async function promptModuleSelection(projectType: string): Promise<Module
   console.log(chalk.cyan('─────────────────────────────────────────────────\n'));
 
   // 显示核心模块
-  console.log(chalk.cyan('核心模块（必需）:'));
-  for (const [key, config] of Object.entries(CORE_MODULES)) {
-    console.log(chalk.green(`  ✓ ${config.name}`));
-  }
+  console.log(chalk.cyan('核心模块（必需，自动启用）:'));
+  console.log(chalk.gray('  【用户系统】'));
+  console.log(chalk.green('    ✓ 用户管理 - 前台用户认证'));
+  console.log(chalk.gray('  【后台管理】'));
+  console.log(chalk.green('    ✓ 管理员管理 - 后台管理员认证'));
+  console.log(chalk.green('    ✓ 角色权限 - 角色和权限管理'));
+  console.log(chalk.green('    ✓ 菜单管理 - 后台导航菜单'));
+  console.log(chalk.gray('  【系统功能】'));
+  console.log(chalk.green('    ✓ 系统配置'));
+  console.log(chalk.green('    ✓ 文件上传'));
+  console.log(chalk.green('    ✓ API Key'));
+  console.log(chalk.green('    ✓ 邮件通知 - 用户注册验证、密码重置等'));
 
   // 获取推荐配置
   const recommender = new ModuleRecommender();
