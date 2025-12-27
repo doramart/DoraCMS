@@ -204,13 +204,11 @@ class AppBootHook {
         // 异步执行缓存预热，不阻塞应用启动
         ctx.runInBackground(async () => {
           try {
-            const warmupStartTime = Date.now();
             await ctx.service.templateService.warmupCache({
               batchSize: 1, // 减少并发度，避免启动时数据库压力
               batchDelay: 100, // 减少延迟，加快预热速度
             });
-            const warmupDuration = Date.now() - warmupStartTime;
-            this.app.logger.info(`✅ 模板缓存预热完成，耗时: ${warmupDuration}ms`);
+            // 🔥 优化：移除重复日志，templateService 中已经输出
           } catch (error) {
             this.app.logger.warn('⚠️ 模板缓存预热失败:', error.message);
           }

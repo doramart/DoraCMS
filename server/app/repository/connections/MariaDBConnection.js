@@ -468,9 +468,10 @@ class MariaDBConnection {
     }
 
     if (validationResults.length > 0) {
-      this.app.logger.info('📋 已建立的关联关系:');
+      // 🔥 优化：详细关联信息改为 DEBUG 级别
+      this.app.logger.debug('📋 已建立的关联关系:');
       validationResults.forEach(result => {
-        this.app.logger.info(`  ${result}`);
+        this.app.logger.debug(`  ${result}`);
       });
     } else {
       this.app.logger.warn('⚠️ 未发现任何关联关系');

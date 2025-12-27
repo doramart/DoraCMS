@@ -785,7 +785,8 @@ class TemplateService extends Service {
     const warmupStartTime = Date.now();
 
     try {
-      this.ctx.logger.info('[TemplateService] Starting cache warmup...', {
+      // 🔥 优化：简化启动日志，详细信息改为 DEBUG 级别
+      this.ctx.logger.debug('[TemplateService] Starting cache warmup...', {
         batchSize: options.batchSize || 3,
         batchDelay: options.batchDelay || 100,
         timestamp: new Date().toISOString(),
@@ -827,7 +828,7 @@ class TemplateService extends Service {
             try {
               this.ctx.logger.debug(`[TemplateService] Warming up: ${task.actionType}`, task.args);
               await this.fetchContent(task.actionType, task.args);
-              this.ctx.logger.info(`[TemplateService] Warmed up: ${task.actionType}`);
+              this.ctx.logger.debug(`[TemplateService] Warmed up: ${task.actionType}`);
             } catch (error) {
               this.ctx.logger.warn(`[TemplateService] Warmup failed: ${task.actionType}`, error.message);
             }
@@ -841,7 +842,7 @@ class TemplateService extends Service {
       }
 
       const warmupDuration = Date.now() - warmupStartTime;
-      this.ctx.logger.info(`[TemplateService] Cache warmup completed in ${warmupDuration}ms`);
+      this.ctx.logger.info(`✅ 模板缓存预热完成，耗时: ${warmupDuration}ms`);
     } finally {
       this.isWarmingUp = false;
     }

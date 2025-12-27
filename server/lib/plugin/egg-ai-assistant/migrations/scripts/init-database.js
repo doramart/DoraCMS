@@ -19,7 +19,7 @@ const fs = require('fs');
  */
 async function ensureMariaDBTablesExist(app) {
   try {
-    app.logger.info('[egg-ai-assistant] Checking MariaDB tables...');
+    app.logger.debug('[egg-ai-assistant] Checking MariaDB tables...');
 
     // 动态加载 ConnectionLoader（注意：从 migrations/scripts/ 需要返回两级目录）
     const ConnectionLoader = require('../../app/repository/base/ConnectionLoader');
@@ -60,7 +60,7 @@ async function ensureMariaDBTablesExist(app) {
 
         // 检查表是否是新建的
         const tableName = model.getTableName();
-        app.logger.info(`[egg-ai-assistant] ✓ Table '${tableName}' is ready`);
+        app.logger.debug(`[egg-ai-assistant] ✓ Table '${tableName}' is ready`);
         tablesCreated++;
       } catch (error) {
         app.logger.error(`[egg-ai-assistant] ✗ Failed to sync table for ${name}:`, error.message);
@@ -68,7 +68,7 @@ async function ensureMariaDBTablesExist(app) {
       }
     }
 
-    app.logger.info(`[egg-ai-assistant] MariaDB tables check completed (${tablesCreated} tables ready)`);
+    app.logger.debug(`[egg-ai-assistant] MariaDB tables check completed (${tablesCreated} tables ready)`);
   } catch (error) {
     app.logger.error('[egg-ai-assistant] Failed to ensure MariaDB tables exist:', error);
     throw error;
@@ -84,7 +84,7 @@ async function ensureMariaDBTablesExist(app) {
 module.exports = async app => {
   const dbType = app.config.repository?.databaseType || 'mongodb';
 
-  app.logger.info(`[egg-ai-assistant] Database initialization started (${dbType})`);
+  app.logger.debug(`[egg-ai-assistant] Database initialization started (${dbType})`);
 
   try {
     // 1. 如果是 MariaDB，先确保表已创建
@@ -102,14 +102,14 @@ module.exports = async app => {
     // 4. 检查是否已初始化（通过检查是否已有模型数据）
     const existingModelsCount = await aiModelRepo.count({});
     if (existingModelsCount > 0) {
-      app.logger.info('[egg-ai-assistant] Database already initialized (found existing models), skipping...');
+      app.logger.debug('[egg-ai-assistant] Database already initialized (found existing models), skipping...');
       return {
         alreadyInitialized: true,
         existingModelsCount,
       };
     }
 
-    app.logger.info('[egg-ai-assistant] No existing data found, proceeding with initialization...');
+    app.logger.debug('[egg-ai-assistant] No existing data found, proceeding with initialization...');
 
     // 加载 Seed 数据
     const defaultModels = loadSeedData('default-models.json');
@@ -147,12 +147,12 @@ module.exports = async app => {
       }
     }
 
-    app.logger.info('[egg-ai-assistant] ========================================');
-    app.logger.info('[egg-ai-assistant] Database initialization completed successfully!');
-    app.logger.info('[egg-ai-assistant] ----------------------------------------');
+    app.logger.debug('[egg-ai-assistant] ========================================');
+    app.logger.debug('[egg-ai-assistant] Database initialization completed successfully!');
+    app.logger.debug('[egg-ai-assistant] ----------------------------------------');
     app.logger.info(`[egg-ai-assistant] AI Models: ${createdModels.length}/${defaultModels.length} created`);
     app.logger.info(`[egg-ai-assistant] Prompt Templates: ${createdPrompts.length}/${defaultPrompts.length} created`);
-    app.logger.info('[egg-ai-assistant] ========================================');
+    app.logger.debug('[egg-ai-assistant] ========================================');
 
     return {
       success: true,
@@ -288,7 +288,7 @@ module.exports.cleanup = async app => {
  * @param {Application} app EggJS app 实例
  */
 module.exports.reinitialize = async app => {
-  app.logger.info('[egg-ai-assistant] Database reinitialization started...');
+  app.logger.debug('[egg-ai-assistant] Database reinitialization started...');
 
   try {
     // 先清空
@@ -297,7 +297,7 @@ module.exports.reinitialize = async app => {
     // 再初始化
     await module.exports(app);
 
-    app.logger.info('[egg-ai-assistant] Database reinitialization completed successfully!');
+    app.logger.debug('[egg-ai-assistant] Database reinitialization completed successfully!');
 
     return { success: true };
   } catch (error) {
@@ -322,14 +322,14 @@ module.exports.checkStatus = async app => {
     const promptsCount = await promptRepo.count({});
     const logsCount = await usageLogRepo.count({});
 
-    app.logger.info('[egg-ai-assistant] ========================================');
-    app.logger.info('[egg-ai-assistant] Database Status:');
-    app.logger.info('[egg-ai-assistant] ----------------------------------------');
+    app.logger.debug('[egg-ai-assistant] ========================================');
+    app.logger.debug('[egg-ai-assistant] Database Status:');
+    app.logger.debug('[egg-ai-assistant] ----------------------------------------');
     app.logger.info(`[egg-ai-assistant] AI Models: ${modelsCount}`);
     app.logger.info(`[egg-ai-assistant] Prompt Templates: ${promptsCount}`);
     app.logger.info(`[egg-ai-assistant] Usage Logs: ${logsCount}`);
     app.logger.info(`[egg-ai-assistant] Database Type: ${app.config.repository?.databaseType || 'mongodb'}`);
-    app.logger.info('[egg-ai-assistant] ========================================');
+    app.logger.debug('[egg-ai-assistant] ========================================');
 
     return {
       modelsCount,

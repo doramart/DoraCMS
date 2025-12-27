@@ -50,7 +50,7 @@ function getMariaDBConnection(app) {
     try {
       MariaDBConnection = strategy();
       if (MariaDBConnection) {
-        app.logger.info('[ConnectionLoader] MariaDB Connection loaded successfully');
+        app.logger.debug('[ConnectionLoader] MariaDB Connection loaded successfully');
         break;
       }
     } catch (error) {

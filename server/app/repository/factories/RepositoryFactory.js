@@ -31,6 +31,10 @@ const WebhookLogMongoRepository = require('../adapters/mongodb/WebhookLogMongoRe
 // MariaDB Repository 实现 - 条件加载
 let mariaDBRepositories = {};
 
+// 🔥 模块配置缓存（避免重复加载）
+let cachedModulesConfig = null;
+let configLoadedOnce = false;
+
 // 只在需要时加载 MariaDB 仓库
 function loadMariaDBRepositories() {
   if (Object.keys(mariaDBRepositories).length === 0) {
@@ -86,20 +90,32 @@ class RepositoryFactory {
    * @private
    */
   loadModulesConfig() {
+    // 🔥 使用缓存，避免重复加载
+    if (cachedModulesConfig !== null) {
+      return cachedModulesConfig;
+    }
+
     try {
       const path = require('path');
       const fs = require('fs');
       const configPath = path.join(this.app.baseDir, 'config/modules.config.js');
 
       if (fs.existsSync(configPath)) {
-        const config = require(configPath);
-        this.app.logger.info('📦 已加载模块配置文件: config/modules.config.js');
-        return config;
+        cachedModulesConfig = require(configPath);
+        
+        // 只在第一次加载时输出日志
+        if (!configLoadedOnce) {
+          this.app.logger.info('📦 已加载模块配置文件: config/modules.config.js');
+          configLoadedOnce = true;
+        }
+        
+        return cachedModulesConfig;
       }
     } catch (error) {
       this.app.logger.warn('⚠️  加载模块配置失败，使用默认配置（所有模块启用）:', error.message);
     }
 
+    cachedModulesConfig = null;
     return null;
   }
 
@@ -260,33 +276,40 @@ class RepositoryFactory {
    * @private
    */
   logLoadedModules() {
-    if (!this.modulesConfig) {
-      this.app.logger.info('📦 使用默认配置，所有模块已启用');
-      this.app.logger.info(`📊 Repository 数量: ${Object.keys(this.repositoryMap).length}`);
-      return;
-    }
-
-    const enabledModules = [];
-    const disabledModules = [];
-
-    // 统计启用的业务模块
-    const businessModules = this.modulesConfig.business || {};
-    for (const [moduleName, moduleConfig] of Object.entries(businessModules)) {
-      if (moduleConfig.enabled) {
-        enabledModules.push(moduleConfig.name || moduleName);
-      } else {
-        disabledModules.push(moduleConfig.name || moduleName);
+    // 🔥 只在第一次输出日志
+    if (configLoadedOnce && cachedModulesConfig) {
+      // 配置已经在 loadModulesConfig 中输出过了，这里只输出模块状态
+      if (!this.modulesConfig) {
+        this.app.logger.info('📦 使用默认配置，所有模块已启用');
+        this.app.logger.info(`📊 Repository 数量: ${Object.keys(this.repositoryMap).length}`);
+        return;
       }
-    }
 
-    this.app.logger.info('📦 模块加载状态:');
-    if (enabledModules.length > 0) {
-      this.app.logger.info(`  ✅ 已启用: ${enabledModules.join(', ')}`);
+      const enabledModules = [];
+      const disabledModules = [];
+
+      // 统计启用的业务模块
+      const businessModules = this.modulesConfig.business || {};
+      for (const [moduleName, moduleConfig] of Object.entries(businessModules)) {
+        if (moduleConfig.enabled) {
+          enabledModules.push(moduleConfig.name || moduleName);
+        } else {
+          disabledModules.push(moduleConfig.name || moduleName);
+        }
+      }
+
+      this.app.logger.info('📦 模块加载状态:');
+      if (enabledModules.length > 0) {
+        this.app.logger.info(`  ✅ 已启用: ${enabledModules.join(', ')}`);
+      }
+      if (disabledModules.length > 0) {
+        this.app.logger.info(`  ❌ 已禁用: ${disabledModules.join(', ')}`);
+      }
+      this.app.logger.info(`  📊 Repository 数量: ${Object.keys(this.repositoryMap).length}`);
+      
+      // 标记已输出，后续不再输出
+      configLoadedOnce = false;
     }
-    if (disabledModules.length > 0) {
-      this.app.logger.info(`  ❌ 已禁用: ${disabledModules.join(', ')}`);
-    }
-    this.app.logger.info(`  📊 Repository 数量: ${Object.keys(this.repositoryMap).length}`);
   }
 
   /**

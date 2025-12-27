@@ -154,7 +154,7 @@ class BaseRepositoryLoader {
       this.getBaseMariaRepository(app);
       this.getRepositoryExceptions(app);
 
-      app.logger.info('[egg-ai-assistant] Repository base classes loaded successfully');
+      app.logger.debug('[egg-ai-assistant] Repository base classes loaded successfully');
     } catch (error) {
       app.logger.error('[egg-ai-assistant] Failed to load repository base classes:', error);
       throw error;

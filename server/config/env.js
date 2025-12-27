@@ -8,6 +8,11 @@ const fs = require('fs');
  * 根据 NODE_ENV 自动加载对应的环境配置文件
  */
 function loadEnvironmentConfig() {
+  // 🔥 优化：避免重复加载和日志输出
+  if (global.__DOTENV_LOADED__) {
+    return;
+  }
+
   const env = process.env.NODE_ENV || 'development';
   const serverRoot = path.resolve(__dirname, '..');
   const projectRoot = process.cwd();
@@ -30,7 +35,8 @@ function loadEnvironmentConfig() {
   for (const { label, path: envPath } of envFiles) {
     if (fs.existsSync(envPath)) {
       console.log(`📄 加载环境配置: ${label}`);
-      require('dotenv').config({ path: envPath });
+      // 🔥 优化：禁用 dotenv 自己的日志输出
+      require('dotenv').config({ path: envPath, debug: false, override: false });
       loaded = true;
       break; // 只加载第一个存在的文件
     }
@@ -39,8 +45,11 @@ function loadEnvironmentConfig() {
   // 如果没有找到任何环境文件，使用默认的 .env
   if (!loaded) {
     console.log('📄 使用默认环境配置: .env');
-    require('dotenv').config();
+    require('dotenv').config({ debug: false, override: false });
   }
+
+  // 🔥 标记已加载，避免重复
+  global.__DOTENV_LOADED__ = true;
 }
 
 // 加载环境配置
