@@ -4,6 +4,7 @@ const fs = require('fs');
 const UnifiedCache = require('./app/utils/unifiedCache');
 const PermissionRegistry = require('./app/core/permission/PermissionRegistry');
 const PermissionDefinitionManager = require('./app/core/permission/PermissionDefinitionManager');
+const { pruneModuleData } = require('./app/utils/moduleDataPruner');
 
 class AppBootHook {
   constructor(app) {
@@ -155,6 +156,12 @@ class AppBootHook {
       this.app.logger.warn('⚠️ 权限白名单初始化失败: %s', error.message);
     }
 
+    // 按模块裁剪初始化数据（菜单等）
+    // 仅在开启模块裁剪开关时执行（CLI 生成的模板默认开启，源码默认关闭）
+    if (this.app.config.modulePrune?.enabled) {
+      await this.pruneDataByModules();
+    }
+
     // 🚀 应用启动后进行缓存预热
     const cacheWarmupStartTime = Date.now();
     await this.initializeCacheWarmup();
@@ -187,6 +194,33 @@ class AppBootHook {
     // 应用初始化
     const thisCtx = this.app.createAnonymousContext();
     this.app.init(thisCtx);
+  }
+
+  /**
+   * 根据 modules.config.js 禁用未启用模块的初始化数据
+   */
+  async pruneDataByModules() {
+    try {
+      const repoConfig = this.app.config.repository || {};
+      if (repoConfig.enabled !== true) {
+        this.app.logger.info('🧹 模块数据裁剪已跳过：Repository 模式未启用');
+        return;
+      }
+
+      const result = await pruneModuleData(this.app);
+      if (result.skipped) {
+        this.app.logger.info('🧹 模块数据裁剪已跳过：%s', result.reason || '无可裁剪项');
+        return;
+      }
+
+      this.app.logger.info(
+        '🧹 模块数据裁剪完成，禁用模块: %s，菜单更新: %d',
+        (result.disabledModules || []).join(', ') || '无',
+        result.menuUpdated || 0
+      );
+    } catch (error) {
+      this.app.logger.warn('⚠️ 模块数据裁剪失败: %s', error.message);
+    }
   }
 
   /**

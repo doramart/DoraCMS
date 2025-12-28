@@ -77,6 +77,11 @@ module.exports = appInfo => {
     },
   };
 
+  // 模块裁剪（模板生成项目使用，源码默认关闭）
+  config.modulePrune = {
+    enabled: envConfig.getBoolEnv('MODULE_PRUNE_ENABLED', false),
+  };
+
   // 配置需要的中间件,数组顺序即为中间件的加载顺序
   config.middleware = [
     'requestId', // 请求追踪 ID 中间件 - 必须在最前面
