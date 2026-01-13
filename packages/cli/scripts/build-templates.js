@@ -48,8 +48,11 @@ const EXCLUDE_PATTERNS = {
   // 依赖和构建产物
   directories: ['node_modules', 'dist', 'build', '.nuxt', '.next', 'coverage', '.nyc_output'],
 
-  // 日志和运行时文件
-  runtime: ['logs', 'run', '*.log', '*.log.*'],
+  // 日志和运行时文件（注意：不要排除 *_logger.js 中间件文件）
+  runtime: ['logs', 'run'],
+  
+  // 日志文件（单独处理，避免误匹配中间件文件）
+  logFiles: [],  // 将在 shouldExclude 中特殊处理
 
   // 版本控制
   vcs: ['.git', '.github', '.gitlab', '.svn', '.hg'],
@@ -119,6 +122,11 @@ function shouldExclude(relativePath, basePath) {
   // 检查是否是需要保留的环境配置示例
   if (KEEP_ENV_EXAMPLES.some(pattern => fileName === pattern || fileName.includes(pattern))) {
     return false;
+  }
+
+  // 特殊处理：排除 .log 文件，但保留 *_logger.js 中间件文件
+  if (/\.log(\.\d+)?$/.test(fileName)) {
+    return true;
   }
 
   // 检查所有排除规则
