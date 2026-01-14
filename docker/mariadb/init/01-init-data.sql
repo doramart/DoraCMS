@@ -1,7 +1,7 @@
 /*M!999999\- enable the sandbox mode */ 
 -- MariaDB dump 10.19-12.1.2-MariaDB, for osx10.20 (arm64)
 --
--- Host: micoai.cn    Database: doracms3
+-- Host: 192.168.31.69    Database: doracms3
 -- ------------------------------------------------------
 -- Server version	10.3.37-MariaDB
 
@@ -7669,4 +7669,4 @@ commit;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-12-28 10:18:18
+-- Dump completed on 2026-01-14 20:32:15

@@ -49,6 +49,7 @@
     ]
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "mongoose": "^8.16.4",
     "mysql2": "^3.14.2"
   }
