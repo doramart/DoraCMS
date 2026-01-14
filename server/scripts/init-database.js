@@ -15,10 +15,7 @@ const fs = require('fs');
 // 按优先级加载环境变量
 function loadEnv() {
   const serverRoot = path.join(__dirname, '..');
-  const envFiles = [
-    path.join(serverRoot, '.env.local'),
-    path.join(serverRoot, '.env'),
-  ];
+  const envFiles = [path.join(serverRoot, '.env.local'), path.join(serverRoot, '.env')];
 
   for (const envPath of envFiles) {
     if (fs.existsSync(envPath)) {

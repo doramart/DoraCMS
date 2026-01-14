@@ -28,6 +28,10 @@ services:
       DATABASE_TYPE: ${DATABASE_TYPE:-mongodb}
       REPOSITORY_ENABLED: ${REPOSITORY_ENABLED:-true}
 
+      # 数据库初始化控制（应用层自动处理）
+      DB_SKIP_INIT: ${DB_SKIP_INIT:-false}
+      DB_FORCE_INIT: ${DB_FORCE_INIT:-false}
+
       # MongoDB 配置
       MONGODB_HOST: mongodb
       MONGODB_PORT: 27017
@@ -77,13 +81,12 @@ services:
       - app-logs:/app/server/logs
       - app-uploads:/app/server/app/public/upload
       - app-backups:/app/data/backups
-    # 注意：depends_on 不支持条件判断，使用 profiles 分离不同数据库部署场景
-    # 默认使用 MongoDB，MariaDB 需通过 profile 激活
+      # 挂载初始化数据供应用层读取
+      - ./docker/mongodb/initdata:/app/docker/mongodb/initdata:ro
+      - ./docker/mariadb/init:/app/docker/mariadb/init:ro
     depends_on:
       mongodb:
         condition: service_healthy
-      mongodb-init:
-        condition: service_completed_successfully
       redis:
         condition: service_healthy
     networks:
@@ -96,6 +99,7 @@ services:
       start_period: 40s
 
   # ============ 应用服务 (MariaDB 模式) ============
+  # 使用统一的应用镜像，通过环境变量切换数据库类型
   eggcms-app-mariadb:
     build:
       context: .
@@ -113,6 +117,10 @@ services:
       # 数据库类型配置
       DATABASE_TYPE: mariadb
       REPOSITORY_ENABLED: ${REPOSITORY_ENABLED:-true}
+
+      # 数据库初始化控制（应用层自动处理）
+      DB_SKIP_INIT: ${DB_SKIP_INIT:-false}
+      DB_FORCE_INIT: ${DB_FORCE_INIT:-false}
 
       # MariaDB 配置
       MARIADB_HOST: mariadb
@@ -163,11 +171,12 @@ services:
       - app-logs:/app/server/logs
       - app-uploads:/app/server/app/public/upload
       - app-backups:/app/data/backups
+      # 挂载初始化数据供应用层读取
+      - ./docker/mongodb/initdata:/app/docker/mongodb/initdata:ro
+      - ./docker/mariadb/init:/app/docker/mariadb/init:ro
     depends_on:
       mariadb:
         condition: service_healthy
-      mariadb-init:
-        condition: service_completed_successfully
       redis:
         condition: service_healthy
     networks:
@@ -197,7 +206,6 @@ services:
     volumes:
       - mongodb-data:/data/db
       - mongodb-config:/data/configdb
-      - ./server/initdata:/docker-entrypoint-initdb.d:ro
     networks:
       - eggcms-network
     healthcheck:
@@ -207,30 +215,6 @@ services:
       retries: 3
       start_period: 60s
     command: ['mongod', '--auth', '--bind_ip_all']
-
-  # ============ MongoDB 数据初始化 ============
-  mongodb-init:
-    profiles:
-      - mongodb
-    image: mongo:6.0
-    container_name: eggcms-mongodb-init
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    environment:
-      MONGODB_HOST: mongodb
-      MONGODB_PORT: 27017
-      MONGODB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME:-admin}
-      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-admin123}
-      MONGODB_USERNAME: ${MONGODB_USERNAME:-eggcms}
-      MONGODB_PASSWORD: ${MONGODB_PASSWORD:-eggcms123}
-      MONGODB_DATABASE: ${MONGODB_DATABASE:-doracms3}
-    volumes:
-      - ./docker/mongodb/initdata:/data/initdata:ro
-      - ./docker/init-mongodb.sh:/init-mongodb.sh:ro
-    networks:
-      - eggcms-network
-    command: ['bash', '/init-mongodb.sh']
 
   # ============ MariaDB 数据库 ============
   mariadb:
@@ -249,7 +233,6 @@ services:
       MARIADB_MAX_CONNECTIONS: 200
     volumes:
       - mariadb-data:/var/lib/mysql
-      - ./docker/mariadb/init:/docker-entrypoint-initdb.d:ro
       - ./docker/mariadb/conf.d:/etc/mysql/conf.d:ro
     networks:
       - eggcms-network
@@ -267,29 +250,6 @@ services:
       - --innodb-log-file-size=256M
       - --innodb-flush-log-at-trx-commit=2
       - --innodb-flush-method=O_DIRECT
-    profiles:
-      - mariadb
-
-  # ============ MariaDB 数据初始化 ============
-  mariadb-init:
-    image: mariadb:11.2
-    container_name: eggcms-mariadb-init
-    depends_on:
-      mariadb:
-        condition: service_healthy
-    environment:
-      MARIADB_HOST: mariadb
-      MARIADB_PORT: 3306
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-admin123}
-      MARIADB_USERNAME: ${MARIADB_USERNAME:-eggcms}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-eggcms123}
-      MARIADB_DATABASE: ${MARIADB_DATABASE:-doracms3}
-    volumes:
-      - ./docker/init-mariadb.sh:/init-mariadb.sh:ro
-      - ./docker/mariadb/init:/data/init:ro
-    networks:
-      - eggcms-network
-    command: ['bash', '/init-mariadb.sh']
     profiles:
       - mariadb
 

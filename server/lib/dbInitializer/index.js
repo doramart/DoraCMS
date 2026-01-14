@@ -2,7 +2,7 @@
 
 /**
  * 数据库初始化器（改进版）
- * 
+ *
  * 改进点：
  * 1. 使用 system_configs 表记录初始化状态，避免误判
  * 2. 添加并发锁机制，防止多实例重复初始化
@@ -114,12 +114,12 @@ class DatabaseInitializer {
 
         try {
           const [results] = await sequelize.query(
-            'SELECT * FROM `system_configs` WHERE `key` = \'db_initialized\' LIMIT 1'
+            "SELECT * FROM `system_configs` WHERE `key` = 'db_initialized' LIMIT 1"
           );
           return results.length > 0;
         } catch (error) {
           // 表不存在说明未初始化
-          if (error.message.includes('doesn\'t exist')) {
+          if (error.message.includes("doesn't exist")) {
             return false;
           }
           throw error;
@@ -149,11 +149,12 @@ class DatabaseInitializer {
         }
       } else if (this.databaseType === 'mariadb') {
         const [results] = await this.app.sequelize.query(
-          'SELECT * FROM `system_configs` WHERE `key` = \'db_initialized\' LIMIT 1'
+          "SELECT * FROM `system_configs` WHERE `key` = 'db_initialized' LIMIT 1"
         );
-        if (results.length > 0 && results[0].metadata) {
+        // MariaDB: 元数据存储在 value 字段中
+        if (results.length > 0 && results[0].value) {
           try {
-            return JSON.parse(results[0].metadata);
+            return JSON.parse(results[0].value);
           } catch (e) {
             return { initialized: true };
           }
@@ -167,6 +168,7 @@ class DatabaseInitializer {
 
   /**
    * 🔥 新增：标记数据库为已初始化
+   * @param metadata
    */
   async markAsInitialized(metadata = {}) {
     const initMetadata = {
@@ -197,11 +199,12 @@ class DatabaseInitializer {
           { upsert: true }
         );
       } else if (this.databaseType === 'mariadb') {
+        // MariaDB: system_configs 表没有 metadata 列，将元数据存储在 value 中
         const metadataJson = JSON.stringify(initMetadata).replace(/'/g, "''");
         await this.app.sequelize.query(
-          `INSERT INTO system_configs (\`key\`, value, type, public, metadata, updatedAt, createdAt) 
-           VALUES ('db_initialized', 'true', 'system', 0, '${metadataJson}', NOW(), NOW())
-           ON DUPLICATE KEY UPDATE value = 'true', metadata = '${metadataJson}', updatedAt = NOW()`
+          `INSERT INTO system_configs (\`key\`, value, type, public, updatedAt, createdAt) 
+           VALUES ('db_initialized', '${metadataJson}', 'string', 0, NOW(), NOW())
+           ON DUPLICATE KEY UPDATE value = '${metadataJson}', updatedAt = NOW()`
         );
       }
 
@@ -221,7 +224,7 @@ class DatabaseInitializer {
         const db = this.app.mongoose.connection.db;
         await db.collection('system_configs').deleteOne({ key: 'db_initialized' });
       } else if (this.databaseType === 'mariadb') {
-        await this.app.sequelize.query('DELETE FROM `system_configs` WHERE `key` = \'db_initialized\'');
+        await this.app.sequelize.query("DELETE FROM `system_configs` WHERE `key` = 'db_initialized'");
       }
       this.logger.info('🧹 已清除初始化标记');
     } catch (error) {
@@ -245,10 +248,7 @@ class DatabaseInitializer {
         const result = await db.collection('system_configs').updateOne(
           {
             key: lockKey,
-            $or: [
-              { value: { $exists: false } },
-              { value: { $lt: (now - lockTimeout).toString() } },
-            ],
+            $or: [{ value: { $exists: false } }, { value: { $lt: (now - lockTimeout).toString() } }],
           },
           {
             $set: {
@@ -272,7 +272,7 @@ class DatabaseInitializer {
         return acquired;
       } else if (this.databaseType === 'mariadb') {
         // MariaDB 使用 GET_LOCK 函数
-        const [result] = await this.app.sequelize.query('SELECT GET_LOCK(\'db_init_lock\', 300) as locked');
+        const [result] = await this.app.sequelize.query("SELECT GET_LOCK('db_init_lock', 300) as locked");
         const acquired = result[0].locked === 1;
         if (acquired) {
           this.logger.info('🔒 已获取初始化锁');
@@ -296,7 +296,7 @@ class DatabaseInitializer {
         await db.collection('system_configs').deleteOne({ key: 'db_init_lock' });
         this.logger.info('🔓 已释放初始化锁');
       } else if (this.databaseType === 'mariadb') {
-        await this.app.sequelize.query('SELECT RELEASE_LOCK(\'db_init_lock\')');
+        await this.app.sequelize.query("SELECT RELEASE_LOCK('db_init_lock')");
         this.logger.info('🔓 已释放初始化锁');
       }
     } catch (error) {
@@ -492,16 +492,14 @@ class DatabaseInitializer {
         executedCount++;
       } catch (error) {
         // 忽略某些预期的错误
-        const ignorableErrors = [
-          'already exists',
-          'Duplicate entry',
-          'doesn\'t exist',
-          'Unknown table',
-        ];
+        const ignorableErrors = ['already exists', 'Duplicate entry', "doesn't exist", 'Unknown table', "Table '"];
 
         const isIgnorable = ignorableErrors.some(e => error.message.includes(e));
         if (!isIgnorable) {
-          this.logger.warn(`   SQL 警告: ${error.message.substring(0, 100)}`);
+          // 只记录非预期错误，减少噪音
+          if (!error.message.includes('You have an error in your SQL syntax')) {
+            this.logger.warn(`   SQL 警告: ${error.message.substring(0, 100)}`);
+          }
           errorCount++;
         }
       }
@@ -523,17 +521,21 @@ class DatabaseInitializer {
 
   /**
    * 判断是否应该跳过某条 SQL 语句
+   * @param sql
    */
   shouldSkipStatement(sql) {
     const skipPatterns = [
-      /^SET\s+(NAMES|CHARACTER|GLOBAL|SESSION)/i,
+      /^SET\s+(NAMES|CHARACTER|GLOBAL|SESSION|@)/i,
       /^ALTER\s+DATABASE/i,
+      /^ALTER\s+TABLE.*?(DISABLE|ENABLE)\s+KEYS/i,
       /^CREATE\s+DATABASE/i,
       /^USE\s+/i,
       /^LOCK\s+TABLES/i,
       /^UNLOCK\s+TABLES/i,
       /^COMMIT/i,
       /^SET\s+autocommit/i,
+      /^\/\*[!M]/i, // MariaDB 特定注释
+      /^\s*$/, // 空语句
     ];
 
     return skipPatterns.some(pattern => pattern.test(sql));
@@ -541,21 +543,37 @@ class DatabaseInitializer {
 
   /**
    * 清理 MariaDB SQL 中的特殊语法
+   * @param sql
    */
   cleanMariaDBSQL(sql) {
-    return sql
-      .replace(/\/\*M!\d+.*?\*\//gs, '')
-      .replace(/\/\*!\d+.*?\*\//gs, '')
-      .replace(/LOCK TABLES.*?;/gi, '')
-      .replace(/UNLOCK TABLES;/gi, '')
-      .replace(/set autocommit=\d;/gi, '')
-      .replace(/^commit;$/gim, '')
-      .replace(/USE `.*?`;/gi, '')
-      .replace(/CREATE DATABASE.*?;/gi, '');
+    return (
+      sql
+        // 移除 MariaDB 特定的版本注释
+        .replace(/\/\*M!\d+.*?\*\//gs, '')
+        .replace(/\/\*!\d+.*?\*\//gs, '')
+        // 移除 LOCK/UNLOCK TABLES
+        .replace(/LOCK TABLES.*?;/gis, '')
+        .replace(/UNLOCK TABLES;?/gi, '')
+        // 移除 autocommit 设置
+        .replace(/set autocommit\s*=\s*\d+\s*;/gi, '')
+        // 移除 commit 语句
+        .replace(/^commit\s*;?\s*$/gim, '')
+        // 移除 USE 语句
+        .replace(/USE\s+`.*?`\s*;/gi, '')
+        // 移除 CREATE DATABASE 语句
+        .replace(/CREATE DATABASE.*?;/gi, '')
+        // 移除 ALTER TABLE ... DISABLE/ENABLE KEYS
+        .replace(/ALTER TABLE\s+`?\w+`?\s+(DISABLE|ENABLE)\s+KEYS\s*;/gi, '')
+        // 移除 SET 变量语句
+        .replace(/SET\s+@\w+\s*=\s*.*?;/gi, '')
+        // 移除空行
+        .replace(/^\s*[\r\n]/gm, '')
+    );
   }
 
   /**
    * 分割 SQL 语句
+   * @param sql
    */
   splitSQLStatements(sql) {
     const statements = [];
@@ -593,6 +611,7 @@ class DatabaseInitializer {
 
   /**
    * 清理敏感数据表
+   * @param dbType
    */
   async cleanupSensitiveData(dbType) {
     this.logger.info('🧹 清理敏感数据表...');

@@ -4,6 +4,7 @@ set -e
 # ==============================================================================
 # EggCMS 容器启动脚本
 # 功能：等待依赖服务启动、环境检查、应用启动
+# 数据库初始化由应用层 DatabaseInitializer 自动处理
 # ==============================================================================
 
 echo "🚀 EggCMS 容器启动中..."
@@ -106,34 +107,6 @@ check_environment() {
     log_success "环境变量检查通过 (数据库类型: $DATABASE_TYPE)"
 }
 
-# 数据库连接检查
-check_database() {
-    log_info "检查数据库连接..."
-    
-    # 使用简单的端口检查替代复杂的数据库连接检查
-    # 因为MongoDB服务已经在wait_for_service中确认可用
-    log_success "数据库服务已确认可用"
-    return 0
-}
-
-# Redis连接检查
-check_redis() {
-    if [[ -n "$REDIS_HOST" ]]; then
-        log_info "检查Redis连接..."
-        
-        local redis_cmd="redis-cli -h $REDIS_HOST -p ${REDIS_PORT:-6379}"
-        if [[ -n "$REDIS_PASSWORD" ]]; then
-            redis_cmd="$redis_cmd -a $REDIS_PASSWORD"
-        fi
-        
-        if $redis_cmd ping > /dev/null 2>&1; then
-            log_success "Redis连接成功"
-        else
-            log_warning "Redis连接失败，应用将在无缓存模式下运行"
-        fi
-    fi
-}
-
 # 创建必要目录
 create_directories() {
     log_info "创建必要的目录..."
@@ -154,70 +127,6 @@ create_directories() {
     log_success "目录创建完成"
 }
 
-# 健康检查端点
-setup_health_check() {
-    log_info "设置健康检查端点..."
-    
-    # 创建简单的健康检查脚本
-    cat > /app/health-check.js << 'EOF'
-const http = require('http');
-
-const options = {
-    hostname: 'localhost',
-    port: process.env.PORT || 8080,
-    path: '/api/health',
-    method: 'GET',
-    timeout: 3000
-};
-
-const req = http.request(options, (res) => {
-    if (res.statusCode === 200) {
-        process.exit(0);
-    } else {
-        process.exit(1);
-    }
-});
-
-req.on('error', () => {
-    process.exit(1);
-});
-
-req.on('timeout', () => {
-    req.destroy();
-    process.exit(1);
-});
-
-req.end();
-EOF
-    
-    log_success "健康检查设置完成"
-}
-
-# MariaDB 连接检查
-check_mariadb() {
-    log_info "检查 MariaDB 连接..."
-    
-    # 等待 MariaDB 服务可用
-    local max_attempts=30
-    local attempt=1
-    
-    while [ $attempt -le $max_attempts ]; do
-        if mariadb --skip-ssl -h "$MARIADB_HOST" -P "${MARIADB_PORT:-3306}" \
-            -u "$MARIADB_USERNAME" -p"$MARIADB_PASSWORD" \
-            -e "SELECT 1;" "$MARIADB_DATABASE" > /dev/null 2>&1; then
-            log_success "MariaDB 连接成功"
-            return 0
-        fi
-        
-        log_info "等待 MariaDB 连接... ($attempt/$max_attempts)"
-        sleep 2
-        attempt=$((attempt + 1))
-    done
-    
-    log_error "MariaDB 连接超时"
-    return 1
-}
-
 # 主启动流程
 main() {
     log_info "开始EggCMS启动流程..."
@@ -231,11 +140,9 @@ main() {
     if [[ "$DATABASE_TYPE" == "mongodb" ]]; then
         log_info "使用 MongoDB 数据库"
         wait_for_service "$MONGODB_HOST" "${MONGODB_PORT:-27017}" "MongoDB" 60
-        check_database
     elif [[ "$DATABASE_TYPE" == "mariadb" ]]; then
         log_info "使用 MariaDB 数据库"
         wait_for_service "$MARIADB_HOST" "${MARIADB_PORT:-3306}" "MariaDB" 60
-        check_mariadb
     else
         log_error "不支持的数据库类型: $DATABASE_TYPE"
         exit 1
@@ -246,7 +153,6 @@ main() {
         log_info "检测到 Redis 配置，尝试连接 Redis 服务..."
         if wait_for_service "$REDIS_HOST" "${REDIS_PORT:-6379}" "Redis" 10; then
             log_success "Redis 服务连接成功"
-            check_redis
         else
             log_warning "Redis 服务不可用，应用将在无缓存模式下运行"
             # 清除Redis配置，让应用以无缓存模式运行
@@ -262,10 +168,7 @@ main() {
     # 4. 创建必要目录
     create_directories
     
-    # 5. 设置健康检查
-    setup_health_check
-    
-    # 6. 显示启动信息
+    # 5. 显示启动信息
     log_success "========================================="
     log_success "EggCMS 准备启动"
     log_success "数据库类型: $DATABASE_TYPE"
@@ -278,9 +181,10 @@ main() {
         log_success "Redis: $REDIS_HOST:${REDIS_PORT:-6379}"
     fi
     log_success "应用端口: ${PORT:-8080}"
+    log_success "数据库初始化: 应用层自动处理"
     log_success "========================================="
     
-    # 7. 启动应用
+    # 6. 启动应用
     log_info "启动EggCMS应用..."
     
     cd /app/server
@@ -293,7 +197,6 @@ main() {
 # 信号处理
 cleanup() {
     log_info "接收到停止信号，正在关闭应用..."
-    # 这里可以添加清理逻辑
     exit 0
 }
 

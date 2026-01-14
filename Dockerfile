@@ -31,11 +31,9 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S eggcms -u 1001
 
-# 安装必要的系统包
+# 安装必要的系统包（移除数据库客户端工具，减少镜像体积）
 RUN apk add --no-cache \
     dumb-init \
-    mongodb-tools \
-    mariadb-client \
     curl \
     bash
 
@@ -49,15 +47,16 @@ COPY --from=builder --chown=eggcms:nodejs /app/server/node_modules ./server/node
 # 复制应用代码
 COPY --chown=eggcms:nodejs server/ ./server/
 
-# 复制启动脚本和初始化脚本
-COPY --chown=eggcms:nodejs docker/ ./docker/
+# 复制启动脚本（移除初始化脚本）
+COPY --chown=eggcms:nodejs docker/entrypoint.sh ./docker/entrypoint.sh
+COPY --chown=eggcms:nodejs docker/wait-for-it.sh ./docker/wait-for-it.sh
 
 # 创建必要的目录
-RUN mkdir -p /app/server/logs /app/server/run /app/data/mongodb-backup && \
+RUN mkdir -p /app/server/logs /app/server/run && \
     chown -R eggcms:nodejs /app
 
 # 设置执行权限
-RUN chmod +x ./docker/entrypoint.sh ./docker/wait-for-it.sh ./docker/init-mongodb.sh ./docker/init-mariadb.sh
+RUN chmod +x ./docker/entrypoint.sh ./docker/wait-for-it.sh
 
 # 切换到应用用户
 USER eggcms
