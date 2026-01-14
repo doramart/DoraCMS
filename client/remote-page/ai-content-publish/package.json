@@ -16,6 +16,7 @@
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "axios": "^1.6.8",
+    "dayjs": "^1.11.10",
     "element-plus": "^2.6.0",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.4",

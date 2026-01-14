@@ -1,1 +1,0 @@
-import{g as n,c as r}from"./index-225e0b85.js";function o(){return n("/api/user/userInfo")}function t(e){return r("/api/user/updateInfo",e)}function a(e){return r("/api/user/updateInfo",e)}function i(e){return r("/api/user/sendVerificationCode",e)}export{a as c,o as g,i as s,t as u};
