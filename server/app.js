@@ -5,6 +5,7 @@ const UnifiedCache = require('./app/utils/unifiedCache');
 const PermissionRegistry = require('./app/core/permission/PermissionRegistry');
 const PermissionDefinitionManager = require('./app/core/permission/PermissionDefinitionManager');
 const { pruneModuleData } = require('./app/utils/moduleDataPruner');
+const DatabaseInitializer = require('./lib/dbInitializer');
 
 class AppBootHook {
   constructor(app) {
@@ -18,6 +19,7 @@ class AppBootHook {
       templateInitTime: 0,
       prewarmTime: 0,
       repositoryInitTime: 0,
+      dbInitTime: 0,
       cacheWarmupTime: 0,
       totalStartupTime: 0,
     };
@@ -96,6 +98,34 @@ class AppBootHook {
       this.performanceStats.repositoryInitTime = Date.now() - repositoryStartTime;
     } catch (error) {
       this.app.logger.error('Repository 系统初始化失败:', error);
+    }
+
+    // 🔧 数据库自动初始化（开发模式下检测空数据库并导入种子数据）
+    const dbInitStartTime = Date.now();
+    await this.initializeDatabaseIfEmpty();
+    this.performanceStats.dbInitTime = Date.now() - dbInitStartTime;
+  }
+
+  /**
+   * 🔧 数据库自动初始化
+   * 检测数据库是否为空，如果为空则自动导入初始化数据
+   * 支持环境变量控制：
+   * - DB_SKIP_INIT=true  跳过初始化
+   * - DB_FORCE_INIT=true 强制重新初始化
+   */
+  async initializeDatabaseIfEmpty() {
+    try {
+      const initializer = new DatabaseInitializer(this.app);
+      const result = await initializer.initialize();
+
+      if (result.skipped) {
+        this.app.logger.info(`🔧 数据库初始化跳过: ${result.reason}`);
+      } else if (result.success) {
+        this.app.logger.info('🎉 数据库初始化成功:', result);
+      }
+    } catch (error) {
+      this.app.logger.error('❌ 数据库初始化失败:', error);
+      // 不阻止应用启动，让用户可以手动处理
     }
   }
 
@@ -266,6 +296,7 @@ class AppBootHook {
       模板初始化时间: `${stats.templateInitTime}ms`,
       应用预热时间: `${stats.prewarmTime}ms`,
       Repository初始化时间: `${stats.repositoryInitTime}ms`,
+      数据库初始化时间: `${stats.dbInitTime}ms`,
       缓存预热时间: `${stats.cacheWarmupTime}ms`,
       总启动时间: `${stats.totalStartupTime}ms`,
       启动完成时间: new Date().toISOString(),

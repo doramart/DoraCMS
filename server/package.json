@@ -92,7 +92,9 @@
     "plugin:build": "pnpm -r --filter ./lib/plugin/* run build",
     "plugin:test": "pnpm -r --filter ./lib/plugin/* run test",
     "test-env": "node scripts/test-env.js",
-    "check-worker": "node scripts/check-worker-config.js"
+    "check-worker": "node scripts/check-worker-config.js",
+    "db:init": "node scripts/init-database.js",
+    "db:init:force": "node scripts/init-database.js --force"
   },
   "ci": {
     "version": "8, 9"
