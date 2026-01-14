@@ -429,6 +429,7 @@ class DatabaseInitializer {
           database: this.config.mongoose.client.options?.dbName || process.env.MONGODB_DATABASE || 'doracms3',
           collection: collectionName,
           from: filePath,
+          onCollectionExists: 'overwrite', // 如果集合已存在则覆盖
         });
 
         // 查询导入后的文档数量

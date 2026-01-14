@@ -87,6 +87,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+      mongodb-user-init:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
     networks:
@@ -215,6 +217,56 @@ services:
       retries: 3
       start_period: 60s
     command: ['mongod', '--auth', '--bind_ip_all']
+
+  # ============ MongoDB 用户初始化（一次性任务）============
+  mongodb-user-init:
+    profiles:
+      - mongodb
+    image: mongo:6.0
+    container_name: eggcms-mongodb-user-init
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      MONGODB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME:-admin}
+      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-admin123}
+      MONGODB_USERNAME: ${MONGODB_USERNAME:-eggcms}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD:-eggcms123}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-doracms3}
+    networks:
+      - eggcms-network
+    command:
+      - bash
+      - -c
+      - |
+        echo "🔧 创建 MongoDB 应用用户..."
+        mongosh --host mongodb --port 27017 \
+          --username $$MONGODB_ROOT_USERNAME \
+          --password $$MONGODB_ROOT_PASSWORD \
+          --authenticationDatabase admin \
+          --eval "
+            use('$$MONGODB_DATABASE');
+            try {
+              db.createUser({
+                user: '$$MONGODB_USERNAME',
+                pwd: '$$MONGODB_PASSWORD',
+                roles: [
+                  { role: 'readWrite', db: '$$MONGODB_DATABASE' },
+                  { role: 'dbAdmin', db: '$$MONGODB_DATABASE' }
+                ]
+              });
+              print('✅ 用户创建成功');
+            } catch (e) {
+              if (e.code === 51003) {
+                print('⚠️  用户已存在，跳过创建');
+              } else {
+                print('❌ 用户创建失败: ' + e);
+                throw e;
+              }
+            }
+          "
+        echo "🎉 MongoDB 用户配置完成！"
+    restart: "no"
 
   # ============ MariaDB 数据库 ============
   mariadb:
