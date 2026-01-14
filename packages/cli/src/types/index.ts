@@ -29,6 +29,7 @@ export interface ModuleConfig {
   routes: string[];
   dependencies: string[];
   dependedBy: string[];
+  aiRepositories?: string[]; // AI 助手插件的 repositories（可选）
 }
 
 export interface ModuleSelection {

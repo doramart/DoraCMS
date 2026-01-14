@@ -14,6 +14,9 @@ module.exports = {
       'document_content',
       'document_content-tag',
       'document_content-message',
+      // AI 助手相关菜单（依赖 content 模块）
+      'remote-page_ai-content-publish',
+      'remote-page_ai-model-manage',
     ],
     permissionPrefixes: ['content.', 'categories.', 'tags.'],
   },

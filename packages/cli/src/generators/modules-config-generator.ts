@@ -37,6 +37,11 @@ export async function generateModulesConfig(projectPath: string, modules: Module
       dependencies: moduleConfig.dependencies,
     };
 
+    // 如果模块有 aiRepositories，也添加到配置中
+    if (moduleConfig.aiRepositories) {
+      (configEntry as any).aiRepositories = moduleConfig.aiRepositories;
+    }
+
     if (moduleConfig.required) {
       config.core[moduleName] = configEntry;
     } else {
@@ -47,7 +52,7 @@ export async function generateModulesConfig(projectPath: string, modules: Module
   // 添加禁用的模块（保留配置，但设置 enabled: false）
   for (const [key, moduleConfig] of Object.entries(BUSINESS_MODULES)) {
     if (!modules.enabled.includes(key)) {
-      config.business[key] = {
+      const disabledEntry: any = {
         enabled: false,
         name: moduleConfig.name,
         description: moduleConfig.description,
@@ -57,6 +62,13 @@ export async function generateModulesConfig(projectPath: string, modules: Module
         routes: moduleConfig.routes,
         dependencies: moduleConfig.dependencies,
       };
+
+      // 如果模块有 aiRepositories，也添加到配置中
+      if (moduleConfig.aiRepositories) {
+        disabledEntry.aiRepositories = moduleConfig.aiRepositories;
+      }
+
+      config.business[key] = disabledEntry;
     }
   }
 

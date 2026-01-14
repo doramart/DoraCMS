@@ -879,7 +879,7 @@ class BaseMariaRepository extends BaseStandardRepository {
    * @param {Object} data 更新数据
    * @return {Promise<Object>} 更新结果
    */
-  async update(id, data) {
+  async update(id, data, options = {}) {
     await this._ensureConnection();
 
     try {
@@ -897,7 +897,13 @@ class BaseMariaRepository extends BaseStandardRepository {
 
         // 处理常规字段更新
         if (processedData && Object.keys(processedData).length > 0) {
-          await this.model.update(processedData, { where: { id }, transaction });
+          // 合并选项，支持跳过验证
+          const updateOptions = {
+            where: { id },
+            transaction,
+            validate: options.validate !== false, // 默认验证，除非明确设置为 false
+          };
+          await this.model.update(processedData, updateOptions);
         }
 
         await transaction.commit();

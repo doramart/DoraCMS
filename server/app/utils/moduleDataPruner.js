@@ -118,15 +118,16 @@ async function disableMenusByRouteNames(menuRepo, routeNames, app) {
       const id = menu.id || menu._id;
       const payload = {
         hideInMenu: true,
-        status: '2',
+        status: '0', // 0=禁用, 1=启用
         updatedAt: new Date(),
         updateBy: 'module-data-pruner',
       };
 
       // 避免重复写入
-      if (menu.status === '2' && menu.hideInMenu === true) continue;
+      if (menu.status === '0' && menu.hideInMenu === true) continue;
 
-      await menuRepo.update(id, payload);
+      // 传递 validate: false 选项以跳过 Sequelize 验证
+      await menuRepo.update(id, payload, { validate: false });
       updated += 1;
       app.logger.info('[ModuleDataPruner] 已隐藏菜单 %s', routeName);
     } catch (error) {

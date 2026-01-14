@@ -108,6 +108,8 @@ module.exports = {
       description: '文章、分类、标签管理',
       repositories: ['Content', 'ContentCategory', 'ContentTag', 'ContentInteraction'],
       dependencies: ['user', 'uploadFile'],
+      // 注意: 如果启用 AI 助手插件，AI 相关的 Repository 会自动关联到此模块
+      aiRepositories: ['AIModel', 'AIUsageLog', 'PromptTemplate'],
     },
     comment: {
       enabled: true,

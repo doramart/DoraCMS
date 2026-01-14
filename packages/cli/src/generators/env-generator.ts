@@ -52,11 +52,24 @@ EGG_WORKERS=1
 # =================================
 DATABASE_TYPE=${projectInfo.database}
 REPOSITORY_ENABLED=true
+
+# =================================
+# 数据库自动初始化配置
+# =================================
+# 跳过数据库初始化（默认 false）
+# DB_SKIP_INIT=false
+
+# 强制重新初始化数据库（会清空敏感数据表，默认 false）
+# DB_FORCE_INIT=false
 `;
 
   if (projectInfo.database === 'mongodb' || projectInfo.database === 'both') {
     content += `
-# MongoDB 配置
+# MongoDB Root 用户（用于初始化）
+MONGODB_ROOT_USERNAME=admin
+MONGODB_ROOT_PASSWORD=admin123
+
+# MongoDB 应用用户
 MONGODB_HOST=127.0.0.1
 MONGODB_PORT=27017
 MONGODB_USERNAME=
@@ -85,6 +98,28 @@ REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=
 REDIS_DB=0
+
+# =================================
+# 缓存配置
+# =================================
+# 缓存类型：memory（内存缓存，默认） | redis（Redis缓存）
+CACHE_TYPE=memory
+# 缓存默认过期时间（秒）
+CACHE_DEFAULT_TTL=3600
+# 内存缓存最大条目数
+MEMORY_CACHE_MAX_SIZE=1000
+# 缓存命名空间（默认：{应用名}:{NODE_ENV}）
+CACHE_NAMESPACE=cms3:development
+# 是否启用缓存 watch（跨进程同步）
+CACHE_WATCH_ENABLED=true
+# watch 消息通道名称
+CACHE_WATCH_CHANNEL=unified-cache:watch
+# watch 是否传播缓存值（用于多实例同步）
+CACHE_WATCH_BROADCAST_VALUE=true
+# 权限热加载开关
+PERMISSION_HOT_RELOAD_ENABLED=true
+# 权限热加载轮询间隔（毫秒）
+PERMISSION_HOT_RELOAD_INTERVAL=5000
 `;
 
   // 安全配置

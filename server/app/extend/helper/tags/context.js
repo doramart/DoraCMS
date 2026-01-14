@@ -218,6 +218,13 @@ class ContextManager {
    */
   async _loadThemeConfig(ctx) {
     try {
+      // 检查模板模块是否启用
+      const modulesConfig = ctx.app.config.modulesConfig || {};
+      const templateModule = modulesConfig.business?.template;
+      if (!templateModule || !templateModule.enabled) {
+        return null;
+      }
+
       // 使用新的模板服务获取激活的主题
       const activeTheme = await ctx.service.template.getActiveTheme();
 

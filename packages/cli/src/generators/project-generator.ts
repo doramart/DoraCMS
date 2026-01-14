@@ -29,37 +29,42 @@ export async function generateProject(
   await copyServerCode(projectPath, projectInfo.type);
   spinner.succeed('复制后端代码');
 
-  // 3. 复制前端代码（根据项目类型）
+  // 3. 清理模块相关的静态资源
+  spinner = ora('清理模块相关资源').start();
+  await cleanupModuleAssets(projectPath, modules);
+  spinner.succeed('清理模块相关资源');
+
+  // 4. 复制前端代码（根据项目类型）
   spinner = ora('复制前端代码').start();
   await copyClientCode(projectPath, projectInfo.type);
   spinner.succeed('复制前端代码');
 
-  // 4. 生成环境配置文件
+  // 5. 生成环境配置文件
   spinner = ora('生成环境配置文件').start();
   await generateEnvFile(projectPath, projectInfo);
   spinner.succeed('生成环境配置文件');
 
-  // 5. 生成模块配置文件
+  // 6. 生成模块配置文件
   spinner = ora('生成模块配置文件').start();
   await generateModulesConfig(projectPath, modules);
   spinner.succeed('生成模块配置文件');
 
-  // 6. 生成插件配置文件
+  // 7. 生成插件配置文件
   spinner = ora('生成插件配置文件').start();
   await generatePluginConfig(projectPath, projectInfo);
   spinner.succeed('生成插件配置文件');
 
-  // 7. 生成 package.json
+  // 8. 生成 package.json
   spinner = ora('优化 package.json').start();
   await generatePackageJson(projectPath, projectInfo);
   spinner.succeed('优化 package.json');
 
-  // 8. 复制配置文件
+  // 9. 复制配置文件
   spinner = ora('复制配置文件').start();
   await copyConfigFiles(projectPath);
   spinner.succeed('复制配置文件');
 
-  // 9. 安装依赖
+  // 10. 安装依赖
   if (!projectInfo.skipInstall) {
     spinner = ora('安装依赖 (这可能需要几分钟)').start();
     try {
@@ -73,7 +78,7 @@ export async function generateProject(
     logger.info('跳过依赖安装');
   }
 
-  // 9. 初始化 Git
+  // 11. 初始化 Git
   if (!projectInfo.skipGit) {
     spinner = ora('初始化 Git 仓库').start();
     try {
@@ -89,6 +94,28 @@ export async function generateProject(
     }
   } else {
     logger.info('跳过 Git 初始化');
+  }
+}
+
+/**
+ * 清理模块相关的静态资源
+ * 根据模块选择删除不需要的静态资源
+ */
+async function cleanupModuleAssets(projectPath: string, modules: ModuleSelection): Promise<void> {
+  // 如果未启用 content 模块，删除 AI 助手的静态资源
+  if (!modules.enabled.includes('content')) {
+    const aiContentPublishPath = path.join(projectPath, 'server/backstage/remote-page/ai-content-publish');
+    const aiModelManagePath = path.join(projectPath, 'server/backstage/remote-page/ai-model-manage');
+    
+    if (await fs.pathExists(aiContentPublishPath)) {
+      await fs.remove(aiContentPublishPath);
+      logger.debug('已删除 AI 内容发布静态资源');
+    }
+    
+    if (await fs.pathExists(aiModelManagePath)) {
+      await fs.remove(aiModelManagePath);
+      logger.debug('已删除 AI 模型管理静态资源');
+    }
   }
 }
 
@@ -110,29 +137,17 @@ async function copyServerCode(projectPath: string, projectType: string): Promise
   // 根据项目类型过滤文件
   await fs.copy(serverSource, serverDest, {
     filter: (src) => {
-      // backend-only: 排除用户前端和远程页面
+      // backend-only: 只排除用户前端（保留 remote-page，因为它是后台管理的微前端模块）
       if (projectType === 'backend-only') {
         if (src.includes('/backstage/user-center')) {
           return false;
         }
-        if (src.includes('/backstage/remote-page')) {
-          return false;
-        }
       }
       
-      // mobile-optimized: 排除远程页面
-      if (projectType === 'mobile-optimized') {
-        if (src.includes('/backstage/remote-page')) {
-          return false;
-        }
-      }
-      
-      // admin-separated: 排除用户中心和远程页面
+      // mobile-optimized: 保留所有（remote-page 用于后台管理）
+      // admin-separated: 只排除用户中心（保留 remote-page）
       if (projectType === 'admin-separated') {
         if (src.includes('/backstage/user-center')) {
-          return false;
-        }
-        if (src.includes('/backstage/remote-page')) {
           return false;
         }
       }

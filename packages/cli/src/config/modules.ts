@@ -109,6 +109,8 @@ export const BUSINESS_MODULES: Record<string, ModuleConfig> = {
     routes: ['/api/v1/content', '/manage/content'],
     dependencies: ['user', 'uploadFile'],
     dependedBy: ['comment', 'webhook'],
+    // AI 助手插件的 repositories（如果启用 AI 助手插件）
+    aiRepositories: ['AIModel', 'AIUsageLog', 'PromptTemplate'],
   },
   comment: {
     name: '评论系统',
