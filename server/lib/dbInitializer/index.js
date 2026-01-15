@@ -624,7 +624,8 @@ class DatabaseInitializer {
       'contents',
       'upload_files',
       'messages',
-      'ai_usage_logs',
+      'ai_models', // AI 模型配置（包含加密的 API Key）
+      'ai_usage_logs', // AI 使用日志
       'api_keys',
       'system_option_logs',
     ];
