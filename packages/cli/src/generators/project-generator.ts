@@ -114,12 +114,10 @@ async function cleanupModuleAssets(projectPath: string, modules: ModuleSelection
 
     if (await fs.pathExists(aiContentPublishPath)) {
       await fs.remove(aiContentPublishPath);
-      logger.debug('已删除 AI 内容发布静态资源');
     }
 
     if (await fs.pathExists(aiModelManagePath)) {
       await fs.remove(aiModelManagePath);
-      logger.debug('已删除 AI 模型管理静态资源');
     }
   }
 }
@@ -233,6 +231,14 @@ async function configureRouterFile(projectPath: string, projectType: string): Pr
       /\n\s+\/\/ 管理后台路由\n\s*require\('\.\/router\/manage'\)/,
       "\n\n  // 管理后台路由\n  require('./router/manage')"
     );
+
+    logger.info(`已配置 ${projectType} 模式的路由文件`);
+  }
+
+  // mobile-optimized: 只移除 home 路由（保留 users 和 manage）
+  if (projectType === 'mobile-optimized') {
+    // 移除 home 路由
+    content = content.replace(/\n\s*require\('\.\/router\/home'\)\(app\);?/g, '');
 
     logger.info(`已配置 ${projectType} 模式的路由文件`);
   }
