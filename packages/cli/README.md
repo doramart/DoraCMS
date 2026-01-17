@@ -44,6 +44,74 @@ doracms create my-project
    - 自动处理模块依赖关系
    - 支持后续手动调整
 
+## 快速开始
+
+### 1. 创建项目
+
+```bash
+doracms create my-project
+cd my-project
+```
+
+### 2. 配置环境变量
+
+编辑 `server/.env` 文件，配置数据库和 Redis 连接信息：
+
+```bash
+# =================================
+# 数据库配置
+# =================================
+
+# MongoDB 配置（如果选择 MongoDB）
+MONGODB_HOST=localhost
+MONGODB_PORT=27017
+MONGODB_USERNAME=
+MONGODB_PASSWORD=
+MONGODB_DATABASE=doracms
+MONGODB_AUTH_SOURCE=admin
+
+# MariaDB 配置（如果选择 MariaDB）
+MARIADB_HOST=localhost
+MARIADB_PORT=3306
+MARIADB_DATABASE=doracms
+MARIADB_USERNAME=root
+MARIADB_PASSWORD=your_password
+
+# Redis 配置（必需）
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+```
+
+> **重要提示**：
+> - 确保 MongoDB/MariaDB 和 Redis 服务已启动
+> - 数据库会在首次启动时自动初始化
+> - 可以参考 `server/env.example` 查看完整配置项
+
+### 3. 启动项目
+
+```bash
+# 完整全栈项目
+pnpm run dev:all
+
+# 或只启动后端
+pnpm run dev:server
+
+# 或只启动前端
+pnpm run dev:user-center
+```
+
+### 4. 访问应用
+
+- 管理后台：http://localhost:8080
+- 用户中心：http://localhost:3000
+- 后端 API：http://localhost:7001
+
+默认管理员账号：
+- 用户名：`admin`
+- 密码：`123456`
+
 ### 命令选项
 
 ```bash
@@ -74,6 +142,33 @@ doracms create my-project --skip-git
 - 学习和二次开发
 - 完整功能演示
 
+**环境配置**：
+
+在启动项目前，需要配置 `server/.env` 文件中的数据库和 Redis 连接信息：
+
+```bash
+# MongoDB 配置（如果选择 MongoDB）
+MONGODB_HOST=localhost
+MONGODB_PORT=27017
+MONGODB_USERNAME=
+MONGODB_PASSWORD=
+MONGODB_DATABASE=doracms
+MONGODB_AUTH_SOURCE=admin
+
+# MariaDB 配置（如果选择 MariaDB）
+MARIADB_HOST=localhost
+MARIADB_PORT=3306
+MARIADB_DATABASE=doracms
+MARIADB_USERNAME=root
+MARIADB_PASSWORD=your_password
+
+# Redis 配置（必需）
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+```
+
 **启动命令**：
 ```bash
 pnpm run dev:all
@@ -93,6 +188,33 @@ Headless CMS，只提供 API，不包含前端。
 - 小程序后端
 - 第三方集成
 
+**环境配置**：
+
+在启动项目前，需要配置 `server/.env` 文件中的数据库和 Redis 连接信息：
+
+```bash
+# MongoDB 配置（如果选择 MongoDB）
+MONGODB_HOST=localhost
+MONGODB_PORT=27017
+MONGODB_USERNAME=
+MONGODB_PASSWORD=
+MONGODB_DATABASE=doracms
+MONGODB_AUTH_SOURCE=admin
+
+# MariaDB 配置（如果选择 MariaDB）
+MARIADB_HOST=localhost
+MARIADB_PORT=3306
+MARIADB_DATABASE=doracms
+MARIADB_USERNAME=root
+MARIADB_PASSWORD=your_password
+
+# Redis 配置（必需）
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+```
+
 **启动命令**：
 ```bash
 pnpm run dev:server
@@ -110,6 +232,33 @@ pnpm run dev:server
 - 博客网站
 - 新闻站
 - 社区论坛
+
+**环境配置**：
+
+在启动项目前，需要配置 `server/.env` 文件中的数据库和 Redis 连接信息：
+
+```bash
+# MongoDB 配置（如果选择 MongoDB）
+MONGODB_HOST=localhost
+MONGODB_PORT=27017
+MONGODB_USERNAME=
+MONGODB_PASSWORD=
+MONGODB_DATABASE=doracms
+MONGODB_AUTH_SOURCE=admin
+
+# MariaDB 配置（如果选择 MariaDB）
+MARIADB_HOST=localhost
+MARIADB_PORT=3306
+MARIADB_DATABASE=doracms
+MARIADB_USERNAME=root
+MARIADB_PASSWORD=your_password
+
+# Redis 配置（必需）
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+```
 
 **启动命令**：
 ```bash
