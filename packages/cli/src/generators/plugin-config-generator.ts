@@ -15,7 +15,7 @@ export async function generatePluginConfig(projectPath: string, projectInfo: Pro
 
   // 根据用户选择修改 AI 助手插件的 enable 状态
   const enableAiAssistant = projectInfo.enableAiAssistant !== false; // 默认启用
-  
+
   // 替换 aiAssistant 插件配置
   const updatedContent = content.replace(
     /exports\.aiAssistant = \{[\s\S]*?enable: true,[\s\S]*?\};/,

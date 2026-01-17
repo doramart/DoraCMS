@@ -6,10 +6,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import type { PluginSelection, ModuleSelection } from '../../types';
 
-export async function promptPluginSelection(
-  projectType: string,
-  modules: ModuleSelection
-): Promise<PluginSelection> {
+export async function promptPluginSelection(projectType: string, modules: ModuleSelection): Promise<PluginSelection> {
   console.log(chalk.cyan('\n─────────────────────────────────────────────────'));
   console.log(chalk.cyan('🔌 EggJS 插件配置'));
   console.log(chalk.cyan('─────────────────────────────────────────────────\n'));
@@ -31,7 +28,7 @@ export async function promptPluginSelection(
     console.log(chalk.yellow('\n💡 可选插件:'));
     console.log(chalk.green('  ✓ AI 助手 - AI 内容生成和图片生成（支持 OpenAI、DeepSeek、Ollama、豆包）'));
     console.log(chalk.cyan('  检测到启用了内容管理模块，自动启用 AI 助手以增强内容创作能力\n'));
-    
+
     return { enableAiAssistant: true };
   }
 

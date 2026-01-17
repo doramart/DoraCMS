@@ -29,6 +29,11 @@ export async function generateProject(
   await copyServerCode(projectPath, projectInfo.type);
   spinner.succeed('复制后端代码');
 
+  // 3. 根据项目类型配置路由文件
+  spinner = ora('配置路由文件').start();
+  await configureRouterFile(projectPath, projectInfo.type);
+  spinner.succeed('配置路由文件');
+
   // 3. 清理模块相关的静态资源
   spinner = ora('清理模块相关资源').start();
   await cleanupModuleAssets(projectPath, modules);
@@ -106,12 +111,12 @@ async function cleanupModuleAssets(projectPath: string, modules: ModuleSelection
   if (!modules.enabled.includes('content')) {
     const aiContentPublishPath = path.join(projectPath, 'server/backstage/remote-page/ai-content-publish');
     const aiModelManagePath = path.join(projectPath, 'server/backstage/remote-page/ai-model-manage');
-    
+
     if (await fs.pathExists(aiContentPublishPath)) {
       await fs.remove(aiContentPublishPath);
       logger.debug('已删除 AI 内容发布静态资源');
     }
-    
+
     if (await fs.pathExists(aiModelManagePath)) {
       await fs.remove(aiModelManagePath);
       logger.debug('已删除 AI 模型管理静态资源');
@@ -136,14 +141,14 @@ async function copyServerCode(projectPath: string, projectType: string): Promise
 
   // 根据项目类型过滤文件
   await fs.copy(serverSource, serverDest, {
-    filter: (src) => {
+    filter: src => {
       // backend-only: 只排除用户前端（保留 remote-page，因为它是后台管理的微前端模块）
       if (projectType === 'backend-only') {
         if (src.includes('/backstage/user-center')) {
           return false;
         }
       }
-      
+
       // mobile-optimized: 保留所有（remote-page 用于后台管理）
       // admin-separated: 只排除用户中心（保留 remote-page）
       if (projectType === 'admin-separated') {
@@ -151,7 +156,7 @@ async function copyServerCode(projectPath: string, projectType: string): Promise
           return false;
         }
       }
-      
+
       return true;
     },
   });
@@ -182,7 +187,7 @@ async function copyClientCode(projectPath: string, projectType: string): Promise
     const adminCenterDest = path.join(clientDest, 'admin-center');
     const userCenterSource = path.join(clientSource, 'user-center');
     const userCenterDest = path.join(clientDest, 'user-center');
-    
+
     if (await fs.pathExists(adminCenterSource)) {
       await fs.copy(adminCenterSource, adminCenterDest);
     }
@@ -193,11 +198,47 @@ async function copyClientCode(projectPath: string, projectType: string): Promise
     // 只复制 admin-center
     const adminCenterSource = path.join(clientSource, 'admin-center');
     const adminCenterDest = path.join(clientDest, 'admin-center');
-    
+
     if (await fs.pathExists(adminCenterSource)) {
       await fs.copy(adminCenterSource, adminCenterDest);
     }
   }
+}
+
+/**
+ * 根据项目类型配置路由文件
+ * 动态修改 router.js，移除不需要的路由
+ */
+async function configureRouterFile(projectPath: string, projectType: string): Promise<void> {
+  const routerPath = path.join(projectPath, 'server/app/router.js');
+
+  if (!(await fs.pathExists(routerPath))) {
+    logger.warning('路由文件不存在，跳过配置');
+    return;
+  }
+
+  let content = await fs.readFile(routerPath, 'utf-8');
+
+  // backend-only 和 admin-separated: 移除前端页面路由
+  if (projectType === 'backend-only' || projectType === 'admin-separated') {
+    // 移除 home 和 users 路由行（包括换行符）
+    content = content.replace(/\n\s*require\('\.\/router\/home'\)\(app\);?/g, '');
+    content = content.replace(/\n\s*require\('\.\/router\/users'\)\(app\);?/g, '');
+
+    // 更新注释并修复缩进
+    content = content.replace(/\/\/ 页面渲染路由/, '  // 管理后台路由');
+
+    // 修复 manage 路由的缩进
+    content = content.replace(
+      /\n\s+\/\/ 管理后台路由\n\s*require\('\.\/router\/manage'\)/,
+      "\n\n  // 管理后台路由\n  require('./router/manage')"
+    );
+
+    logger.info(`已配置 ${projectType} 模式的路由文件`);
+  }
+
+  // 写回文件
+  await fs.writeFile(routerPath, content, 'utf-8');
 }
 
 /**

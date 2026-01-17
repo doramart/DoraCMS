@@ -9,7 +9,7 @@ import { detectPackageManager } from '../../utils/package-manager';
 export async function promptProjectInfo(projectName: string, options: CreateOptions): Promise<ProjectInfo> {
   // 如果使用 --yes 选项，或者所有必需选项都已提供，使用非交互模式
   const hasAllOptions = options.template && options.database && options.packageManager;
-  
+
   if (options.yes || hasAllOptions) {
     return {
       name: projectName,
@@ -24,7 +24,7 @@ export async function promptProjectInfo(projectName: string, options: CreateOpti
 
   // 构建交互式问题列表，只询问未提供的选项
   const questions: any[] = [];
-  
+
   // 项目名称（总是询问，允许用户修改）
   questions.push({
     type: 'input',
@@ -32,7 +32,7 @@ export async function promptProjectInfo(projectName: string, options: CreateOpti
     message: '项目名称:',
     default: projectName,
   });
-  
+
   // 项目类型
   if (!options.template) {
     questions.push({
@@ -58,7 +58,7 @@ export async function promptProjectInfo(projectName: string, options: CreateOpti
       ],
     });
   }
-  
+
   // 数据库类型
   if (!options.database) {
     questions.push({
@@ -73,7 +73,7 @@ export async function promptProjectInfo(projectName: string, options: CreateOpti
       ],
     });
   }
-  
+
   // 包管理器
   if (!options.packageManager) {
     questions.push({
@@ -88,7 +88,7 @@ export async function promptProjectInfo(projectName: string, options: CreateOpti
       ],
     });
   }
-  
+
   // 示例数据（总是询问）
   questions.push({
     type: 'confirm',
@@ -98,7 +98,7 @@ export async function promptProjectInfo(projectName: string, options: CreateOpti
   });
 
   const answers = await inquirer.prompt(questions);
-  
+
   // 合并命令行选项和交互式答案
   return {
     name: answers.name || projectName,
