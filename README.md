@@ -292,7 +292,13 @@ openssl rand -hex 32
 
 欢迎提交 Pull Request 和 Issue！
 
-## 📄 许可证
+## � 技术交流群
+
+欢迎加入我们的技术交流群，与其他开发者一起讨论和学习：
+
+<img width="450" src="http://cdn.html-js.cn/contactbywechatqq1.jpg" alt="技术交流群">
+
+## �📄 许可证
 
 MIT License
 

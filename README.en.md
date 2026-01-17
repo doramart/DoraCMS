@@ -285,6 +285,12 @@ openssl rand -hex 32
 
 Pull Requests and Issues are welcome!
 
+## 💬 Community & Support
+
+Join our community to discuss and learn with other developers:
+
+<img width="450" src="http://cdn.html-js.cn/contactbywechatqq1.jpg" alt="Community Group">
+
 ## 📄 License
 
 MIT License
