@@ -114,7 +114,7 @@ doracms create my-project --from-git --branch develop
 
 ```json
 {
-  "name": "@doracms/cli",
+  "name": "doracms-cli",
   "version": "0.1.0",
   "files": [
     "dist",
@@ -479,7 +479,7 @@ ls -la test-fullstack/
 ls -la test-backend/
 
 # 5. 清理
-npm uninstall -g @doracms/cli
+npm uninstall -g doracms-cli
 rm -rf test-*
 ```
 
@@ -521,10 +521,10 @@ npm publish
 
 ```bash
 # 更新到最新版本
-npm update -g @doracms/cli
+npm update -g doracms-cli
 
 # 或重新安装
-npm install -g @doracms/cli@latest
+npm install -g doracms-cli@latest
 ```
 
 ---

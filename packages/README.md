@@ -70,8 +70,8 @@ const content: Content = {
 
 ---
 
-#### 3. `@doracms/cli` - 命令行工具
-**状态**: 🚧 计划中
+#### 3. `doracms-cli` - 命令行工具
+**状态**: ✅ 已发布
 
 DoraCMS 脚手架和开发工具。
 
@@ -83,7 +83,7 @@ DoraCMS 脚手架和开发工具。
 
 **安装**:
 ```bash
-npm install -g @doracms/cli
+npm install -g doracms-cli
 ```
 
 **使用示例**:

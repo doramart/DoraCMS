@@ -4,9 +4,9 @@
 
 ```bash
 # 全局安装（发布后）
-npm install -g @doracms/cli
+npm install -g doracms-cli
 # 或
-pnpm add -g @doracms/cli
+pnpm add -g doracms-cli
 ```
 
 ## 创建项目
@@ -108,7 +108,7 @@ A: 编辑 `.env` 文件中的数据库连接配置。
 A: 编辑 `server/config/modules.config.js`，将对应模块的 `enabled` 设为 `true`。
 
 ### Q: 如何更新 CLI？
-A: 运行 `npm update -g @doracms/cli` 或 `pnpm update -g @doracms/cli`。
+A: 运行 `npm update -g doracms-cli` 或 `pnpm update -g doracms-cli`。
 
 ### Q: 创建失败怎么办？
 A: 检查错误信息，确保：

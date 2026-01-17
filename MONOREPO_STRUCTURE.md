@@ -29,7 +29,7 @@ doracms/
 ├── packages/               # 🆕 独立发布的 npm 包
 │   ├── sdk-js/            # @doracms/sdk (计划中)
 │   ├── types/             # @doracms/types (计划中)
-│   ├── cli/               # @doracms/cli (计划中)
+│   ├── cli/               # doracms-cli (已发布)
 │   ├── sdk-mobile-rn/     # @doracms/sdk-mobile-rn (计划中)
 │   └── utils/             # @doracms/utils (计划中)
 │
@@ -246,7 +246,7 @@ pnpm publish --access public
 ### 示例
 - ✅ `@doracms/sdk`
 - ✅ `@doracms/sdk-mobile-rn`
-- ✅ `@doracms/cli`
+- ✅ `doracms-cli` (已发布，不使用 scope)
 - ❌ `@doracms/s` (太短)
 - ❌ `@doracms/SDK` (不是 kebab-case)
 

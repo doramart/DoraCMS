@@ -58,7 +58,7 @@ cat test-backend/server/app/router.js
 cat test-fullstack/server/app/router.js
 
 # 6. 清理
-npm uninstall -g @doracms/cli
+npm uninstall -g doracms-cli
 rm -rf test-*
 rm doracms-cli-0.1.0.tgz
 ```
@@ -103,10 +103,10 @@ npm publish --access public
 
 ```bash
 # 等待几分钟后
-npm view @doracms/cli
+npm view doracms-cli
 
 # 全局安装测试
-npm install -g @doracms/cli
+npm install -g doracms-cli
 doracms --version
 doracms --help
 ```

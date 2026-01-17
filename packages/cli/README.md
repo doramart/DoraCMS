@@ -1,4 +1,4 @@
-# @doracms/cli
+# doracms-cli
 
 DoraCMS CLI - 项目脚手架和开发工具
 
@@ -6,10 +6,10 @@ DoraCMS CLI - 项目脚手架和开发工具
 
 ```bash
 # 全局安装
-npm install -g @doracms/cli
+npm install -g doracms-cli
 
 # 或使用 pnpm
-pnpm add -g @doracms/cli
+pnpm add -g doracms-cli
 ```
 
 ## 使用

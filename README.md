@@ -47,7 +47,7 @@ doracms/
 ├── packages/                  # 🆕 独立发布的 npm 包
 │   ├── sdk-js/               # @doracms/sdk (计划中)
 │   ├── types/                # @doracms/types (计划中)
-│   ├── cli/                  # @doracms/cli (计划中)
+│   ├── cli/                  # doracms-cli (已发布)
 │   └── utils/                # @doracms/utils (计划中)
 └── package.json              # 根目录配置
 ```
