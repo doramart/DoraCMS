@@ -1,6 +1,6 @@
 {
   "name": "doracms-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DoraCMS CLI - 项目脚手架和开发工具",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
