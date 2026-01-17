@@ -493,7 +493,15 @@ class DatabaseInitializer {
         executedCount++;
       } catch (error) {
         // 忽略某些预期的错误
-        const ignorableErrors = ['already exists', 'Duplicate entry', "doesn't exist", 'Unknown table', "Table '"];
+        const ignorableErrors = [
+          'already exists',
+          'Duplicate entry',
+          "doesn't exist",
+          'Unknown table',
+          "Table '",
+          'Validation error',
+          'foreign key constraint fails',
+        ];
 
         const isIgnorable = ignorableErrors.some(e => error.message.includes(e));
         if (!isIgnorable) {

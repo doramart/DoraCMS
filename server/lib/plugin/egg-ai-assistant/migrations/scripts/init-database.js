@@ -124,6 +124,16 @@ module.exports = async app => {
     const createdModels = [];
     for (const modelData of defaultModels) {
       try {
+        const existingModel = await aiModelRepo.findOne({
+          provider: modelData.provider,
+          modelName: modelData.modelName,
+        });
+
+        if (existingModel) {
+          app.logger.info(`[egg-ai-assistant] - Skipped model (already exists): ${modelData.displayName}`);
+          continue;
+        }
+
         const model = await aiModelRepo.create(modelData);
         createdModels.push(model);
         app.logger.info(`[egg-ai-assistant] ✓ Created model: ${modelData.displayName}`);
@@ -138,6 +148,17 @@ module.exports = async app => {
     const createdPrompts = [];
     for (const promptData of defaultPrompts) {
       try {
+        const existingPrompt = await promptRepo.findOne({
+          taskType: promptData.taskType,
+          language: promptData.language,
+          version: promptData.version,
+        });
+
+        if (existingPrompt) {
+          app.logger.info(`[egg-ai-assistant] - Skipped prompt (already exists): ${promptData.name}`);
+          continue;
+        }
+
         const prompt = await promptRepo.create(promptData);
         createdPrompts.push(prompt);
         app.logger.info(`[egg-ai-assistant] ✓ Created prompt: ${promptData.name}`);

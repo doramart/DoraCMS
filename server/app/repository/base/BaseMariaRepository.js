@@ -506,8 +506,10 @@ class BaseMariaRepository extends BaseStandardRepository {
    * @protected
    */
   _customPreprocessForCreate(data) {
-    // 设置默认值
-    if (!data.status) data.status = '1';
+    // 只在 Schema 中定义了 status 字段时才设置默认值
+    if (this.model && this.model.rawAttributes && this.model.rawAttributes.status) {
+      if (!data.status) data.status = '1';
+    }
 
     return data;
   }
