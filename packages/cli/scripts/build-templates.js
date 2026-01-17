@@ -92,6 +92,11 @@ const EXCLUDE_PATTERNS = {
   generated: [
     'modules.config.js', // 总是由 CLI 根据用户选择的模块动态生成
   ],
+
+  // 包含敏感信息的脚本（用户需要自行配置）
+  sensitive: [
+    'backup-to-init-data.sh', // 包含真实的数据库密码，不应该被打包
+  ],
 };
 
 // 需要保留的文档
