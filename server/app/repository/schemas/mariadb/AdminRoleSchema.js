@@ -18,30 +18,18 @@ module.exports = (sequelize, app) => {
         comment: '主键ID',
       },
 
-      // 管理员ID - 外键
+      // 管理员ID（软引用，不创建外键约束）
       adminId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         comment: '管理员ID',
-        references: {
-          model: 'admins',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
 
-      // 角色ID - 外键
+      // 角色ID（软引用，不创建外键约束）
       roleId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         comment: '角色ID',
-        references: {
-          model: 'roles',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
 
       // 关联状态

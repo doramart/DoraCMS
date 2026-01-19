@@ -252,14 +252,11 @@ const PluginSchema = (sequelize, app) => {
       },
 
       // 🔥 关联字段 - 安装者（关联Admin表）
+      // 安装者ID（软引用，不创建外键约束）
       installor: {
         type: DataTypes.INTEGER,
         allowNull: true,
         comment: '安装者ID',
-        references: {
-          model: 'admins',
-          key: 'id',
-        },
       },
 
       // 统一时间字段

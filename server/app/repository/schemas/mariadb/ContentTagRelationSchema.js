@@ -25,30 +25,18 @@ module.exports = {
           comment: '自增主键',
         },
 
-        // 内容ID
+        // 内容ID（软引用，不创建外键约束）
         content_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           comment: '内容ID',
-          references: {
-            model: 'contents',
-            key: 'id',
-          },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
         },
 
-        // 标签ID
+        // 标签ID（软引用，不创建外键约束）
         tag_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           comment: '标签ID',
-          references: {
-            model: 'content_tags',
-            key: 'id',
-          },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
         },
 
         // 标签权重（用于排序）

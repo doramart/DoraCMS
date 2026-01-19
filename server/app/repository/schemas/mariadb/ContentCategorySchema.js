@@ -107,16 +107,11 @@ const ContentCategorySchema = (sequelize, app) => {
       },
 
       // 🔥 内容模板关联字段（保留兼容性）
+      // 使用软引用，不创建外键约束，避免表创建顺序问题
       contentTemp: {
         type: DataTypes.INTEGER,
         allowNull: true,
         comment: '内容模板ID（旧版兼容）',
-        references: {
-          model: 'content_templates',
-          key: 'id',
-        },
-        onUpdate: 'SET NULL',
-        onDelete: 'SET NULL',
       },
 
       // 🔥 新的主题配置字段 - JSON存储，灵活配置

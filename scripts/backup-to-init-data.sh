@@ -47,8 +47,9 @@ MONGODB_AUTH_SOURCE=doracms3test
 # Mariadb 配置
 MARIADB_HOST=192.168.31.69
 MARIADB_PORT=3309
+# 源数据库（包含完整数据）
 MARIADB_DATABASE=doracms3test
-# 备份文件中的库名（用于导出后重命名，默认与源库相同）
+# 备份文件中的库名（用于导出后重命名，将在 SQL 文件中替换为此名称）
 MARIADB_BACKUP_DATABASE_NAME=doracms3
 MARIADB_USERNAME=root
 MARIADB_PASSWORD=Yoooyu520~~
@@ -207,6 +208,8 @@ backup_mariadb() {
         --events \
         --default-character-set=utf8mb4 \
         --skip-ssl \
+        --skip-extended-insert \
+        --complete-insert \
         --result-file="$backup_file"
 
     # 若需要更换备份文件中的库名，执行替换
