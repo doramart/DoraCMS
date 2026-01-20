@@ -1,4 +1,5 @@
 import { registerMicroApps } from 'qiankun';
+import { useTabStore } from '@/store/modules/tab';
 import { initialLocale } from './actions';
 // import HeaderView from '../components/header-view'
 
@@ -8,6 +9,10 @@ const props = {
   locale: initialLocale,
   components: {
     // HeaderView
+  },
+  closeTab: () => {
+    const tabStore = useTabStore();
+    tabStore.removeActiveTab();
   }
 };
 

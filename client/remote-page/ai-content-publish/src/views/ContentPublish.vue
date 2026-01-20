@@ -1525,9 +1525,14 @@ async function handleSubmit(action) {
         }
       }
 
-      // 返回列表页
+      // 返回列表页或关闭标签页
       setTimeout(() => {
-        router.back();
+        // 如果在 qiankun 环境中且主应用传递了 closeTab 方法，则调用之
+        if (appConfigStore.hostConfig && typeof appConfigStore.hostConfig.closeTab === 'function') {
+          appConfigStore.hostConfig.closeTab();
+        } else {
+          router.back();
+        }
       }, 1000);
     } else {
       throw new Error(res.message || `${actionText}失败`);
@@ -1567,7 +1572,11 @@ function handleGoToAIConfig() {
  * 返回
  */
 function handleGoBack() {
-  router.back();
+  if (appConfigStore.hostConfig && typeof appConfigStore.hostConfig.closeTab === 'function') {
+    appConfigStore.hostConfig.closeTab();
+  } else {
+    router.back();
+  }
 }
 
 /**
