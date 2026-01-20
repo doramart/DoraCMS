@@ -99,7 +99,7 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
     if (removeTabIndex === -1) return;
 
     const isRemoveActiveTab = activeTabId.value === tabId;
-    const nextTab = tabs.value[removeTabIndex + 1] || homeTab.value;
+    const nextTab = tabs.value[removeTabIndex + 1] || tabs.value[removeTabIndex - 1] || homeTab.value;
 
     tabs.value.splice(removeTabIndex, 1);
     if (isRemoveActiveTab && nextTab) {
