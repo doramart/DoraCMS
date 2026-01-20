@@ -1,6 +1,8 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { ref, onActivated, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { ElButton, ElPopconfirm, ElTag } from 'element-plus';
+import { useTabStore } from '@/store/modules/tab';
 // import { enableStatusRecord } from '@/constants/business';
 import { deleteContent, fetchGetContentList } from '@/service/api/content';
 import { useTable, useTableOperate } from '@/hooks/common/table';
@@ -12,6 +14,20 @@ import ContentMoveCateModal from './modules/content-move-cate-modal.vue';
 import ContentDraftModal from './modules/content-draft-modal.vue';
 
 defineOptions({ name: 'ContentManage' });
+
+const route = useRoute();
+const tabStore = useTabStore();
+
+// 监听 tab 激活状态，当回到列表页时刷新数据
+watch(
+  () => tabStore.activeTabId,
+  newTabId => {
+    const currentTabId = tabStore.getTabIdByRoute(route);
+    if (newTabId === currentTabId) {
+      getData();
+    }
+  }
+);
 
 const {
   columns,
