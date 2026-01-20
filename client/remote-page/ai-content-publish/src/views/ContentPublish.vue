@@ -663,7 +663,7 @@ async function loadAIUsageStats() {
 async function loadContentForEdit(contentId) {
   const loading = ElLoading.service({ text: t('publish.tips.loadingArticle') });
   try {
-    const res = await getContentById({ id: contentId });
+    const res = await getContentById(contentId);
 
     if (res.status === 200 && res.data) {
       const content = res.data;
@@ -1534,7 +1534,7 @@ async function handleSubmit(action) {
     }
   } catch (error) {
     console.error(`${actionText}失败:`, error);
-    ElMessage.error(`${actionText}失败：` + (error.message || '未知错误'));
+    // ElMessage.error(`${actionText}失败：` + (error.message || '未知错误'));
   } finally {
     loading.close();
     if (isPublish) {
