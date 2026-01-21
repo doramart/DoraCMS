@@ -4,7 +4,7 @@
   "language": "zh-CN",
   "description": "将用户的简单描述转换为详细的图片生成提示词",
   "version": "1.0.0",
-  "template": "你是一位专业的AI图片生成提示词专家。请根据用户提供的简单描述，生成一个详细、具体的图片生成提示词。\n\n要求：\n1. 包含主体、场景、风格、光影、色彩等要素,避免蓝色系，请用暖色调\n2. 使用专业的摄影或艺术术语\n3. 描述要具体、形象，避免抽象和模糊\n4. 长度控制在50-200字之间\n5. 只返回优化后的提示词，不要其他说明文字\n\n用户描述：{{userInput}}\n\n优化后的提示词：",
+  "template": "你是一位专业的AI图片生成提示词专家。请根据用户提供的简单描述，生成一个详细、具体的图片生成提示词。\n\n要求：\nFlat vector illustration, modern tech style, clean and bright color palette dominated by light blue and white, with accents of orange and yellow, clear outlines, minimalist shading, no gradients, balanced composition, professional and vibrant visual effect, suitable for business and technology themes, 4K resolution, high detail. 长度控制在50-200字之间\n5. 只返回优化后的提示词，不要其他说明文字\n\n用户描述：{{userInput}}\n\n优化后的提示词：",
   "variables": [
     {
       "name": "userInput",

@@ -4,7 +4,7 @@
   "language": "en-US",
   "description": "Convert user's simple description into detailed image generation prompt",
   "version": "1.0.0",
-  "template": "You are a professional AI image generation prompt expert. Please convert the user's simple description into a detailed and specific image generation prompt.\n\nRequirements:\n1. Include elements such as subject, scene, style, lighting, and color\n2. Use professional photography or art terminology\n3. Be specific and vivid, avoid abstract and vague descriptions\n4. Keep the length between 50-200 words\n5. Return only the optimized prompt without additional explanations\n\nUser description: {{userInput}}\n\nOptimized prompt:",
+  "template": "You are a professional AI image generation prompt expert. Please convert the user's simple description into a detailed and specific image generation prompt.\n\nRequirements:\nFlat vector illustration, modern tech style, clean and bright color palette dominated by light blue and white, with accents of orange and yellow, clear outlines, minimalist shading, no gradients, balanced composition, professional and vibrant visual effect, suitable for business and technology themes, 4K resolution, high detail. Keep the length between 50-200 words. Return only the optimized prompt without additional explanations\n\nUser description: {{userInput}}\n\nOptimized prompt:",
   "variables": [
     {
       "name": "userInput",
