@@ -12,7 +12,7 @@ export function fetchGetPluginList(params?: Api.PluginManage.PluginSearchParams)
 /** Get plugin shop list */
 export function fetchGetPluginShopList(params?: Api.PluginManage.PluginSearchParams) {
   return request({
-    url: '/manage/v1/plugins/shop',
+    url: '/manage/v1/plugins/market',
     method: 'get',
     params
   });
@@ -21,7 +21,7 @@ export function fetchGetPluginShopList(params?: Api.PluginManage.PluginSearchPar
 /** Get plugin shop item detail */
 export function getOneShopPlugin(id: string) {
   return request<Api.PluginManage.Plugin>({
-    url: `/manage/v1/plugins/shop/${id}`,
+    url: `/manage/v1/plugins/market/${id}`,
     method: 'get'
   });
 }
@@ -29,16 +29,17 @@ export function getOneShopPlugin(id: string) {
 /** Install plugin */
 export function installPlugin(pluginId: string) {
   return request<Api.PluginManage.Plugin>({
-    url: `/manage/v1/plugins/${pluginId}/install`,
-    method: 'post'
+    url: '/manage/v1/plugins/install',
+    method: 'post',
+    data: { pluginId }
   });
 }
 
 /** Uninstall plugin */
 export function unInstallPlugin(pluginId: string) {
   return request<Api.PluginManage.Plugin>({
-    url: `/manage/v1/plugins/${pluginId}/uninstall`,
-    method: 'post'
+    url: `/manage/v1/plugins/${pluginId}`,
+    method: 'delete'
   });
 }
 
@@ -46,7 +47,7 @@ export function unInstallPlugin(pluginId: string) {
 export function updatePlugin(pluginId: string) {
   return request<Api.PluginManage.Plugin>({
     url: `/manage/v1/plugins/${pluginId}/update`,
-    method: 'post'
+    method: 'put'
   });
 }
 
@@ -70,7 +71,7 @@ export function pluginHeartBeat() {
 /** Create plugin invoice */
 export function createInvoice(params: { pluginId: string }) {
   return request<Api.PluginManage.Invoice>({
-    url: `/manage/v1/plugins/invoice`,
+    url: `/manage/v1/plugins/invoices`,
     method: 'post',
     data: params
   });
@@ -79,8 +80,8 @@ export function createInvoice(params: { pluginId: string }) {
 /** Check invoice */
 export function checkInvoice(params: { noInvoice: string }) {
   return request<Api.PluginManage.InvoiceCheckResult>({
-    url: `/manage/v1/plugins/invoice/check`,
-    method: 'get',
-    params
+    url: `/manage/v1/plugins/invoices/check`,
+    method: 'post',
+    data: params
   });
 }

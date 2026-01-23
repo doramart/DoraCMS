@@ -155,7 +155,7 @@ module.exports = app => {
   // @desc 获取系统配置列表
   router.get(`${prefix}/system/config`, controller.manage.systemConfig.list);
   // @desc 更新系统配置
-  router.post(`${prefix}/system/config`, controller.manage.systemConfig.update);
+  router.put(`${prefix}/system/config`, controller.manage.systemConfig.update);
   // @desc 删除系统配置
   router.delete(`${prefix}/system/config/:id`, controller.manage.systemConfig.removes);
 
