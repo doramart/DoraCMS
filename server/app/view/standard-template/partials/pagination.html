@@ -2,10 +2,10 @@
 {% macro standardPagination(pageInfo, pageType, options = {}, contextData = {}) %}
   {% if pageInfo and pageInfo.totalPage > 1 %}
     {% set containerClass = options.containerClass or "flex justify-center items-center space-x-1 mt-8" %}
-    {% set linkClass = options.linkClass or "px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors" %}
-    {% set activeClass = options.activeClass or "px-4 py-2 text-white bg-primary rounded-md" %}
-    {% set prevClass = options.prevClass or "px-3 py-2 text-gray-500 bg-white dark:bg-gray-800 rounded-md hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors" %}
-    {% set nextClass = options.nextClass or "px-3 py-2 text-gray-500 bg-white dark:bg-gray-800 rounded-md hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors" %}
+    {% set linkClass = options.linkClass or "px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-md hover:bg-primary/10 hover:text-primary dark:hover:bg-primary dark:hover:text-white transition-colors" %}
+    {% set activeClass = options.activeClass or "px-4 py-2 text-primary bg-primary/10 rounded-md font-semibold dark:text-white dark:bg-primary" %}
+    {% set prevClass = options.prevClass or "px-3 py-2 text-gray-500 bg-white dark:bg-gray-800 rounded-md hover:bg-primary/10 hover:text-primary dark:hover:bg-primary dark:hover:text-white transition-colors" %}
+    {% set nextClass = options.nextClass or "px-3 py-2 text-gray-500 bg-white dark:bg-gray-800 rounded-md hover:bg-primary/10 hover:text-primary dark:hover:bg-primary dark:hover:text-white transition-colors" %}
     {% set ellipsisClass = options.ellipsisClass or "px-4 py-2 text-gray-500 dark:text-gray-400" %}
     {% set current = pageInfo.current %}
     {% set totalPage = pageInfo.totalPage %}
