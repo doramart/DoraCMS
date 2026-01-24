@@ -433,23 +433,35 @@ class MailTemplateService extends Service {
     // 🔥 扩展邮件信息
     Object.assign(sendEmailInfo, { siteName, siteDomain });
 
+    const normalizedType = this._normalizeTemplateType(tempkey);
+    const shouldQueryTemplate = normalizedType !== SystemConstants.MAIL.BUSINESS_TYPES.BULK_EMAIL && tempkey !== '-1';
+
     // 🔥 获取邮件模板
     let emailTemplate = null;
-    if (tempkey !== '-1') {
-      const templateResult = await this.findByType(tempkey, { pageSize: 1 });
+    if (shouldQueryTemplate) {
+      const templateResult = await this.findByType(normalizedType, { pageSize: 1 });
       if (templateResult && templateResult.docs && templateResult.docs.length > 0) {
         emailTemplate = templateResult.docs[0];
       } else if (Array.isArray(templateResult) && templateResult.length > 0) {
         emailTemplate = templateResult[0];
       }
+    }
 
-      if (!emailTemplate && tempkey !== '0') {
-        throw RepositoryExceptions.mailTemplate.notFound(tempkey);
+    if (!emailTemplate) {
+      emailTemplate = this._getFallbackTemplate(normalizedType);
+      if (emailTemplate) {
+        this.ctx.logger.warn(
+          `[MailTemplate] Using static fallback template for type "${normalizedType}" (original: "${tempkey}")`
+        );
       }
     }
 
+    if (!emailTemplate && shouldQueryTemplate) {
+      throw RepositoryExceptions.mailTemplate.notFound(normalizedType);
+    }
+
     // 🔥 构建邮件内容
-    const emailData = await this._buildEmailContent(tempkey, emailTemplate, sendEmailInfo);
+    const emailData = await this._buildEmailContent(normalizedType, emailTemplate, sendEmailInfo);
 
     // 🔥 发送邮件
     const sendResult = await this._sendEmail(emailData, sysConfigs);
@@ -546,14 +558,14 @@ class MailTemplateService extends Service {
       case SystemConstants.MAIL.BUSINESS_TYPES.PASSWORD_RESET: {
         // 密码重置
         toEmail = sendEmailInfo.email;
-        emailSubject = emailTitle = `[${siteName}] ${template.title}`;
+        emailSubject = emailTitle = `[${siteName}] ${(template && template.title) || '重置密码'}`;
 
         // 生成重置令牌
         const resetData = `${sendEmailInfo.password}$${sendEmailInfo.email}$${this.app.config.session_secret}`;
         const resetToken = this.ctx.helper.encrypt(resetData, this.app.config.encrypt_key);
         sendEmailInfo.token = encodeURIComponent(resetToken);
 
-        emailContent = this._renderTemplate(template.content, sendEmailInfo, [
+        emailContent = this._renderTemplate(template && template.content, sendEmailInfo, [
           'email',
           'userName',
           'token',
@@ -571,8 +583,8 @@ class MailTemplateService extends Service {
         sendEmailInfo.message_content_title = sendEmailInfo.content.title;
         sendEmailInfo.message_content_id = sendEmailInfo.content.id;
 
-        emailSubject = emailTitle = `[${siteName}] ${template.title}`;
-        emailContent = this._renderTemplate(template.content, sendEmailInfo, [
+        emailSubject = emailTitle = `[${siteName}] ${(template && template.title) || '留言通知'}`;
+        emailContent = this._renderTemplate(template && template.content, sendEmailInfo, [
           'siteName',
           'message_author_userName',
           'message_sendDate',
@@ -585,8 +597,8 @@ class MailTemplateService extends Service {
       }
 
       case SystemConstants.MAIL.BUSINESS_TYPES.VERIFICATION_CODE: // 验证码邮件
-        emailSubject = emailTitle = `[${siteName}] ${template.title}`;
-        emailContent = this._renderTemplate(template.content, sendEmailInfo, [
+        emailSubject = emailTitle = `[${siteName}] ${(template && template.title) || '邮箱验证码'}`;
+        emailContent = this._renderTemplate(template && template.content, sendEmailInfo, [
           'email',
           'siteName',
           'siteDomain',
@@ -640,6 +652,21 @@ class MailTemplateService extends Service {
     }
 
     return content;
+  }
+
+  _normalizeTemplateType(type) {
+    if (!type) return type;
+    if (type === '-1') return SystemConstants.MAIL.BUSINESS_TYPES.BULK_EMAIL;
+    if (type === '0') return SystemConstants.MAIL.BUSINESS_TYPES.PASSWORD_RESET;
+    if (type === '6') return SystemConstants.MAIL.BUSINESS_TYPES.MESSAGE_NOTIFICATION;
+    if (type === '8') return SystemConstants.MAIL.BUSINESS_TYPES.VERIFICATION_CODE;
+    return type;
+  }
+
+  _getFallbackTemplate(type) {
+    const templates = SystemConstants.MAIL.STATIC_TEMPLATES[type];
+    if (!templates || templates.length === 0) return null;
+    return templates[0];
   }
 
   /**

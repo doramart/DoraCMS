@@ -386,6 +386,143 @@ const SYSTEM_CONSTANTS = {
       0: '发送失败',
       1: '发送成功',
     },
+
+    // 静态邮件模板（数据库缺失时的保底配置）
+    STATIC_TEMPLATES: {
+      password_reset: [
+        {
+          comment: '找回密码',
+          title: '通过加密链接重置密码',
+          subTitle: '找回密码',
+          type: 'password_reset',
+          content: `<h2><strong>重置密码</strong></h2>
+<p>您好，{{email}}：</p>
+<p>请点击下方链接重置您的密码：</p>
+<p><a href="{{siteDomain}}/user-center/reset-password?key={{token}}" target="">
+  <span style="color: rgb(225, 60, 57);">点击重置密码</span>
+</a></p>
+<p>如果无法点击，请将链接复制到浏览器打开：</p>
+<p>{{siteDomain}}/user-center/reset-password?key={{token}}</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      notification: [
+        {
+          comment: '留言通知',
+          title: '有人给您留言啦！！！',
+          subTitle: '留言通知',
+          type: 'notification',
+          content: `<p><strong>留言通知</strong></p>
+<h2>您有新的留言回复</h2>
+<p><strong>{{message_author_userName}}</strong> 于 <strong>{{message_sendDate}}</strong><br>
+在文章「<strong>{{message_content_title}}</strong>」中回复了您。</p>
+<p>查看详情：{{siteDomain}}/details/{{message_content_id}}.html</p>
+<p>感谢您的参与，欢迎继续交流。</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      reminder: [
+        {
+          comment: '提醒通知',
+          title: '提醒您关注的重要事项',
+          subTitle: '提醒通知',
+          type: 'reminder',
+          content: `<p><strong>提醒通知</strong></p>
+<h2>{{title}}</h2>
+<p>{{content}}</p>
+<p>感谢您的关注，祝您生活愉快。</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      verification: [
+        {
+          comment: '邮箱验证码',
+          title: '请查收您的邮箱验证码',
+          subTitle: '发送验证码',
+          type: 'verification',
+          content: `<p><strong>邮箱验证码</strong></p>
+<p>您正在注册 <span style="color: rgb(225, 60, 57);"><strong>{{siteName}}</strong></span> 账号。</p>
+<p>本次验证码为：<span style="color: rgb(225, 60, 57);"><strong>{{msgCode}}</strong></span></p>
+<p>验证码有效期内请勿泄露，如非本人操作请忽略本邮件。</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      general: [
+        {
+          comment: '通用模板',
+          title: '站点通知',
+          subTitle: '通用通知',
+          type: 'general',
+          content: `<h2>{{title}}</h2>
+<p>{{content}}</p>
+<p>如需帮助，请访问 {{siteDomain}}</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      welcome: [
+        {
+          comment: '欢迎邮件',
+          title: '欢迎加入 {{siteName}}',
+          subTitle: '欢迎邮件',
+          type: 'welcome',
+          content: `<h2>欢迎加入 {{siteName}}</h2>
+<p>您好，{{userName}}：</p>
+<p>感谢注册并使用我们的服务，祝您使用愉快。</p>
+<p>访问站点：{{siteDomain}}</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      promotion: [
+        {
+          comment: '推广邮件',
+          title: '最新活动上线',
+          subTitle: '推广邮件',
+          type: 'promotion',
+          content: `<h2>{{title}}</h2>
+<p>{{content}}</p>
+<p>立即查看：{{siteDomain}}</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      system: [
+        {
+          comment: '系统邮件',
+          title: '系统通知',
+          subTitle: '系统邮件',
+          type: 'system',
+          content: `<h2>系统通知</h2>
+<p>{{content}}</p>
+<p>如需帮助，请访问 {{siteDomain}}</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      newsletter: [
+        {
+          comment: '新闻邮件',
+          title: '{{title}}',
+          subTitle: '新闻邮件',
+          type: 'newsletter',
+          content: `<h2>{{title}}</h2>
+<p>{{content}}</p>
+<p>更多内容：{{siteDomain}}</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+      invoice: [
+        {
+          comment: '发票邮件',
+          title: '发票通知',
+          subTitle: '发票邮件',
+          type: 'invoice',
+          content: `<h2>发票通知</h2>
+<p>发票编号：{{invoiceNo}}</p>
+<p>金额：{{amount}}</p>
+<p>到期日期：{{dueDate}}</p>
+<p>如需帮助，请访问 {{siteDomain}}</p>
+<p>&copy; 2025-present {{siteDomain}} All rights reserved.</p>`,
+        },
+      ],
+    },
   },
 
   // ==================== API Key相关常量 ====================
