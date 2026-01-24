@@ -254,7 +254,7 @@ class UserMongoRepository extends BaseMongoRepository {
   async checkEmailUnique(email, excludeId = null) {
     try {
       // 🔥 必须使用UniqueChecker统一处理唯一性验证
-      const isUnique = await UniqueChecker.checkEmailUnique(this, email, excludeId);
+      const isUnique = await UniqueChecker.checkUserEmailUnique(this, email, excludeId);
       if (!isUnique) {
         throw this.exceptions.user.emailExists(email);
       }
