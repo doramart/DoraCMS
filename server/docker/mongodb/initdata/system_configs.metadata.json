@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"doracms3test.system_configs"},{"v":{"$numberInt":"2"},"unique":true,"key":{"key":{"$numberInt":"1"}},"name":"key_1","ns":"doracms3test.system_configs","background":true}],"uuid":"61bda6648e07413fb69b69574ad2d054","collectionName":"system_configs","type":"collection"}

@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"doracms3test.content_categories"},{"v":{"$numberInt":"2"},"key":{"creator":{"$numberInt":"1"}},"name":"creator_1","background":true,"ns":"doracms3test.content_categories"}],"uuid":"f04b453055d740e4b55e36b6178510d3","collectionName":"content_categories","type":"collection"}
