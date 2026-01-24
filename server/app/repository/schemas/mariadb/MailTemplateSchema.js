@@ -63,7 +63,7 @@ module.exports = (sequelize, _app) => {
     },
     {
       tableName: 'mail_templates',
-      timestamps: false,
+      timestamps: true,
     }
   );
   return MailTemplate;

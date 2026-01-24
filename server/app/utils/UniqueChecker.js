@@ -147,6 +147,17 @@ class UniqueChecker {
   }
 
   /**
+   * User模块专用的邮箱唯一性检查
+   * @param {Object} userRepository User Repository实例
+   * @param {String} email 邮箱
+   * @param {String|null} excludeId 排除的ID
+   * @return {Promise<Boolean>} true表示唯一
+   */
+  static async checkUserEmailUnique(userRepository, email, excludeId = null) {
+    return await this.checkFieldUnique(userRepository, 'email', email, excludeId);
+  }
+
+  /**
    * Admin模块专用的手机号唯一性检查
    * @param {Object} adminRepository Admin Repository实例
    * @param {String} userPhone 手机号
