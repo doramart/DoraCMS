@@ -68,8 +68,8 @@
       "source": "来源",
       "state": "发布状态",
       "advanced": "高级选项",
-      "isTop": "置顶",
-      "recommendToHome": "推荐到首页",
+      "isTop": "推荐",
+      "recommendToHome": "置顶",
       "initialViews": "初始点击量",
       "initialLikes": "初始点赞数"
     },

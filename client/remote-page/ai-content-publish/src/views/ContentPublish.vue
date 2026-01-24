@@ -1485,8 +1485,13 @@ async function handleSubmit(action) {
       language: 'zh-CN',
     };
     // 准备提交数据
-    const submitData = {
+    const normalizedContent = {
       ...formData,
+      isTop: formData.isTop ? 1 : 0,
+      roofPlacement: formData.roofPlacement ? '1' : '0',
+    };
+    const submitData = {
+      ...normalizedContent,
       publishMode: publishMode.value,
       // 如果是 AI 模式，传递 AI 相关参数
       ...(isAIMode.value && {
@@ -1497,7 +1502,11 @@ async function handleSubmit(action) {
     let res;
     if (isAIMode.value && !isEditMode.value) {
       // 🔥 新增模式且使用 AI 发布接口
-      res = await createContentWithAI({ contentData: formData, publishMode: publishMode.value, options: options });
+      res = await createContentWithAI({
+        contentData: normalizedContent,
+        publishMode: publishMode.value,
+        options: options,
+      });
     } else if (isEditMode.value) {
       // 🔥 编辑模式：使用更新接口
       res = await updateContent({ ...submitData, id: formData.id });

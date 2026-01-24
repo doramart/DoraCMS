@@ -665,14 +665,14 @@ class ContentService extends Service {
     };
 
     // 🔥 构建标准化排序条件
-    let sort = [{ field: 'createdAt', order: 'desc' }];
+    // let sort = [{ field: 'createdAt', order: 'desc' }];
 
-    if (pageType === 'index') {
-      sort = [
-        { field: 'roofPlacement', order: 'desc' },
-        { field: 'createdAt', order: 'desc' },
-      ];
-    }
+    // if (pageType === 'index') {
+    let sort = [
+      { field: 'roofPlacement', order: 'desc' },
+      { field: 'createdAt', order: 'desc' },
+    ];
+    // }
 
     if (model === '1') {
       filters.isTop = { $eq: 1 };

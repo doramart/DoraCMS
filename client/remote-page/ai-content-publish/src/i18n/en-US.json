@@ -68,8 +68,8 @@
       "source": "Source",
       "state": "Publish Status",
       "advanced": "Advanced Options",
-      "isTop": "Pin to Top",
-      "recommendToHome": "Recommend to Home",
+      "isTop": "Recommend to Home",
+      "recommendToHome": "Pin to Top",
       "initialViews": "Initial Views",
       "initialLikes": "Initial Likes"
     },
