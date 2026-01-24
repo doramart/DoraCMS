@@ -99,7 +99,7 @@ function handleMenuAuthSubmit(data: { menus: string[]; buttons: string[] }) {
 async function handleSubmit() {
   const submitData = {
     ...model.value,
-    id: props.rowData?.id || undefined,
+    id: props.operateType === 'add' ? undefined : props.rowData?.id,
     createBy: props.rowData?.createBy || '',
     createdAt: props.rowData?.createdAt || '',
     updateBy: props.rowData?.updateBy || '',
@@ -146,12 +146,7 @@ watch(
       </ElFormItem>
       <ElFormItem :label="$t('page.manage.role.roleStatus')" prop="status">
         <ElRadioGroup v-model="model.status">
-          <ElRadio
-            v-for="{ label, value } in enableStatusOptions"
-            :key="value"
-            :value="value"
-            :label="$t(label)"
-          />
+          <ElRadio v-for="{ label, value } in enableStatusOptions" :key="value" :value="value" :label="$t(label)" />
         </ElRadioGroup>
       </ElFormItem>
       <ElFormItem :label="$t('page.manage.role.menuAuth')">

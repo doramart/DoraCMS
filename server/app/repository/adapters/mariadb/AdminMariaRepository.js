@@ -356,8 +356,54 @@ class AdminMariaRepository extends BaseMariaRepository {
         await this.checkPhoneUnique(data.userPhone, id);
       }
 
-      // 调用父类的update方法
-      return await super.update(id, data);
+      const hasUserRoles = Object.prototype.hasOwnProperty.call(data, 'userRoles');
+
+      if (!hasUserRoles) {
+        // 未传 userRoles 时，保持原有更新逻辑
+        return await super.update(id, data);
+      }
+
+      await this._ensureConnection();
+      const { userRoles, ...mainData } = data || {};
+      const normalizedRoles = Array.isArray(userRoles) ? userRoles : [];
+
+      const transaction = await this.connection.getSequelize().transaction();
+      try {
+        const processedData = this._customPreprocessForUpdate(mainData);
+
+        if (processedData && Object.keys(processedData).length > 0) {
+          await this.model.update(processedData, {
+            where: { id },
+            transaction,
+            validate: true,
+          });
+        }
+
+        // 更新关联表：admin_roles
+        await this.adminRoleModel.destroy({
+          where: { adminId: id },
+          transaction,
+        });
+
+        if (normalizedRoles.length > 0) {
+          await this._createRoleRelations(id, normalizedRoles, {
+            transaction,
+            createBy: data.updateBy || data.createBy || 'system',
+          });
+        }
+
+        await transaction.commit();
+      } catch (innerError) {
+        await transaction.rollback();
+        throw innerError;
+      }
+
+      const fullResult = await this.findById(id, {
+        populate: this._getDefaultPopulate(),
+      });
+
+      this._logOperation('update', { id, data }, fullResult);
+      return fullResult;
     } catch (error) {
       // 透传UniqueConstraintError，其他错误由_handleError处理
       if (error.name === 'UniqueConstraintError') {

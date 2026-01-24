@@ -2,7 +2,7 @@
  * @Author: doramart
  * @Date: 2019-08-15 14:23:19
  * @Last Modified by: doramart
- * @Last Modified time: 2025-11-15 23:22:09
+ * @Last Modified time: 2026-01-24 23:31:08
  */
 'use strict';
 require('module-alias/register');
@@ -607,14 +607,29 @@ module.exports = {
       return false;
     };
 
+    const apiMethodMap = new Map();
+    menuButtonList.forEach(btn => {
+      if (btn.api) {
+        apiMethodMap.set(btn.api, btn.httpMethod || 'POST');
+      }
+    });
+
     let allowedApis = [];
     if (rolePermissionCodes.size > 0) {
       allowedApis = menuButtonList
         .filter(btn => buttonMatchesRole(btn))
-        .map(btn => btn.api)
-        .filter(api => api);
+        .map(btn => ({
+          api: btn.api,
+          method: btn.httpMethod || 'POST',
+        }))
+        .filter(item => item.api);
     } else if (!strictBindingEnabled) {
-      allowedApis = menuButtonApis;
+      allowedApis = menuButtonApis
+        .map(api => {
+          const method = apiMethodMap.get(api);
+          return method ? { api, method } : { api };
+        })
+        .filter(item => item.api);
     }
 
     const permissionRegistry = ctx.app.permissionRegistry;
@@ -647,7 +662,8 @@ module.exports = {
     }
 
     if (permissionRegistry && permissionCodes.size === 0 && allowedApis.length > 0) {
-      allowedApis.forEach(api => {
+      allowedApis.forEach(item => {
+        const api = typeof item === 'string' ? item : item?.api;
         const definition = permissionRegistry.getByLegacyApi(api);
         if (definition) {
           permissionCodes.add(definition.code);
@@ -665,10 +681,8 @@ module.exports = {
       });
     }
 
-    const allAllowedApis = [...new Set([...allowedApis, ...Array.from(menuRoutePaths)])];
-
     const result = {
-      apis: allAllowedApis,
+      apis: allowedApis,
       routePaths: Array.from(menuRoutePaths),
       permissions:
         permissionRegistry && permissionCodes.size > 0

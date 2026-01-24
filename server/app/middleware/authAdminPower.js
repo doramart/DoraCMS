@@ -2,7 +2,7 @@
  * @Author: doramart
  * @Date: 2019-08-16 14:51:46
  * @Last Modified by: doramart
- * @Last Modified time: 2025-11-17 22:54:41
+ * @Last Modified time: 2026-01-24 23:34:20
  */
 'use strict';
 const _ = require('lodash');
@@ -120,8 +120,8 @@ module.exports = (options, app) => {
         : requestPath.replace(/^\//, '');
       const requestMethod = (ctx.method || 'GET').toUpperCase();
 
-      // 1. 先检查白名单（最快，避免数据库查询）
       if (isInWhiteList(targetApi, routeWhiteList)) {
+        // 1. 先检查白名单（最快，避免数据库查询）
         await next();
         return;
       }
@@ -152,15 +152,31 @@ module.exports = (options, app) => {
         hasPower = app.permissionRegistry.match(requestMethod, requestPath, permissionCodes);
       }
 
+      const allowFallback = permissionCodes.length === 0;
+
       // 3.1 先尝试按钮API匹配（精确匹配）
-      if (!hasPower && apis.length > 0) {
-        hasPower = apis.some(api => isApiMatched(api, targetApi));
+      if (allowFallback && !hasPower && apis.length > 0) {
+        const matchFromApis = apis.some(api => {
+          let apiPath = api;
+          let apiMethod = null;
+          if (api && typeof api === 'object') {
+            apiPath = api.api;
+            apiMethod = api.method ? api.method.toUpperCase() : null;
+          }
+          const matched = isApiMatched(apiPath, targetApi);
+          if (!matched) return false;
+          if (apiMethod && apiMethod !== requestMethod) {
+            return false;
+          }
+          return matched;
+        });
+        hasPower = matchFromApis;
       }
 
       // 3.2 如果按钮API匹配失败，尝试路由路径匹配（严格降级策略）
       // 用于支持没有配置按钮的菜单，但需要严格控制匹配范围
-      if (!hasPower && routePaths.length > 0) {
-        hasPower = routePaths.some(routePath => {
+      if (allowFallback && !hasPower && routePaths.length > 0) {
+        const matchFromRoutes = routePaths.some(routePath => {
           // 🔒 输入验证
           if (!routePath || typeof routePath !== 'string') {
             return false;
@@ -254,6 +270,7 @@ module.exports = (options, app) => {
 
           return true;
         });
+        hasPower = matchFromRoutes;
       }
 
       if (!hasPower) {
