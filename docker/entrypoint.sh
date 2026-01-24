@@ -191,7 +191,7 @@ main() {
     
     # 使用 exec 替换当前进程，确保信号正确传递
     # 注意：在 Docker 容器中不使用 --daemon 参数，以保持容器运行
-    exec npx cross-env NODE_ENV=production egg-scripts start --title=doracms2 --sticky
+    exec npx cross-env NODE_ENV=production egg-scripts start --title=doracms3 --sticky
 }
 
 # 信号处理

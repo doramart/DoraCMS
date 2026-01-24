@@ -72,7 +72,7 @@ dora create mycms  // 本地/服务器环境任意目录执行
 ?Website(ip or domain): [[非必填，默认 http://127.0.0.1:8080 ]网站访问域名或IP+端口号，需要带http/https,如 https://www.html-js.cn, http://120.25.150.169:8080
 ?env: [非必填，默认 development ]服务器运行环境
 ?Server port: [非必填，默认 8080 ]DoraCMS 启动默认端口号，website 中如果也有端口号，那么理论上这两个端口号是相同的
-?Mongodb url: [非必填，默认 mongodb://127.0.0.1:27017/doracms2 ] mongodb 连接字符串，如果带密码，eg. mongodb://username:password@127.0.0.1:27017/doracms2
+?Mongodb url: [非必填，默认 mongodb://127.0.0.1:27017/doracms3 ] mongodb 连接字符串，如果带密码，eg. mongodb://username:password@127.0.0.1:27017/doracms3
 ?Mongodb bin path: [非必填，默认为空]Mongodb bin目录路径，注意结尾必须带 / ，windows 环境下路径中 \ 必须改为 / 如 C:/mongodb/mongodb/bin/
 ```
 
@@ -102,19 +102,19 @@ npm run dev
 ### 生产环境启动
 
 ```javascript
-pm2 start server.js --name doracms2
+pm2 start server.js --name doracms3
 ```
 
 ### 生产环境停止
 
 ```javascript
-pm2 stop doracms2
+pm2 stop doracms3
 ```
 
 ### 生产环境重启
 
 ```javascript
-pm2 restart doracms2
+pm2 restart doracms3
 ```
 
 ### api文档

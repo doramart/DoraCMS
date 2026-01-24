@@ -42,10 +42,10 @@ module.exports = {
     //   const checkSystemInfo = await ctx.service.systemConfig.count();
     //   if (checkSystemInfo === 0) {
     //     const uri = app.config.mongoose.client.url;
-    //     const datafile = path.join(__dirname, '../../databak/doracms2');
+    //     const datafile = path.join(__dirname, '../../databak/doracms3');
     //     await restore.database({
     //       uri,
-    //       database: 'doracms2',
+    //       database: 'doracms3',
     //       from: datafile,
     //     });
     //   }

@@ -81,7 +81,7 @@
     "autod": "autod",
     "init": "node ./build/restore",
     "doracms": "node ./install/index.js",
-    "start": "cross-env NODE_ENV=production egg-scripts start --daemon --title=doracms2 --sticky",
+    "start": "cross-env NODE_ENV=production egg-scripts start --daemon --title=doracms3 --sticky",
     "stop": "egg-scripts stop --title=doracms3",
     "clean": "rm -rf node_modules pnpm-lock.yaml && pnpm -r exec rm -rf node_modules",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",

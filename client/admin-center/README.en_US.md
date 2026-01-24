@@ -177,4 +177,4 @@ Thanks the following people for their contributions. If you want to contribute t
 
 ## License
 
-This project is based on the [MIT © 2025 DoraCMS](./LICENSE) protocol, for learning purposes only, please retain the author's copyright information for commercial use, the author does not guarantee and is not responsible for the software.
+This project is based on the [MIT © 2026 DoraCMS](./LICENSE) protocol, for learning purposes only, please retain the author's copyright information for commercial use, the author does not guarantee and is not responsible for the software.
