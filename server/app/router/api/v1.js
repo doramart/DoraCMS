@@ -152,12 +152,6 @@ module.exports = app => {
   router.post('/api/v1/upload/files', controller.api.uploadFile.create);
   router.post('/api/v1/upload/path', controller.api.uploadFile.createFileByPath);
 
-  // ==================== 留言管理 ====================
-  router.get('/api/v1/message', controller.api.contentMessage.list);
-  router.post('/api/v1/message', authApiToken, controller.api.contentMessage.postMessages);
-  router.post('/api/v1/message/:id/like', authApiToken, controller.api.contentMessage.praiseMessage);
-  router.delete('/api/v1/message/:id/like', authApiToken, controller.api.contentMessage.unpraiseMessage);
-
   // ==================== 管理员认证 ====================
   router.post('/api/v1/admin/login', controller.api.admin.loginUser);
   router.get('/api/v1/admin/init/status', controller.api.admin.getInitStatus);
