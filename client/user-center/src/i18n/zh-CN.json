@@ -123,6 +123,7 @@
     "auth": {
       "login": "登录",
       "newAccount": "创建新账号",
+      "noAccount": "没有账号？",
       "register": "注册",
       "registerSuccess": "注册成功",
       "resetPassword": "重置密码",

@@ -58,6 +58,10 @@
             <div class="forgot-password">
               <router-link to="/confirm-email"> {{ t('user.auth.password.forgot') }}？ </router-link>
             </div>
+            <div class="register-entry">
+              <span class="register-text">{{ t('user.auth.noAccount') }}</span>
+              <router-link to="/register">{{ t('user.auth.register') }}</router-link>
+            </div>
           </el-form>
         </el-card>
       </el-col>
@@ -198,13 +202,26 @@ const resetForm = () => {
   font-size: 14px;
 }
 
-.forgot-password a {
+.forgot-password a,
+.register-entry a {
   color: #409eff;
   text-decoration: none;
 }
 
-.forgot-password a:hover {
+.forgot-password a:hover,
+.register-entry a:hover {
   text-decoration: underline;
+}
+
+.register-entry {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.register-text {
+  margin-right: 6px;
+  color: #606266;
 }
 
 .mb-4 {

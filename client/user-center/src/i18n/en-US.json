@@ -123,6 +123,7 @@
     "auth": {
       "login": "Login",
       "newAccount": "Create New Account",
+      "noAccount": "No account?",
       "register": "Register",
       "registerSuccess": "Registration successful",
       "resetPassword": "Reset Password",
