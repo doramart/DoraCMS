@@ -5,13 +5,7 @@
         <h3>{{ $t('user.auth.resetPassword') }}</h3>
       </template>
 
-      <el-form
-        ref="formRef"
-        :model="formData"
-        :rules="rules"
-        label-position="top"
-        @submit.prevent="handleSubmit"
-      >
+      <el-form ref="formRef" :model="formData" :rules="rules" label-position="top" @submit.prevent="handleSubmit">
         <el-form-item :label="$t('user.auth.password.label')" prop="password">
           <el-input
             v-model="formData.password"
@@ -65,9 +59,7 @@ const validatePass = (rule, value, callback) => {
   if (value === '') {
     callback(new Error(t('validation.inputNull', [t('user.auth.password.label')])));
   } else if (!/(?!^\d+$)(?!^[a-zA-Z]+$)(?!^[_#@]+$).{5,}/.test(value)) {
-    callback(
-      new Error(t('validation.ranglengthandnormal', [t('user.auth.password.label'), 6, 12]))
-    );
+    callback(new Error(t('validation.ranglengthandnormal', [t('user.auth.password.label'), 6, 12])));
   } else {
     callback();
   }

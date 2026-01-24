@@ -188,7 +188,7 @@ const handleSendCode = async () => {
     ElMessage.success(t('user.auth.verify.codeSent'));
     startCountdown(); // 启动倒计时
   } catch (error) {
-    errorMessage.value = error.message || t('common.error');
+    errorMessage.value = error?.response?.data?.message || error.message || t('common.error');
   } finally {
     sendingCode.value = false;
   }
@@ -206,7 +206,7 @@ const handleSubmit = async () => {
     ElMessage.success(t('user.auth.registerSuccess'));
     router.push('/login');
   } catch (error) {
-    errorMessage.value = error.message || t('common.error');
+    errorMessage.value = error?.response?.data?.message || error.message || t('common.error');
   } finally {
     loading.value = false;
   }

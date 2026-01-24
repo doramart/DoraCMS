@@ -1,0 +1,1 @@
+import{g as r,c as a,d as s}from"./index-236e3983.js";function n(){return r("/api/v1/users/me")}function o(e){return a("/api/v1/users/me",e)}function u(e){return s("/api/v1/users/me/password",e)}function i(e){return s("/api/v1/auth/send-code",e)}export{u as c,n as g,i as s,o as u};

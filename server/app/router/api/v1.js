@@ -104,7 +104,7 @@ module.exports = app => {
   router.post('/api/v1/auth/register', controller.api.regUser.regAction);
   router.post('/api/v1/auth/logout', authApiToken, controller.api.regUser.logOut);
   router.post('/api/v1/auth/refresh', authApiToken, controller.api.regUser.refreshToken);
-  router.post('/api/v1/auth/reset-password', controller.api.regUser.resetMyPassword);
+  router.post('/api/v1/auth/reset-password', controller.api.regUser.updateNewPsd);
   router.post('/api/v1/auth/send-code', controller.api.regUser.sendVerificationCode);
 
   // ==================== 用户信息 ====================

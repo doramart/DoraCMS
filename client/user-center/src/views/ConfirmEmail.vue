@@ -10,28 +10,12 @@
             <h3>{{ $t('user.auth.email.confirm') }}</h3>
           </template>
 
-          <el-form
-            ref="formRef"
-            :model="formData"
-            :rules="rules"
-            label-position="top"
-            @submit.prevent="handleSubmit"
-          >
+          <el-form ref="formRef" :model="formData" :rules="rules" label-position="top" @submit.prevent="handleSubmit">
             <el-form-item :label="$t('user.profile.basic.email')" prop="email">
-              <el-input
-                v-model="formData.email"
-                type="email"
-                :placeholder="$t('user.profile.placeholder.email')"
-              />
+              <el-input v-model="formData.email" type="email" :placeholder="$t('user.profile.placeholder.email')" />
             </el-form-item>
 
-            <el-alert
-              v-if="errorMessage"
-              :title="errorMessage"
-              type="error"
-              show-icon
-              class="mb-4"
-            />
+            <el-alert v-if="errorMessage" :title="errorMessage" type="error" show-icon class="mb-4" />
 
             <div class="form-actions">
               <el-button type="primary" native-type="submit" :loading="loading">
@@ -83,7 +67,7 @@ const handleSubmit = async () => {
     await sendConfirmEmail({ email: formData.email });
     ElMessage.success(t('user.auth.email.sendSuccess'));
   } catch (error) {
-    errorMessage.value = error.message || t('user.auth.email.sendFailed');
+    errorMessage.value = error?.response?.data?.message || error.message || t('user.auth.email.sendFailed');
   } finally {
     loading.value = false;
   }

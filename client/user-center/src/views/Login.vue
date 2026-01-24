@@ -133,7 +133,7 @@ const handleSubmit = async () => {
       errorMessage.value = t('validation.loginNotSuccess');
     }
   } catch (error) {
-    errorMessage.value = error.message || t('validation.loginNotSuccess');
+    errorMessage.value = error?.response?.data?.message || error.message || t('validation.loginNotSuccess');
   } finally {
     loading.value = false;
   }

@@ -169,7 +169,7 @@ const fetchUserInfo = async () => {
       }
     }
   } catch (error) {
-    errorMessage.value = error.message || t('common.error.fetchFailed');
+    errorMessage.value = error?.response?.data?.message || error.message || t('common.error.fetchFailed');
   }
 };
 
@@ -183,7 +183,7 @@ const handleSubmit = async () => {
       ElMessage.success(t('common.success.updateSuccess'));
     }
   } catch (error) {
-    errorMessage.value = error.message || t('common.error.updateFailed');
+    errorMessage.value = error?.response?.data?.message || error.message || t('common.error.updateFailed');
   }
 };
 
