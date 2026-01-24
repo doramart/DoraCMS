@@ -25,90 +25,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `doracms3` /*!40100 DEFAULT CHARACTER S
 USE `doracms3`;
 
 --
--- Table structure for table `admin_roles`
---
-
-DROP TABLE IF EXISTS `admin_roles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `admin_roles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `adminId` int(11) NOT NULL COMMENT '管理员ID',
-  `roleId` int(11) NOT NULL COMMENT '角色ID',
-  `status` varchar(10) NOT NULL DEFAULT '1' COMMENT '关联状态：1-有效，2-无效',
-  `createdAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
-  `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新时间',
-  `createBy` varchar(50) DEFAULT NULL COMMENT '创建人',
-  `updateBy` varchar(50) DEFAULT NULL COMMENT '更新人',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_admin_role` (`adminId`,`roleId`),
-  KEY `idx_admin_id` (`adminId`),
-  KEY `idx_role_id` (`roleId`),
-  KEY `idx_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员角色关联表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `admin_roles`
---
-
-LOCK TABLES `admin_roles` WRITE;
-/*!40000 ALTER TABLE `admin_roles` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `admin_roles` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
--- Table structure for table `admins`
---
-
-DROP TABLE IF EXISTS `admins`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `admins` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `userName` varchar(100) NOT NULL COMMENT '用户名',
-  `password` text DEFAULT NULL COMMENT '密码（加密）',
-  `logo` text NOT NULL COMMENT '头像',
-  `userGender` enum('1','2') NOT NULL COMMENT '性别 1: 男, 2: 女',
-  `nickName` varchar(100) NOT NULL COMMENT '昵称',
-  `userPhone` varchar(20) NOT NULL COMMENT '手机号',
-  `userEmail` varchar(255) NOT NULL COMMENT '邮箱',
-  `userRoles` text DEFAULT NULL COMMENT '用户角色数组（JSON格式）',
-  `status` enum('1','2') NOT NULL DEFAULT '1' COMMENT '状态 1: 启用, 2: 禁用',
-  `createBy` varchar(32) DEFAULT NULL COMMENT '创建者',
-  `updateBy` varchar(32) DEFAULT NULL COMMENT '更新者',
-  `updatedAt` datetime NOT NULL COMMENT '更新时间',
-  `createdAt` datetime NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `userName` (`userName`),
-  UNIQUE KEY `userEmail` (`userEmail`),
-  UNIQUE KEY `idx_admin_username_unique` (`userName`),
-  UNIQUE KEY `idx_admin_email_unique` (`userEmail`),
-  UNIQUE KEY `idx_admin_phone_unique` (`userPhone`),
-  UNIQUE KEY `userName_2` (`userName`),
-  UNIQUE KEY `userEmail_2` (`userEmail`),
-  KEY `idx_admin_username` (`userName`),
-  KEY `idx_admin_email` (`userEmail`),
-  KEY `idx_admin_phone` (`userPhone`),
-  KEY `idx_admin_status` (`status`),
-  KEY `idx_admin_create_time` (`createdAt`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `admins`
---
-
-LOCK TABLES `admins` WRITE;
-/*!40000 ALTER TABLE `admins` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `admins` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
 -- Table structure for table `ads`
 --
 
@@ -256,162 +172,6 @@ INSERT INTO `ads_items` (`id`, `title`, `link`, `appLink`, `appLinkType`, `width
 INSERT INTO `ads_items` (`id`, `title`, `link`, `appLink`, `appLinkType`, `width`, `height`, `target`, `sImg`, `createdAt`, `alt`, `updatedAt`) VALUES (67,'top1','https://www.html-js.cn',NULL,NULL,NULL,NULL,'_blank','https://cdn.html-js.cn/cms/upload/images/20251004/1759551302363853934.png','2025-10-04 01:55:33','','2025-10-04 04:15:21');
 INSERT INTO `ads_items` (`id`, `title`, `link`, `appLink`, `appLinkType`, `width`, `height`, `target`, `sImg`, `createdAt`, `alt`, `updatedAt`) VALUES (68,'首页右侧广告','https://www.html-js.cn',NULL,NULL,NULL,NULL,'_blank','https://cdn.html-js.cn/cms/upload/images/20251004/1759556392530355693.png','2025-10-04 05:39:55','','2025-10-04 05:40:46');
 /*!40000 ALTER TABLE `ads_items` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
--- Table structure for table `ai_models`
---
-
-DROP TABLE IF EXISTS `ai_models`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ai_models` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `provider` varchar(50) NOT NULL COMMENT 'AI提供商: openai, deepseek, ollama, anthropic',
-  `modelName` varchar(100) NOT NULL COMMENT '模型名称，如 gpt-4, deepseek-chat',
-  `displayName` varchar(200) NOT NULL COMMENT '显示名称',
-  `description` text DEFAULT NULL COMMENT '模型描述',
-  `config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '模型配置: {apiKey, apiEndpoint, maxTokens, ...}',
-  `supportedTasks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '支持的任务类型数组',
-  `costPerRequest` decimal(10,4) DEFAULT 0.0000 COMMENT '每次请求成本(元)',
-  `costPer1kTokens` decimal(10,4) DEFAULT 0.0000 COMMENT '每1K tokens成本(元)',
-  `priority` int(11) DEFAULT 10 COMMENT '优先级，数字越大优先级越高',
-  `isEnabled` tinyint(1) DEFAULT 1 COMMENT '是否启用',
-  `statistics` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '统计信息',
-  `health` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '健康状态',
-  `fallbackModelId` int(11) DEFAULT NULL COMMENT '降级模型ID',
-  `maxRetries` int(11) DEFAULT 2 COMMENT '最大重试次数',
-  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '标签数组',
-  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '扩展元数据',
-  `createdBy` int(11) DEFAULT NULL COMMENT '创建者ID',
-  `updatedBy` int(11) DEFAULT NULL COMMENT '最后更新者ID',
-  `createdAt` datetime NOT NULL COMMENT '创建时间',
-  `updatedAt` datetime NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_provider_model` (`provider`,`modelName`),
-  KEY `idx_enabled_priority` (`isEnabled`,`priority`),
-  FULLTEXT KEY `ft_search` (`displayName`,`description`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ai_models`
---
-
-LOCK TABLES `ai_models` WRITE;
-/*!40000 ALTER TABLE `ai_models` DISABLE KEYS */;
-set autocommit=0;
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (7,'openai','gpt-3.5-turbo','GPT-3.5 Turbo','Fast and cost-effective model for most tasks','{\"apiKey\":\"\",\"apiEndpoint\":\"https://api.openai.com/v1\",\"maxTokens\":4096,\"temperature\":0.7,\"topP\":1,\"timeout\":30000}','[\"title_generation\",\"tag_extraction\",\"summary_generation\",\"category_matching\",\"seo_optimization\",\"content_quality_check\"]',0.0020,0.0015,10,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"openai\",\"gpt\",\"general-purpose\"]','{\"contextWindow\":16385,\"trainingCutoff\":\"2021-09\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (8,'openai','gpt-4','GPT-4','Most capable model, best for complex tasks','{\"apiKey\":\"\",\"apiEndpoint\":\"https://api.openai.com/v1\",\"maxTokens\":8192,\"temperature\":0.7,\"topP\":1,\"timeout\":60000}','[\"title_generation\",\"tag_extraction\",\"summary_generation\",\"category_matching\",\"seo_optimization\",\"content_quality_check\"]',0.0300,0.0300,5,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"openai\",\"gpt-4\",\"high-quality\"]','{\"contextWindow\":8192,\"trainingCutoff\":\"2023-04\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (9,'deepseek','deepseek-chat','DeepSeek Chat','DeepSeek 通用对话模型，支持中英文，成本极低（比 GPT-3.5 便宜 90%）','{\"apiKey\":\"\",\"apiEndpoint\":\"https://api.deepseek.com/v1\",\"maxTokens\":4096,\"temperature\":0.7,\"topP\":1,\"timeout\":30000}','[\"title_generation\",\"tag_extraction\",\"summary_generation\",\"category_matching\",\"seo_optimization\",\"content_quality_check\"]',0.0002,0.0001,15,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"deepseek\",\"chinese\",\"cost-effective\",\"bilingual\"]','{\"contextWindow\":32768,\"language\":\"zh-CN,en-US\",\"pricing\":\"$0.14/1M input, $0.28/1M output\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (10,'deepseek','deepseek-coder','DeepSeek Coder','DeepSeek 代码生成模型，专注于编程任务','{\"apiKey\":\"\",\"apiEndpoint\":\"https://api.deepseek.com/v1\",\"maxTokens\":4096,\"temperature\":0.5,\"topP\":1,\"timeout\":30000}','[\"title_generation\",\"tag_extraction\",\"summary_generation\"]',0.0002,0.0001,12,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"deepseek\",\"coding\",\"specialized\"]','{\"contextWindow\":32768,\"specialization\":\"code-generation\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (11,'ollama','qwen2:7b','Qwen 2 7B (本地)','阿里通义千问 2，7B 参数，支持中英文，本地部署无成本','{\"apiEndpoint\":\"http://localhost:11434\",\"maxTokens\":2048,\"temperature\":0.7,\"topP\":1,\"timeout\":60000}','[\"title_generation\",\"tag_extraction\",\"summary_generation\",\"category_matching\",\"seo_optimization\"]',0.0000,0.0000,20,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"ollama\",\"local\",\"qwen\",\"chinese\",\"free\"]','{\"contextWindow\":32768,\"requiresLocalSetup\":true,\"modelSize\":\"4.4 GB\",\"recommendedRAM\":\"8 GB\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (12,'ollama','llama3:8b','Llama 3 8B (本地)','Meta Llama 3，8B 参数，通用模型，本地部署无成本','{\"apiEndpoint\":\"http://localhost:11434\",\"maxTokens\":2048,\"temperature\":0.7,\"topP\":1,\"timeout\":60000}','[\"title_generation\",\"tag_extraction\",\"summary_generation\",\"category_matching\",\"content_quality_check\"]',0.0000,0.0000,18,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"ollama\",\"local\",\"llama\",\"open-source\",\"free\"]','{\"contextWindow\":8192,\"requiresLocalSetup\":true,\"modelSize\":\"4.7 GB\",\"recommendedRAM\":\"8 GB\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (13,'doubao','doubao-seedream-3-0-t2i-250415','豆包 SeeDream 3.0','豆包 SeeDream 3.0 文生图模型，支持多种尺寸图片生成，性能稳定','{\"apiKey\":\"\",\"apiEndpoint\":\"https://ark.cn-beijing.volces.com/api/v3\",\"size\":\"1024x1024\",\"guidanceScale\":3,\"watermark\":true,\"timeout\":60000}','[\"image_generation\",\"text_to_image\"]',0.0200,0.0000,12,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"doubao\",\"image-generation\",\"text-to-image\",\"seedream\"]','{\"apiProvider\":\"volcengine\",\"supportedSizes\":[\"1024x1024\",\"1024x768\",\"768x1024\",\"1280x720\",\"720x1280\"],\"guidanceScaleRange\":[1,20],\"modelVersion\":\"3.0\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-INSERT INTO `ai_models` (`id`, `provider`, `modelName`, `displayName`, `description`, `config`, `supportedTasks`, `costPerRequest`, `costPer1kTokens`, `priority`, `isEnabled`, `statistics`, `health`, `fallbackModelId`, `maxRetries`, `tags`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (14,'doubao','doubao-seedream-4-0-250828','豆包 SeeDream 4.0','豆包 SeeDream 4.0 文生图模型，支持高分辨率（2K/4K）图片生成，质量更高','{\"apiKey\":\"\",\"apiEndpoint\":\"https://ark.cn-beijing.volces.com/api/v3\",\"size\":\"2K\",\"sequentialImageGeneration\":\"disabled\",\"watermark\":true,\"timeout\":90000}','[\"image_generation\",\"text_to_image\",\"high_resolution_image\"]',0.0300,0.0000,15,0,'{\"totalCalls\":0,\"totalTokens\":0,\"totalCost\":0,\"successRate\":1,\"averageResponseTime\":0}','{\"isHealthy\":true,\"lastCheckTime\":null,\"errorCount\":0}',NULL,2,'[\"doubao\",\"image-generation\",\"text-to-image\",\"seedream\",\"high-resolution\"]','{\"apiProvider\":\"volcengine\",\"supportedSizes\":[\"1024x1024\",\"2K\",\"4K\",\"1280x720\",\"720x1280\"],\"streamSupport\":true,\"modelVersion\":\"4.0\"}',NULL,NULL,'2026-01-19 13:15:54','2026-01-19 13:15:54');
-/*!40000 ALTER TABLE `ai_models` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
--- Table structure for table `ai_usage_logs`
---
-
-DROP TABLE IF EXISTS `ai_usage_logs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ai_usage_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `userId` int(11) NOT NULL COMMENT '用户ID',
-  `userType` varchar(20) DEFAULT 'admin' COMMENT '用户类型: admin, user',
-  `taskType` varchar(100) NOT NULL COMMENT '任务类型：title_generation, tag_extraction等',
-  `taskDescription` text DEFAULT NULL COMMENT '任务描述',
-  `modelId` int(11) NOT NULL COMMENT '使用的模型ID',
-  `provider` varchar(50) DEFAULT NULL COMMENT 'AI提供商',
-  `modelName` varchar(100) DEFAULT NULL COMMENT '模型名称',
-  `promptTemplateId` int(11) DEFAULT NULL COMMENT '使用的提示词模板ID',
-  `promptVersion` varchar(20) DEFAULT NULL COMMENT '提示词版本',
-  `input` longtext NOT NULL COMMENT '输入内容',
-  `output` longtext DEFAULT NULL COMMENT '输出内容',
-  `rawResponse` longtext DEFAULT NULL COMMENT 'AI原始响应（用于调试）',
-  `status` varchar(20) DEFAULT 'success' COMMENT '执行状态: success, failure, partial, timeout',
-  `errorMessage` text DEFAULT NULL COMMENT '错误信息（如果失败）',
-  `errorCode` varchar(50) DEFAULT NULL COMMENT '错误代码',
-  `inputTokens` int(11) DEFAULT 0 COMMENT '输入Token数量',
-  `outputTokens` int(11) DEFAULT 0 COMMENT '输出Token数量',
-  `totalTokens` int(11) DEFAULT 0 COMMENT '总Token数量',
-  `cost` decimal(10,4) DEFAULT 0.0000 COMMENT '本次调用成本（元）',
-  `responseTime` int(11) DEFAULT 0 COMMENT '响应时间（毫秒）',
-  `retryCount` int(11) DEFAULT 0 COMMENT '重试次数',
-  `isFallback` tinyint(1) DEFAULT 0 COMMENT '是否使用了降级模型',
-  `quality` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '质量评估',
-  `context` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '请求上下文',
-  `relatedContentId` int(11) DEFAULT NULL COMMENT '关联的内容ID（如文章ID）',
-  `relatedType` varchar(50) DEFAULT NULL COMMENT '关联类型（如 article, product）',
-  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '标签数组',
-  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '扩展元数据',
-  `startTime` datetime DEFAULT NULL COMMENT '开始时间',
-  `endTime` datetime DEFAULT NULL COMMENT '结束时间',
-  `createdAt` datetime NOT NULL COMMENT '创建时间',
-  `updatedAt` datetime NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  KEY `idx_user_time` (`userId`,`createdAt`),
-  KEY `idx_model_time` (`modelId`,`createdAt`),
-  KEY `idx_task_time` (`taskType`,`createdAt`),
-  KEY `idx_status` (`status`),
-  KEY `idx_created_at` (`createdAt`),
-  KEY `idx_related` (`relatedContentId`,`relatedType`),
-  KEY `idx_user_task_time` (`userId`,`taskType`,`createdAt`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ai_usage_logs`
---
-
-LOCK TABLES `ai_usage_logs` WRITE;
-/*!40000 ALTER TABLE `ai_usage_logs` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `ai_usage_logs` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
--- Table structure for table `api_keys`
---
-
-DROP TABLE IF EXISTS `api_keys`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `api_keys` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `mongo_id` varchar(32) DEFAULT NULL COMMENT 'MongoDB _id 映射字段',
-  `userId` int(11) NOT NULL COMMENT '用户ID (User.id)',
-  `name` varchar(100) NOT NULL COMMENT 'API Key 名称',
-  `key` varchar(100) NOT NULL COMMENT 'API Key',
-  `secret` varchar(100) NOT NULL COMMENT 'API Secret',
-  `permissions` text NOT NULL COMMENT '权限数组(JSON)',
-  `ipWhitelist` text NOT NULL COMMENT 'IP白名单(JSON)',
-  `rateLimit` text NOT NULL COMMENT '限流配置(JSON)',
-  `status` enum('active','disabled') NOT NULL DEFAULT 'active' COMMENT '状态',
-  `expiresAt` datetime DEFAULT NULL COMMENT '过期时间',
-  `lastUsedAt` datetime DEFAULT NULL COMMENT '最后使用时间',
-  `createdAt` datetime NOT NULL COMMENT '创建时间',
-  `updatedAt` datetime NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `api_keys`
---
-
-LOCK TABLES `api_keys` WRITE;
-/*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
 
@@ -1971,87 +1731,6 @@ UNLOCK TABLES;
 commit;
 
 --
--- Table structure for table `contents`
---
-
-DROP TABLE IF EXISTS `contents`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `contents` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'MariaDB 主键',
-  `title` varchar(200) NOT NULL COMMENT '内容标题',
-  `stitle` varchar(200) DEFAULT NULL COMMENT '副标题',
-  `type` enum('1','2','plug','singer') DEFAULT '1' COMMENT '发布类型: 1-普通, 2-专题, plug-插件, singer-歌手',
-  `categories` mediumtext DEFAULT NULL COMMENT '文章分类ID数组(JSON格式)',
-  `sortPath` varchar(500) DEFAULT NULL COMMENT '存储所有父节点结构',
-  `tags` mediumtext DEFAULT NULL COMMENT '标签ID数组(JSON格式)',
-  `keywords` mediumtext DEFAULT NULL COMMENT '关键词数组(JSON格式)',
-  `sImg` varchar(500) DEFAULT '/upload/images/defaultImg.jpg' COMMENT '文章小图',
-  `sImgType` enum('1','2') DEFAULT '2' COMMENT '首图类型: 1-自动生成, 2-本地上传',
-  `cover` varchar(100) DEFAULT NULL COMMENT '封面ID',
-  `videoImg` varchar(500) DEFAULT '' COMMENT '视频缩略图',
-  `imageArr` mediumtext DEFAULT NULL COMMENT '媒体集合-图片(JSON格式)',
-  `videoArr` mediumtext DEFAULT NULL COMMENT '媒体集合-视频(JSON格式)',
-  `duration` varchar(20) DEFAULT '0:01' COMMENT '针对有视频的帖子时长',
-  `discription` mediumtext DEFAULT NULL COMMENT '内容描述',
-  `appShowType` enum('0','1','2','3') DEFAULT '1' COMMENT 'app端排版格式: 0-不显示图片, 1-小图, 2-大图, 3-视频',
-  `source` varchar(200) DEFAULT NULL COMMENT '来源',
-  `comments` longtext DEFAULT NULL COMMENT '内容正文',
-  `simpleComments` longtext DEFAULT NULL COMMENT '带格式的纯文本',
-  `markDownComments` longtext DEFAULT NULL COMMENT 'markdown格式内容',
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `author` varchar(50) DEFAULT NULL COMMENT '文档作者ID(Admin)',
-  `uAuthor` varchar(50) DEFAULT NULL COMMENT '文档作者ID(User)',
-  `state` enum('0','1','2','3') DEFAULT '0' COMMENT '状态: 0-草稿, 1-待审核, 2-审核通过, 3-下架',
-  `draft` enum('0','1') DEFAULT '0' COMMENT '是否进入回收站: 0-否, 1-是',
-  `dismissReason` mediumtext DEFAULT NULL COMMENT '驳回原因(针对审核不通过)',
-  `isTop` tinyint(4) DEFAULT 0 COMMENT '是否推荐: 0-不推荐, 1-推荐',
-  `roofPlacement` enum('0','1') DEFAULT '0' COMMENT '是否置顶: 0-不置顶, 1-置顶',
-  `clickNum` int(10) unsigned DEFAULT 1 COMMENT '点击数',
-  `commentNum` int(10) unsigned DEFAULT 0 COMMENT '评论数',
-  `likeNum` int(10) unsigned DEFAULT 0 COMMENT '喜欢数',
-  `reviewer` varchar(50) DEFAULT NULL COMMENT '审核人ID',
-  `reviewDate` datetime DEFAULT NULL COMMENT '审核时间',
-  `praise_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞数',
-  `favorite_count` int(11) NOT NULL DEFAULT 0 COMMENT '收藏数',
-  `despise_count` int(11) NOT NULL DEFAULT 0 COMMENT '踩数',
-  PRIMARY KEY (`id`),
-  KEY `idx_content_author` (`author`),
-  KEY `idx_content_uauthor` (`uAuthor`),
-  KEY `idx_content_date` (`createdAt`),
-  KEY `idx_content_update_date` (`updatedAt`),
-  KEY `idx_content_click_num` (`clickNum`),
-  KEY `idx_content_title` (`title`),
-  KEY `idx_content_type` (`type`),
-  KEY `idx_content_created` (`createdAt`),
-  KEY `idx_content_state_author` (`state`,`uAuthor`),
-  KEY `idx_content_state_draft` (`state`,`draft`),
-  KEY `idx_content_istop_date` (`isTop`,`createdAt`),
-  KEY `idx_content_roof_date` (`roofPlacement`,`createdAt`),
-  KEY `idx_content_state` (`state`),
-  KEY `idx_content_istop` (`isTop`),
-  KEY `idx_content_roof` (`roofPlacement`),
-  KEY `idx_content_updated` (`updatedAt`),
-  KEY `idx_content_click` (`clickNum`),
-  KEY `idx_content_state_uauthor` (`state`,`uAuthor`),
-  KEY `idx_content_state_top_roof` (`state`,`isTop`,`roofPlacement`),
-  KEY `idx_content_praise` (`praise_count`)
-) ENGINE=InnoDB AUTO_INCREMENT=309 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='内容表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `contents`
---
-
-LOCK TABLES `contents` WRITE;
-/*!40000 ALTER TABLE `contents` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `contents` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
 -- Table structure for table `mail_templates`
 --
 
@@ -2213,61 +1892,6 @@ LOCK TABLES `message_interactions` WRITE;
 /*!40000 ALTER TABLE `message_interactions` DISABLE KEYS */;
 set autocommit=0;
 /*!40000 ALTER TABLE `message_interactions` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
--- Table structure for table `messages`
---
-
-DROP TABLE IF EXISTS `messages`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `messages` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `contentId` int(11) DEFAULT NULL COMMENT '内容ID (Content.id)',
-  `contentTitle` varchar(200) DEFAULT NULL COMMENT '留言对应的内容标题',
-  `author` int(11) DEFAULT NULL COMMENT '留言者ID (User.id)',
-  `adminAuthor` int(11) DEFAULT NULL COMMENT '管理员ID (Admin.id)',
-  `replyAuthor` int(11) DEFAULT NULL COMMENT '被回复者ID (User.id)',
-  `adminReplyAuthor` int(11) DEFAULT NULL COMMENT '被回复者管理员ID (Admin.id)',
-  `state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否被举报',
-  `utype` enum('0','1') NOT NULL DEFAULT '0' COMMENT '评论者类型 0:普通用户, 1:管理员',
-  `relationMsgId` int(11) DEFAULT NULL COMMENT '父留言ID (Message.id)',
-  `createdAt` datetime NOT NULL COMMENT '留言时间',
-  `praise_num` int(11) NOT NULL DEFAULT 0 COMMENT '被赞次数',
-  `had_praise` tinyint(1) NOT NULL DEFAULT 0 COMMENT '当前是否已被点赞',
-  `praiseMembers` text DEFAULT NULL COMMENT '点赞用户id集合(JSON数组)',
-  `content` text NOT NULL COMMENT '留言内容',
-  `updatedAt` datetime NOT NULL COMMENT '留言更新时间',
-  `despise_num` int(11) DEFAULT 0 COMMENT '被踩次数',
-  `had_despise` tinyint(1) DEFAULT 0 COMMENT '当前用户是否已踩',
-  `auditStatus` enum('pending','approved','rejected') DEFAULT 'pending' COMMENT '审核状态',
-  `auditReason` text DEFAULT NULL COMMENT '审核原因',
-  `auditBy` varchar(50) DEFAULT NULL COMMENT '审核人ID',
-  `auditAt` datetime DEFAULT NULL COMMENT '审核时间',
-  `replyCount` int(11) DEFAULT 0 COMMENT '回复数量',
-  `ipAddress` varchar(45) DEFAULT NULL COMMENT 'IP地址',
-  `userAgent` text DEFAULT NULL COMMENT '用户代理',
-  `praise_count` int(11) DEFAULT 0 COMMENT '点赞数',
-  `despise_count` int(11) DEFAULT 0 COMMENT '踩数',
-  PRIMARY KEY (`id`),
-  KEY `idx_messages_audit_status` (`auditStatus`),
-  KEY `idx_messages_audit_by` (`auditBy`),
-  KEY `idx_messages_ip_address` (`ipAddress`),
-  KEY `idx_praise_count` (`praise_count`),
-  KEY `idx_despise_count` (`despise_count`)
-) ENGINE=InnoDB AUTO_INCREMENT=676 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `messages`
---
-
-LOCK TABLES `messages` WRITE;
-/*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
 
@@ -2734,7 +2358,7 @@ INSERT INTO `prompt_templates` (`id`, `taskType`, `language`, `name`, `descripti
 INSERT INTO `prompt_templates` (`id`, `taskType`, `language`, `name`, `description`, `template`, `systemPrompt`, `variables`, `version`, `parentTemplateId`, `config`, `isEnabled`, `priority`, `statistics`, `effectiveness`, `tags`, `category`, `examples`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (11,'seo_optimization','zh-CN','SEO 优化建议','提供文章 SEO 优化建议','你是一个专业的 SEO 优化顾问，擅长分析内容并提供 SEO 优化建议。\n\n请分析以下文章：\n\n标题：{{title}}\n内容：{{content}}\n{{#if keywords}}目标关键词：{{keywords}}{{/if}}\n\n请提供 SEO 优化建议，包括：\n1. 关键词密度分析\n2. 标题优化建议\n3. 元描述建议\n4. 内链外链建议\n5. 内容结构优化\n\n请以 JSON 格式输出建议：\n{\n  \"keywordDensity\": \"关键词密度评估\",\n  \"titleSuggestion\": \"标题优化建议\",\n  \"metaDescription\": \"元描述建议\",\n  \"linkSuggestions\": \"链接建议\",\n  \"structureTips\": \"结构优化建议\",\n  \"score\": \"SEO 得分（1-100）\"\n}',NULL,'[{\"name\":\"title\",\"type\":\"string\",\"required\":true,\"description\":\"文章标题\"},{\"name\":\"content\",\"type\":\"string\",\"required\":true,\"description\":\"文章内容\"},{\"name\":\"keywords\",\"type\":\"string\",\"required\":false,\"description\":\"目标关键词\"}]','1.0.0',NULL,'{}',1,10,'{\"usageCount\":0,\"successCount\":0,\"failureCount\":0,\"averageScore\":0,\"lastUsedAt\":null}','{\"qualityScore\":0,\"relevanceScore\":0,\"userSatisfaction\":0,\"adoptionRate\":0}','[\"seo\",\"optimization\",\"content\"]','content_optimization','[]','{}',NULL,NULL,'2025-10-18 05:30:57','2025-10-18 05:30:57');
 INSERT INTO `prompt_templates` (`id`, `taskType`, `language`, `name`, `description`, `template`, `systemPrompt`, `variables`, `version`, `parentTemplateId`, `config`, `isEnabled`, `priority`, `statistics`, `effectiveness`, `tags`, `category`, `examples`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (12,'content_quality_check','zh-CN','内容质量评估','评估文章内容质量','你是一个专业的内容质量评估专家，擅长从多个维度分析文章质量。\n\n请评估以下文章：\n\n标题：{{title}}\n内容：{{content}}\n\n评估维度：\n1. 内容原创性（是否有价值、是否独特）\n2. 逻辑结构（结构是否清晰、层次是否分明）\n3. 语言表达（语言是否流畅、是否有错别字）\n4. 专业深度（内容是否专业、是否有深度）\n5. 可读性（是否易读、是否吸引人）\n6. 实用性（是否有实用价值）\n\n请以 JSON 格式输出评估结果：\n{\n  \"originality\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"structure\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"language\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"depth\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"readability\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"practicality\": {\"score\": 0-100, \"comment\": \"评价\"},\n  \"overallScore\": 0-100,\n  \"overallComment\": \"总体评价\",\n  \"improvements\": [\"改进建议1\", \"改进建议2\"]\n}',NULL,'[{\"name\":\"title\",\"type\":\"string\",\"required\":true,\"description\":\"文章标题\"},{\"name\":\"content\",\"type\":\"string\",\"required\":true,\"description\":\"文章内容\"}]','1.0.0',NULL,'{}',1,10,'{\"usageCount\":0,\"successCount\":0,\"failureCount\":0,\"averageScore\":0,\"lastUsedAt\":null}','{\"qualityScore\":0,\"relevanceScore\":0,\"userSatisfaction\":0,\"adoptionRate\":0}','[\"quality\",\"assessment\",\"content\"]','content_analysis','[]','{}',NULL,NULL,'2025-10-18 05:31:15','2025-10-18 05:31:15');
 INSERT INTO `prompt_templates` (`id`, `taskType`, `language`, `name`, `description`, `template`, `systemPrompt`, `variables`, `version`, `parentTemplateId`, `config`, `isEnabled`, `priority`, `statistics`, `effectiveness`, `tags`, `category`, `examples`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (13,'keyword_extraction','zh-CN','关键词提取','从文章内容中提取 SEO 关键词','你是一个专业的 SEO 关键词提取助手，擅长从文章中识别和提取对搜索引擎优化有价值的关键词。\n\n请从以下文章内容中提取 SEO 关键词：\n\n{{content}}\n\n要求：\n1. 提取 3-8 个最具 SEO 价值的关键词\n2. 关键词应该是用户可能搜索的词组\n3. 包含核心主题词、相关术语、长尾关键词\n4. 关键词应该具有一定的搜索量和商业价值\n5. 每个关键词控制在 2-8 个字\n6. 优先选择能提升搜索排名的关键词\n\n{{#if maxKeywords}}最多提取 {{maxKeywords}} 个关键词{{/if}}\n{{#if category}}文章类别：{{category}}{{/if}}\n{{#if title}}文章标题：{{title}}{{/if}}\n\n请直接输出关键词，用逗号分隔，不需要其他解释。\n格式示例：人工智能技术,AI应用,机器学习算法,深度学习框架','','[{\"name\":\"content\",\"type\":\"string\",\"required\":true,\"description\":\"文章内容\"},{\"name\":\"maxKeywords\",\"type\":\"number\",\"required\":false,\"description\":\"最多关键词数量\"},{\"name\":\"category\",\"type\":\"string\",\"required\":false,\"description\":\"文章类别\"},{\"name\":\"title\",\"type\":\"string\",\"required\":false,\"description\":\"文章标题\"}]','1.0.0',NULL,'{\"maxLength\":500,\"temperature\":0.7,\"topP\":0.9}',1,10,'{\"usageCount\":0,\"successCount\":0,\"failureCount\":0,\"averageScore\":0}','{\"qualityScore\":0,\"relevanceScore\":0,\"userSatisfaction\":0,\"adoptionRate\":0}','[\"content\",\"seo\",\"keywords\",\"optimization\"]','content_analysis','[{\"input\":{\"content\":\"随着人工智能技术的发展，机器学习和深度学习已经广泛应用于各个领域...\",\"maxKeywords\":6,\"title\":\"AI 技术在现代企业中的应用\"},\"output\":\"人工智能技术,机器学习应用,深度学习,AI企业应用,智能化转型,AI解决方案\"}]','{}',NULL,NULL,'2025-10-18 14:05:18','2025-10-18 14:05:18');
-INSERT INTO `prompt_templates` (`id`, `taskType`, `language`, `name`, `description`, `template`, `systemPrompt`, `variables`, `version`, `parentTemplateId`, `config`, `isEnabled`, `priority`, `statistics`, `effectiveness`, `tags`, `category`, `examples`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (16,'image_prompt_optimization','zh-CN','图片生成提示词优化','将用户的简单描述转换为详细的图片生成提示词','你是一位专业的AI图片生成提示词专家。请根据用户提供的简单描述，生成一个详细、具体的图片生成提示词。\n\n要求：\n(扁平插画, 矢量风, 高饱和色块, 柔和渐变光影, 清晰描边),\n科技主题场景, 角色Q版卡通, 圆润五官, 简洁服装,\n屏幕与界面元素, 数据图表曲线, 霓虹粒子特效, 放射能量线,\n蓝橙黄为主色, 点缀薄荷绿与紫, 暖冷对比背景,\n干净桌面/设备/芯片/城市/太空元素, 叙事感强, 明亮氛围\n\n\n用户描述：{{userInput}}\n\n优化后的提示词：','你是一位专业的AI图片生成提示词专家，擅长将简单描述转换为详细的图片生成提示词。','[{\"name\":\"userInput\",\"type\":\"string\",\"required\":true,\"description\":\"用户提供的简单图片描述\"}]','1.0.0',NULL,'{\"maxLength\":300,\"temperature\":0.7,\"topP\":0.9}',1,10,NULL,NULL,'[\"图片生成\",\"提示词优化\",\"文生图\",\"image-generation\"]','image_generation','[{\"input\":{\"userInput\":\"一只猫\"},\"output\":\"一只优雅的橘色短毛猫，蜷缩在温暖的阳光下，柔和的自然光从窗户洒在它的毛发上，产生金色的光晕，背景是简约的现代家居环境，景深效果突出主体，专业摄影，高清画质。\"},{\"input\":{\"userInput\":\"未来城市\"},\"output\":\"赛博朋克风格的未来都市夜景，高耸入云的摩天大楼上布满霓虹灯广告牌，飞行器在空中穿梭，地面潮湿的街道反射着五彩斑斓的光芒，浓重的科技感与工业风格，电影级构图，超现实主义，8K分辨率。\"}]',NULL,NULL,NULL,'2025-10-21 15:25:17','2025-10-21 15:31:38');
+INSERT INTO `prompt_templates` (`id`, `taskType`, `language`, `name`, `description`, `template`, `systemPrompt`, `variables`, `version`, `parentTemplateId`, `config`, `isEnabled`, `priority`, `statistics`, `effectiveness`, `tags`, `category`, `examples`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (16,'image_prompt_optimization','zh-CN','图片生成提示词优化','将用户的简单描述转换为详细的图片生成提示词','你是一位专业的AI图片生成提示词专家。请根据用户提供的简单描述，生成一个详细、具体的图片生成提示词。要求如下：Flat vector illustration, modern tech style, clean and bright color palette dominated by light blue and white, with accents of orange and yellow, clear outlines, minimalist shading, no gradients, balanced composition, professional and vibrant visual effect, suitable for business and technology themes, 4K resolution, high detail.\n\n要求：\n(扁平插画, 矢量风, 高饱和色块, 柔和渐变光影, 清晰描边),\n科技主题场景, 角色Q版卡通, 圆润五官, 简洁服装,\n屏幕与界面元素, 数据图表曲线, 霓虹粒子特效, 放射能量线,\n蓝橙黄为主色, 点缀薄荷绿与紫, 暖冷对比背景,\n干净桌面/设备/芯片/城市/太空元素, 叙事感强, 明亮氛围\n\n\n用户描述：{{userInput}}\n\n优化后的提示词：','你是一位专业的AI图片生成提示词专家，擅长将简单描述转换为详细的图片生成提示词。','[{\"name\":\"userInput\",\"type\":\"string\",\"required\":true,\"description\":\"用户提供的简单图片描述\"}]','1.0.0',NULL,'{\"maxLength\":300,\"temperature\":0.7,\"topP\":0.9}',1,10,NULL,NULL,'[\"图片生成\",\"提示词优化\",\"文生图\",\"image-generation\"]','image_generation','[{\"input\":{\"userInput\":\"一只猫\"},\"output\":\"一只优雅的橘色短毛猫，蜷缩在温暖的阳光下，柔和的自然光从窗户洒在它的毛发上，产生金色的光晕，背景是简约的现代家居环境，景深效果突出主体，专业摄影，高清画质。\"},{\"input\":{\"userInput\":\"未来城市\"},\"output\":\"赛博朋克风格的未来都市夜景，高耸入云的摩天大楼上布满霓虹灯广告牌，飞行器在空中穿梭，地面潮湿的街道反射着五彩斑斓的光芒，浓重的科技感与工业风格，电影级构图，超现实主义，8K分辨率。\"}]',NULL,NULL,NULL,'2025-10-21 15:25:17','2025-10-21 15:31:38');
 INSERT INTO `prompt_templates` (`id`, `taskType`, `language`, `name`, `description`, `template`, `systemPrompt`, `variables`, `version`, `parentTemplateId`, `config`, `isEnabled`, `priority`, `statistics`, `effectiveness`, `tags`, `category`, `examples`, `metadata`, `createdBy`, `updatedBy`, `createdAt`, `updatedAt`) VALUES (17,'image_prompt_optimization','en-US','Image Generation Prompt Optimization','Convert user\'s simple description into detailed image generation prompt','You are a professional AI image generation prompt expert. Please convert the user\'s simple description into a detailed and specific image generation prompt.\n\nRequirements:\n1. Include elements such as subject, scene, style, lighting, and color\n2. Use professional photography or art terminology\n3. Be specific and vivid, avoid abstract and vague descriptions\n4. Keep the length between 50-200 words\n5. Return only the optimized prompt without additional explanations\n\nUser description: {{userInput}}\n\nOptimized prompt:','You are a professional AI image generation prompt expert, skilled in converting simple descriptions into detailed image generation prompts.','[{\"name\":\"userInput\",\"type\":\"string\",\"required\":true,\"description\":\"User\'s simple image description\"}]','1.0.0',NULL,'{\"maxLength\":300,\"temperature\":0.7,\"topP\":0.9}',1,10,NULL,NULL,'[\"image-generation\",\"prompt-optimization\",\"text-to-image\"]','image_generation','[{\"input\":{\"userInput\":\"a cat\"},\"output\":\"An elegant orange short-haired cat, curled up in warm sunlight, soft natural light streaming through the window creating a golden halo on its fur, simple modern home interior background, shallow depth of field highlighting the subject, professional photography, high-definition quality.\"},{\"input\":{\"userInput\":\"futuristic city\"},\"output\":\"Cyberpunk-style futuristic city night scene, towering skyscrapers covered with neon advertising boards, flying vehicles shuttling through the air, wet streets reflecting colorful lights, heavy tech and industrial style, cinematic composition, surrealism, 8K resolution.\"}]',NULL,NULL,NULL,'2025-10-21 15:25:17','2025-10-21 15:31:38');
 /*!40000 ALTER TABLE `prompt_templates` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -2840,83 +2464,6 @@ UNLOCK TABLES;
 commit;
 
 --
--- Table structure for table `system_option_logs`
---
-
-DROP TABLE IF EXISTS `system_option_logs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `system_option_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'MariaDB 自增主键',
-  `type` enum('login','logout','exception','operation','access','error','warning','info','debug') NOT NULL DEFAULT 'operation' COMMENT '操作类型',
-  `logs` text NOT NULL COMMENT '日志内容描述',
-  `createdAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '操作时间',
-  `ip_address` varchar(45) DEFAULT NULL COMMENT '用户IP地址',
-  `user_agent` text DEFAULT NULL COMMENT '用户代理信息',
-  `client_version` varchar(50) DEFAULT NULL COMMENT '客户端版本',
-  `client_platform` enum('web','mobile','desktop','api') DEFAULT NULL COMMENT '客户端平台',
-  `user_id` varchar(50) DEFAULT NULL COMMENT '关联的用户ID',
-  `user_type` enum('admin','user','guest','system') DEFAULT 'guest' COMMENT '用户类型',
-  `user_name` varchar(100) DEFAULT NULL COMMENT '用户名',
-  `request_path` varchar(500) DEFAULT NULL COMMENT '请求路径',
-  `request_method` enum('GET','POST','PUT','DELETE','PATCH','OPTIONS','HEAD') DEFAULT 'GET' COMMENT '请求方法',
-  `request_query` longtext DEFAULT NULL COMMENT '查询字符串',
-  `request_body` longtext DEFAULT NULL COMMENT '请求体',
-  `request_params` longtext DEFAULT NULL COMMENT '请求参数',
-  `response_status` int(11) DEFAULT 200 COMMENT '响应状态码',
-  `response_time` int(11) DEFAULT 0 COMMENT '响应时间(毫秒)',
-  `error_code` varchar(100) DEFAULT NULL COMMENT '错误代码',
-  `error_message` varchar(1000) DEFAULT NULL COMMENT '错误消息',
-  `new_value` longtext DEFAULT NULL COMMENT '修改后的值',
-  `old_value` longtext DEFAULT NULL COMMENT '修改前的值',
-  `resource_id` varchar(100) DEFAULT NULL COMMENT '资源ID',
-  `resource_type` varchar(50) DEFAULT NULL COMMENT '资源类型',
-  `action` varchar(50) DEFAULT NULL COMMENT '操作动作',
-  `module` varchar(50) DEFAULT NULL COMMENT '业务模块',
-  `response_size` int(11) DEFAULT NULL COMMENT '响应大小',
-  `session_id` varchar(100) DEFAULT NULL COMMENT '会话ID',
-  `device_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '设备信息(JSON格式)',
-  `location_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '地理位置信息(JSON格式)',
-  `error_stack` text DEFAULT NULL COMMENT '错误堆栈信息',
-  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '日志标签(JSON数组)',
-  `severity` enum('low','medium','high','critical') NOT NULL DEFAULT 'medium' COMMENT '严重程度',
-  `environment` enum('local','development','staging','production') DEFAULT NULL COMMENT '环境',
-  `trace_id` varchar(100) DEFAULT NULL COMMENT '链路追踪ID',
-  `extra_data` longtext DEFAULT NULL COMMENT '额外数据（JSON）',
-  `is_handled` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已处理',
-  `handled_at` datetime DEFAULT NULL COMMENT '处理时间',
-  `handled_by` varchar(50) DEFAULT NULL COMMENT '处理人ID',
-  `handle_note` text DEFAULT NULL COMMENT '处理备注',
-  `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '记录更新时间',
-  PRIMARY KEY (`id`),
-  KEY `idx_type` (`type`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_created_at` (`createdAt`),
-  KEY `idx_severity` (`severity`),
-  KEY `idx_is_handled` (`is_handled`),
-  KEY `system_option_logs_type` (`type`),
-  KEY `system_option_logs_created_at` (`createdAt`),
-  KEY `idx_type_date` (`type`,`createdAt`),
-  KEY `idx_is_handled_type` (`is_handled`,`type`),
-  KEY `idx_module` (`module`),
-  KEY `idx_user_id_created_at` (`user_id`,`createdAt`),
-  KEY `idx_module_created_at` (`module`,`createdAt`)
-) ENGINE=InnoDB AUTO_INCREMENT=7482 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统操作日志表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `system_option_logs`
---
-
-LOCK TABLES `system_option_logs` WRITE;
-/*!40000 ALTER TABLE `system_option_logs` DISABLE KEYS */;
-set autocommit=0;
-INSERT INTO `system_option_logs` (`id`, `type`, `logs`, `createdAt`, `ip_address`, `user_agent`, `client_version`, `client_platform`, `user_id`, `user_type`, `user_name`, `request_path`, `request_method`, `request_query`, `request_body`, `request_params`, `response_status`, `response_time`, `error_code`, `error_message`, `new_value`, `old_value`, `resource_id`, `resource_type`, `action`, `module`, `response_size`, `session_id`, `device_info`, `location_info`, `error_stack`, `tags`, `severity`, `environment`, `trace_id`, `extra_data`, `is_handled`, `handled_at`, `handled_by`, `handle_note`, `updatedAt`) VALUES (7481,'access','API访问: GET /','2026-01-19 13:16:24','::1','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',NULL,'web',NULL,'guest',NULL,'/','GET','{}',NULL,NULL,200,190,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'[\"api\",\"access\",\"get\"]','low','local',NULL,'{\"requestBody\":{}}',0,NULL,NULL,NULL,'2026-01-19 13:16:24');
-/*!40000 ALTER TABLE `system_option_logs` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
 -- Table structure for table `templates`
 --
 
@@ -2963,48 +2510,8 @@ CREATE TABLE `templates` (
 LOCK TABLES `templates` WRITE;
 /*!40000 ALTER TABLE `templates` DISABLE KEYS */;
 set autocommit=0;
-INSERT INTO `templates` (`id`, `name`, `slug`, `version`, `author`, `description`, `screenshot`, `config`, `active`, `installed`, `isSystemTemplate`, `marketId`, `compatibility`, `stats`, `status`, `createdAt`, `updatedAt`, `createBy`, `updateBy`) VALUES (1,'standard-template','standard-template','1.0.0','模板作者','这是一个标准的模板主题，包含基本的页面结构和组件','https://cdn.html-js.cn/cms/upload/images/20251105/1762346653788564453.png','{\"layouts\":[\"default\",\"sidebar\",\"full-width\"],\"templates\":[\"index\",\"post\",\"page\",\"category\",\"archive\",\"search\"],\"components\":[\"header\",\"footer\",\"nav\",\"breadcrumb\",\"sidebar\"],\"supports\":[\"responsive\",\"seo\",\"social-share\"],\"customOptions\":{}}',1,1,1,'mW4zQF7ET','{\"minVersion\":\"1.0.0\",\"maxVersion\":null}','{\"downloadCount\":0,\"rating\":5,\"reviewCount\":0}','1','2025-08-21 13:02:39','2025-11-07 08:38:27','1','1');
+INSERT INTO `templates` (`id`, `name`, `slug`, `version`, `author`, `description`, `screenshot`, `config`, `active`, `installed`, `marketId`, `compatibility`, `stats`, `status`, `createdAt`, `updatedAt`, `createBy`, `updateBy`, `customOptions`, `isSystemTemplate`) VALUES (1,'standard-template','standard-template','1.0.0','模板作者','这是一个标准的模板主题，包含基本的页面结构和组件','https://cdn.html-js.cn/cms/upload/images/20251105/1762346653788564453.png','{\"layouts\":[\"default\",\"sidebar\",\"full-width\"],\"templates\":[\"index\",\"post\",\"page\",\"category\",\"archive\",\"search\"],\"components\":[\"header\",\"footer\",\"nav\",\"breadcrumb\",\"sidebar\"],\"supports\":[\"responsive\",\"seo\",\"social-share\"],\"customOptions\":{}}',1,1,'mW4zQF7ET','{\"minVersion\":\"1.0.0\",\"maxVersion\":null}','{\"downloadCount\":0,\"rating\":5,\"reviewCount\":0}','1','2025-08-21 13:02:39','2025-11-07 08:38:27','1','1',0,1);
 /*!40000 ALTER TABLE `templates` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
--- Table structure for table `upload_files`
---
-
-DROP TABLE IF EXISTS `upload_files`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `upload_files` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `type` enum('local','qn','oss') NOT NULL DEFAULT 'local' COMMENT '上传方式：local本地，qn七牛，oss阿里云',
-  `uploadPath` varchar(500) DEFAULT NULL COMMENT '本地上传路径',
-  `qn_bucket` varchar(100) DEFAULT NULL COMMENT '七牛云存储空间名称',
-  `qn_accessKey` varchar(100) DEFAULT NULL COMMENT '七牛云 AccessKey',
-  `qn_secretKey` varchar(100) DEFAULT NULL COMMENT '七牛云 SecretKey',
-  `qn_zone` varchar(50) DEFAULT NULL COMMENT '七牛云存储区域',
-  `qn_endPoint` varchar(200) DEFAULT NULL COMMENT '七牛云访问域名',
-  `oss_bucket` varchar(100) DEFAULT NULL COMMENT '阿里云OSS存储桶名称',
-  `oss_accessKey` varchar(100) DEFAULT NULL COMMENT '阿里云OSS AccessKey',
-  `oss_secretKey` varchar(100) DEFAULT NULL COMMENT '阿里云OSS SecretKey',
-  `oss_region` varchar(50) DEFAULT NULL COMMENT '阿里云OSS地域',
-  `oss_endPoint` varchar(200) DEFAULT NULL COMMENT '阿里云OSS访问域名',
-  `oss_apiVersion` varchar(20) DEFAULT NULL COMMENT '阿里云OSS API版本',
-  `createdAt` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_type` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文件上传配置表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `upload_files`
---
-
-LOCK TABLES `upload_files` WRITE;
-/*!40000 ALTER TABLE `upload_files` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `upload_files` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
 
@@ -3032,86 +2539,6 @@ LOCK TABLES `user_followers` WRITE;
 /*!40000 ALTER TABLE `user_followers` DISABLE KEYS */;
 set autocommit=0;
 /*!40000 ALTER TABLE `user_followers` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `enable` tinyint(1) DEFAULT 1 COMMENT '用户是否有效',
-  `name` varchar(100) DEFAULT NULL COMMENT '真实姓名',
-  `userName` varchar(50) NOT NULL COMMENT '用户名',
-  `password` text DEFAULT NULL COMMENT '密码（加密）',
-  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
-  `qq` bigint(20) DEFAULT NULL COMMENT 'QQ号',
-  `phoneNum` varchar(20) DEFAULT NULL COMMENT '手机号',
-  `countryCode` varchar(10) DEFAULT NULL COMMENT '手机号前国家代码',
-  `idNo` bigint(20) DEFAULT NULL COMMENT '身份证号',
-  `idType` enum('1','2','3') NOT NULL DEFAULT '1' COMMENT '证件类型：1身份证，2护照，3其他',
-  `comments` text DEFAULT NULL COMMENT '备注',
-  `introduction` text DEFAULT NULL COMMENT '个人简介',
-  `position` varchar(100) DEFAULT NULL COMMENT '职位',
-  `profession` varchar(100) DEFAULT NULL COMMENT '职业',
-  `industry` varchar(100) DEFAULT NULL COMMENT '行业',
-  `experience` varchar(200) DEFAULT NULL COMMENT '教育经历',
-  `company` varchar(100) DEFAULT NULL COMMENT '大学或公司',
-  `website` varchar(255) DEFAULT NULL COMMENT '个人站点',
-  `logo` varchar(500) NOT NULL DEFAULT '/static/upload/images/defaultlogo.png' COMMENT '头像',
-  `group` varchar(20) NOT NULL DEFAULT '0' COMMENT '用户组：0普通用户',
-  `province` varchar(50) DEFAULT NULL COMMENT '所在省份',
-  `city` varchar(50) DEFAULT NULL COMMENT '所在城市',
-  `birth` datetime DEFAULT '1770-01-01 00:00:00' COMMENT '出生年月日',
-  `gender` enum('0','1') NOT NULL DEFAULT '0' COMMENT '性别：0男，1女',
-  `state` enum('0','1') NOT NULL DEFAULT '1' COMMENT '状态：1正常，0删除',
-  `retrieve_time` bigint(20) DEFAULT NULL COMMENT '用户发送激活请求的时间',
-  `loginActive` tinyint(1) NOT NULL DEFAULT 0 COMMENT '首次登录',
-  `deviceId` varchar(100) DEFAULT NULL COMMENT '针对游客的设备id',
-  `despises` longtext DEFAULT NULL COMMENT '讨厌的文章或帖子（JSON数组）',
-  `despiseMessage` longtext DEFAULT NULL COMMENT '讨厌的评论（JSON数组）',
-  `favorites` longtext DEFAULT NULL COMMENT '收藏的文章或帖子（JSON数组）',
-  `praiseContents` longtext DEFAULT NULL COMMENT '点赞的文章或帖子（JSON数组）',
-  `praiseMessages` longtext DEFAULT NULL COMMENT '点赞的评论（JSON数组）',
-  `followers` longtext DEFAULT NULL COMMENT '关注我的创作者（JSON数组）',
-  `watchers` longtext DEFAULT NULL COMMENT '我关注的创作者（JSON数组）',
-  `watchTags` longtext DEFAULT NULL COMMENT '我关注的标签（JSON数组）',
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_userName` (`userName`),
-  UNIQUE KEY `userName` (`userName`),
-  UNIQUE KEY `idx_user_username` (`userName`),
-  UNIQUE KEY `idx_user_username_unique` (`userName`),
-  UNIQUE KEY `userName_2` (`userName`),
-  UNIQUE KEY `userName_3` (`userName`),
-  KEY `idx_email` (`email`),
-  KEY `idx_group` (`group`),
-  KEY `idx_state` (`state`),
-  KEY `idx_enable` (`enable`),
-  KEY `idx_deviceId` (`deviceId`),
-  KEY `idx_user_email` (`email`),
-  KEY `idx_user_deviceid` (`deviceId`),
-  KEY `idx_user_group` (`group`),
-  KEY `idx_user_state` (`state`),
-  KEY `idx_user_enable` (`enable`),
-  KEY `idx_user_status` (`enable`),
-  KEY `idx_user_phone` (`phoneNum`,`countryCode`)
-) ENGINE=InnoDB AUTO_INCREMENT=805 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `users`
---
-
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-set autocommit=0;
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 commit;
 
@@ -3217,4 +2644,486 @@ commit;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-01-19 21:51:33
+-- Dump completed on 2026-01-24 12:12:06
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-12.1.2-MariaDB, for osx10.20 (arm64)
+--
+-- Host: 192.168.31.69    Database: doracms3
+-- ------------------------------------------------------
+-- Server version	10.3.37-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
+
+--
+-- Table structure for table `admins`
+--
+
+DROP TABLE IF EXISTS `admins`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `userName` varchar(100) NOT NULL COMMENT '用户名',
+  `password` text DEFAULT NULL COMMENT '密码（加密）',
+  `logo` text NOT NULL COMMENT '头像',
+  `userGender` enum('1','2') NOT NULL COMMENT '性别 1: 男, 2: 女',
+  `nickName` varchar(100) NOT NULL COMMENT '昵称',
+  `userPhone` varchar(20) NOT NULL COMMENT '手机号',
+  `userEmail` varchar(255) NOT NULL COMMENT '邮箱',
+  `userRoles` text DEFAULT NULL COMMENT '用户角色数组（JSON格式）',
+  `status` enum('1','2') NOT NULL DEFAULT '1' COMMENT '状态 1: 启用, 2: 禁用',
+  `createBy` varchar(32) DEFAULT NULL COMMENT '创建者',
+  `updateBy` varchar(32) DEFAULT NULL COMMENT '更新者',
+  `updatedAt` datetime NOT NULL COMMENT '更新时间',
+  `createdAt` datetime NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userName` (`userName`),
+  UNIQUE KEY `userEmail` (`userEmail`),
+  UNIQUE KEY `idx_admin_username_unique` (`userName`),
+  UNIQUE KEY `idx_admin_email_unique` (`userEmail`),
+  UNIQUE KEY `idx_admin_phone_unique` (`userPhone`),
+  UNIQUE KEY `userName_2` (`userName`),
+  UNIQUE KEY `userEmail_2` (`userEmail`),
+  KEY `idx_admin_username` (`userName`),
+  KEY `idx_admin_email` (`userEmail`),
+  KEY `idx_admin_phone` (`userPhone`),
+  KEY `idx_admin_status` (`status`),
+  KEY `idx_admin_create_time` (`createdAt`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `admin_roles`
+--
+
+DROP TABLE IF EXISTS `admin_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `admin_roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `adminId` int(11) NOT NULL COMMENT '管理员ID',
+  `roleId` int(11) NOT NULL COMMENT '角色ID',
+  `status` varchar(10) NOT NULL DEFAULT '1' COMMENT '关联状态：1-有效，2-无效',
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
+  `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新时间',
+  `createBy` varchar(50) DEFAULT NULL COMMENT '创建人',
+  `updateBy` varchar(50) DEFAULT NULL COMMENT '更新人',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_admin_role` (`adminId`,`roleId`),
+  KEY `idx_admin_id` (`adminId`),
+  KEY `idx_role_id` (`roleId`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员角色关联表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `enable` tinyint(1) DEFAULT 1 COMMENT '用户是否有效',
+  `name` varchar(100) DEFAULT NULL COMMENT '真实姓名',
+  `userName` varchar(50) NOT NULL COMMENT '用户名',
+  `password` text DEFAULT NULL COMMENT '密码（加密）',
+  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
+  `qq` bigint(20) DEFAULT NULL COMMENT 'QQ号',
+  `phoneNum` varchar(20) DEFAULT NULL COMMENT '手机号',
+  `countryCode` varchar(10) DEFAULT NULL COMMENT '手机号前国家代码',
+  `idNo` bigint(20) DEFAULT NULL COMMENT '身份证号',
+  `idType` enum('1','2','3') NOT NULL DEFAULT '1' COMMENT '证件类型：1身份证，2护照，3其他',
+  `comments` text DEFAULT NULL COMMENT '备注',
+  `introduction` text DEFAULT NULL COMMENT '个人简介',
+  `position` varchar(100) DEFAULT NULL COMMENT '职位',
+  `profession` varchar(100) DEFAULT NULL COMMENT '职业',
+  `industry` varchar(100) DEFAULT NULL COMMENT '行业',
+  `experience` varchar(200) DEFAULT NULL COMMENT '教育经历',
+  `company` varchar(100) DEFAULT NULL COMMENT '大学或公司',
+  `website` varchar(255) DEFAULT NULL COMMENT '个人站点',
+  `logo` varchar(500) NOT NULL DEFAULT '/static/upload/images/defaultlogo.png' COMMENT '头像',
+  `group` varchar(20) NOT NULL DEFAULT '0' COMMENT '用户组：0普通用户',
+  `province` varchar(50) DEFAULT NULL COMMENT '所在省份',
+  `city` varchar(50) DEFAULT NULL COMMENT '所在城市',
+  `birth` datetime DEFAULT '1770-01-01 00:00:00' COMMENT '出生年月日',
+  `gender` enum('0','1') NOT NULL DEFAULT '0' COMMENT '性别：0男，1女',
+  `state` enum('0','1') NOT NULL DEFAULT '1' COMMENT '状态：1正常，0删除',
+  `retrieve_time` bigint(20) DEFAULT NULL COMMENT '用户发送激活请求的时间',
+  `loginActive` tinyint(1) NOT NULL DEFAULT 0 COMMENT '首次登录',
+  `deviceId` varchar(100) DEFAULT NULL COMMENT '针对游客的设备id',
+  `despises` longtext DEFAULT NULL COMMENT '讨厌的文章或帖子（JSON数组）',
+  `despiseMessage` longtext DEFAULT NULL COMMENT '讨厌的评论（JSON数组）',
+  `favorites` longtext DEFAULT NULL COMMENT '收藏的文章或帖子（JSON数组）',
+  `praiseContents` longtext DEFAULT NULL COMMENT '点赞的文章或帖子（JSON数组）',
+  `praiseMessages` longtext DEFAULT NULL COMMENT '点赞的评论（JSON数组）',
+  `followers` longtext DEFAULT NULL COMMENT '关注我的创作者（JSON数组）',
+  `watchers` longtext DEFAULT NULL COMMENT '我关注的创作者（JSON数组）',
+  `watchTags` longtext DEFAULT NULL COMMENT '我关注的标签（JSON数组）',
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_userName` (`userName`),
+  UNIQUE KEY `userName` (`userName`),
+  UNIQUE KEY `idx_user_username` (`userName`),
+  UNIQUE KEY `idx_user_username_unique` (`userName`),
+  UNIQUE KEY `userName_2` (`userName`),
+  UNIQUE KEY `userName_3` (`userName`),
+  KEY `idx_email` (`email`),
+  KEY `idx_group` (`group`),
+  KEY `idx_state` (`state`),
+  KEY `idx_enable` (`enable`),
+  KEY `idx_deviceId` (`deviceId`),
+  KEY `idx_user_email` (`email`),
+  KEY `idx_user_deviceid` (`deviceId`),
+  KEY `idx_user_group` (`group`),
+  KEY `idx_user_state` (`state`),
+  KEY `idx_user_enable` (`enable`),
+  KEY `idx_user_status` (`enable`),
+  KEY `idx_user_phone` (`phoneNum`,`countryCode`)
+) ENGINE=InnoDB AUTO_INCREMENT=805 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `contents`
+--
+
+DROP TABLE IF EXISTS `contents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `contents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'MariaDB 主键',
+  `title` varchar(200) NOT NULL COMMENT '内容标题',
+  `stitle` varchar(200) DEFAULT NULL COMMENT '副标题',
+  `type` enum('1','2','plug','singer') DEFAULT '1' COMMENT '发布类型: 1-普通, 2-专题, plug-插件, singer-歌手',
+  `categories` mediumtext DEFAULT NULL COMMENT '文章分类ID数组(JSON格式)',
+  `sortPath` varchar(500) DEFAULT NULL COMMENT '存储所有父节点结构',
+  `tags` mediumtext DEFAULT NULL COMMENT '标签ID数组(JSON格式)',
+  `keywords` mediumtext DEFAULT NULL COMMENT '关键词数组(JSON格式)',
+  `sImg` varchar(500) DEFAULT '/upload/images/defaultImg.jpg' COMMENT '文章小图',
+  `sImgType` enum('1','2') DEFAULT '2' COMMENT '首图类型: 1-自动生成, 2-本地上传',
+  `cover` varchar(100) DEFAULT NULL COMMENT '封面ID',
+  `videoImg` varchar(500) DEFAULT '' COMMENT '视频缩略图',
+  `imageArr` mediumtext DEFAULT NULL COMMENT '媒体集合-图片(JSON格式)',
+  `videoArr` mediumtext DEFAULT NULL COMMENT '媒体集合-视频(JSON格式)',
+  `duration` varchar(20) DEFAULT '0:01' COMMENT '针对有视频的帖子时长',
+  `discription` mediumtext DEFAULT NULL COMMENT '内容描述',
+  `appShowType` enum('0','1','2','3') DEFAULT '1' COMMENT 'app端排版格式: 0-不显示图片, 1-小图, 2-大图, 3-视频',
+  `source` varchar(200) DEFAULT NULL COMMENT '来源',
+  `comments` longtext DEFAULT NULL COMMENT '内容正文',
+  `simpleComments` longtext DEFAULT NULL COMMENT '带格式的纯文本',
+  `markDownComments` longtext DEFAULT NULL COMMENT 'markdown格式内容',
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `author` varchar(50) DEFAULT NULL COMMENT '文档作者ID(Admin)',
+  `uAuthor` varchar(50) DEFAULT NULL COMMENT '文档作者ID(User)',
+  `state` enum('0','1','2','3') DEFAULT '0' COMMENT '状态: 0-草稿, 1-待审核, 2-审核通过, 3-下架',
+  `draft` enum('0','1') DEFAULT '0' COMMENT '是否进入回收站: 0-否, 1-是',
+  `dismissReason` mediumtext DEFAULT NULL COMMENT '驳回原因(针对审核不通过)',
+  `isTop` tinyint(4) DEFAULT 0 COMMENT '是否推荐: 0-不推荐, 1-推荐',
+  `roofPlacement` enum('0','1') DEFAULT '0' COMMENT '是否置顶: 0-不置顶, 1-置顶',
+  `clickNum` int(10) unsigned DEFAULT 1 COMMENT '点击数',
+  `commentNum` int(10) unsigned DEFAULT 0 COMMENT '评论数',
+  `likeNum` int(10) unsigned DEFAULT 0 COMMENT '喜欢数',
+  `reviewer` varchar(50) DEFAULT NULL COMMENT '审核人ID',
+  `reviewDate` datetime DEFAULT NULL COMMENT '审核时间',
+  `praise_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞数',
+  `favorite_count` int(11) NOT NULL DEFAULT 0 COMMENT '收藏数',
+  `despise_count` int(11) NOT NULL DEFAULT 0 COMMENT '踩数',
+  PRIMARY KEY (`id`),
+  KEY `idx_content_author` (`author`),
+  KEY `idx_content_uauthor` (`uAuthor`),
+  KEY `idx_content_date` (`createdAt`),
+  KEY `idx_content_update_date` (`updatedAt`),
+  KEY `idx_content_click_num` (`clickNum`),
+  KEY `idx_content_title` (`title`),
+  KEY `idx_content_type` (`type`),
+  KEY `idx_content_created` (`createdAt`),
+  KEY `idx_content_state_author` (`state`,`uAuthor`),
+  KEY `idx_content_state_draft` (`state`,`draft`),
+  KEY `idx_content_istop_date` (`isTop`,`createdAt`),
+  KEY `idx_content_roof_date` (`roofPlacement`,`createdAt`),
+  KEY `idx_content_state` (`state`),
+  KEY `idx_content_istop` (`isTop`),
+  KEY `idx_content_roof` (`roofPlacement`),
+  KEY `idx_content_updated` (`updatedAt`),
+  KEY `idx_content_click` (`clickNum`),
+  KEY `idx_content_state_uauthor` (`state`,`uAuthor`),
+  KEY `idx_content_state_top_roof` (`state`,`isTop`,`roofPlacement`),
+  KEY `idx_content_praise` (`praise_count`)
+) ENGINE=InnoDB AUTO_INCREMENT=309 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='内容表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `upload_files`
+--
+
+DROP TABLE IF EXISTS `upload_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `upload_files` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `type` enum('local','qn','oss') NOT NULL DEFAULT 'local' COMMENT '上传方式：local本地，qn七牛，oss阿里云',
+  `uploadPath` varchar(500) DEFAULT NULL COMMENT '本地上传路径',
+  `qn_bucket` varchar(100) DEFAULT NULL COMMENT '七牛云存储空间名称',
+  `qn_accessKey` varchar(100) DEFAULT NULL COMMENT '七牛云 AccessKey',
+  `qn_secretKey` varchar(100) DEFAULT NULL COMMENT '七牛云 SecretKey',
+  `qn_zone` varchar(50) DEFAULT NULL COMMENT '七牛云存储区域',
+  `qn_endPoint` varchar(200) DEFAULT NULL COMMENT '七牛云访问域名',
+  `oss_bucket` varchar(100) DEFAULT NULL COMMENT '阿里云OSS存储桶名称',
+  `oss_accessKey` varchar(100) DEFAULT NULL COMMENT '阿里云OSS AccessKey',
+  `oss_secretKey` varchar(100) DEFAULT NULL COMMENT '阿里云OSS SecretKey',
+  `oss_region` varchar(50) DEFAULT NULL COMMENT '阿里云OSS地域',
+  `oss_endPoint` varchar(200) DEFAULT NULL COMMENT '阿里云OSS访问域名',
+  `oss_apiVersion` varchar(20) DEFAULT NULL COMMENT '阿里云OSS API版本',
+  `createdAt` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_type` (`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文件上传配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `contentId` int(11) DEFAULT NULL COMMENT '内容ID (Content.id)',
+  `contentTitle` varchar(200) DEFAULT NULL COMMENT '留言对应的内容标题',
+  `author` int(11) DEFAULT NULL COMMENT '留言者ID (User.id)',
+  `adminAuthor` int(11) DEFAULT NULL COMMENT '管理员ID (Admin.id)',
+  `replyAuthor` int(11) DEFAULT NULL COMMENT '被回复者ID (User.id)',
+  `adminReplyAuthor` int(11) DEFAULT NULL COMMENT '被回复者管理员ID (Admin.id)',
+  `state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否被举报',
+  `utype` enum('0','1') NOT NULL DEFAULT '0' COMMENT '评论者类型 0:普通用户, 1:管理员',
+  `relationMsgId` int(11) DEFAULT NULL COMMENT '父留言ID (Message.id)',
+  `createdAt` datetime NOT NULL COMMENT '留言时间',
+  `praise_num` int(11) NOT NULL DEFAULT 0 COMMENT '被赞次数',
+  `had_praise` tinyint(1) NOT NULL DEFAULT 0 COMMENT '当前是否已被点赞',
+  `praiseMembers` text DEFAULT NULL COMMENT '点赞用户id集合(JSON数组)',
+  `content` text NOT NULL COMMENT '留言内容',
+  `updatedAt` datetime NOT NULL COMMENT '留言更新时间',
+  `despise_num` int(11) DEFAULT 0 COMMENT '被踩次数',
+  `had_despise` tinyint(1) DEFAULT 0 COMMENT '当前用户是否已踩',
+  `auditStatus` enum('pending','approved','rejected') DEFAULT 'pending' COMMENT '审核状态',
+  `auditReason` text DEFAULT NULL COMMENT '审核原因',
+  `auditBy` varchar(50) DEFAULT NULL COMMENT '审核人ID',
+  `auditAt` datetime DEFAULT NULL COMMENT '审核时间',
+  `replyCount` int(11) DEFAULT 0 COMMENT '回复数量',
+  `ipAddress` varchar(45) DEFAULT NULL COMMENT 'IP地址',
+  `userAgent` text DEFAULT NULL COMMENT '用户代理',
+  `praise_count` int(11) DEFAULT 0 COMMENT '点赞数',
+  `despise_count` int(11) DEFAULT 0 COMMENT '踩数',
+  PRIMARY KEY (`id`),
+  KEY `idx_messages_audit_status` (`auditStatus`),
+  KEY `idx_messages_audit_by` (`auditBy`),
+  KEY `idx_messages_ip_address` (`ipAddress`),
+  KEY `idx_praise_count` (`praise_count`),
+  KEY `idx_despise_count` (`despise_count`)
+) ENGINE=InnoDB AUTO_INCREMENT=676 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ai_models`
+--
+
+DROP TABLE IF EXISTS `ai_models`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ai_models` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `provider` varchar(50) NOT NULL COMMENT 'AI提供商: openai, deepseek, ollama, anthropic',
+  `modelName` varchar(100) NOT NULL COMMENT '模型名称，如 gpt-4, deepseek-chat',
+  `displayName` varchar(200) NOT NULL COMMENT '显示名称',
+  `description` text DEFAULT NULL COMMENT '模型描述',
+  `config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '模型配置: {apiKey, apiEndpoint, maxTokens, ...}',
+  `supportedTasks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '支持的任务类型数组',
+  `costPerRequest` decimal(10,4) DEFAULT 0.0000 COMMENT '每次请求成本(元)',
+  `costPer1kTokens` decimal(10,4) DEFAULT 0.0000 COMMENT '每1K tokens成本(元)',
+  `priority` int(11) DEFAULT 10 COMMENT '优先级，数字越大优先级越高',
+  `isEnabled` tinyint(1) DEFAULT 1 COMMENT '是否启用',
+  `statistics` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '统计信息',
+  `health` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '健康状态',
+  `fallbackModelId` int(11) DEFAULT NULL COMMENT '降级模型ID',
+  `maxRetries` int(11) DEFAULT 2 COMMENT '最大重试次数',
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '标签数组',
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '扩展元数据',
+  `createdBy` int(11) DEFAULT NULL COMMENT '创建者ID',
+  `updatedBy` int(11) DEFAULT NULL COMMENT '最后更新者ID',
+  `createdAt` datetime NOT NULL COMMENT '创建时间',
+  `updatedAt` datetime NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_provider_model` (`provider`,`modelName`),
+  KEY `idx_enabled_priority` (`isEnabled`,`priority`),
+  FULLTEXT KEY `ft_search` (`displayName`,`description`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ai_usage_logs`
+--
+
+DROP TABLE IF EXISTS `ai_usage_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ai_usage_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `userId` int(11) NOT NULL COMMENT '用户ID',
+  `userType` varchar(20) DEFAULT 'admin' COMMENT '用户类型: admin, user',
+  `taskType` varchar(100) NOT NULL COMMENT '任务类型：title_generation, tag_extraction等',
+  `taskDescription` text DEFAULT NULL COMMENT '任务描述',
+  `modelId` int(11) NOT NULL COMMENT '使用的模型ID',
+  `provider` varchar(50) DEFAULT NULL COMMENT 'AI提供商',
+  `modelName` varchar(100) DEFAULT NULL COMMENT '模型名称',
+  `promptTemplateId` int(11) DEFAULT NULL COMMENT '使用的提示词模板ID',
+  `promptVersion` varchar(20) DEFAULT NULL COMMENT '提示词版本',
+  `input` longtext NOT NULL COMMENT '输入内容',
+  `output` longtext DEFAULT NULL COMMENT '输出内容',
+  `rawResponse` longtext DEFAULT NULL COMMENT 'AI原始响应（用于调试）',
+  `status` varchar(20) DEFAULT 'success' COMMENT '执行状态: success, failure, partial, timeout',
+  `errorMessage` text DEFAULT NULL COMMENT '错误信息（如果失败）',
+  `errorCode` varchar(50) DEFAULT NULL COMMENT '错误代码',
+  `inputTokens` int(11) DEFAULT 0 COMMENT '输入Token数量',
+  `outputTokens` int(11) DEFAULT 0 COMMENT '输出Token数量',
+  `totalTokens` int(11) DEFAULT 0 COMMENT '总Token数量',
+  `cost` decimal(10,4) DEFAULT 0.0000 COMMENT '本次调用成本（元）',
+  `responseTime` int(11) DEFAULT 0 COMMENT '响应时间（毫秒）',
+  `retryCount` int(11) DEFAULT 0 COMMENT '重试次数',
+  `isFallback` tinyint(1) DEFAULT 0 COMMENT '是否使用了降级模型',
+  `quality` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '质量评估',
+  `context` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '请求上下文',
+  `relatedContentId` int(11) DEFAULT NULL COMMENT '关联的内容ID（如文章ID）',
+  `relatedType` varchar(50) DEFAULT NULL COMMENT '关联类型（如 article, product）',
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '标签数组',
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '扩展元数据',
+  `startTime` datetime DEFAULT NULL COMMENT '开始时间',
+  `endTime` datetime DEFAULT NULL COMMENT '结束时间',
+  `createdAt` datetime NOT NULL COMMENT '创建时间',
+  `updatedAt` datetime NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_time` (`userId`,`createdAt`),
+  KEY `idx_model_time` (`modelId`,`createdAt`),
+  KEY `idx_task_time` (`taskType`,`createdAt`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`createdAt`),
+  KEY `idx_related` (`relatedContentId`,`relatedType`),
+  KEY `idx_user_task_time` (`userId`,`taskType`,`createdAt`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `api_keys`
+--
+
+DROP TABLE IF EXISTS `api_keys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `api_keys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `mongo_id` varchar(32) DEFAULT NULL COMMENT 'MongoDB _id 映射字段',
+  `userId` int(11) NOT NULL COMMENT '用户ID (User.id)',
+  `name` varchar(100) NOT NULL COMMENT 'API Key 名称',
+  `key` varchar(100) NOT NULL COMMENT 'API Key',
+  `secret` varchar(100) NOT NULL COMMENT 'API Secret',
+  `permissions` text NOT NULL COMMENT '权限数组(JSON)',
+  `ipWhitelist` text NOT NULL COMMENT 'IP白名单(JSON)',
+  `rateLimit` text NOT NULL COMMENT '限流配置(JSON)',
+  `status` enum('active','disabled') NOT NULL DEFAULT 'active' COMMENT '状态',
+  `expiresAt` datetime DEFAULT NULL COMMENT '过期时间',
+  `lastUsedAt` datetime DEFAULT NULL COMMENT '最后使用时间',
+  `createdAt` datetime NOT NULL COMMENT '创建时间',
+  `updatedAt` datetime NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key` (`key`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `system_option_logs`
+--
+
+DROP TABLE IF EXISTS `system_option_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `system_option_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'MariaDB 自增主键',
+  `type` enum('login','logout','exception','operation','access','error','warning','info','debug') NOT NULL DEFAULT 'operation' COMMENT '操作类型',
+  `logs` text NOT NULL COMMENT '日志内容描述',
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '操作时间',
+  `ip_address` varchar(45) DEFAULT NULL COMMENT '用户IP地址',
+  `user_agent` text DEFAULT NULL COMMENT '用户代理信息',
+  `client_version` varchar(50) DEFAULT NULL COMMENT '客户端版本',
+  `client_platform` enum('web','mobile','desktop','api') DEFAULT NULL COMMENT '客户端平台',
+  `user_id` varchar(50) DEFAULT NULL COMMENT '关联的用户ID',
+  `user_type` enum('admin','user','guest','system') DEFAULT 'guest' COMMENT '用户类型',
+  `user_name` varchar(100) DEFAULT NULL COMMENT '用户名',
+  `request_path` varchar(500) DEFAULT NULL COMMENT '请求路径',
+  `request_method` enum('GET','POST','PUT','DELETE','PATCH','OPTIONS','HEAD') DEFAULT 'GET' COMMENT '请求方法',
+  `request_query` longtext DEFAULT NULL COMMENT '查询字符串',
+  `request_body` longtext DEFAULT NULL COMMENT '请求体',
+  `request_params` longtext DEFAULT NULL COMMENT '请求参数',
+  `response_status` int(11) DEFAULT 200 COMMENT '响应状态码',
+  `response_time` int(11) DEFAULT 0 COMMENT '响应时间(毫秒)',
+  `error_code` varchar(100) DEFAULT NULL COMMENT '错误代码',
+  `error_message` varchar(1000) DEFAULT NULL COMMENT '错误消息',
+  `new_value` longtext DEFAULT NULL COMMENT '修改后的值',
+  `old_value` longtext DEFAULT NULL COMMENT '修改前的值',
+  `resource_id` varchar(100) DEFAULT NULL COMMENT '资源ID',
+  `resource_type` varchar(50) DEFAULT NULL COMMENT '资源类型',
+  `action` varchar(50) DEFAULT NULL COMMENT '操作动作',
+  `module` varchar(50) DEFAULT NULL COMMENT '业务模块',
+  `response_size` int(11) DEFAULT NULL COMMENT '响应大小',
+  `session_id` varchar(100) DEFAULT NULL COMMENT '会话ID',
+  `device_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '设备信息(JSON格式)',
+  `location_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '地理位置信息(JSON格式)',
+  `error_stack` text DEFAULT NULL COMMENT '错误堆栈信息',
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '日志标签(JSON数组)',
+  `severity` enum('low','medium','high','critical') NOT NULL DEFAULT 'medium' COMMENT '严重程度',
+  `environment` enum('local','development','staging','production') DEFAULT NULL COMMENT '环境',
+  `trace_id` varchar(100) DEFAULT NULL COMMENT '链路追踪ID',
+  `extra_data` longtext DEFAULT NULL COMMENT '额外数据（JSON）',
+  `is_handled` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否已处理',
+  `handled_at` datetime DEFAULT NULL COMMENT '处理时间',
+  `handled_by` varchar(50) DEFAULT NULL COMMENT '处理人ID',
+  `handle_note` text DEFAULT NULL COMMENT '处理备注',
+  `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '记录更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_type` (`type`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_created_at` (`createdAt`),
+  KEY `idx_severity` (`severity`),
+  KEY `idx_is_handled` (`is_handled`),
+  KEY `system_option_logs_type` (`type`),
+  KEY `system_option_logs_created_at` (`createdAt`),
+  KEY `idx_type_date` (`type`,`createdAt`),
+  KEY `idx_is_handled_type` (`is_handled`,`type`),
+  KEY `idx_module` (`module`),
+  KEY `idx_user_id_created_at` (`user_id`,`createdAt`),
+  KEY `idx_module_created_at` (`module`,`createdAt`)
+) ENGINE=InnoDB AUTO_INCREMENT=7482 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统操作日志表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
+
+-- Dump completed on 2026-01-24 12:12:07

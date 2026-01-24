@@ -29,6 +29,11 @@ databak/
 .env.development
 .env.test
 
+# 全量备份目录（如设置在仓库内，避免提交）
+docker/mongodb/full/
+docker/mariadb/full/
+data/backups/full/
+
 
 # 前端构建产物（由 pnpm build 生成）
 # 注意：由于 Docker 部署需要这些文件（Dockerfile 中没有构建前端步骤），所以需要提交 backstage 目录
