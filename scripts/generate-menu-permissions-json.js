@@ -53,7 +53,7 @@ groups.forEach((group, index) => {
 outputLines.push('}');
 
 // 输出到文件
-const outputPath = path.join(__dirname,'server','docs', '../server/menu-permissions.json');
+const outputPath = path.join(__dirname, '../server/menu-permissions.json');
 const outputContent = outputLines.join('\n');
 
 fs.writeFileSync(outputPath, outputContent, 'utf8');

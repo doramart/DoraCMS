@@ -13,7 +13,8 @@ const path = require('path');
 const vm = require('vm');
 
 const projectRoot = path.resolve(__dirname, '..');
-const routerFile = path.join(projectRoot, 'app', 'router', 'manage', 'v1.js');
+const coreRouterFile = path.join(projectRoot, 'app', 'router', 'manage', 'v1.js');
+const pluginRouterRoot = path.join(projectRoot, 'lib', 'plugin');
 const definitionsFile = path.join(projectRoot, 'app', 'permission', 'definitions', 'manage.js');
 
 const ROUTER_CALL_RE = /router\.(get|post|put|patch|delete)\s*\(([\s\S]*?);/g;
@@ -304,23 +305,61 @@ const extractRoutes = (source, context = {}) => {
   return routes;
 };
 
-const main = () => {
-  const routerSource = fs.readFileSync(routerFile, 'utf8');
-  // 简单提取 prefix（如 const prefix = '/manage/v1';），便于解析模板字符串
+const collectPluginRouterFiles = rootDir => {
+  const results = [];
+  if (!fs.existsSync(rootDir)) {
+    return results;
+  }
+  const entries = fs.readdirSync(rootDir, { withFileTypes: true });
+  entries.forEach(entry => {
+    const fullPath = path.join(rootDir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...collectPluginRouterFiles(fullPath));
+      return;
+    }
+    if (
+      entry.isFile() &&
+      fullPath.includes(`${path.sep}app${path.sep}router${path.sep}manage${path.sep}v1`) &&
+      fullPath.endsWith('.js')
+    ) {
+      results.push(fullPath);
+    }
+  });
+  return results;
+};
+
+const parseRouterFile = filePath => {
+  const routerSource = fs.readFileSync(filePath, 'utf8');
   const prefixMatch = routerSource.match(/const\s+prefix\s*=\s*['"`]([^'"`]+)['"`]/);
   const context = {};
   if (prefixMatch && prefixMatch[1]) {
     context.prefix = prefixMatch[1];
   }
-
   const routes = extractRoutes(routerSource, context);
-  if (routes.length === 0) {
-    console.error('No /manage routes found. Abort.');
+  const commentMap = extractRouteComments(routerSource);
+  return { routes, commentMap };
+};
+
+const main = () => {
+  const routerFiles = [coreRouterFile, ...collectPluginRouterFiles(pluginRouterRoot)];
+  const allRoutes = [];
+  const commentMap = new Map();
+
+  routerFiles.forEach(filePath => {
+    if (!fs.existsSync(filePath)) return;
+    const { routes, commentMap: fileComments } = parseRouterFile(filePath);
+    allRoutes.push(...routes);
+    fileComments.forEach((value, key) => {
+      if (!commentMap.has(key)) {
+        commentMap.set(key, value);
+      }
+    });
+  });
+
+  if (allRoutes.length === 0) {
+    console.error('No /manage routes found in core or plugins. Abort.');
     process.exit(1);
   }
-
-  // 提取路由注释
-  const commentMap = extractRouteComments(routerSource);
 
   const existing = loadExistingDefinitions(definitionsFile);
   const existingByKey = new Map(existing.map(def => [`${def.method} ${def.path}`, def]));
@@ -330,7 +369,7 @@ const main = () => {
   const aliasSet = new Set();
   const rebuilt = [];
 
-  routes.forEach(route => {
+  allRoutes.forEach(route => {
     const key = `${route.method} ${route.path}`;
     const base = createDefinition(route);
     const existing = existingByKey.get(key);
