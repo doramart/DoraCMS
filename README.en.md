@@ -8,6 +8,12 @@
 
 A modern content management system based on EggJS 3.x + Vue 3 + TypeScript, managed with pnpm monorepo architecture.
 
+## 🔗 Live Demo
+
+- Demo URL: `https://demo.doracms.net`
+- Username: `doracms`
+- Password: `Hello985`
+
 ## 📸 Screenshots
 
 ### Admin Center

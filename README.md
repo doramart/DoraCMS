@@ -8,6 +8,12 @@
 
 一个基于 EggJS 3.x + Vue 3 + TypeScript 的现代化内容管理系统，采用 pnpm monorepo 架构管理。
 
+## 🔗 在线演示
+
+- 演示地址：`https://demo.doracms.net`
+- 账号：`doracms`
+- 密码：`Hello985`
+
 ## 📸 界面预览
 
 ### 管理后台
