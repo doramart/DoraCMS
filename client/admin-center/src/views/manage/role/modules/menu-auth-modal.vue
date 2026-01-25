@@ -95,7 +95,7 @@ function transformMenuData(menus: ApiMenu[], aliasMap: Map<string, string>): Men
 /** 获取菜单树数据 */
 async function getMenuTree() {
   try {
-    const data = await fetchGetMenuList({ isPaging: '0', hideInMenu: '0' });
+    const data = await fetchGetMenuList({ isPaging: '0' });
     const menuData = data?.data || [];
     const aliasMap = new Map<string, string>();
     menuTree.value = transformMenuData(menuData as ApiMenu[], aliasMap);

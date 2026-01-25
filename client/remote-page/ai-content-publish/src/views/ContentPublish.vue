@@ -710,7 +710,7 @@ async function loadContentForEdit(contentId) {
     }
   } catch (error) {
     console.error('加载文章数据失败:', error);
-    ElMessage.error(t('publish.error.loadArticle') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.loadArticle') + '：' + (error.message || '未知错误'));
     // 加载失败，返回列表
     router.back();
   } finally {
@@ -735,7 +735,7 @@ async function loadCategories() {
     }
   } catch (error) {
     console.error('加载分类失败:', error);
-    ElMessage.error(t('publish.error.loadCategory') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.loadCategory') + '：' + (error.message || '未知错误'));
     categoryList.value = [];
     categoryTree.value = [];
   } finally {
@@ -758,7 +758,7 @@ async function loadTags() {
     }
   } catch (error) {
     console.error('加载标签失败:', error);
-    ElMessage.error(t('publish.error.loadTags') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.loadTags') + '：' + (error.message || '未知错误'));
     tagList.value = [];
   }
 }
@@ -922,7 +922,7 @@ async function handlePreviewAI() {
     }
   } catch (error) {
     console.error('预览 AI 增强失败:', error);
-    ElMessage.error(t('publish.error.preview') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.preview') + '：' + (error.message || '未知错误'));
   } finally {
     loading.close();
     aiPanelRef.value?.setGenerating(false);
@@ -959,7 +959,7 @@ async function handleGenerateTitle() {
     }
   } catch (error) {
     console.error('生成标题失败:', error);
-    ElMessage.error(t('publish.error.generateTitle') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.generateTitle') + '：' + (error.message || '未知错误'));
   } finally {
     generating.title = false;
     aiPanelRef.value?.setGeneratingTitle(false);
@@ -995,7 +995,7 @@ async function handleGenerateSummary() {
     }
   } catch (error) {
     console.error('生成摘要失败:', error);
-    ElMessage.error(t('publish.error.generateSummary') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.generateSummary') + '：' + (error.message || '未知错误'));
   } finally {
     generating.summary = false;
     aiPanelRef.value?.setGeneratingSummary(false);
@@ -1031,7 +1031,7 @@ async function handleGenerateTags() {
     }
   } catch (error) {
     console.error('生成标签失败:', error);
-    ElMessage.error(t('publish.error.generateTags') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.generateTags') + '：' + (error.message || '未知错误'));
   } finally {
     generating.tags = false;
     aiPanelRef.value?.setGeneratingTags(false);
@@ -1071,7 +1071,7 @@ async function handleGenerateKeywords() {
     }
   } catch (error) {
     console.error('生成关键词失败:', error);
-    ElMessage.error(t('publish.error.generateKeywords') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.generateKeywords') + '：' + (error.message || '未知错误'));
   } finally {
     generating.keywords = false;
   }
@@ -1113,7 +1113,7 @@ async function handleGenerateCategory() {
       throw new Error(res.message || '分类匹配失败');
     }
   } catch (error) {
-    ElMessage.error(t('publish.error.matchCategory') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.matchCategory') + '：' + (error.message || '未知错误'));
   } finally {
     generating.category = false;
   }
@@ -1312,7 +1312,7 @@ async function handleApplyTagSuggestion(tagNames) {
     }
   } catch (error) {
     console.error('❌ 应用标签建议失败:', error);
-    ElMessage.error(t('publish.error.applyTag') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.applyTag') + '：' + (error.message || '未知错误'));
   }
 }
 
@@ -1401,7 +1401,7 @@ async function handleApplyCategorySuggestion(categoryNames) {
     });
   } catch (error) {
     console.error('❌ 应用分类建议失败:', error);
-    ElMessage.error(t('publish.error.applyCategory') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.applyCategory') + '：' + (error.message || '未知错误'));
   }
 }
 
@@ -1432,7 +1432,7 @@ async function handleApplyKeywordsSuggestion(keywords) {
     console.log('✅ 关键词应用完成:', uniqueKeywords);
   } catch (error) {
     console.error('❌ 应用关键词建议失败:', error);
-    ElMessage.error(t('publish.error.applyKeywords') + '：' + (error.message || '未知错误'));
+    // ElMessage.error(t('publish.error.applyKeywords') + '：' + (error.message || '未知错误'));
   }
 }
 
