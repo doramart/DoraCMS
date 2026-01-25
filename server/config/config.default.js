@@ -60,7 +60,7 @@ module.exports = appInfo => {
         'v1/admins/login',
         'v1/admins/logout',
         'v1/admins/me',
-        'v1/admins/*/routes',
+        'v1/admins/me/routes',
         'v1/admins/init',
         'v1/admins/init/status',
         'v1/plugins/*',
@@ -68,7 +68,6 @@ module.exports = appInfo => {
         'v1/sitemap/*',
         'v1/cache/*',
         'v1/templates/*',
-        // 'v1/ai/*',
       ],
     },
     hotReload: {
