@@ -265,7 +265,13 @@ class AppBootHook {
 
       // 检查TemplateService是否可用
       if (ctx.service && ctx.service.templateService) {
-        // 异步执行缓存预热，不阻塞应用启动
+        // 阻塞式关键缓存预热，保证首屏不空白
+        await ctx.service.templateService.warmupCriticalCache({
+          maxRetries: 6,
+          retryDelay: 1000,
+        });
+
+        // 异步执行完整缓存预热，不阻塞应用启动
         ctx.runInBackground(async () => {
           try {
             await ctx.service.templateService.warmupCache({

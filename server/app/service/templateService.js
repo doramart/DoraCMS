@@ -24,6 +24,9 @@ class TemplateService extends Service {
           preload: true,
           priority: 'high',
           warmupInterval: 300, // 5分钟预热一次
+          emptyTtl: 10, // 空数据短缓存，避免启动期空缓存长时间驻留
+          refreshOnEmpty: true,
+          minItems: 1,
         },
         hot: {
           ttl: 300,
@@ -31,6 +34,9 @@ class TemplateService extends Service {
           preload: true,
           priority: 'high',
           warmupInterval: 150, // 2.5分钟预热一次
+          emptyTtl: 10,
+          refreshOnEmpty: true,
+          minItems: 1,
         },
         news: {
           ttl: 180,
@@ -38,6 +44,9 @@ class TemplateService extends Service {
           preload: true,
           priority: 'high',
           warmupInterval: 90, // 1.5分钟预热一次
+          emptyTtl: 10,
+          refreshOnEmpty: true,
+          minItems: 1,
         },
         random: {
           ttl: 60,
@@ -165,12 +174,16 @@ class TemplateService extends Service {
       }
 
       const cacheKey = this._buildCacheKey(cacheConfig.key, args);
-
       // 1. 尝试从缓存获取
       const cachedResult = await this._getFromCache(cacheKey);
       if (cachedResult !== null) {
         this._globalCacheStats.hits++;
         this._recordResponseTime(startTime);
+
+        // 空数据快速刷新，避免启动期空缓存长时间停留
+        if (this._isEmptyResult(cachedResult) && cacheConfig.refreshOnEmpty) {
+          this._refreshCacheAsync(cacheKey, cacheConfig, actionType, args, 'empty-cache');
+        }
 
         // 异步检查是否需要后台更新
         this._checkBackgroundRefresh(cacheKey, cacheConfig, actionType, args);
@@ -182,8 +195,13 @@ class TemplateService extends Service {
       this._globalCacheStats.misses++;
       const result = await this._fetchFromDataSource(actionType, args);
 
-      // 3. 写入缓存
-      await this._setCache(cacheKey, result, cacheConfig.ttl);
+      // 3. 写入缓存（空数据采用短 TTL 或跳过缓存）
+      const cacheDecision = this._getCacheDecision(result, cacheConfig);
+      if (cacheDecision.shouldCache) {
+        await this._setCache(cacheKey, result, cacheDecision.ttl);
+      } else {
+        this.ctx.logger.debug(`[TemplateService] Skip caching empty result: ${cacheKey}`);
+      }
 
       // 4. 记录性能指标
       this._recordResponseTime(startTime);
@@ -248,40 +266,27 @@ class TemplateService extends Service {
    * @private
    */
   async _fetchContentData(actionType, args) {
-    const cacheConfig = this.cacheConfig.content[actionType];
-    if (!cacheConfig) {
-      throw new Error(`No cache config for content action: ${actionType}`);
+    const query = this._buildContentQuery(actionType, args);
+    const userInfo = this.ctx.session.user || {};
+
+    switch (actionType) {
+      case 'recommend':
+      case 'hot':
+      case 'news':
+        return await this.ctx.service.content.getContentList(query, userInfo);
+
+      case 'random':
+        return await this._getRandomContent(args);
+
+      case 'nearpost':
+        return await this._getPrevNextPosts(args);
+
+      case 'nearby':
+        return await this._getNearbyContent(args);
+
+      default:
+        throw new Error(`Unsupported content action: ${actionType}`);
     }
-
-    const cacheKey = this._buildCacheKey(cacheConfig.key, args);
-
-    return await this.ctx.app.cache.getOrSet(
-      cacheKey,
-      async () => {
-        const query = this._buildContentQuery(actionType, args);
-        const userInfo = this.ctx.session.user || {};
-
-        switch (actionType) {
-          case 'recommend':
-          case 'hot':
-          case 'news':
-            return await this.ctx.service.content.getContentList(query, userInfo);
-
-          case 'random':
-            return await this._getRandomContent(args);
-
-          case 'nearpost':
-            return await this._getPrevNextPosts(args);
-
-          case 'nearby':
-            return await this._getNearbyContent(args);
-
-          default:
-            throw new Error(`Unsupported content action: ${actionType}`);
-        }
-      },
-      cacheConfig.ttl
-    );
   }
 
   /**
@@ -292,26 +297,17 @@ class TemplateService extends Service {
    * @private
    */
   async _fetchTagData(actionType, args) {
-    const cacheConfig = this.cacheConfig.taxonomy[actionType];
-    const cacheKey = this._buildCacheKey(cacheConfig.key, args);
+    switch (actionType) {
+      case 'tags':
+        return await this._getTagList(args);
 
-    return await this.ctx.app.cache.getOrSet(
-      cacheKey,
-      async () => {
-        switch (actionType) {
-          case 'tags':
-            return await this._getTagList(args);
+      case 'hottags':
+      case 'hotTags':
+        return await this._getHotTags(args);
 
-          case 'hottags':
-          case 'hotTags':
-            return await this._getHotTags(args);
-
-          default:
-            throw new Error(`Unsupported tag action: ${actionType}`);
-        }
-      },
-      cacheConfig.ttl
-    );
+      default:
+        throw new Error(`Unsupported tag action: ${actionType}`);
+    }
   }
 
   /**
@@ -322,29 +318,20 @@ class TemplateService extends Service {
    * @private
    */
   async _fetchCategoryData(actionType, args) {
-    const cacheConfig = this.cacheConfig.taxonomy[actionType];
-    const cacheKey = this._buildCacheKey(cacheConfig.key, args);
+    switch (actionType) {
+      case 'navtree':
+      case 'categoryTree':
+        return await this._getCategoryTree(args);
 
-    return await this.ctx.app.cache.getOrSet(
-      cacheKey,
-      async () => {
-        switch (actionType) {
-          case 'navtree':
-          case 'categoryTree':
-            return await this._getCategoryTree(args);
+      case 'childnav':
+        return await this._getChildCategories(args);
 
-          case 'childnav':
-            return await this._getChildCategories(args);
+      case 'categoryStats':
+        return await this._getCategoryStats(args);
 
-          case 'categoryStats':
-            return await this._getCategoryStats(args);
-
-          default:
-            throw new Error(`Unsupported category action: ${actionType}`);
-        }
-      },
-      cacheConfig.ttl
-    );
+      default:
+        throw new Error(`Unsupported category action: ${actionType}`);
+    }
   }
 
   /**
@@ -354,20 +341,11 @@ class TemplateService extends Service {
    * @private
    */
   async _fetchAdsData(args) {
-    const cacheConfig = this.cacheConfig.ads.default;
-    const cacheKey = this._buildCacheKey(cacheConfig.key, args);
+    if (!args.name) {
+      throw new Error('Ads name is required');
+    }
 
-    return await this.ctx.app.cache.getOrSet(
-      cacheKey,
-      async () => {
-        if (!args.name) {
-          throw new Error('Ads name is required');
-        }
-
-        return await this.ctx.service.ads.getAdsByNameForTemplate(args.name);
-      },
-      cacheConfig.ttl
-    );
+    return await this.ctx.service.ads.getAdsByNameForTemplate(args.name);
   }
 
   /**
@@ -399,6 +377,7 @@ class TemplateService extends Service {
         return baseQuery;
     }
   }
+
 
   /**
    * 获取随机内容 - 兼容MongoDB和MariaDB
@@ -772,6 +751,96 @@ class TemplateService extends Service {
   }
 
   /**
+   * 空缓存快速刷新（不依赖 TTL 阈值）
+   * @param {String} cacheKey 缓存键
+   * @param {Object} cacheConfig 缓存配置
+   * @param {String} actionType 操作类型
+   * @param {Object} args 参数
+   * @param {String} reason 触发原因
+   */
+  _refreshCacheAsync(cacheKey, cacheConfig, actionType, args, reason = 'manual') {
+    if (this.refreshQueue.has(cacheKey)) {
+      return;
+    }
+
+    this.refreshQueue.add(cacheKey);
+    setImmediate(async () => {
+      try {
+        const freshData = await this._fetchFromDataSource(actionType, args);
+        const cacheDecision = this._getCacheDecision(freshData, cacheConfig);
+        if (cacheDecision.shouldCache) {
+          await this._setCache(cacheKey, freshData, cacheDecision.ttl);
+          this.ctx.logger.info(`[TemplateService] Background refreshed (${reason}): ${cacheKey}`);
+        } else {
+          this.ctx.logger.debug(`[TemplateService] Skip caching empty result (${reason}): ${cacheKey}`);
+        }
+      } catch (error) {
+        this.ctx.logger.error(`[TemplateService] Background refresh failed (${reason}): ${cacheKey}`, error);
+      } finally {
+        this.refreshQueue.delete(cacheKey);
+      }
+    });
+  }
+
+  /**
+   * 判断是否为空数据
+   * @param {*} result 结果
+   * @return {Boolean} 是否为空
+   */
+  _isEmptyResult(result) {
+    return this._getResultSize(result) === 0;
+  }
+
+  /**
+   * 获取结果数量（兼容数组/分页对象）
+   * @param {*} result 结果
+   * @return {Number} 结果数量
+   */
+  _getResultSize(result) {
+    if (Array.isArray(result)) {
+      return result.length;
+    }
+    if (result && Array.isArray(result.docs)) {
+      return result.docs.length;
+    }
+    if (result === null || result === undefined) {
+      return 0;
+    }
+    return 1;
+  }
+
+  /**
+   * 计算缓存决策（处理空数据短缓存）
+   * @param {*} result 结果
+   * @param {Object} cacheConfig 缓存配置
+   * @return {{shouldCache: boolean, ttl: number}} 缓存决策
+   */
+  _getCacheDecision(result, cacheConfig) {
+    const hasEmptyStrategy =
+      typeof cacheConfig.emptyTtl === 'number' ||
+      typeof cacheConfig.minItems === 'number' ||
+      cacheConfig.refreshOnEmpty;
+
+    if (!hasEmptyStrategy) {
+      return { shouldCache: true, ttl: cacheConfig.ttl };
+    }
+
+    const size = this._getResultSize(result);
+    const minItems = typeof cacheConfig.minItems === 'number' ? cacheConfig.minItems : 0;
+    const isEmpty = size <= minItems - 1 || size === 0;
+
+    if (isEmpty) {
+      const emptyTtl = Number(cacheConfig.emptyTtl) || 0;
+      if (emptyTtl > 0) {
+        return { shouldCache: true, ttl: emptyTtl };
+      }
+      return { shouldCache: false, ttl: cacheConfig.ttl };
+    }
+
+    return { shouldCache: true, ttl: cacheConfig.ttl };
+  }
+
+  /**
    * 智能缓存预热
    * @param {Object} options 预热选项
    */
@@ -849,6 +918,78 @@ class TemplateService extends Service {
   }
 
   /**
+   * 阻塞式关键缓存预热（用于保证首屏不空白）
+   * @param {Object} options 预热选项
+   */
+  async warmupCriticalCache(options = {}) {
+    const startTime = Date.now();
+    const maxRetries = Number(options.maxRetries ?? 6);
+    const retryDelay = Number(options.retryDelay ?? 1000);
+
+    this.ctx.logger.info('[TemplateService] Starting critical cache warmup...');
+
+    const tasks = [
+      { actionType: 'navtree', args: {} },
+      { actionType: 'categoryTree', args: {} },
+      { actionType: 'tags', args: {} },
+      { actionType: 'hottags', args: {} },
+      { actionType: 'news', args: { pageSize: 10, isPaging: '0' } },
+      { actionType: 'news', args: { pageSize: 5, isPaging: '0' } },
+      { actionType: 'recommend', args: { pageSize: 10, isPaging: '0' } },
+      { actionType: 'recommend', args: { pageSize: 5, isPaging: '0' } },
+      { actionType: 'hot', args: { pageSize: 10, isPaging: '0' } },
+      { actionType: 'hot', args: { pageSize: 5, isPaging: '0' } },
+    ];
+
+    for (const task of tasks) {
+      if (['news', 'recommend', 'hot'].includes(task.actionType)) {
+        await this._fetchWithRetry(task.actionType, task.args, { maxRetries, retryDelay });
+      } else {
+        await this.fetchContent(task.actionType, task.args);
+      }
+    }
+
+    const duration = Date.now() - startTime;
+    this.ctx.logger.info(`[TemplateService] Critical cache warmup completed in ${duration}ms`);
+  }
+
+  /**
+   * 带重试的数据获取（用于首屏关键内容）
+   * @param {String} actionType 操作类型
+   * @param {Object} args 参数
+   * @param {Object} options 重试选项
+   * @return {Promise<*>} 结果
+   * @private
+   */
+  async _fetchWithRetry(actionType, args, options = {}) {
+    const maxRetries = Number(options.maxRetries ?? 6);
+    const retryDelay = Number(options.retryDelay ?? 1000);
+    let lastResult = null;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      lastResult = await this.fetchContent(actionType, args);
+      if (this._getResultSize(lastResult) > 0) {
+        return lastResult;
+      }
+      if (attempt < maxRetries) {
+        await this._delay(retryDelay);
+      }
+    }
+
+    return lastResult;
+  }
+
+  /**
+   * 简单延时
+   * @param {Number} ms 毫秒
+   * @return {Promise<void>}
+   * @private
+   */
+  async _delay(ms) {
+    await new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
    * 获取预热参数
    * @param {String} actionType 操作类型
    * @param {String} priority 优先级
@@ -861,9 +1002,7 @@ class TemplateService extends Service {
       case 'recommend':
       case 'hot':
       case 'news':
-        return priority === 'critical'
-          ? [baseArgs, { ...baseArgs, pageSize: 5 }] // 多个常用参数组合
-          : [baseArgs];
+        return [baseArgs, { ...baseArgs, pageSize: 5 }]; // 常用参数组合，覆盖首页侧边栏
 
       case 'navtree':
       case 'categoryTree':
