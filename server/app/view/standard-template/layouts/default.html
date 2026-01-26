@@ -94,7 +94,7 @@
     </style>
   </head>
   <body
-    class="bg-gray-50 dark:bg-dark-bg text-gray-800 dark:text-gray-100 flex flex-col min-h-screen transition-colors duration-300"
+    class="bg-gray-50 dark:bg-dark-bg text-gray-800 dark:text-gray-100 flex flex-col min-h-screen transition-colors duration-300 overflow-x-hidden"
   >
     <!-- Header -->
     <header class="fixed w-full top-0 z-50 glass transition-all duration-300" id="main-header">
@@ -202,88 +202,6 @@
             >
               <span class="material-icons">menu</span>
             </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mobile Menu Overlay -->
-      <div id="mobile-menu" class="fixed inset-0 z-50 hidden">
-        <div
-          class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0"
-          id="mobile-menu-backdrop"
-        ></div>
-        <div
-          class="absolute right-0 top-0 h-full w-64 bg-white dark:bg-dark-surface shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col"
-          id="mobile-menu-panel"
-        >
-          <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-dark-border">
-            <span class="text-lg font-bold text-gray-800 dark:text-white">菜单</span>
-            <button
-              id="close-mobile-menu"
-              class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
-            >
-              <span class="material-icons">close</span>
-            </button>
-          </div>
-          <div class="p-4 flex-1 overflow-y-auto">
-            <nav class="space-y-2">
-              {% if menuItems %} {% for item in menuItems %}
-              <a
-                href="/{{ item.defaultUrl }}___{{ item.id }}"
-                class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 font-medium transition-colors"
-              >
-                {{ item.name }}
-              </a>
-              {% endfor %} {% else %}
-              <a href="/" class="block px-4 py-3 rounded-lg bg-primary-50 text-primary-600 font-medium">首页</a>
-              {% endif %}
-            </nav>
-          </div>
-          <!-- Mobile User Actions -->
-          <div class="p-4 border-t border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-gray-800/50">
-            {% if logined %}
-            <div class="flex items-center space-x-3 mb-4">
-              <img
-                class="h-10 w-10 rounded-full"
-                src="{{ member.logo or '/public/images/default-avatar.png' }}"
-                alt="{{ member.userName }}"
-              />
-              <div>
-                <div class="font-medium text-gray-900 dark:text-white">{{ member.userName }}</div>
-                <div class="text-xs text-gray-500">已登录</div>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <a
-                href="/user-center/home"
-                class="text-center py-2 rounded-lg bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border text-sm font-medium hover:bg-gray-50"
-              >
-                用户中心
-              </a>
-              <a
-                href="/api/v1/auth/logout"
-                data-logout
-                class="text-center py-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 border border-transparent text-sm font-medium"
-              >
-                退出
-              </a>
-            </div>
-            {% else %}
-            <div class="grid grid-cols-2 gap-3">
-              <a
-                href="/user-center/login"
-                class="text-center py-2 rounded-lg bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border text-sm font-medium text-gray-700 dark:text-gray-200"
-              >
-                登录
-              </a>
-              <a
-                href="/user-center/register"
-                class="text-center py-2 rounded-lg bg-primary-500 text-white text-sm font-medium shadow-md"
-              >
-                注册
-              </a>
-            </div>
-            {% endif %}
           </div>
         </div>
       </div>
@@ -470,6 +388,88 @@
         </div>
       </div>
     </footer>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] hidden">
+      <div
+        class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity opacity-0"
+        id="mobile-menu-backdrop"
+      ></div>
+      <div
+        class="absolute right-0 top-0 h-full w-64 bg-white dark:bg-dark-surface shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col"
+        id="mobile-menu-panel"
+      >
+        <div class="p-4 flex justify-between items-center border-b border-gray-100 dark:border-dark-border">
+          <span class="text-lg font-bold text-gray-800 dark:text-white">菜单</span>
+          <button
+            id="close-mobile-menu"
+            class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+          >
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="p-4 flex-1 overflow-y-auto">
+          <nav class="space-y-2">
+            {% if menuItems %} {% for item in menuItems %}
+            <a
+              href="/{{ item.defaultUrl }}___{{ item.id }}"
+              class="block px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 font-medium transition-colors"
+            >
+              {{ item.name }}
+            </a>
+            {% endfor %} {% else %}
+            <a href="/" class="block px-4 py-3 rounded-lg bg-primary-50 text-primary-600 font-medium">首页</a>
+            {% endif %}
+          </nav>
+        </div>
+        <!-- Mobile User Actions -->
+        <div class="p-4 border-t border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-gray-800/50">
+          {% if logined %}
+          <div class="flex items-center space-x-3 mb-4">
+            <img
+              class="h-10 w-10 rounded-full"
+              src="{{ member.logo or '/public/images/default-avatar.png' }}"
+              alt="{{ member.userName }}"
+            />
+            <div>
+              <div class="font-medium text-gray-900 dark:text-white">{{ member.userName }}</div>
+              <div class="text-xs text-gray-500">已登录</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href="/user-center/home"
+              class="text-center py-2 rounded-lg bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border text-sm font-medium hover:bg-gray-50"
+            >
+              用户中心
+            </a>
+            <a
+              href="/api/v1/auth/logout"
+              data-logout
+              class="text-center py-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 border border-transparent text-sm font-medium"
+            >
+              退出
+            </a>
+          </div>
+          {% else %}
+          <div class="grid grid-cols-2 gap-3">
+            <a
+              href="/user-center/login"
+              class="text-center py-2 rounded-lg bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              登录
+            </a>
+            <a
+              href="/user-center/register"
+              class="text-center py-2 rounded-lg bg-primary-500 text-white text-sm font-medium shadow-md"
+            >
+              注册
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
 
     <!-- Global Scripts -->
     <script>
