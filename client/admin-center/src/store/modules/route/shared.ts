@@ -35,9 +35,16 @@ export function mergeRoutesByName(routes: ElegantConstRoute[]) {
         const clone = { ...child };
         if (clone.children) clone.children = mergeChildren([], clone.children);
         childMap.set(child.name, clone);
-      } else {
-        existed.children = mergeChildren(existed.children, child.children);
+        return;
       }
+
+      const merged: ElegantConstRoute = {
+        ...existed,
+        ...child,
+        meta: { ...(existed.meta || {}), ...(child.meta || {}) }
+      };
+      merged.children = mergeChildren(existed.children, child.children);
+      childMap.set(child.name, merged);
     };
 
     (originChildren || []).forEach(pushChild);
@@ -52,9 +59,16 @@ export function mergeRoutesByName(routes: ElegantConstRoute[]) {
       const clone = { ...route };
       if (clone.children) clone.children = mergeChildren([], clone.children);
       routeMap.set(route.name, clone);
-    } else {
-      existed.children = mergeChildren(existed.children, route.children);
+      return;
     }
+
+    const merged: ElegantConstRoute = {
+      ...existed,
+      ...route,
+      meta: { ...(existed.meta || {}), ...(route.meta || {}) }
+    };
+    merged.children = mergeChildren(existed.children, route.children);
+    routeMap.set(route.name, merged);
   });
 
   return Array.from(routeMap.values());

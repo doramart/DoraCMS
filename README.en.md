@@ -10,9 +10,9 @@ A modern content management system based on EggJS 3.x + Vue 3 + TypeScript, mana
 
 ## 🔗 Live Demo
 
-- Demo URL: `https://demo.doracms.net`
-- Username: `doracms`
-- Password: `Hello985`
+- Frontend: [https://demo.doracms.net](https://demo.doracms.net)
+- Admin: [https://demo.doracms.net/admin-center](https://demo.doracms.net/admin-center)
+- Admin login: username `doracms` password `Hello985`
 
 ## 📸 Screenshots
 

@@ -10,9 +10,9 @@
 
 ## 🔗 在线演示
 
-- 演示地址：`https://demo.doracms.net`
-- 账号：`doracms`
-- 密码：`Hello985`
+- 前台地址: [https://demo.doracms.net](https://demo.doracms.net)
+- 后台地址: [https://demo.doracms.net/admin-center](https://demo.doracms.net/admin-center)
+- 后台登录信息: 账号 `doracms` 密码 `Hello985`
 
 ## 📸 界面预览
 
