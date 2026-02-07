@@ -249,6 +249,8 @@ module.exports = app => {
   router.delete(`${prefix}/logs/:id`, controller.manage.systemOptionLog.removes);
 
   // ==================== 文件上传 ====================
+  // @desc 上传文件
+  router.post(`${prefix}/files`, controller.api.uploadFile.create);
   // @desc 获取文件列表
   router.get(`${prefix}/files`, controller.manage.uploadFile.list);
   // @desc 更新文件信息

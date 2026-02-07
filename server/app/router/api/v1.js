@@ -94,8 +94,8 @@ module.exports = app => {
   router.get('/api/v1/ads/:id', controller.api.ads.getOne);
 
   // ==================== 文件上传 ====================
-  router.post('/api/v1/files', controller.api.uploadFile.create);
-  router.post('/api/v1/files/path', controller.api.uploadFile.createFileByPath);
+  router.post('/api/v1/files', authApiToken, controller.api.uploadFile.create);
+  router.post('/api/v1/files/path', authApiToken, controller.api.uploadFile.createFileByPath);
   router.get('/api/v1/upload/ueditor', controller.api.uploadFile.ueditor);
   router.post('/api/v1/upload/ueditor', controller.api.uploadFile.ueditor);
 
@@ -149,8 +149,8 @@ module.exports = app => {
   router.post('/api/v1/template/:id/rate', controller.api.template.rateTheme);
 
   // ==================== 文件上传 ====================
-  router.post('/api/v1/upload/files', controller.api.uploadFile.create);
-  router.post('/api/v1/upload/path', controller.api.uploadFile.createFileByPath);
+  router.post('/api/v1/upload/files', authApiToken, controller.api.uploadFile.create);
+  router.post('/api/v1/upload/path', authApiToken, controller.api.uploadFile.createFileByPath);
 
   // ==================== 管理员认证 ====================
   router.post('/api/v1/admin/login', controller.api.admin.loginUser);

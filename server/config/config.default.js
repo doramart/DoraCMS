@@ -68,6 +68,7 @@ module.exports = appInfo => {
         'v1/sitemap/*',
         'v1/cache/*',
         'v1/templates/*',
+        'v1/files',
       ],
     },
     hotReload: {

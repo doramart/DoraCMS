@@ -815,6 +815,14 @@ module.exports = [
     aliases: ['logs/delete'],
   },
   {
+    code: 'files.post',
+    method: 'POST',
+    path: '/manage/v1/files',
+    desc: '上传文件',
+    group: 'files',
+    aliases: ['files/post'],
+  },
+  {
     code: 'files.list',
     method: 'GET',
     path: '/manage/v1/files',

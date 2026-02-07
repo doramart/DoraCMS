@@ -879,6 +879,7 @@ class BaseMariaRepository extends BaseStandardRepository {
    * 提供默认实现，子类可以重写以添加特定逻辑
    * @param {String|Number} id 记录ID
    * @param {Object} data 更新数据
+   * @param options
    * @return {Promise<Object>} 更新结果
    */
   async update(id, data, options = {}) {
