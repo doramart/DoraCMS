@@ -42,7 +42,6 @@ data/backups/full/
 # !server/backstage/.gitkeep
 
 .claude
-CLAUDE.md
 .kiro
 server/docs
 demo-post
