@@ -18,7 +18,7 @@ DoraCMS is a full-stack CMS built with EggJS 3.x (backend) + Vue 3 (frontend), m
 pnpm install              # Install all workspace dependencies
 pnpm dev                  # Start server + user-center
 pnpm dev:all              # Start all projects in parallel
-pnpm dev:server           # Backend only (port 7001)
+pnpm dev:server           # Backend only (port 8080)
 pnpm dev:user-center      # User frontend (port 3000)
 pnpm dev:admin-center     # Admin dashboard (port 5173)
 ```
