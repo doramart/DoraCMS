@@ -95,7 +95,7 @@ module.exports = app => {
 
   // ==================== 文件上传 ====================
   router.post('/api/v1/files', authApiToken, controller.api.uploadFile.create);
-  router.post('/api/v1/files/path', authApiToken, controller.api.uploadFile.createFileByPath);
+  // 注意：/api/v1/files/path 接口存在严重安全漏洞（任意文件读取+删除），已删除
   // 注意：UEditor 上传接口已废弃，前端使用 /api/v1/files
 
   // ==================== 用户认证 ====================
