@@ -96,8 +96,7 @@ module.exports = app => {
   // ==================== 文件上传 ====================
   router.post('/api/v1/files', authApiToken, controller.api.uploadFile.create);
   router.post('/api/v1/files/path', authApiToken, controller.api.uploadFile.createFileByPath);
-  router.get('/api/v1/upload/ueditor', controller.api.uploadFile.ueditor);
-  router.post('/api/v1/upload/ueditor', controller.api.uploadFile.ueditor);
+  // 注意：UEditor 上传接口已废弃，前端使用 /api/v1/files
 
   // ==================== 用户认证 ====================
   router.post('/api/v1/auth/login', controller.api.regUser.loginAction);
