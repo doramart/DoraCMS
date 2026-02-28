@@ -406,9 +406,20 @@ class MailTemplateService extends Service {
    * @param {Object} options 发送选项
    * @return {Promise<Object>} 发送结果
    */
-  async sendEmail(tempkey, sendEmailInfo) {
+  async sendEmail(tempkey, sendEmailInfo, options = {}) {
     if (!tempkey || !sendEmailInfo) {
       throw RepositoryExceptions.business.operationNotAllowed('邮件发送参数不完整');
+    }
+
+    // 🔒 安全验证：批量邮件需要明确的授权标识
+    const normalizedType = this._normalizeTemplateType(tempkey);
+    if (normalizedType === SystemConstants.MAIL.BUSINESS_TYPES.BULK_EMAIL) {
+      // 批量邮件必须通过 options.allowBulkEmail 明确授权
+      if (!options.allowBulkEmail) {
+        throw RepositoryExceptions.business.operationNotAllowed(
+          '批量邮件发送需要明确授权'
+        );
+      }
     }
 
     // 🔥 获取系统邮件配置
@@ -433,7 +444,7 @@ class MailTemplateService extends Service {
     // 🔥 扩展邮件信息
     Object.assign(sendEmailInfo, { siteName, siteDomain });
 
-    const normalizedType = this._normalizeTemplateType(tempkey);
+    // normalizedType 已在前面声明，这里直接使用
     const shouldQueryTemplate = normalizedType !== SystemConstants.MAIL.BUSINESS_TYPES.BULK_EMAIL && tempkey !== '-1';
 
     // 🔥 获取邮件模板

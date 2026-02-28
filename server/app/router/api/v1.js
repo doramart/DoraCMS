@@ -88,7 +88,7 @@ module.exports = app => {
   router.get('/api/v1/mail-templates', controller.api.mailTemplate.list);
   router.get('/api/v1/mail-templates/:id', controller.api.mailTemplate.getOne);
   router.get('/api/v1/mail-templates/types', controller.api.mailTemplate.typelist);
-  router.post('/api/v1/mail/send', controller.api.mailTemplate.sendEmail);
+  // 注意：邮件发送功能仅通过内部 service 调用（注册验证码、密码重置等），不对外暴露 API 端点
 
   // ==================== 广告管理 ====================
   router.get('/api/v1/ads/:id', controller.api.ads.getOne);

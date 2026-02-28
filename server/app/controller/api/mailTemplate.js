@@ -86,6 +86,7 @@ class MailTemplateController extends Controller {
 
   /**
    * 发送邮件（核心功能）
+   * 🔒 安全限制：批量邮件功能仅限管理员使用
    */
   async sendEmail() {
     const { ctx, service } = this;
@@ -93,8 +94,24 @@ class MailTemplateController extends Controller {
     const fields = ctx.request.body || {};
     const { tempkey, info: sendEmailInfo } = fields;
 
+    // 🔒 安全检查：批量邮件（tempkey = '-1'）仅限管理员使用
+    let allowBulkEmail = false;
+    if (tempkey === '-1') {
+      const isAdmin = !!(ctx.session.adminUserInfo && ctx.session.adminUserInfo.id);
+
+      if (!isAdmin) {
+        throw RepositoryExceptions.business.operationNotAllowed(
+          '批量邮件发送功能仅限管理员使用'
+        );
+      }
+
+      allowBulkEmail = true;
+    }
+
     // 🔥 调用 service 层的邮件发送方法
-    const sendResult = await service.mailTemplate.sendEmail(tempkey, sendEmailInfo);
+    const sendResult = await service.mailTemplate.sendEmail(tempkey, sendEmailInfo, {
+      allowBulkEmail,
+    });
 
     ctx.helper.renderSuccess(ctx, {
       data: sendResult,
