@@ -224,6 +224,24 @@ const getUploadConfig = userUploadConfig => {
     listType,
   };
 };
+
+const ensureAllowedLocalFile = (ctx, localImgPath, uploadOptions = {}) => {
+  if (!localImgPath || typeof localImgPath !== 'string') {
+    throw new Error(ctx.__('validation.errorParams'));
+  }
+
+  const resolvedPath = path.resolve(localImgPath);
+  const publicRoot = path.resolve(process.cwd() + '/app/public');
+  const configuredUploadRoot = uploadOptions.upload_path ? path.resolve(uploadOptions.upload_path) : publicRoot;
+  const allowedRoots = [ publicRoot, configuredUploadRoot ];
+  const isAllowed = allowedRoots.some(root => resolvedPath === root || resolvedPath.startsWith(root + path.sep));
+
+  if (!isAllowed || !fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+    throw new Error(ctx.__('validation.errorParams'));
+  }
+
+  return resolvedPath;
+};
 // 上传前获取文件基础信息
 const getFileInfoByStream = (ctx, uploadOptions, stream) => {
   const { conf, uploadType } = getUploadConfig(uploadOptions);
@@ -571,7 +589,7 @@ const UploadFileController = {
       : {};
     const fields = ctx.request.body || {};
     const imgPath = fields.imgPath;
-    const localImgPath = fields.localImgPath;
+    const localImgPath = ensureAllowedLocalFile(ctx, fields.localImgPath, options);
     const fileDataType = 'realPath';
 
     let returnPath;

@@ -1,6 +1,7 @@
 'use strict';
 module.exports = app => {
   const { router, controller } = app;
+  const authAdminToken = app.middleware.authAdminToken({});
 
   // const authPage = app.middleware.authPage({});
 
@@ -10,8 +11,8 @@ module.exports = app => {
   router.get('/robots.txt', controller.page.home.getRobotsPage);
 
   // 🔧 Sitemap 管理 API
-  router.get('/api/sitemap/cache-status', controller.api.sitemap.cacheStatus);
-  router.post('/api/sitemap/clear-cache', controller.api.sitemap.clearCache);
+  router.get('/api/sitemap/cache-status', authAdminToken, controller.api.sitemap.cacheStatus);
+  router.post('/api/sitemap/clear-cache', authAdminToken, controller.api.sitemap.clearCache);
 
   router.get(['/', '/zh-CN', '/en'], controller.page.home.getDataForIndexPage);
 

@@ -9,12 +9,35 @@
 'use strict';
 const Controller = require('egg').Controller;
 const shell = require('shelljs');
+const { spawnSync } = require('child_process');
 const workPath = process.cwd();
 const pkg = require(`${workPath}/package.json`);
 const _ = require('lodash');
 const env = process.env.NODE_ENV;
 const RepositoryExceptions = require('../../repository/base/RepositoryExceptions');
 const DeleteParamsHelper = require('../../utils/deleteParamsHelper');
+
+const NPM_PACKAGE_NAME_RE = /^(?:@[\w.-]+\/)?[\w.-]+$/;
+
+function assertSafePackageName(pkgName) {
+  if (!pkgName || typeof pkgName !== 'string' || !NPM_PACKAGE_NAME_RE.test(pkgName)) {
+    throw new Error(`Invalid package name: ${pkgName}`);
+  }
+}
+
+function runNpm(args) {
+  const result = spawnSync('npm', args, {
+    cwd: workPath,
+    encoding: 'utf8',
+    stdio: 'pipe',
+  });
+
+  return {
+    code: result.status ?? (result.error ? 1 : 0),
+    stdout: result.stdout || '',
+    stderr: result.stderr || result.error?.message || '',
+  };
+}
 
 class PluginController extends Controller {
   /**
@@ -131,12 +154,10 @@ class PluginController extends Controller {
 
     // 2、执行安装流程
     try {
-      shell.exec(`cd ${workPath}`);
+      assertSafePackageName(pluginInfos.pkgName);
 
       // NPM 包安装
-      const installResult = shell.exec(
-        `npm install ${pluginInfos.pkgName} --save --registry=https://registry.npm.taobao.org`
-      );
+      const installResult = runNpm([ 'install', pluginInfos.pkgName, '--save', '--registry=https://registry.npm.taobao.org' ]);
 
       if (installResult.code !== 0) {
         throw RepositoryExceptions.plugin.packageInstallError(pluginInfos.pkgName, installResult.stderr);
@@ -217,10 +238,10 @@ class PluginController extends Controller {
     }
 
     try {
-      shell.exec(`cd ${workPath}`);
+      assertSafePackageName(pluginInfos.pkgName);
 
       // 1、npm uninstall 卸载
-      const uninstallResult = shell.exec(`npm uninstall ${pluginInfos.pkgName}`);
+      const uninstallResult = runNpm([ 'uninstall', pluginInfos.pkgName ]);
       if (uninstallResult.code !== 0) {
         throw RepositoryExceptions.plugin.packageUninstallError(pluginInfos.pkgName, uninstallResult.stderr);
       }
@@ -309,10 +330,8 @@ class PluginController extends Controller {
       await ctx.service.plugin.update(targetId, pluginItem);
 
       // 更新NPM包
-      shell.exec(`cd ${workPath}`);
-      const updateResult = shell.exec(
-        `npm install ${pluginItem.pkgName} --save --registry=https://registry.npm.taobao.org`
-      );
+      assertSafePackageName(pluginItem.pkgName);
+      const updateResult = runNpm([ 'install', pluginItem.pkgName, '--save', '--registry=https://registry.npm.taobao.org' ]);
 
       if (updateResult.code !== 0) {
         throw RepositoryExceptions.plugin.packageInstallError(pluginItem.pkgName, updateResult.stderr);

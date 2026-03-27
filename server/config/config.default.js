@@ -40,6 +40,11 @@ module.exports = appInfo => {
     sameSite: 'lax', // 改为lax以支持跨域场景
   };
 
+  config.adminInit = {
+    token: envConfig.SECURITY.ADMIN_INIT_TOKEN,
+    localOnly: envConfig.SECURITY.ADMIN_INIT_LOCAL_ONLY,
+  };
+
   // 前台会员登录有效时间
   config.userMaxAge = 30 * 24 * 3600 * 1000; // 30 days - 与JWT token保持一致
 
@@ -63,12 +68,7 @@ module.exports = appInfo => {
         'v1/admins/me/routes',
         'v1/admins/init',
         'v1/admins/init/status',
-        'v1/plugins/*',
         'singleUser/*',
-        'v1/sitemap/*',
-        'v1/cache/*',
-        'v1/templates/*',
-        'v1/files',
       ],
     },
     hotReload: {

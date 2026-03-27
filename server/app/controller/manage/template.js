@@ -10,6 +10,27 @@ const _ = require('lodash');
 const DeleteParamsHelper = require('../../utils/deleteParamsHelper');
 
 const TemplateController = {
+  _resolveSafeThemeTempDir(alias) {
+    const path = require('path');
+
+    if (!alias || typeof alias !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(alias.trim())) {
+      throw new Error('invalid template alias');
+    }
+
+    const baseDir = path.resolve(this.app.config.temp_view_forder);
+    const normalizedAlias = alias.trim();
+    const downloadDir = path.resolve(baseDir, normalizedAlias);
+
+    if (downloadDir !== baseDir && !downloadDir.startsWith(baseDir + path.sep)) {
+      throw new Error('invalid template alias');
+    }
+
+    return {
+      alias: normalizedAlias,
+      downloadDirWithSep: `${downloadDir}${path.sep}`,
+    };
+  },
+
   /**
    * 获取模板主题列表
    * @param ctx
@@ -457,8 +478,7 @@ const TemplateController = {
             throw new Error(ctx.__('validation.errorParams'));
           }
           const file_url = tempObj.filePath;
-          const file_targetForlder = tempObj.alias;
-          const DOWNLOAD_DIR = this.app.config.temp_view_forder + file_targetForlder.trim() + '/';
+          const { downloadDirWithSep: DOWNLOAD_DIR } = TemplateController._resolveSafeThemeTempDir.call(this, tempObj.alias);
           const target_path = DOWNLOAD_DIR + url.parse(file_url).pathname.split('/').pop();
 
           // 检查模板是否已存在
@@ -870,8 +890,10 @@ const TemplateController = {
         siteFunc.deleteThemeStaticForder(this.app, targetTemp.slug);
 
         const file_url = remoteTemplateInfo.filePath;
-        const file_targetForlder = remoteTemplateInfo.alias;
-        const DOWNLOAD_DIR = this.app.config.temp_view_forder + file_targetForlder.trim() + '/';
+        const { downloadDirWithSep: DOWNLOAD_DIR } = TemplateController._resolveSafeThemeTempDir.call(
+          this,
+          remoteTemplateInfo.alias
+        );
         const target_path = DOWNLOAD_DIR + url.parse(file_url).pathname.split('/').pop();
 
         // 清理旧的目录（如果存在）- 必须在下载之前

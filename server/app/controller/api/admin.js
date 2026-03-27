@@ -13,6 +13,26 @@ const RepositoryExceptions = require('../../repository/base/RepositoryExceptions
 const { extractRecords, sanitizeAdminEntity } = require('../../utils/adminInitHelper');
 
 class AdminController extends Controller {
+  _assertInitAccess() {
+    const { ctx, app } = this;
+    const configuredToken = app.config.adminInit?.token;
+    const providedToken =
+      ctx.get('x-admin-init-token') || ctx.request.body?.initToken || ctx.query?.initToken || '';
+    const ip = (ctx.ip || '').replace(/^::ffff:/, '');
+    const isLoopback = ip === '127.0.0.1' || ip === '::1' || ip === 'localhost';
+
+    if (configuredToken) {
+      if (providedToken !== configuredToken) {
+        throw RepositoryExceptions.business.operationNotAllowed('admin init token invalid');
+      }
+      return;
+    }
+
+    if (app.config.adminInit?.localOnly !== false && !isLoopback) {
+      throw RepositoryExceptions.business.operationNotAllowed('admin init only allowed from localhost');
+    }
+  }
+
   async getInitStatus() {
     const { ctx, service } = this;
     const needInit = await service.admin.needsInitialization();
@@ -24,6 +44,7 @@ class AdminController extends Controller {
 
   async initSuperAdmin() {
     const { ctx, service } = this;
+    this._assertInitAccess();
     const formData = ctx.request.body || {};
 
     const needInit = await service.admin.needsInitialization();

@@ -195,6 +195,8 @@ module.exports = {
     AUTH_COOKIE_NAME: getEnv('AUTH_COOKIE_NAME', 'doracms'),
     ENCRYPT_KEY: getEnv('ENCRYPT_KEY', 'dora'),
     JWT_EXPIRES_IN: getEnv('JWT_EXPIRES_IN', '30day'),
+    ADMIN_INIT_TOKEN: getEnv('ADMIN_INIT_TOKEN', ''),
+    ADMIN_INIT_LOCAL_ONLY: getBoolEnv('ADMIN_INIT_LOCAL_ONLY', true),
   },
 
   // 文件存储配置

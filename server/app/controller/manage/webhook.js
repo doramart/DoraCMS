@@ -18,7 +18,7 @@ const WebhookController = {
    * @description GET /manage/v1/webhooks
    */
   async list(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const query = ctx.query;
 
     const result = await ctx.service.webhook.list(userId, query);
@@ -34,7 +34,7 @@ const WebhookController = {
    * @description GET /manage/v1/webhooks/:id
    */
   async getOne(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id || ctx.query.id;
 
     if (!webhookId) {
@@ -54,7 +54,7 @@ const WebhookController = {
    * @description POST /manage/v1/webhooks
    */
   async create(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const fields = ctx.request.body || {};
 
     // 参数验证
@@ -84,7 +84,7 @@ const WebhookController = {
    * @description PUT /manage/v1/webhooks/:id
    */
   async update(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id || ctx.request.body.id;
     const fields = ctx.request.body || {};
 
@@ -119,7 +119,7 @@ const WebhookController = {
    * @description DELETE /manage/v1/webhooks/:id
    */
   async removes(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const { idsArray } = DeleteParamsHelper.processDeleteParams(ctx, {
       fieldName: 'Webhook',
     });
@@ -143,7 +143,7 @@ const WebhookController = {
    * @description PUT /manage/v1/webhooks/:id/enable
    */
   async enable(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id;
 
     if (!webhookId) {
@@ -164,7 +164,7 @@ const WebhookController = {
    * @description PUT /manage/v1/webhooks/:id/disable
    */
   async disable(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id;
 
     if (!webhookId) {
@@ -185,7 +185,7 @@ const WebhookController = {
    * @description POST /manage/v1/webhooks/:id/regenerate-secret
    */
   async regenerateSecret(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id;
 
     if (!webhookId) {
@@ -206,7 +206,7 @@ const WebhookController = {
    * @description GET /manage/v1/webhooks/stats
    */
   async getStats(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
 
     const result = await ctx.service.webhook.getUserWebhookStats(userId);
 
@@ -221,7 +221,7 @@ const WebhookController = {
    * @description PUT /manage/v1/webhooks/batch/status
    */
   async batchUpdateStatus(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const { ids, active } = ctx.request.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -261,7 +261,7 @@ const WebhookController = {
    * @description GET /manage/v1/webhooks/:id/logs
    */
   async getLogs(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id;
     const query = ctx.query;
 
@@ -282,7 +282,7 @@ const WebhookController = {
    * @description GET /manage/v1/webhooks/:id/logs/:logId
    */
   async getLogDetail(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id;
     const logId = ctx.params.logId;
 
@@ -307,7 +307,7 @@ const WebhookController = {
    * @description POST /manage/v1/webhooks/:id/logs/:logId/retry
    */
   async retryWebhook(ctx) {
-    const userId = ctx.session.adminUserInfo._id;
+    const userId = ctx.session.adminUserInfo.id;
     const webhookId = ctx.params.id;
     const logId = ctx.params.logId;
 
