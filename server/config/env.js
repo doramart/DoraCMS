@@ -65,7 +65,7 @@ loadEnvironmentConfig();
  */
 function validateRequiredEnvVars() {
   const databaseType = process.env.DATABASE_TYPE || 'mongodb';
-  const baseRequired = ['APP_KEYS', 'SESSION_SECRET'];
+  const baseRequired = ['APP_KEYS', 'SESSION_SECRET', 'ENCRYPT_KEY', 'JWT_SECRET'];
   let dbRequired = [];
 
   if (databaseType === 'mongodb') {
@@ -82,6 +82,25 @@ function validateRequiredEnvVars() {
     missing.forEach(key => console.error(`   - ${key}`));
     console.error(`\n当前数据库类型: ${databaseType}`);
     console.error('请检查 .env 文件或环境变量配置');
+    process.exit(1);
+  }
+
+  const weakSecrets = new Set([ 'dora', 'doracms3', 'doracms_secret', 'change-me', 'changeme', 'secret', 'default' ]);
+  const secretChecks = [
+    { key: 'ENCRYPT_KEY', value: process.env.ENCRYPT_KEY },
+    { key: 'JWT_SECRET', value: process.env.JWT_SECRET },
+  ];
+
+  const weakOrShort = secretChecks.filter(item => !item.value || item.value.length < 16 || weakSecrets.has(item.value));
+  if (weakOrShort.length > 0) {
+    console.error('❌ 以下安全密钥过弱，生产环境禁止启动:');
+    weakOrShort.forEach(item => console.error(`   - ${item.key}`));
+    console.error('请使用至少 16 位的高强度随机字符串');
+    process.exit(1);
+  }
+
+  if (process.env.JWT_SECRET === process.env.ENCRYPT_KEY) {
+    console.error('❌ JWT_SECRET 不能与 ENCRYPT_KEY 相同');
     process.exit(1);
   }
 }
@@ -194,6 +213,7 @@ module.exports = {
     SESSION_SECRET: getEnv('SESSION_SECRET', 'doracms_secret'),
     AUTH_COOKIE_NAME: getEnv('AUTH_COOKIE_NAME', 'doracms'),
     ENCRYPT_KEY: getEnv('ENCRYPT_KEY', 'dora'),
+    JWT_SECRET: getEnv('JWT_SECRET', ''),
     JWT_EXPIRES_IN: getEnv('JWT_EXPIRES_IN', '30day'),
     ADMIN_INIT_TOKEN: getEnv('ADMIN_INIT_TOKEN', ''),
     ADMIN_INIT_LOCAL_ONLY: getBoolEnv('ADMIN_INIT_LOCAL_ONLY', true),

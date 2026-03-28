@@ -438,6 +438,7 @@ const response = await axios.get('https://api.example.com/api/v1/content', {
   config.session_secret = envConfig.SECURITY.SESSION_SECRET;
   config.auth_cookie_name = envConfig.SECURITY.AUTH_COOKIE_NAME;
   config.encrypt_key = envConfig.SECURITY.ENCRYPT_KEY;
+  config.jwtSecret = envConfig.SECURITY.JWT_SECRET || envConfig.SECURITY.ENCRYPT_KEY;
   // JWT token 过期时间 - 使用环境变量
   config.jwtExpiresIn = envConfig.SECURITY.JWT_EXPIRES_IN;
 

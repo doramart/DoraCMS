@@ -32,7 +32,7 @@ module.exports = (options, app) => {
 
       if (userToken) {
         try {
-          const checkToken = await authToken.checkToken(userToken, app.config.encrypt_key);
+          const checkToken = await authToken.checkToken(userToken, app.config.jwtSecret);
 
           if (checkToken && typeof checkToken === 'object' && checkToken.userId) {
             const targetUser = await ctx.service.user.findOne(

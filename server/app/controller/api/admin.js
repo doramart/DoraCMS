@@ -130,7 +130,7 @@ class AdminController extends Controller {
       {
         id: user.id,
       },
-      this.app.config.encrypt_key,
+      this.app.config.jwtSecret,
       {
         expiresIn: this.app.config.jwtExpiresIn,
       }

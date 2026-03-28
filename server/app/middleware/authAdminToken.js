@@ -148,7 +148,7 @@ module.exports = (options, app) => {
     // 验证token - 只捕获token相关错误
     let checkToken;
     try {
-      checkToken = await authToken.checkToken(userToken, app.config.encrypt_key);
+      checkToken = await authToken.checkToken(userToken, app.config.jwtSecret);
     } catch (error) {
       ctx.logger.error('Token verification failed:', error);
       handleAuthFailure(ctx, 'token_verification_failed');

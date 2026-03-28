@@ -661,7 +661,7 @@ const RegUserController = {
         {
           userId: user.id,
         },
-        this.app.config.encrypt_key,
+        this.app.config.jwtSecret,
         {
           expiresIn: this.app.config.jwtExpiresIn,
         }
@@ -740,7 +740,7 @@ const RegUserController = {
         {
           userId: renderUser.id,
         },
-        this.app.config.encrypt_key,
+        this.app.config.jwtSecret,
         {
           expiresIn: this.app.config.jwtExpiresIn,
         }
@@ -817,7 +817,7 @@ const RegUserController = {
         {
           userId: targetUser.id,
         },
-        this.app.config.encrypt_key,
+        this.app.config.jwtSecret,
         {
           expiresIn: this.app.config.jwtExpiresIn,
         }
@@ -856,7 +856,7 @@ const RegUserController = {
         {
           userId: renderUser.id,
         },
-        this.app.config.encrypt_key,
+        this.app.config.jwtSecret,
         {
           expiresIn: this.app.config.jwtExpiresIn,
         }
@@ -1139,7 +1139,7 @@ const RegUserController = {
         userName: userInfo.userName,
         email: userInfo.email,
       },
-      this.app.config.encrypt_key,
+      this.app.config.jwtSecret,
       {
         expiresIn: this.app.config.userMaxAge,
       }
