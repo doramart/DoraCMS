@@ -11,13 +11,14 @@
               <h3 class="login-title">{{ t('user.auth.login') }}</h3>
               <el-dropdown @command="handleLanguageChange">
                 <span class="language-switch">
-                  {{ currentLanguage === 'zh-CN' ? t('system.language.chinese') : t('system.language.english') }}
+                  {{ currentLanguageLabel }}
                   <el-icon class="el-icon--right"><arrow-down /></el-icon>
                 </span>
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item command="zh-CN">{{ t('system.language.chinese') }}</el-dropdown-item>
                     <el-dropdown-item command="en-US">{{ t('system.language.english') }}</el-dropdown-item>
+                    <el-dropdown-item command="ko-KR">{{ t('system.language.korean') }}</el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -87,6 +88,13 @@ const loading = ref(false);
 const errorMessage = ref('');
 
 const currentLanguage = computed(() => locale.value);
+
+const languageLabelKeys = {
+  'zh-CN': 'system.language.chinese',
+  'en-US': 'system.language.english',
+  'ko-KR': 'system.language.korean',
+};
+const currentLanguageLabel = computed(() => t(languageLabelKeys[currentLanguage.value] || languageLabelKeys['zh-CN']));
 
 const loginForm = reactive({
   email: '',
