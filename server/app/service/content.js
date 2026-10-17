@@ -13,6 +13,7 @@ const RepositoryFactory = require('../repository/factories/RepositoryFactory');
 const _ = require('lodash');
 const siteFunc = require('../utils/siteFunc');
 const xss = require('xss');
+const { normalizeTypeId } = require('../utils/content-query');
 class ContentService extends Service {
   constructor(ctx) {
     super(ctx);
@@ -652,7 +653,7 @@ class ContentService extends Service {
 
     // 🔥 使用 Repository 层的 ID 规范化：Repository 自动感知数据库类型，无需外部判断
     const normalizedUserId = userId ? this.repository.normalizeId(userId) : null;
-    const normalizedTypeId = typeId ? this.repository.normalizeId(typeId) : null;
+    const normalizedTypeId = normalizeTypeId(this.ctx, typeId);
 
     let filesType = 'normal';
     let isSingerPage = false;

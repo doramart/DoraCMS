@@ -10,6 +10,7 @@
 
 const Service = require('egg').Service;
 const _ = require('lodash');
+const { normalizeTypeId } = require('../utils/content-query');
 
 class TemplateService extends Service {
   constructor(ctx) {
@@ -386,14 +387,15 @@ class TemplateService extends Service {
    * @private
    */
   async _getRandomContent(args) {
+    const typeId = normalizeTypeId(this.ctx, args.typeId);
     // 构建查询参数，使用兼容的方式
     const baseFilters = {
       state: '2', // 已发布状态
       draft: '0',
     };
 
-    if (args.typeId) {
-      baseFilters.categories = args.typeId;
+    if (typeId !== undefined) {
+      baseFilters.categories = typeId;
     }
 
     const options = {
@@ -476,6 +478,7 @@ class TemplateService extends Service {
    * @private
    */
   async _getPrevNextPosts(args) {
+    const typeId = normalizeTypeId(this.ctx, args.typeId);
     if (!args.id) {
       return { prePost: null, nextPost: null };
     }
@@ -502,9 +505,9 @@ class TemplateService extends Service {
       };
 
       // 如果指定了分类或当前文章有分类，按分类查找
-      if (args.typeId || (currentContent.categories && currentContent.categories.length > 0)) {
+      if (typeId !== undefined || (currentContent.categories && currentContent.categories.length > 0)) {
         baseFilters.categories =
-          args.typeId ||
+          typeId ||
           (Array.isArray(currentContent.categories) ? currentContent.categories[0].id : currentContent.categories?.id);
       }
 

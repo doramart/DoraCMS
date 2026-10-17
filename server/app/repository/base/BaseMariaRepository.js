@@ -1171,11 +1171,35 @@ class BaseMariaRepository extends BaseStandardRepository {
    */
   _buildBelongsToManySubQuery(relationConfig, condition) {
     const { through, foreignKey, otherKey } = relationConfig;
+    const sequelize = this.connection.getSequelize();
+    const generator = sequelize.getQueryInterface().queryGenerator;
+    const isId = value =>
+      (typeof value === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(value)) ||
+      (typeof value === 'number' && Number.isSafeInteger(value) && value > 0);
 
-    return this.connection.getSequelize().literal(`(
-      SELECT ${foreignKey} 
-      FROM ${through} 
-      WHERE ${otherKey} = ${typeof condition === 'string' ? `'${condition}'` : condition}
+    // Only scalar IDs and supported membership operators may reach the SQL generator.
+    let valid = isId(condition);
+    if (condition && typeof condition === 'object' && !Array.isArray(condition)) {
+      const keys = Reflect.ownKeys(condition);
+      if (keys.length === 1) {
+        const operator = keys[0];
+        const value = condition[operator];
+        if (operator === this.Op.in || operator === this.Op.notIn) {
+          valid = Array.isArray(value) && value.every(isId);
+        } else if (operator === this.Op.eq || operator === this.Op.ne) {
+          valid = isId(value);
+        }
+      }
+    }
+    if (!valid) {
+      throw this.exceptions.create.validation('relation', 'Invalid relation filter');
+    }
+
+    const where = generator.whereItemsQuery({ [otherKey]: condition }) || '1 = 1';
+    return sequelize.literal(`(
+      SELECT ${generator.quoteIdentifier(foreignKey)}
+      FROM ${generator.quoteTable(through)}
+      WHERE ${where}
     )`);
   }
 
