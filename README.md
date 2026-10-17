@@ -4,7 +4,7 @@
 [![Node.js](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-%3E%3D8.0.0-orange.svg)](https://pnpm.io/)
 
-> 📦 **GitHub**: [doramart/DoraCMS](https://github.com/doramart/DoraCMS) | 📖 **文档**: [www.doracms.net](https://www.doracms.net) | 🌐 **English**: [README.en.md](./README.en.md)
+> 📦 **GitHub**: [doramart/DoraCMS](https://github.com/doramart/DoraCMS) | **Atomgit**: [doramart/DoraCMS](https://atomgit.com/doramart/DoraCMS) | 📖 **文档**: [www.doracms.net](https://www.doracms.net) | 🌐 **English**: [README.en.md](./README.en.md)
 
 一个基于 EggJS 3.x + Vue 3 + TypeScript 的现代化内容管理系统，采用 pnpm monorepo 架构管理。
 
