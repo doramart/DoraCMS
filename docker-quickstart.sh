@@ -109,6 +109,9 @@ check_env_file() {
         log_warning "⚠️  请编辑 .env 文件，修改安全相关配置："
         log_warning "   - APP_KEYS"
         log_warning "   - SESSION_SECRET"
+        log_warning "   - ENCRYPT_KEY"
+        log_warning "   - JWT_SECRET"
+        log_warning "   - ADMIN_INIT_TOKEN（首次初始化管理员时必需）"
         log_warning "   - 数据库密码"
         echo ""
         read -p "是否现在编辑 .env 文件？(y/N) " -n 1 -r
@@ -132,15 +135,24 @@ generate_secrets() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         APP_KEYS=$(openssl rand -hex 32)
         SESSION_SECRET=$(openssl rand -hex 32)
+        ENCRYPT_KEY=$(openssl rand -hex 32)
+        JWT_SECRET=$(openssl rand -hex 32)
+        ADMIN_INIT_TOKEN=$(openssl rand -hex 32)
         
         log_success "已生成新密钥："
         echo "APP_KEYS=$APP_KEYS"
         echo "SESSION_SECRET=$SESSION_SECRET"
+        echo "ENCRYPT_KEY=$ENCRYPT_KEY"
+        echo "JWT_SECRET=$JWT_SECRET"
+        echo "ADMIN_INIT_TOKEN=$ADMIN_INIT_TOKEN"
         
         # 更新 .env 文件
         if command -v sed &> /dev/null; then
             sed -i.bak "s/^APP_KEYS=.*/APP_KEYS=$APP_KEYS/" .env
             sed -i.bak "s/^SESSION_SECRET=.*/SESSION_SECRET=$SESSION_SECRET/" .env
+            sed -i.bak "s/^ENCRYPT_KEY=.*/ENCRYPT_KEY=$ENCRYPT_KEY/" .env
+            sed -i.bak "s/^JWT_SECRET=.*/JWT_SECRET=$JWT_SECRET/" .env
+            sed -i.bak "s/^ADMIN_INIT_TOKEN=.*/ADMIN_INIT_TOKEN=$ADMIN_INIT_TOKEN/" .env
             rm .env.bak
             log_success "已更新 .env 文件"
         fi
@@ -336,4 +348,3 @@ main() {
 
 # 运行主函数
 main "$@"
-

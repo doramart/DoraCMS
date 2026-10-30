@@ -44,4 +44,9 @@ data/backups/full/
 .claude
 .kiro
 server/docs
+server/test
 demo-post
+.claude
+.cursor
+.kiro
+.pingancoder/

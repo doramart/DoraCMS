@@ -27,11 +27,12 @@ export function fetchAdminInitStatus() {
 }
 
 /** 初始化超级管理员 */
-export function fetchInitSuperAdmin(data: Api.Auth.InitAdminParams) {
+export function fetchInitSuperAdmin(data: Api.Auth.InitAdminParams, initToken: string) {
   return request({
     url: '/api/v1/admin/init',
     method: 'post',
     data,
+    headers: { 'x-admin-init-token': initToken },
   });
 }
 

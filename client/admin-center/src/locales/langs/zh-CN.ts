@@ -311,6 +311,7 @@ const local: App.I18n.Schema = {
         title: '初始化管理员账号',
         description: '首次使用系统需要创建一个拥有全部权限的管理员账号。',
         form: {
+          initToken: '初始化令牌',
           userName: '用户名',
           nickName: '昵称',
           email: '邮箱',

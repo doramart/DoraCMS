@@ -20,7 +20,7 @@ module.exports = app => {
   const ImageGenerationController = require('../../../controller/imageGeneration');
 
   // 可选的 API Token 验证中间件（根据项目需要决定是否启用）
-  const authApiToken = app.middleware.authApiToken ? app.middleware.authApiToken({}) : null;
+  const authApiToken = app.middleware.authApiToken ? app.middleware.authApiToken({ allowUserSession: true }) : null;
 
   // 创建 controller 代理，在请求时动态创建实例
 
@@ -31,7 +31,7 @@ module.exports = app => {
   ];
 
   readOnlyConfigMethods.forEach(method => {
-    aiConfig[method] = async (ctx, next) => {
+    aiConfig[method] = async ctx => {
       const controller = new AIConfigController(ctx);
       await controller[method]();
     };
@@ -52,7 +52,7 @@ module.exports = app => {
   ];
 
   contentMethods.forEach(method => {
-    aiContent[method] = async (ctx, next) => {
+    aiContent[method] = async ctx => {
       const controller = new AIContentController(ctx);
       await controller[method]();
     };
@@ -69,7 +69,7 @@ module.exports = app => {
   ];
 
   publishMethods.forEach(method => {
-    contentPublish[method] = async (ctx, next) => {
+    contentPublish[method] = async ctx => {
       const controller = new ContentPublishController(ctx);
       await controller[method]();
     };
@@ -88,7 +88,7 @@ module.exports = app => {
   ];
 
   imageGenerationMethods.forEach(method => {
-    imageGeneration[method] = async (ctx, next) => {
+    imageGeneration[method] = async ctx => {
       const controller = new ImageGenerationController(ctx);
       await controller[method]();
     };

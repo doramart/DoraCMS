@@ -1,7 +1,6 @@
 'use strict';
 const _ = require('lodash');
 const xss = require('xss');
-const shortid = require('shortid');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 
@@ -472,6 +471,10 @@ const RegUserController = {
       userObj.countryCode = fields.countryCode;
     } else {
       userObj.email = fields.email;
+    }
+
+    if (userInfo.deviceId) {
+      userObj.deviceId = null;
     }
 
     await ctx.service.user.update(userInfo.id, userObj);

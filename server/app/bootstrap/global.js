@@ -6,7 +6,6 @@
  */
 'use strict';
 
-const shortid = require('shortid');
 const moment = require('moment');
 
 // 校验合法ID
@@ -73,7 +72,7 @@ global.getAuthUserFields = (type = '') => {
       'id userName group logo createdAt enable state phoneNum countryCode email watchers followers comments favorites despises comments profession experience industry introduction birth gender';
   } else if (type === 'session') {
     fieldStr =
-      'id userName name group logo createdAt enable state phoneNum countryCode email watchers followers praiseContents praiseMessages watchTags favorites despises despiseMessage comments position gender';
+      'id userName name group deviceId logo createdAt enable state phoneNum countryCode email watchers followers praiseContents praiseMessages watchTags favorites despises despiseMessage comments position gender';
   }
   return fieldStr;
 };

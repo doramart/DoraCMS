@@ -311,6 +311,7 @@ const local: App.I18n.Schema = {
         title: 'Initialize Administrator',
         description: 'Create a full-access administrator account before using the system.',
         form: {
+          initToken: 'Initialization token',
           userName: 'Username',
           nickName: 'Nickname',
           email: 'Email',

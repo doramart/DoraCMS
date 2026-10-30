@@ -47,10 +47,11 @@ module.exports = (options, app) => {
               uAuthor: checkToken.userId,
               state: '2',
             });
-            if (!_.isEmpty(targetUser)) {
+            if (!_.isEmpty(targetUser) && targetUser.enable !== false) {
               const {
                 id,
                 userName,
+                deviceId,
                 email,
                 logo,
                 comments,
@@ -64,6 +65,7 @@ module.exports = (options, app) => {
               ctx.session.user = {
                 id,
                 userName,
+                deviceId,
                 email,
                 logo,
                 comments,

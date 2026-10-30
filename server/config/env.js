@@ -85,7 +85,7 @@ function validateRequiredEnvVars() {
     process.exit(1);
   }
 
-  const weakSecrets = new Set([ 'dora', 'doracms3', 'doracms_secret', 'change-me', 'changeme', 'secret', 'default' ]);
+  const weakSecrets = new Set(['dora', 'doracms3', 'doracms_secret', 'change-me', 'changeme', 'secret', 'default']);
   const secretChecks = [
     { key: 'ENCRYPT_KEY', value: process.env.ENCRYPT_KEY },
     { key: 'JWT_SECRET', value: process.env.JWT_SECRET },
@@ -216,7 +216,6 @@ module.exports = {
     JWT_SECRET: getEnv('JWT_SECRET', ''),
     JWT_EXPIRES_IN: getEnv('JWT_EXPIRES_IN', '30day'),
     ADMIN_INIT_TOKEN: getEnv('ADMIN_INIT_TOKEN', ''),
-    ADMIN_INIT_LOCAL_ONLY: getBoolEnv('ADMIN_INIT_LOCAL_ONLY', true),
   },
 
   // 文件存储配置

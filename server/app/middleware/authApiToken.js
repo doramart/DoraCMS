@@ -7,9 +7,13 @@
 'use strict';
 const crypto = require('crypto');
 const _ = require('lodash');
-module.exports = () => {
+module.exports = (options = {}) => {
   return async function authApiToken(ctx, next) {
-    if (ctx.session.logined) {
+    if (options.allowUserSession && ctx.session.logined && ctx.session.user?.id) {
+      if (ctx.session.user.deviceId && !options.allowGuestSession) {
+        ctx.helper.renderFail(ctx, { message: ctx.__('system.notice.noPower'), code: 403 });
+        return;
+      }
       await next();
     } else {
       const key = ctx.get('X-API-Key');
@@ -92,7 +96,9 @@ module.exports = () => {
       const message = `${timestamp}${method}${path}${bodyString}`;
       const expectedSignature = crypto.createHmac('sha256', apiKey.secret).update(message).digest('hex');
 
-      if (signature !== expectedSignature) {
+      const expected = Buffer.from(expectedSignature, 'hex');
+      const received = /^[a-f0-9]{64}$/i.test(signature) ? Buffer.from(signature, 'hex') : Buffer.alloc(0);
+      if (received.length !== expected.length || !crypto.timingSafeEqual(received, expected)) {
         ctx.helper.renderFail(ctx, {
           message: ctx.__('system.notice.noPower'),
           code: 401,
@@ -124,7 +130,7 @@ module.exports = () => {
             fields: getAuthUserFields('session').split(' ').filter(Boolean),
           }
         );
-        if (!_.isEmpty(targetUser)) {
+        if (!_.isEmpty(targetUser) && targetUser.enable !== false && !targetUser.deviceId) {
           const { id, userName, email } = targetUser;
           ctx.session.user = {
             id,

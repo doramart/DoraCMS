@@ -7,7 +7,7 @@
 'use strict';
 const Controller = require('egg').Controller;
 const jwt = require('jsonwebtoken');
-const _ = require('lodash');
+const crypto = require('crypto');
 const { adminRule } = require('../../validate');
 const RepositoryExceptions = require('../../repository/base/RepositoryExceptions');
 const { extractRecords, sanitizeAdminEntity } = require('../../utils/adminInitHelper');
@@ -16,20 +16,14 @@ class AdminController extends Controller {
   _assertInitAccess() {
     const { ctx, app } = this;
     const configuredToken = app.config.adminInit?.token;
-    const providedToken =
-      ctx.get('x-admin-init-token') || ctx.request.body?.initToken || ctx.query?.initToken || '';
-    const ip = (ctx.ip || '').replace(/^::ffff:/, '');
-    const isLoopback = ip === '127.0.0.1' || ip === '::1' || ip === 'localhost';
-
-    if (configuredToken) {
-      if (providedToken !== configuredToken) {
-        throw RepositoryExceptions.business.operationNotAllowed('admin init token invalid');
-      }
-      return;
+    const providedToken = ctx.get('x-admin-init-token');
+    if (!configuredToken || !providedToken) {
+      throw RepositoryExceptions.business.operationNotAllowed('admin init token required');
     }
-
-    if (app.config.adminInit?.localOnly !== false && !isLoopback) {
-      throw RepositoryExceptions.business.operationNotAllowed('admin init only allowed from localhost');
+    const expected = Buffer.from(configuredToken);
+    const received = Buffer.from(providedToken);
+    if (expected.length !== received.length || !crypto.timingSafeEqual(expected, received)) {
+      throw RepositoryExceptions.business.operationNotAllowed('admin init token invalid');
     }
   }
 

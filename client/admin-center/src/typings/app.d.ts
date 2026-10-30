@@ -475,6 +475,7 @@ declare namespace App {
             title: string;
             description: string;
             form: {
+              initToken: string;
               userName: string;
               nickName: string;
               email: string;

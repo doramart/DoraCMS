@@ -57,7 +57,9 @@ services:
       APP_KEYS: ${APP_KEYS:-your_production_app_keys_here_change_this}
       SESSION_SECRET: ${SESSION_SECRET:-your_production_session_secret}
       AUTH_COOKIE_NAME: doracms
-      ENCRYPT_KEY: dora
+      ENCRYPT_KEY: ${ENCRYPT_KEY:?ENCRYPT_KEY must be set to a strong random value}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set to a different strong random value}
+      ADMIN_INIT_TOKEN: ${ADMIN_INIT_TOKEN:-}
       SALT_AES_KEY: doracms_
       SALT_MD5_KEY: dora
 
@@ -149,7 +151,9 @@ services:
       APP_KEYS: ${APP_KEYS:-your_production_app_keys_here_change_this}
       SESSION_SECRET: ${SESSION_SECRET:-your_production_session_secret}
       AUTH_COOKIE_NAME: doracms
-      ENCRYPT_KEY: dora
+      ENCRYPT_KEY: ${ENCRYPT_KEY:?ENCRYPT_KEY must be set to a strong random value}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set to a different strong random value}
+      ADMIN_INIT_TOKEN: ${ADMIN_INIT_TOKEN:-}
       SALT_AES_KEY: doracms_
       SALT_MD5_KEY: dora
 

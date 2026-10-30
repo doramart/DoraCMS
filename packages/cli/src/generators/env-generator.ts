@@ -30,9 +30,10 @@ export async function generateEnvFile(projectPath: string, projectInfo: ProjectI
 
 function buildEnvContent(projectInfo: ProjectInfo): string {
   const jwtSecret = generateRandomSecret();
-  const apiSecret = generateRandomSecret();
+  const encryptKey = generateRandomSecret();
   const appKeys = generateRandomSecret();
   const sessionSecret = generateRandomSecret();
+  const adminInitToken = generateRandomSecret();
 
   let content = `# =================================
 # 应用配置
@@ -137,7 +138,13 @@ SESSION_SECRET=${sessionSecret}
 AUTH_COOKIE_NAME=doracms
 
 # 加密密钥（用于密码加密和邮件密码解密）
-ENCRYPT_KEY=dora
+ENCRYPT_KEY=${encryptKey}
+
+# JWT 签名密钥（必须与 ENCRYPT_KEY 不同）
+JWT_SECRET=${jwtSecret}
+
+# 首次初始化管理员时使用请求头 x-admin-init-token
+ADMIN_INIT_TOKEN=${adminInitToken}
 
 # JWT Token 过期时间（默认 30 天）
 JWT_EXPIRES_IN=30day

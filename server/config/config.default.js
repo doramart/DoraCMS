@@ -42,7 +42,6 @@ module.exports = appInfo => {
 
   config.adminInit = {
     token: envConfig.SECURITY.ADMIN_INIT_TOKEN,
-    localOnly: envConfig.SECURITY.ADMIN_INIT_LOCAL_ONLY,
   };
 
   // 前台会员登录有效时间

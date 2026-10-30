@@ -21,7 +21,7 @@ module.exports = (options = {}) => {
     // 允许的请求头
     ctx.set(
       'Access-Control-Allow-Headers',
-      'Content-Type, Content-Length, Authorization, Accept, X-Requested-With, yourHeaderFeild, x-request-id'
+      'Content-Type, Content-Length, Authorization, Accept, X-Requested-With, yourHeaderFeild, x-request-id, x-admin-init-token, x-api-key, x-api-timestamp, x-api-signature'
     );
     // 允许的请求方法
     ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');

@@ -14,7 +14,8 @@
 
 module.exports = app => {
   const { router, controller } = app;
-  const authApiToken = app.middleware.authApiToken({});
+  const authApiToken = app.middleware.authApiToken({ allowUserSession: true });
+  const authGuestToken = app.middleware.authApiToken({ allowUserSession: true, allowGuestSession: true });
 
   // ==================== 系统配置 ====================
   router.get('/api/v1/system/config', controller.api.systemConfig.list);
@@ -27,7 +28,7 @@ module.exports = app => {
   router.get('/api/v1/content/random', controller.api.content.getRadomContents);
   router.get('/api/v1/content/random/images', controller.api.content.getRandomContentImg);
   router.get('/api/v1/content/hot-tag-ids', controller.api.content.getHotTagIds);
-  router.post('/api/v1/content/word-to-html', controller.api.content.getWordHtmlContent);
+  router.post('/api/v1/content/word-to-html', authApiToken, controller.api.content.getWordHtmlContent);
 
   // 参数化路由（必须在特定路由之后）
   // 获取单个内容
@@ -46,10 +47,10 @@ module.exports = app => {
   router.delete('/api/v1/content', authApiToken, controller.api.content.deleteContents);
 
   // 点赞/取消点赞内容
-  router.post('/api/v1/content/:id/like', authApiToken, controller.api.content.likeContent);
+  router.post('/api/v1/content/:id/like', authGuestToken, controller.api.content.likeContent);
 
   // 收藏/取消收藏内容
-  router.post('/api/v1/content/:id/favorite', authApiToken, controller.api.content.favoriteContent);
+  router.post('/api/v1/content/:id/favorite', authGuestToken, controller.api.content.favoriteContent);
 
   // 获取附近内容
   router.get('/api/v1/content/:id/nearby', controller.api.content.getNearbyContent);
@@ -78,11 +79,11 @@ module.exports = app => {
 
   // ==================== 留言评论 ====================
   router.get('/api/v1/messages', controller.api.contentMessage.list);
-  router.post('/api/v1/messages', authApiToken, controller.api.contentMessage.postMessages);
-  router.post('/api/v1/messages/:id/like', authApiToken, controller.api.contentMessage.praiseMessage);
-  router.delete('/api/v1/messages/:id/like', authApiToken, controller.api.contentMessage.unpraiseMessage);
-  router.post('/api/v1/messages/:id/dislike', authApiToken, controller.api.contentMessage.despiseMessage);
-  router.delete('/api/v1/messages/:id/dislike', authApiToken, controller.api.contentMessage.undespiseMessage);
+  router.post('/api/v1/messages', authGuestToken, controller.api.contentMessage.postMessages);
+  router.post('/api/v1/messages/:id/like', authGuestToken, controller.api.contentMessage.praiseMessage);
+  router.delete('/api/v1/messages/:id/like', authGuestToken, controller.api.contentMessage.unpraiseMessage);
+  router.post('/api/v1/messages/:id/dislike', authGuestToken, controller.api.contentMessage.despiseMessage);
+  router.delete('/api/v1/messages/:id/dislike', authGuestToken, controller.api.contentMessage.undespiseMessage);
 
   // ==================== 邮件模板 ====================
   router.get('/api/v1/mail-templates', controller.api.mailTemplate.list);
@@ -101,27 +102,27 @@ module.exports = app => {
   // ==================== 用户认证 ====================
   router.post('/api/v1/auth/login', controller.api.regUser.loginAction);
   router.post('/api/v1/auth/register', controller.api.regUser.regAction);
-  router.post('/api/v1/auth/logout', authApiToken, controller.api.regUser.logOut);
-  router.post('/api/v1/auth/refresh', authApiToken, controller.api.regUser.refreshToken);
+  router.post('/api/v1/auth/logout', authGuestToken, controller.api.regUser.logOut);
+  router.post('/api/v1/auth/refresh', authGuestToken, controller.api.regUser.refreshToken);
   router.post('/api/v1/auth/reset-password', controller.api.regUser.updateNewPsd);
   router.post('/api/v1/auth/send-code', controller.api.regUser.sendVerificationCode);
 
   // ==================== 用户信息 ====================
-  router.get('/api/v1/users/me', authApiToken, controller.api.regUser.getUserInfoBySession);
-  router.put('/api/v1/users/me', authApiToken, controller.api.regUser.updateUser);
-  router.post('/api/v1/users/me/password', authApiToken, controller.api.regUser.modifyMyPsd);
-  router.get('/api/v1/users/me/has-password', authApiToken, controller.api.regUser.checkHadSetLoginPassword);
-  router.post('/api/v1/users/me/bindings', authApiToken, controller.api.regUser.bindEmailOrPhoneNum);
-  router.post('/api/v1/users/:userId/following/:creatorId', authApiToken, controller.api.regUser.followCreator);
-  router.post('/api/v1/users/:userId/tags', authApiToken, controller.api.regUser.addTags);
-  router.get('/api/v1/users/me/following', authApiToken, controller.api.regUser.getMyFollowInfos);
+  router.get('/api/v1/users/me', authGuestToken, controller.api.regUser.getUserInfoBySession);
+  router.put('/api/v1/users/me', authGuestToken, controller.api.regUser.updateUser);
+  router.post('/api/v1/users/me/password', authGuestToken, controller.api.regUser.modifyMyPsd);
+  router.get('/api/v1/users/me/has-password', authGuestToken, controller.api.regUser.checkHadSetLoginPassword);
+  router.post('/api/v1/users/me/bindings', authGuestToken, controller.api.regUser.bindEmailOrPhoneNum);
+  router.post('/api/v1/users/:userId/following/:creatorId', authGuestToken, controller.api.regUser.followCreator);
+  router.post('/api/v1/users/:userId/tags', authGuestToken, controller.api.regUser.addTags);
+  router.get('/api/v1/users/me/following', authGuestToken, controller.api.regUser.getMyFollowInfos);
   router.post('/api/v1/users/me/confirm-email', controller.api.regUser.sentConfirmEmail);
   router.get('/api/v1/users/check-phone', controller.api.regUser.checkPhoneNumExist);
-  router.post('/api/v1/content/:id/dislike', authApiToken, controller.api.regUser.despiseContent);
+  router.post('/api/v1/content/:id/dislike', authGuestToken, controller.api.regUser.despiseContent);
   // 获取用户内容列表
-  router.get('/api/v1/users/:userId/contents', authApiToken, controller.api.content.list);
+  router.get('/api/v1/users/:userId/contents', authGuestToken, controller.api.content.list);
   // 获取我的收藏
-  router.get('/api/v1/users/me/favorites', authApiToken, controller.api.content.getMyFavoriteContents);
+  router.get('/api/v1/users/me/favorites', authGuestToken, controller.api.content.getMyFavoriteContents);
   // 游客登录
   router.post('/api/v1/auth/login/guest', controller.api.regUser.touristLoginAction);
 

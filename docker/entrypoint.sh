@@ -63,6 +63,8 @@ check_environment() {
     local base_required_vars=(
         "APP_KEYS"
         "SESSION_SECRET"
+        "ENCRYPT_KEY"
+        "JWT_SECRET"
     )
     
     # 根据数据库类型添加特定的必需变量
@@ -203,4 +205,4 @@ cleanup() {
 trap cleanup SIGTERM SIGINT
 
 # 执行主流程
-main "$@" 
+main "$@"

@@ -45,6 +45,7 @@ const activeModule = computed(() => moduleMap[activeModuleKey.value]);
 const isPwdLogin = computed(() => activeModuleKey.value === 'pwd-login');
 
 interface InitFormModel {
+  initToken: string;
   userName: string;
   nickName: string;
   userEmail: string;
@@ -63,6 +64,7 @@ const initSubmitting = ref(false);
 const loginPrefill = ref<LoginPrefill>({ userName: '', password: '' });
 
 const createInitModel = (): InitFormModel => ({
+  initToken: '',
   userName: '',
   nickName: '',
   userEmail: '',
@@ -94,6 +96,7 @@ const initRules = computed<Record<keyof InitFormModel, App.Global.FormRule[]>>((
   const { formRules, defaultRequiredRule, createConfirmPwdRule } = useFormRules();
 
   return {
+    initToken: [defaultRequiredRule],
     userName: formRules.userName,
     nickName: [defaultRequiredRule],
     userEmail: formRules.email,
@@ -124,7 +127,7 @@ async function handleInitSubmit() {
       userEmail: initModel.value.userEmail,
       password: initModel.value.password,
     };
-    const { error } = await fetchInitSuperAdmin(payload);
+    const { error } = await fetchInitSuperAdmin(payload, initModel.value.initToken);
     if (!error) {
       window.$message?.success($t('page.login.initAdmin.success'));
       loginPrefill.value = {
@@ -194,6 +197,9 @@ const bgColor = computed(() => {
                 size="large"
                 class="pt-16px"
               >
+                <ElFormItem prop="initToken" :label="$t('page.login.initAdmin.form.initToken')">
+                  <ElInput v-model="initModel.initToken" type="password" autocomplete="off" show-password />
+                </ElFormItem>
                 <ElFormItem prop="userName" :label="$t('page.login.initAdmin.form.userName')">
                   <ElInput v-model="initModel.userName" autocomplete="off" />
                 </ElFormItem>

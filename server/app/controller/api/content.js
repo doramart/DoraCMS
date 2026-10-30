@@ -13,21 +13,13 @@ const { siteFunc, validatorUtil } = require('../../utils');
 const validator = require('validator');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const moment = require('moment');
 const awaitStreamReady = require('await-stream-ready').write;
 const sendToWormhole = require('stream-wormhole');
 const mammoth = require('mammoth');
 const RepositoryExceptions = require('../../repository/base/RepositoryExceptions');
-const { normalizeTypeId } = require('../../utils/content-query');
-
-function renderContentError(ctx, error) {
-  const code = error.statusCode || error.status || 500;
-  const isDevelopment = ['local', 'development'].includes(ctx.app.config.env);
-  ctx.helper.renderFail(ctx, {
-    message: code >= 500 && !isDevelopment ? 'Internal server error' : error.message || 'Request failed',
-    code,
-  });
-}
+const { createWordImageFile } = require('../../utils/wordImageFile');
 
 const ContentController = {
   /**
@@ -124,7 +116,9 @@ const ContentController = {
       });
     } catch (error) {
       ctx.logger.error('Get content counts by category id error:', error);
-      renderContentError(ctx, error);
+      ctx.helper.renderFail(ctx, {
+        data: error.message,
+      });
     }
   },
 
@@ -145,7 +139,9 @@ const ContentController = {
       });
     } catch (error) {
       ctx.logger.error('Get hot tag ids error:', error);
-      renderContentError(ctx, error);
+      ctx.helper.renderFail(ctx, {
+        data: error.message,
+      });
     }
   },
 
@@ -167,15 +163,16 @@ const ContentController = {
       }
 
       // 🚀 调用Service层的统一方法
-      const typeId = normalizeTypeId(ctx, ctx.query.typeId);
-      const contentList = await ctx.service.content.getContentList({ ...ctx.query, typeId }, userInfo);
+      const contentList = await ctx.service.content.getContentList(ctx.query, userInfo);
 
       ctx.helper.renderSuccess(ctx, {
         data: contentList,
       });
     } catch (error) {
       ctx.logger.error('Content list error:', error);
-      renderContentError(ctx, error);
+      ctx.helper.renderFail(ctx, {
+        data: error.message,
+      });
     }
   },
 
@@ -256,12 +253,11 @@ const ContentController = {
    */
   async getRadomContents(ctx) {
     try {
-      const typeId = normalizeTypeId(ctx, ctx.query.typeId);
       // 🚀 直接使用TemplateService的优化方法
       const randomArticles = await ctx.service.templateService.fetchContent('random', {
         pageSize: ctx.query.pageSize || 5,
+        typeId: ctx.query.typeId,
         ...ctx.query,
-        typeId,
       });
 
       ctx.helper.renderSuccess(ctx, {
@@ -269,7 +265,9 @@ const ContentController = {
       });
     } catch (error) {
       ctx.logger.error('Get random contents error:', error);
-      renderContentError(ctx, error);
+      ctx.helper.renderFail(ctx, {
+        data: error.message,
+      });
     }
   },
 
@@ -348,7 +346,9 @@ const ContentController = {
       });
     } catch (error) {
       ctx.logger.error('Get nearby content error:', error);
-      renderContentError(ctx, error);
+      ctx.helper.renderFail(ctx, {
+        data: error.message,
+      });
     }
   },
 
@@ -359,7 +359,6 @@ const ContentController = {
    */
   async getPrevNextPosts(ctx) {
     try {
-      const typeId = normalizeTypeId(ctx, ctx.query.typeId);
       // 🔥 RESTful: 优先使用路径参数，也兼容查询参数
       const contentId = ctx.params.id || ctx.query.id;
 
@@ -370,8 +369,8 @@ const ContentController = {
       // 🚀 使用TemplateService获取上下篇文章
       const prevNextPosts = await ctx.service.templateService.fetchContent('nearpost', {
         id: contentId,
+        typeId: ctx.query.typeId, // 可选：指定分类ID
         ...ctx.query,
-        typeId,
       });
 
       ctx.helper.renderSuccess(ctx, {
@@ -379,7 +378,9 @@ const ContentController = {
       });
     } catch (error) {
       ctx.logger.error('Get prev next posts error:', error);
-      renderContentError(ctx, error);
+      ctx.helper.renderFail(ctx, {
+        data: error.message,
+      });
     }
   },
 
@@ -530,18 +531,14 @@ const ContentController = {
       fs.mkdirSync(savePath);
     }
 
-    // 生成文件名
-    let basename = path.basename(stream.filename);
-    basename = basename.substring(0, basename.lastIndexOf('.') - 1);
-
-    const filename =
-      basename + '_' + Date.now() + '_' + Number.parseInt(Math.random() * 10000) + path.extname(stream.filename);
+    const extension = path.extname(stream.filename).toLowerCase();
+    const filename = `${crypto.randomBytes(16).toString('hex')}${['.doc', '.docx'].includes(extension) ? extension : '.docx'}`;
 
     // 生成写入路径
     const target = path.join(savePath, filename);
 
     // 写入流
-    const writeStream = fs.createWriteStream(target);
+    const writeStream = fs.createWriteStream(target, { flags: 'wx' });
 
     try {
       // 写入文件
@@ -559,16 +556,12 @@ const ContentController = {
 
       const options = {
         convertImage: mammoth.images.imgElement(function (image) {
-          let fileType = image.contentType.toLowerCase();
-          fileType = fileType.substring(fileType.indexOf('/') + 1);
-
-          const imageName = Date.now() + '' + Number.parseInt(Math.random() * 10000) + '.' + fileType;
-          const imageFullName = path.join(savePath, imageName);
+          const { filename: imageName, fullPath: imageFullName } = createWordImageFile(savePath, image.contentType);
 
           return image.read('base64').then(async function (imageBuffer) {
-            const dataBuffer = new Buffer(imageBuffer, 'base64');
-            fs.writeFileSync(imageFullName, dataBuffer, 'binary');
-            const resultPath = `${this.app.config.static.prefix}/upload/images/${dayStr}/${imageName}`;
+            const dataBuffer = Buffer.from(imageBuffer, 'base64');
+            fs.writeFileSync(imageFullName, dataBuffer, { flag: 'wx' });
+            const resultPath = `${ctx.app.config.static.prefix}/upload/images/${dayStr}/${imageName}`;
             const uploadResult = await ctx.helper.reqJsonData(
               'upload/filePath',
               {
