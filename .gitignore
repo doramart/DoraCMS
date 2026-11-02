@@ -45,6 +45,10 @@ data/backups/full/
 .kiro
 server/docs
 server/test
+!server/test/
+server/test/**
+!server/test/service/
+!server/test/service/api-key-update.test.js
 demo-post
 .claude
 .cursor

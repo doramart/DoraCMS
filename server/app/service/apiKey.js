@@ -221,10 +221,18 @@ class ApiKeyService extends Service {
       this.repository.validateRateLimit(data.rateLimit);
     }
 
-    const updateData = {
-      ...data,
-      updatedAt: new Date(),
-    };
+    const updateData = {};
+    for (const field of ['name', 'permissions', 'ipWhitelist', 'rateLimit', 'expiresAt']) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
+        updateData[field] = data[field];
+      }
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return existingApiKey;
+    }
+
+    updateData.updatedAt = new Date();
 
     return await this.repository.update(id, updateData);
   }
