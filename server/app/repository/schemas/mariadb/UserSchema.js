@@ -11,6 +11,7 @@
 const { DataTypes } = require('sequelize');
 const moment = require('moment');
 const CryptoJS = require('crypto-js');
+const CryptoUtil = require('../../../utils/CryptoUtil');
 
 /**
  * User Schema for MariaDB
@@ -453,7 +454,7 @@ const UserSchema = (sequelize, app) => {
   // 实例方法 - 验证密码
   User.prototype.verifyPassword = function (password) {
     try {
-      const decryptedPassword = CryptoJS.AES.decrypt(this.password, app.config.encrypt_key).toString(CryptoJS.enc.Utf8);
+      const decryptedPassword = CryptoUtil.decryptPassword(this.password, app.config.encrypt_key);
 
       return decryptedPassword === password;
     } catch (error) {

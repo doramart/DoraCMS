@@ -11,6 +11,7 @@
 const { DataTypes } = require('sequelize');
 const moment = require('moment');
 const CryptoJS = require('crypto-js');
+const CryptoUtil = require('../../../utils/CryptoUtil');
 
 /**
  * Admin Schema for MariaDB
@@ -266,8 +267,7 @@ const AdminSchema = (sequelize, app) => {
       const rawPassword = this.getDataValue('password');
       if (!rawPassword) return false;
 
-      const bytes = CryptoJS.AES.decrypt(rawPassword, app.config.encrypt_key);
-      const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+      const decryptedPassword = CryptoUtil.decryptPassword(rawPassword, app.config.encrypt_key);
       return decryptedPassword === password;
     } catch (error) {
       return false;
@@ -280,8 +280,7 @@ const AdminSchema = (sequelize, app) => {
       const rawPassword = this.getDataValue('password');
       if (!rawPassword) return null;
 
-      const bytes = CryptoJS.AES.decrypt(rawPassword, app.config.encrypt_key);
-      return bytes.toString(CryptoJS.enc.Utf8);
+      return CryptoUtil.decryptPassword(rawPassword, app.config.encrypt_key);
     } catch (error) {
       return null;
     }

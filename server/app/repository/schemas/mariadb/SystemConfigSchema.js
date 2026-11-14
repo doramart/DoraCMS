@@ -10,6 +10,7 @@
 
 const { DataTypes } = require('sequelize');
 const CryptoJS = require('crypto-js');
+const CryptoUtil = require('../../../utils/CryptoUtil');
 
 /**
  * SystemConfig Schema for MariaDB
@@ -302,8 +303,7 @@ const SystemConfigSchema = (sequelize, app) => {
     try {
       const app = require('../../../../app');
       if (app && app.config && app.config.encrypt_key) {
-        const bytes = CryptoJS.AES.decrypt(this.getDataValue('value'), app.config.encrypt_key);
-        return bytes.toString(CryptoJS.enc.Utf8);
+        return CryptoUtil.decrypt(this.getDataValue('value'), app.config.encrypt_key);
       }
     } catch (error) {
       console.warn('Failed to decrypt password value:', error.message);
