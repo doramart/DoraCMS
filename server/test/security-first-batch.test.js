@@ -6,6 +6,8 @@ const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
 const OSS = require('ali-oss');
+const CryptoUtil = require('../app/utils/CryptoUtil');
+const helper = require('../app/extend/helper');
 const TemplateResolverService = require('../app/service/templateResolver');
 const RegUserController = require('../app/controller/api/regUser');
 const UploadFileController = require('../app/controller/api/uploadFile');
@@ -62,6 +64,29 @@ describe('First-batch security fixes', () => {
     assert.notStrictEqual(loadEnv({ APP_KEYS: 'doracms3' }).status, 0);
     assert.notStrictEqual(loadEnv({ SESSION_SECRET: 'your_session_secret_123456' }).status, 0);
     assert.notStrictEqual(loadEnv({ JWT_SECRET: strongSecrets.ENCRYPT_KEY }).status, 0);
+  });
+
+  it('reads existing ciphertext after rotating the encryption key', () => {
+    const previousKey = process.env.ENCRYPT_KEY;
+    const previousLegacyKey = process.env.LEGACY_ENCRYPT_KEY;
+    process.env.ENCRYPT_KEY = strongSecrets.ENCRYPT_KEY;
+    process.env.LEGACY_ENCRYPT_KEY = 'legacy-test-key';
+    try {
+      const oldCiphertext = CryptoUtil.encryptPassword('existing-password', process.env.LEGACY_ENCRYPT_KEY);
+      assert.strictEqual(
+        CryptoUtil.verifyPassword('existing-password', oldCiphertext, strongSecrets.ENCRYPT_KEY),
+        true
+      );
+      assert.strictEqual(helper.decrypt(oldCiphertext, strongSecrets.ENCRYPT_KEY), 'existing-password');
+      const newCiphertext = CryptoUtil.encryptPassword('new-password', strongSecrets.ENCRYPT_KEY);
+      assert.strictEqual(CryptoUtil.decryptPassword(newCiphertext, strongSecrets.ENCRYPT_KEY), 'new-password');
+      assert.strictEqual(CryptoUtil.decryptPassword(newCiphertext, process.env.LEGACY_ENCRYPT_KEY), null);
+    } finally {
+      if (previousKey === undefined) delete process.env.ENCRYPT_KEY;
+      else process.env.ENCRYPT_KEY = previousKey;
+      if (previousLegacyKey === undefined) delete process.env.LEGACY_ENCRYPT_KEY;
+      else process.env.LEGACY_ENCRYPT_KEY = previousLegacyKey;
+    }
   });
 
   it('rejects a traversal layout before constructing template paths', async () => {

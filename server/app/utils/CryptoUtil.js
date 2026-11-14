@@ -39,20 +39,7 @@ class CryptoUtil {
    * @return {String|null} 解密后的明文密码，失败返回null
    */
   static decryptPassword(encryptedPassword, key) {
-    try {
-      if (!encryptedPassword || !key) {
-        return null;
-      }
-
-      const bytes = CryptoJS.AES.decrypt(encryptedPassword, key);
-      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-
-      // 如果解密结果为空，说明解密失败
-      return decrypted || null;
-    } catch (error) {
-      console.error('Password decryption failed:', error);
-      return null;
-    }
+    return this.decrypt(encryptedPassword, key);
   }
 
   /**
@@ -236,19 +223,21 @@ class CryptoUtil {
    * @return {String|null} 解密后的文本，失败返回null
    */
   static decrypt(encryptedText, key) {
-    try {
-      if (!encryptedText || !key) {
-        return null;
-      }
-
-      const bytes = CryptoJS.AES.decrypt(encryptedText, key);
-      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-
-      return decrypted || null;
-    } catch (error) {
-      console.error('Text decryption failed:', error);
-      return null;
+    if (!encryptedText || !key) return null;
+    const keys = [key];
+    if (key === process.env.ENCRYPT_KEY && process.env.LEGACY_ENCRYPT_KEY) {
+      keys.push(process.env.LEGACY_ENCRYPT_KEY);
     }
+    for (const candidate of keys) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(encryptedText, candidate);
+        const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+        if (decrypted) return decrypted;
+      } catch (_) {
+        // Try the legacy key only when the current key cannot read stored ciphertext.
+      }
+    }
+    return null;
   }
 
   /**

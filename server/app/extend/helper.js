@@ -13,6 +13,7 @@ const fs = require('fs');
 const stat = fs.stat;
 // TODO 老版本暂时保留，下个版本移除
 const CryptoJS = require('crypto-js');
+const CryptoUtil = require('../utils/CryptoUtil');
 // 站点配置
 const validator = require('validator');
 const iconv = require('iconv-lite');
@@ -512,9 +513,7 @@ module.exports = {
   },
 
   decrypt(data, key) {
-    // 密码解密
-    const bytes = CryptoJS.AES.decrypt(data, key);
-    return bytes.toString(CryptoJS.enc.Utf8);
+    return CryptoUtil.decrypt(data, key) || '';
   },
 
   getKeyArrByTokenId(tokenId) {
@@ -790,7 +789,7 @@ module.exports = {
   },
 
   //   发送消息给客户端
-  async sendMessageToClient(ctx, subkey = 'message', messages = '') {
+  async sendMessageToClient(ctx, _subkey = 'message', _messages = '') {
     // const adminUsers = await ctx.service.admin.find(
     //   { isPaging: '0' },
     //   {

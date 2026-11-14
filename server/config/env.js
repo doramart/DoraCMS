@@ -208,6 +208,7 @@ module.exports = {
     SESSION_SECRET: getEnv('SESSION_SECRET'),
     AUTH_COOKIE_NAME: getEnv('AUTH_COOKIE_NAME', 'doracms'),
     ENCRYPT_KEY: getEnv('ENCRYPT_KEY'),
+    LEGACY_ENCRYPT_KEY: getEnv('LEGACY_ENCRYPT_KEY'),
     JWT_SECRET: getEnv('JWT_SECRET'),
     JWT_EXPIRES_IN: getEnv('JWT_EXPIRES_IN', '30day'),
     ADMIN_INIT_TOKEN: getEnv('ADMIN_INIT_TOKEN', ''),
