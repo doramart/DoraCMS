@@ -45,7 +45,7 @@ module.exports = {
     app.messenger.sendToApp('context-updated');
   },
 
-  async reqJsonData(url, params = {}, method = 'get') {
+  async reqJsonData(url, params = {}, method = 'get', requestOptions = {}) {
     let responseData;
 
     let targetUrl = '';
@@ -61,9 +61,10 @@ module.exports = {
     if (method === 'get') {
       responseData = await Axios.get(targetUrl, {
         params,
+        ...requestOptions,
       });
     } else if (method === 'post') {
-      responseData = await Axios.post(targetUrl, params);
+      responseData = await Axios.post(targetUrl, params, requestOptions);
     }
 
     if (

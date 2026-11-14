@@ -4,6 +4,7 @@
  * 所有具体的 AI 适配器（OpenAI/DeepSeek/Ollama）都继承此类
  */
 'use strict';
+const { publicCurlOptions } = require('../../../../../../app/utils/outboundRequest');
 
 class BaseAIAdapter {
   /**
@@ -33,6 +34,10 @@ class BaseAIAdapter {
       totalCost: 0,
       averageResponseTime: 0,
     };
+  }
+
+  _publicRequestOptions(url) {
+    return publicCurlOptions(url);
   }
 
   /**

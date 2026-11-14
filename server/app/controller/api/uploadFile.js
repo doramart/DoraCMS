@@ -161,8 +161,6 @@ const uploadByQiniu = (dataType, readableStream, targetKey, uploadConfigInfo) =>
         if (respInfo.statusCode === 200) {
           console.log(respBody);
           if (!_.isEmpty(respBody) && qn_endPoint) {
-            // TODO 本地不留存
-            fs.unlinkSync(readableStream);
             resolve(`${qn_endPoint}/${respBody.key}`);
           } else {
             reject(new Error('Upload qiniu failed'));
@@ -191,8 +189,6 @@ const uploadByAliOss = async (dataType, stream, targetKey, uploadConfigInfo) => 
       result = await clientOss.putStream(targetKey, stream);
     } else if (dataType === 'realPath') {
       result = await clientOss.put(targetKey, stream);
-      // TODO 本地不留存
-      fs.unlinkSync(stream);
     }
     // console.log('--result--', result);
     let targetUrl = result.url;
@@ -233,7 +229,7 @@ const ensureAllowedLocalFile = (ctx, localImgPath, uploadOptions = {}) => {
   const resolvedPath = path.resolve(localImgPath);
   const publicRoot = path.resolve(process.cwd() + '/app/public');
   const configuredUploadRoot = uploadOptions.upload_path ? path.resolve(uploadOptions.upload_path) : publicRoot;
-  const allowedRoots = [ publicRoot, configuredUploadRoot ];
+  const allowedRoots = [publicRoot, configuredUploadRoot];
   const isAllowed = allowedRoots.some(root => resolvedPath === root || resolvedPath.startsWith(root + path.sep));
 
   if (!isAllowed || !fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {

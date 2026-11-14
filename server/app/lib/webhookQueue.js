@@ -7,6 +7,7 @@
 const Bull = require('bull');
 const axios = require('axios');
 const crypto = require('crypto');
+const { publicAxiosOptions } = require('../utils/outboundRequest');
 
 class WebhookQueue {
   constructor(app) {
@@ -85,6 +86,7 @@ class WebhookQueue {
 
       // 发送 HTTP 请求
       const response = await axios.post(url, requestBody, {
+        ...publicAxiosOptions(url),
         headers: requestHeaders,
         timeout,
         validateStatus: status => status >= 200 && status < 300, // 只接受 2xx 状态码
@@ -131,8 +133,6 @@ class WebhookQueue {
           ? {
               statusCode: error.response.status,
               statusMessage: error.response.statusText,
-              headers: error.response.headers,
-              body: JSON.stringify(error.response.data),
             }
           : null;
 
@@ -263,8 +263,6 @@ class WebhookQueue {
         {
           statusCode: response.status,
           statusMessage: response.statusText,
-          headers: response.headers,
-          body: JSON.stringify(response.data),
         },
         duration
       );

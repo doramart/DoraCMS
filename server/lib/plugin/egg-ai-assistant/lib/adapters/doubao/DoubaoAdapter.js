@@ -145,6 +145,7 @@ class DoubaoAdapter extends BaseAIAdapter {
     this.logger.debug('[Doubao] Request body:', JSON.stringify(body, null, 2));
 
     const response = await this.app.curl(url, {
+      ...this._publicRequestOptions(url),
       method: 'POST',
       headers: this._buildHeaders(),
       data: body,

@@ -29,6 +29,10 @@ class OllamaAdapter extends BaseAIAdapter {
     this.provider = 'ollama';
     // Ollama 默认运行在本地 11434 端口
     this.apiEndpoint = config.apiEndpoint || 'http://localhost:11434';
+    const configuredEndpoint = process.env.OLLAMA_API_ENDPOINT || 'http://localhost:11434';
+    if (this.apiEndpoint.replace(/\/$/, '') !== configuredEndpoint.replace(/\/$/, '')) {
+      throw new Error('Ollama endpoint must match the server configuration');
+    }
     this.defaultModel = config.defaultModel || 'qwen2:7b'; // 默认使用 Qwen2 7B
     this.defaultTemperature = config.temperature || 0.7;
     this.defaultMaxTokens = config.maxTokens || 2000;

@@ -5,6 +5,7 @@
 'use strict';
 
 const Service = require('egg').Service;
+const { assertPublicUrl } = require('../../../../../app/utils/outboundRequest');
 
 class AIModelManagerService extends Service {
   /**
@@ -449,6 +450,17 @@ class AIModelManagerService extends Service {
     if (!validProviders.includes(modelData.provider.toLowerCase())) {
       throw new Error(`Invalid provider: ${modelData.provider}`);
     }
+    const endpoint = modelData.config?.apiEndpoint;
+    if (endpoint) {
+      if (modelData.provider.toLowerCase() === 'ollama') {
+        const configuredEndpoint = process.env.OLLAMA_API_ENDPOINT || 'http://localhost:11434';
+        if (endpoint.replace(/\/$/, '') !== configuredEndpoint.replace(/\/$/, '')) {
+          throw new Error('Ollama endpoint must match the server configuration');
+        }
+      } else {
+        assertPublicUrl(endpoint);
+      }
+    }
   }
 
   /**
@@ -644,7 +656,7 @@ class AIModelManagerService extends Service {
       deepseek: 'https://api.deepseek.com/v1',
       anthropic: 'https://api.anthropic.com',
       claude: 'https://api.anthropic.com',
-      ollama: 'http://localhost:11434',
+      ollama: process.env.OLLAMA_API_ENDPOINT || 'http://localhost:11434',
       doubao: 'https://ark.cn-beijing.volces.com/api/v3',
     };
 

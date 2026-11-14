@@ -54,10 +54,11 @@ class TemplateResolverService extends Service {
       throw new Error('No active theme found');
     }
 
-    const themePath = path.join(this.app.baseDir, 'app', 'view', theme.slug);
-
     // 获取配置的布局（支持运行时覆盖）
     const configuredLayout = layoutOverride || this._getConfiguredLayout(category, theme);
+    if (typeof configuredLayout !== 'string' || !/^[A-Za-z0-9_-]+$/.test(configuredLayout)) {
+      throw new Error('Invalid template layout');
+    }
 
     // 构建增强的模板解析规则，支持动态布局配置
     const resolutionRules = this._buildEnhancedResolutionRules(theme, category, contentType, configuredLayout);
@@ -492,7 +493,7 @@ class TemplateResolverService extends Service {
    * @private
    */
   async _executeRenderStrategy(templateConfig, templateData) {
-    const { renderStrategy, templatePath, layout } = templateConfig;
+    const { renderStrategy } = templateConfig;
 
     switch (renderStrategy) {
       case 'direct':

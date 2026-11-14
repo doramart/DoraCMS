@@ -5,6 +5,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
+const { assertPublicUrl, publicCurlOptions } = require('../../utils/outboundRequest');
 
 class SitemapController extends Controller {
   /**
@@ -235,6 +236,7 @@ class SitemapController extends Controller {
 
       // 更新系统配置
       if (siteDomain) {
+        assertPublicUrl(siteDomain);
         await ctx.service.systemConfig.updateByKey('siteDomain', siteDomain);
       }
 
@@ -282,9 +284,9 @@ class SitemapController extends Controller {
 
       // 测试 sitemap 访问
       const response = await ctx.curl(sitemapUrl, {
+        ...publicCurlOptions(sitemapUrl),
         method: 'GET',
         timeout: 10000,
-        followRedirect: true,
       });
 
       const testResult = {

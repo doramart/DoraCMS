@@ -1,4 +1,5 @@
 'use strict';
+const crypto = require('crypto');
 const _ = require('lodash');
 const xss = require('xss');
 const validator = require('validator');
@@ -7,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const { siteFunc, validatorUtil } = require('../../utils');
 const RepositoryExceptions = require('../../repository/base/RepositoryExceptions');
 const SystemConstants = require('../../constants/SystemConstants');
+const verificationCode = require('../../utils/verificationCode');
 
 const RegUserController = {
   checkUserFormData(ctx, fields) {
@@ -389,8 +391,8 @@ const RegUserController = {
         errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.profile.basic.phoneNum')]);
       }
 
-      if (!fields.countryCode) {
-        errMsg = ctx.__('validation.selectNull', [ctx.__('user.center.countryCode')]);
+      if (typeof fields.countryCode !== 'string' || !/^\d{1,4}$/.test(fields.countryCode)) {
+        errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.center.countryCode')]);
       }
 
       if (userInfo.phoneNum) {
@@ -447,16 +449,8 @@ const RegUserController = {
 
     const endStr = bindType === '2' ? fields.email : fields.countryCode + fields.phoneNum;
 
-    const currentCode = await this.app.cache.get(
-      this.app.config.session_secret + '_sendMessage_tourist_bindAccount_' + endStr
-    );
-
-    if (
-      !fields.messageCode ||
-      !validator.isNumeric(fields.messageCode.toString()) ||
-      fields.messageCode.length !== 6 ||
-      currentCode !== fields.messageCode
-    ) {
+    const codeKey = this.app.config.session_secret + '_sendMessage_tourist_bindAccount_' + endStr;
+    if (!(await verificationCode.checkCode(ctx, codeKey, fields.messageCode))) {
       errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.auth.verify.imageCode')]);
     }
 
@@ -532,8 +526,8 @@ const RegUserController = {
         errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.profile.basic.phoneNum')]);
       }
 
-      if (!fields.countryCode) {
-        errMsg = ctx.__('validation.selectNull', [ctx.__('user.center.countryCode')]);
+      if (typeof fields.countryCode !== 'string' || !/^\d{1,4}$/.test(fields.countryCode)) {
+        errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.center.countryCode')]);
       }
 
       if (loginType === '2') {
@@ -541,15 +535,8 @@ const RegUserController = {
           errMsg = ctx.__('validation.rangelength', [ctx.__('user.auth.password.label'), 6, 12]);
         }
       } else if (loginType === '1') {
-        const currentCode = await this.app.cache.get(
-          this.app.config.session_secret + '_sendMessage_login_' + (fields.countryCode + fields.phoneNum)
-        );
-        if (
-          !fields.messageCode ||
-          !validator.isNumeric(fields.messageCode.toString()) ||
-          fields.messageCode.length !== 6 ||
-          currentCode !== fields.messageCode
-        ) {
+        const codeKey = this.app.config.session_secret + '_sendMessage_login_' + (fields.countryCode + fields.phoneNum);
+        if (!(await verificationCode.checkCode(ctx, codeKey, fields.messageCode))) {
           errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.auth.verify.imageCode')]);
         }
       }
@@ -564,15 +551,8 @@ const RegUserController = {
       if (!validatorUtil.checkEmail(fields.email)) {
         errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.profile.basic.email')]);
       }
-      const currentCode = await this.app.cache.get(
-        this.app.config.session_secret + '_sendMessage_login_' + fields.email
-      );
-      if (
-        !fields.messageCode ||
-        !validator.isNumeric(fields.messageCode.toString()) ||
-        fields.messageCode.length !== 6 ||
-        currentCode !== fields.messageCode
-      ) {
+      const codeKey = this.app.config.session_secret + '_sendMessage_login_' + fields.email;
+      if (!(await verificationCode.checkCode(ctx, codeKey, fields.messageCode))) {
         errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.auth.verify.imageCode')]);
       }
     }
@@ -658,6 +638,7 @@ const RegUserController = {
       }
 
       const renderUser = JSON.parse(JSON.stringify(user));
+      delete renderUser.password;
 
       // 针对 App 端同时创建 Token
       renderUser.token = jwt.sign(
@@ -738,6 +719,7 @@ const RegUserController = {
         }
       );
       const renderUser = JSON.parse(JSON.stringify(newUser));
+      delete renderUser.password;
 
       renderUser.token = jwt.sign(
         {
@@ -898,13 +880,8 @@ const RegUserController = {
     }
 
     const endStr = regType === '1' ? fields.countryCode + fields.phoneNum : fields.email;
-    const currentCode = await this.app.cache.get(this.app.config.session_secret + '_sendMessage_reg_' + endStr);
-
-    if (
-      !validator.isNumeric(fields.messageCode.toString()) ||
-      fields.messageCode.length !== 6 ||
-      currentCode !== fields.messageCode
-    ) {
+    const codeKey = this.app.config.session_secret + '_sendMessage_reg_' + endStr;
+    if (!(await verificationCode.checkCode(ctx, codeKey, fields.messageCode))) {
       errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.auth.verify.imageCode')]);
     }
 
@@ -1279,15 +1256,8 @@ const RegUserController = {
       }
 
       const endStr = type === '1' ? fields.countryCode + fields.phoneNum : fields.email;
-      const currentCode = await this.app.cache.get(
-        this.app.config.session_secret + '_sendMessage_resetPassword_' + endStr
-      );
-
-      if (
-        !validator.isNumeric(messageCode.toString()) ||
-        messageCode.length !== 6 ||
-        currentCode !== fields.messageCode
-      ) {
+      const codeKey = this.app.config.session_secret + '_sendMessage_resetPassword_' + endStr;
+      if (!(await verificationCode.checkCode(ctx, codeKey, messageCode))) {
         errMsg = ctx.__('validation.inputCorrect', [ctx.__('user.auth.verify.imageCode')]);
       }
 
@@ -1671,8 +1641,7 @@ const RegUserController = {
         throw new Error(errMsg);
       }
 
-      // 生成短信验证码
-      const currentStr = siteFunc.randomString(6, '123456789');
+      const currentStr = Array.from({ length: 6 }, () => crypto.randomInt(1, 10)).join('');
 
       if (messageType === '0') {
         // 注册验证码
@@ -1701,12 +1670,8 @@ const RegUserController = {
 
       const endStr = sendType === '1' ? countryCode + phoneNum : email;
       const currentKey = this.app.config.session_secret + cacheKey + endStr;
-      // console.log(currentStr, '--currentKey--', currentKey)
-      ctx.helper.setMemoryCache(currentKey, currentStr, 1000 * 60 * 10); // 验证码缓存10分钟
-
-      // 验证码加密
-      const renderCode = ctx.helper.encrypt(currentStr, this.app.config.encrypt_key);
-      console.log('renderCode: ', renderCode);
+      await verificationCode.assertSendAllowed(ctx, currentKey);
+      await this.app.cache.set(currentKey, currentStr, 10 * 60);
 
       if (sendType === '1') {
         // 发送短消息
@@ -1729,9 +1694,6 @@ const RegUserController = {
 
       ctx.helper.renderSuccess(ctx, {
         message: ctx.__('api.response.success', [ctx.__('user.action.tips.sendMessage')]),
-        data: {
-          messageCode: renderCode,
-        },
       });
     } catch (err) {
       ctx.helper.renderFail(ctx, {

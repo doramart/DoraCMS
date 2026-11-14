@@ -7,7 +7,7 @@
 const Service = require('egg').Service;
 const RepositoryFactory = require('../repository/factories/RepositoryFactory');
 const WebhookEvents = require('../constants/WebhookEvents');
-const crypto = require('crypto');
+const { assertPublicUrl } = require('../utils/outboundRequest');
 
 class WebhookService extends Service {
   constructor(ctx) {
@@ -108,6 +108,7 @@ class WebhookService extends Service {
    * @return {Promise<Object>} 创建的 Webhook
    */
   async createWebhook(userId, data) {
+    assertPublicUrl(data.url);
     // 验证名称唯一性
     if (data.name) {
       await this.repository.checkNameUnique(data.name, userId);
@@ -202,6 +203,7 @@ class WebhookService extends Service {
    * @return {Promise<Object>} 更新后的 Webhook
    */
   async updateWebhook(userId, id, data) {
+    if (data.url !== undefined) assertPublicUrl(data.url);
     // 验证 Webhook 存在且属于该用户
     const existingWebhook = await this.detail(userId, id);
 

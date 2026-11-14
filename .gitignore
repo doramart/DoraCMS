@@ -47,6 +47,8 @@ server/docs
 server/test
 !server/test/
 server/test/**
+!server/test/security-first-batch.test.js
+!server/test/security-second-batch.test.js
 !server/test/service/
 !server/test/service/api-key-update.test.js
 demo-post

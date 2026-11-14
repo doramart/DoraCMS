@@ -10,19 +10,43 @@
 const Controller = require('egg').Controller;
 const shell = require('shelljs');
 const { spawnSync } = require('child_process');
+const semver = require('semver');
 const workPath = process.cwd();
 const pkg = require(`${workPath}/package.json`);
 const _ = require('lodash');
 const env = process.env.NODE_ENV;
 const RepositoryExceptions = require('../../repository/base/RepositoryExceptions');
 const DeleteParamsHelper = require('../../utils/deleteParamsHelper');
+const { publicAxiosOptions } = require('../../utils/outboundRequest');
 
 const NPM_PACKAGE_NAME_RE = /^(?:@[\w.-]+\/)?[\w.-]+$/;
 
 function assertSafePackageName(pkgName) {
-  if (!pkgName || typeof pkgName !== 'string' || !NPM_PACKAGE_NAME_RE.test(pkgName)) {
+  if (!pkgName || typeof pkgName !== 'string' || !NPM_PACKAGE_NAME_RE.test(pkgName) || pkgName.includes('..')) {
     throw new Error(`Invalid package name: ${pkgName}`);
   }
+}
+
+function approvedPackageSpec(pluginInfos) {
+  assertSafePackageName(pluginInfos.pkgName);
+  if (!semver.valid(pluginInfos.version)) throw new Error('Plugin version must be an exact semver version');
+  const spec = `${pluginInfos.pkgName}@${pluginInfos.version}`;
+  const approved = (process.env.APPROVED_PLUGIN_PACKAGES || '').split(',').map(item => item.trim());
+  if (!approved.includes(spec)) throw new Error(`Plugin package is not approved: ${spec}`);
+  return spec;
+}
+
+function marketPluginUrl(baseUrl, pluginId) {
+  const parsed = new URL(baseUrl);
+  if (parsed.protocol !== 'https:' || parsed.username || parsed.password) {
+    throw new Error('Plugin market must use HTTPS');
+  }
+  return `${parsed.origin}/api/pluginManage/getOne?id=${encodeURIComponent(pluginId)}`;
+}
+
+function getMarketPlugin(ctx, baseUrl, pluginId) {
+  const url = marketPluginUrl(baseUrl, pluginId);
+  return ctx.helper.reqJsonData(url, {}, 'get', publicAxiosOptions(url));
 }
 
 function runNpm(args) {
@@ -92,9 +116,7 @@ class PluginController extends Controller {
       const renderPluginList = JSON.parse(JSON.stringify(pluginList.docs));
       for (const pluginItem of renderPluginList) {
         // 获取插件商店信息
-        const pluginShopItem = await this.ctx.helper.reqJsonData(
-          this.app.config.doracms_api + '/api/pluginManage/getOne?id=' + pluginItem.pluginId
-        );
+        const pluginShopItem = await getMarketPlugin(this.ctx, this.app.config.doracms_api, pluginItem.pluginId);
 
         if (!_.isEmpty(pluginShopItem)) {
           // 版本比较逻辑
@@ -144,9 +166,7 @@ class PluginController extends Controller {
     }
 
     // 1、获取插件信息
-    const pluginInfos = await this.ctx.helper.reqJsonData(
-      this.app.config.doracms_api + '/api/pluginManage/getOne?id=' + pluginId
-    );
+    const pluginInfos = await getMarketPlugin(this.ctx, this.app.config.doracms_api, pluginId);
 
     if (_.isEmpty(pluginInfos)) {
       throw RepositoryExceptions.plugin.pluginNotFound(pluginId);
@@ -154,10 +174,17 @@ class PluginController extends Controller {
 
     // 2、执行安装流程
     try {
-      assertSafePackageName(pluginInfos.pkgName);
+      const packageSpec = approvedPackageSpec(pluginInfos);
+      this.app.validatePluginInstallConfig(pluginInfos);
 
       // NPM 包安装
-      const installResult = runNpm([ 'install', pluginInfos.pkgName, '--save', '--registry=https://registry.npm.taobao.org' ]);
+      const installResult = runNpm([
+        'install',
+        packageSpec,
+        '--save-exact',
+        '--ignore-scripts',
+        '--registry=https://registry.npm.taobao.org',
+      ]);
 
       if (installResult.code !== 0) {
         throw RepositoryExceptions.plugin.packageInstallError(pluginInfos.pkgName, installResult.stderr);
@@ -241,7 +268,7 @@ class PluginController extends Controller {
       assertSafePackageName(pluginInfos.pkgName);
 
       // 1、npm uninstall 卸载
-      const uninstallResult = runNpm([ 'uninstall', pluginInfos.pkgName ]);
+      const uninstallResult = runNpm(['uninstall', pluginInfos.pkgName]);
       if (uninstallResult.code !== 0) {
         throw RepositoryExceptions.plugin.packageUninstallError(pluginInfos.pkgName, uninstallResult.stderr);
       }
@@ -307,9 +334,7 @@ class PluginController extends Controller {
     }
 
     // 获取最新插件信息
-    const pluginItem = await this.ctx.helper.reqJsonData(
-      this.app.config.doracms_api + '/api/pluginManage/getOne?id=' + pluginInfos.pluginId
-    );
+    const pluginItem = await getMarketPlugin(this.ctx, this.app.config.doracms_api, pluginInfos.pluginId);
 
     if (_.isEmpty(pluginItem)) {
       throw RepositoryExceptions.plugin.pluginNotFound(pluginInfos.pluginId);
@@ -324,18 +349,27 @@ class PluginController extends Controller {
     }
 
     try {
-      // 更新数据库记录
-      delete pluginItem.id;
-      pluginItem.updatedAt = new Date();
-      await ctx.service.plugin.update(targetId, pluginItem);
-
       // 更新NPM包
-      assertSafePackageName(pluginItem.pkgName);
-      const updateResult = runNpm([ 'install', pluginItem.pkgName, '--save', '--registry=https://registry.npm.taobao.org' ]);
+      const packageSpec = approvedPackageSpec(pluginItem);
+      if (pluginItem.pkgName !== pluginInfos.pkgName || pluginItem.alias !== pluginInfos.alias) {
+        throw new Error('Plugin identity cannot change during update');
+      }
+      this.app.validatePluginConfig(pluginItem);
+      const updateResult = runNpm([
+        'install',
+        packageSpec,
+        '--save-exact',
+        '--ignore-scripts',
+        '--registry=https://registry.npm.taobao.org',
+      ]);
 
       if (updateResult.code !== 0) {
         throw RepositoryExceptions.plugin.packageInstallError(pluginItem.pkgName, updateResult.stderr);
       }
+
+      delete pluginItem.id;
+      pluginItem.updatedAt = new Date();
+      await ctx.service.plugin.update(targetId, pluginItem);
 
       ctx.helper.renderSuccess(ctx);
 

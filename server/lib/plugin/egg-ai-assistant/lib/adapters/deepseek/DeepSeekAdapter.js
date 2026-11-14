@@ -205,6 +205,7 @@ class DeepSeekAdapter extends BaseAIAdapter {
     const url = `${this.apiEndpoint}${endpoint}`;
 
     const response = await this.app.curl(url, {
+      ...this._publicRequestOptions(url),
       method: 'POST',
       headers: this._buildHeaders(),
       data: body,
@@ -235,6 +236,7 @@ class DeepSeekAdapter extends BaseAIAdapter {
 
     return new Promise((resolve, reject) => {
       const stream = this.app.httpclient.request(url, {
+        ...this._publicRequestOptions(url),
         method: 'POST',
         headers: this._buildHeaders(),
         data: JSON.stringify(body),

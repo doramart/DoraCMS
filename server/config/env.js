@@ -68,9 +68,9 @@ function validateRequiredEnvVars() {
   const baseRequired = ['APP_KEYS', 'SESSION_SECRET', 'ENCRYPT_KEY', 'JWT_SECRET'];
   let dbRequired = [];
 
-  if (databaseType === 'mongodb') {
+  if (process.env.NODE_ENV === 'production' && databaseType === 'mongodb') {
     dbRequired = ['MONGODB_HOST', 'MONGODB_DATABASE', 'MONGODB_USERNAME', 'MONGODB_PASSWORD'];
-  } else if (databaseType === 'mariadb') {
+  } else if (process.env.NODE_ENV === 'production' && databaseType === 'mariadb') {
     dbRequired = ['MARIADB_HOST', 'MARIADB_DATABASE', 'MARIADB_USERNAME', 'MARIADB_PASSWORD'];
   }
 
@@ -86,15 +86,13 @@ function validateRequiredEnvVars() {
   }
 
   const weakSecrets = new Set(['dora', 'doracms3', 'doracms_secret', 'change-me', 'changeme', 'secret', 'default']);
-  const secretChecks = [
-    { key: 'ENCRYPT_KEY', value: process.env.ENCRYPT_KEY },
-    { key: 'JWT_SECRET', value: process.env.JWT_SECRET },
-  ];
-
-  const weakOrShort = secretChecks.filter(item => !item.value || item.value.length < 16 || weakSecrets.has(item.value));
+  const weakOrShort = baseRequired.filter(key => {
+    const value = process.env[key].trim();
+    return value.length < 16 || weakSecrets.has(value.toLowerCase()) || /^(your_|replace_|change_)/i.test(value);
+  });
   if (weakOrShort.length > 0) {
-    console.error('❌ 以下安全密钥过弱，生产环境禁止启动:');
-    weakOrShort.forEach(item => console.error(`   - ${item.key}`));
+    console.error('❌ 以下安全密钥过弱，拒绝启动:');
+    weakOrShort.forEach(key => console.error(`   - ${key}`));
     console.error('请使用至少 16 位的高强度随机字符串');
     process.exit(1);
   }
@@ -177,10 +175,7 @@ function buildMongodbUrl() {
   return url;
 }
 
-// 在生产环境验证必需的环境变量
-if (process.env.NODE_ENV === 'production') {
-  validateRequiredEnvVars();
-}
+validateRequiredEnvVars();
 
 module.exports = {
   // 基础配置
@@ -209,11 +204,11 @@ module.exports = {
 
   // 安全配置
   SECURITY: {
-    APP_KEYS: getEnv('APP_KEYS', 'doracms3'),
-    SESSION_SECRET: getEnv('SESSION_SECRET', 'doracms_secret'),
+    APP_KEYS: getEnv('APP_KEYS'),
+    SESSION_SECRET: getEnv('SESSION_SECRET'),
     AUTH_COOKIE_NAME: getEnv('AUTH_COOKIE_NAME', 'doracms'),
-    ENCRYPT_KEY: getEnv('ENCRYPT_KEY', 'dora'),
-    JWT_SECRET: getEnv('JWT_SECRET', ''),
+    ENCRYPT_KEY: getEnv('ENCRYPT_KEY'),
+    JWT_SECRET: getEnv('JWT_SECRET'),
     JWT_EXPIRES_IN: getEnv('JWT_EXPIRES_IN', '30day'),
     ADMIN_INIT_TOKEN: getEnv('ADMIN_INIT_TOKEN', ''),
   },

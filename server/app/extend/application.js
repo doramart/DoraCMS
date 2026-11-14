@@ -11,10 +11,9 @@ const path = require('path');
 const _ = require('lodash');
 const muri = require('muri');
 // const restore = require('@cdxoo/mongodb-restore');
-const child = require('child_process');
+const { execFileSync } = require('child_process');
 
 require('module-alias/register');
-const { siteFunc } = require('../utils');
 
 const normalizeWhiteListRoute = route => {
   if (!route || typeof route !== 'string') {
@@ -34,9 +33,48 @@ const normalizeWhiteListRoute = route => {
 };
 
 module.exports = {
+  validatePluginConfig(pluginInfos) {
+    if (!/^[A-Za-z0-9_-]+$/.test(pluginInfos.alias || '') || pluginInfos.alias === 'index') {
+      throw new Error('Invalid plugin alias');
+    }
+    if (pluginInfos.initData && !/^[A-Za-z0-9_-]+\.json$/.test(pluginInfos.initData)) {
+      throw new Error('Invalid plugin data filename');
+    }
+    if (pluginInfos.defaultConfig) {
+      const value =
+        typeof pluginInfos.defaultConfig === 'string'
+          ? JSON.parse(pluginInfos.defaultConfig)
+          : pluginInfos.defaultConfig;
+      if (!value || Array.isArray(value) || typeof value !== 'object') {
+        throw new Error('Plugin default configuration must be a JSON object');
+      }
+      const unsafeKeys = ['__proto__', 'constructor', 'prototype'];
+      const checkKeys = item => {
+        if (item && typeof item === 'object') {
+          for (const [key, childValue] of Object.entries(item)) {
+            if (unsafeKeys.includes(key)) throw new Error('Invalid plugin configuration key');
+            checkKeys(childValue);
+          }
+        }
+      };
+      checkKeys(value);
+      return value;
+    }
+    return null;
+  },
+
+  validatePluginInstallConfig(pluginInfos) {
+    this.validatePluginConfig(pluginInfos);
+    const baseDir = this.config.baseDir;
+    const configPath = path.join(baseDir, `config/ext/config/${pluginInfos.alias}.js`);
+    const pluginPath = path.join(baseDir, `config/ext/plugin/${pluginInfos.alias}.js`);
+    if (fs.existsSync(configPath) || fs.existsSync(pluginPath)) {
+      throw new Error('Plugin configuration file already exists');
+    }
+  },
+
   // 应用初始化
-  async init(ctx) {
-    const app = this;
+  async init() {
     console.log('app init');
     // try {
     //   const checkSystemInfo = await ctx.service.systemConfig.count();
@@ -110,10 +148,11 @@ module.exports = {
   },
 
   // 插件初始数据导入
-  async initExtendData(ctx, pluginInfos = {}, type = 'install') {
+  async initExtendData(_ctx, pluginInfos = {}, type = 'install') {
     if (!_.isEmpty(pluginInfos)) {
       if (type === 'install') {
         const app = this;
+        this.validatePluginConfig(pluginInfos);
         const targetPluginFolder = path.join(app.config.baseDir, `lib/plugin/${pluginInfos.pkgName}`);
         const tabname = path.basename(pluginInfos.initData, '.json');
         const dataPath = path.join(targetPluginFolder, `./app/db/${pluginInfos.initData}`);
@@ -122,15 +161,13 @@ module.exports = {
           const parsedUri = muri(app.config.mongoose.client.url);
           const parameters = [];
           if (parsedUri.auth) {
-            parameters.push(`-u "${parsedUri.auth.user}"`, `-p "${parsedUri.auth.pass}"`);
+            parameters.push('-u', parsedUri.auth.user, '-p', parsedUri.auth.pass);
           }
           if (parsedUri.db) {
-            parameters.push(`-d "${parsedUri.db}"`);
+            parameters.push('-d', parsedUri.db);
           }
-          const cmdstr = `${app.config.mongodb.binPath}mongoimport ${parameters.join(
-            ' '
-          )} -c ${tabname} --upsert --drop "${dataPath}"`;
-          child.execSync(cmdstr);
+          parameters.push('-c', tabname, '--upsert', '--drop', dataPath);
+          execFileSync(path.join(app.config.mongodb.binPath || '', 'mongoimport'), parameters);
         }
       } else {
         // TODO 插件卸载暂不清除数据
@@ -140,28 +177,32 @@ module.exports = {
   },
 
   // 初始化资源管理数据
-  async initResourceData(ctx, pluginInfos = {}, type = 'install') {
-    if (!_.isEmpty(pluginInfos)) {
-      const { alias, adminApi, iconName } = pluginInfos;
-
-      // 安装
-    }
+  async initResourceData() {
+    // Resource initialization is not implemented yet.
   },
 
   // 添加插件配置
   async initPluginConfig(pluginInfos = {}, type = 'install') {
     if (!_.isEmpty(pluginInfos)) {
       const app = this;
+      if (!/^[A-Za-z0-9_-]+$/.test(pluginInfos.alias || '') || pluginInfos.alias === 'index') {
+        throw new Error('Invalid plugin alias');
+      }
+      const defaultConfig = type === 'install' ? this.validatePluginConfig(pluginInfos) : null;
       const configPluginPath = path.join(app.config.baseDir, `config/ext/config/${pluginInfos.alias}.js`);
       const extConfigPath = path.join(app.config.baseDir, `config/ext/plugin/${pluginInfos.alias}.js`);
       if (type === 'install') {
-        if (pluginInfos.pluginsConfig) {
-          siteFunc.createFileByStr(extConfigPath, pluginInfos.pluginsConfig);
+        if (fs.existsSync(extConfigPath) || fs.existsSync(configPluginPath)) {
+          throw new Error('Plugin configuration file already exists');
         }
-
-        if (pluginInfos.defaultConfig) {
-          siteFunc.createFileByStr(configPluginPath, pluginInfos.defaultConfig);
+        if (defaultConfig) {
+          fs.writeFileSync(configPluginPath, `module.exports = ${JSON.stringify(defaultConfig)};\n`, { flag: 'wx' });
         }
+        fs.writeFileSync(
+          extConfigPath,
+          `module.exports = ${JSON.stringify({ enable: true, package: pluginInfos.pkgName })};\n`,
+          { flag: 'wx' }
+        );
       } else {
         if (fs.existsSync(extConfigPath)) {
           fs.unlinkSync(extConfigPath);
